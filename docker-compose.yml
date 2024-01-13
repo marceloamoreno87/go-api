@@ -5,8 +5,8 @@ services:
   izimoney:
     container_name: izimoney
     build:
-      context: ./izimoney/
-      dockerfile: dockerfile
+      context: .
+      dockerfile: ./izimoney/.docker/dockerfile
     environment:
       IZIMONEY_DB_HOST: ${IZIMONEY_DB_HOST}
       IZIMONEY_DB_PORT: ${IZIMONEY_DB_PORT}
