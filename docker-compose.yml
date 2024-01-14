@@ -2,34 +2,34 @@ version: '3.9'
 
 services:
 
-  izimoney:
-    container_name: izimoney
+  app:
+    container_name: app
     build:
       context: .
-      dockerfile: ./izimoney/.docker/dockerfile
+      dockerfile: ./app/.docker/dockerfile
     environment:
-      IZIMONEY_DB_HOST: ${IZIMONEY_DB_HOST}
-      IZIMONEY_DB_PORT: ${IZIMONEY_DB_PORT}
-      IZIMONEY_PORT: ${IZIMONEY_PORT}
-      IZIMONEY_DB_NAME: ${IZIMONEY_DB_NAME}
-      IZIMONEY_DB_USER: ${IZIMONEY_DB_USER}
-      IZIMONEY_DB_PASSWORD: ${IZIMONEY_DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      PORT: ${PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
     ports:
-      - ${IZIMONEY_PORT}:3000
+      - ${PORT}:3000
     volumes:
-      - ./izimoney/:/app
+      - ./app/:/app
 
-  izimoney_db:
-    container_name: izimoney_db
+  db:
+    container_name: db
     image: postgres:14-alpine
     volumes:
-      - izimoney_db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: ${IZIMONEY_DB_NAME}
-      POSTGRES_USER: ${IZIMONEY_DB_USER}
-      POSTGRES_PASSWORD: ${IZIMONEY_DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-    - ${IZIMONEY_DB_PORT}:5432
+    - ${DB_PORT}:5432
 
   # keycloak:
   #   container_name: keycloak
@@ -131,7 +131,7 @@ services:
   #     - "15672:15672"
 
 volumes:
-  izimoney_db_data:
+  db_data:
     driver: local
   # keycloak_db_data:
   #   driver: local
