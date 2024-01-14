@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/marceloamoreno/izimoney/internal/domain/user/routes"
+	"github.com/marceloamoreno/izimoney/api/routes"
 )
 
 func StartServer() {
@@ -15,4 +15,5 @@ func StartServer() {
 
 func loadRoutes(m *http.ServeMux) {
 	routes.GetUserRoutes(m)
+	routes.GetSwaggerRoutes(m)
 }

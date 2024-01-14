@@ -4,11 +4,11 @@ WORKDIR /app
 
 RUN apk add --no-cache make
 
+RUN go install github.com/swaggo/swag/cmd/swag@latest
 RUN go install github.com/cosmtrek/air@latest
 RUN go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 RUN go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 RUN ln -s /go/bin/linux_amd64/migrate /usr/local/bin/migrate
-
 
 COPY ./app/go.mod ./app/go.sum ./
 # COPY go.mod ./
