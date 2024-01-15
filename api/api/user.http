@@ -1,0 +1,12 @@
+GET http://localhost:3000/user
+content-type: application/json
+
+###
+PUT http://localhost:3000/user
+Content-Type: application/json
+
+    {
+        "username": "John Doe",
+        "password": "fsdfds",
+        "photo": "photo"
+    }

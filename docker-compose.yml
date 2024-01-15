@@ -2,11 +2,11 @@ version: '3.9'
 
 services:
 
-  app:
-    container_name: app
+  api:
+    container_name: api
     build:
       context: .
-      dockerfile: ./app/.docker/dockerfile
+      dockerfile: ./api/.docker/dockerfile
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
@@ -17,7 +17,7 @@ services:
     ports:
       - ${PORT}:3000
     volumes:
-      - ./app/:/app
+      - ./api/:/api
 
   db:
     container_name: db
