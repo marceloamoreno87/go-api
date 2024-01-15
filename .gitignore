@@ -2,7 +2,7 @@
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 #
 
-/izimoney/tmp
+/api/tmp
 
 # Binaries for programs and plugins
 *.exe
