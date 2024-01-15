@@ -3,6 +3,7 @@ module github.com/marceloamoreno/izimoney
 go 1.22rc1
 
 require (
+	github.com/go-chi/chi/v5 v5.0.11
 	github.com/jackc/pgx/v5 v5.5.1
 	github.com/swaggo/http-swagger v1.3.4
 	github.com/swaggo/swag v1.16.2

@@ -4,21 +4,26 @@ WHERE id = $1 LIMIT 1;
 
 -- name: GetUsers :many
 SELECT * FROM users
-ORDER BY name;
+ORDER BY id ASC
+LIMIT $1 OFFSET $2;
 
 -- name: CreateUser :one
 INSERT INTO users (
-  name, bio
+  username,
+  password,
+  photo
 ) VALUES (
-  $1, $2
+  $1, $2, $3
 )
 RETURNING *;
 
--- name: UpdateUser :exec
-UPDATE users
-  set name = $2,
-  bio = $3
-WHERE id = $1;
+-- name: UpdateUser :one
+UPDATE users SET
+  username = $1,
+  password = $2,
+  photo = $3
+WHERE id = $4
+RETURNING *;
 
 -- name: DeleteUser :exec
 DELETE FROM users

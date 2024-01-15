@@ -4,16 +4,22 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/marceloamoreno/izimoney/api/routes"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+
+	"github.com/marceloamoreno/izimoney/internal/routes"
 )
 
 func StartServer() {
-	mux := http.NewServeMux()
-	loadRoutes(mux)
-	http.ListenAndServe(":"+os.Getenv("PORT"), mux)
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	loadRoutes(r)
+	http.ListenAndServe(":"+os.Getenv("PORT"), r)
 }
 
-func loadRoutes(m *http.ServeMux) {
-	routes.GetUserRoutes(m)
-	routes.GetSwaggerRoutes(m)
+func loadRoutes(r *chi.Mux) {
+	queries := Queries()
+	routes.NewRoute(r, queries).GetUserRoutes()
+	routes.NewRoute(r, queries).GetSwaggerRoutes()
+
 }

@@ -1,6 +1,8 @@
 package main
 
-import "github.com/marceloamoreno/izimoney/configs"
+import (
+	"github.com/marceloamoreno/izimoney/configs"
+)
 
 // @title IZI Money API
 // @version 1.0
@@ -16,6 +18,7 @@ import "github.com/marceloamoreno/izimoney/configs"
 
 // @host petstore.swagger.io
 // @BasePath /v2
+
 func main() {
 	configs.StartServer()
 }
