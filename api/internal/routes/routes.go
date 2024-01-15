@@ -12,16 +12,16 @@ import (
 )
 
 type Route struct {
+	*tools.HandlerTools
 	*chi.Mux
 	*db.Queries
-	*tools.HandlerTools
 }
 
 func NewRoute(r *chi.Mux, db *db.Queries, t *tools.HandlerTools) *Route {
 	return &Route{
+		tools.NewHandlerTools(),
 		r,
 		db,
-		tools.NewHandlerTools(),
 	}
 }
 

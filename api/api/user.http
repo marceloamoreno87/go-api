@@ -2,7 +2,7 @@ GET http://localhost:3000/user
 content-type: application/json
 
 ###
-PUT http://localhost:3000/user
+POST http://localhost:3000/user
 Content-Type: application/json
 
     {
@@ -10,3 +10,24 @@ Content-Type: application/json
         "password": "fsdfds",
         "photo": "photo"
     }
+###
+
+PUT http://localhost:3000/user/162
+Content-Type: application/json
+
+    {
+        "username": "John Doe",
+        "password": "fsdfds",
+        "photo": "photo"
+    }
+
+###
+DELETE http://localhost:3000/user/162
+content-type: application/json
+
+###
+GET http://localhost:3000/user/12
+content-type: application/json
+
+###
+

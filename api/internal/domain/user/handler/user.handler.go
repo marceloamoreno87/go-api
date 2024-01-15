@@ -10,8 +10,8 @@ import (
 )
 
 type UserHandler struct {
-	UserRepository *db.Queries
 	HandlerTools   *tools.HandlerTools
+	UserRepository *db.Queries
 }
 
 func NewUserHandler(userRepository *db.Queries, handlerTools *tools.HandlerTools) *UserHandler {

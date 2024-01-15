@@ -15,6 +15,7 @@ import (
 func StartServer() {
 	r := chi.NewRouter()
 	loggerMiddleware(r)
+	corsMiddleware(r)
 	loadRoutes(r)
 	http.ListenAndServe(":"+os.Getenv("PORT"), r)
 }
@@ -31,14 +32,8 @@ func loggerMiddleware(r *chi.Mux) {
 }
 
 func corsMiddleware(r *chi.Mux) {
-	r.Use(cors.Handler(cors.Options{
-		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
-		AllowedOrigins: []string{"https://*", "http://*"},
-		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-		ExposedHeaders:   []string{"Link"},
-		AllowCredentials: false,
-		MaxAge:           300, // Maximum value not ignored by any of major browsers
-	}))
+	r.Use(middleware.AllowContentType("application/json"))
+	r.Use(middleware.SetHeader("Access-Control-Allow-Origin", "*"))
+	r.Use(middleware.SetHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE"))
+	r.Use(middleware.SetHeader("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization"))
 }
