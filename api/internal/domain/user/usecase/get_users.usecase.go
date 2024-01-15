@@ -16,10 +16,10 @@ func NewGetUsersUseCase(userRepository *db.Queries) *GetUsersUseCase {
 	}
 }
 
-func (uc *GetUsersUseCase) Execute(GetUsersParams db.GetUsersParams) ([]db.User, error) {
-	repo, err := uc.UserRepository.GetUsers(context.Background(), GetUsersParams)
+func (uc *GetUsersUseCase) Execute(GetUsersParams db.GetUsersParams) (repo []db.User, err error) {
+	repo, err = uc.UserRepository.GetUsers(context.Background(), GetUsersParams)
 	if err != nil {
 		return []db.User{}, err
 	}
-	return repo, nil
+	return
 }

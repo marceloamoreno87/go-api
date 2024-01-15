@@ -11,27 +11,27 @@ type User struct {
 	UpdatedAt string `json:"updated_at"`
 }
 
-func NewUser(username string, password string, photo string) (*User, error) {
-	user := &User{
+func NewUser(username string, password string, photo string) (user *User, err error) {
+	user = &User{
 		Username: username,
 		Password: password,
 		Photo:    photo,
 	}
 	valid := user.Validate()
 	if valid != nil {
-		return nil, valid
+		return
 	}
-	return user, nil
+	return
 }
 
-func (u *User) Validate() error {
+func (u *User) Validate() (err error) {
 	if u.Username == "" {
 		return errors.New("Username is required")
 	}
 	if u.Password == "" {
 		return errors.New("Password is required")
 	}
-	return nil
+	return
 }
 
 func (u *User) GetUserName() string {

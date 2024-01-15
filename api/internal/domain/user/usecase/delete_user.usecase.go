@@ -16,16 +16,16 @@ func NewDeleteUserUseCase(userRepository *db.Queries) *DeleteUserUseCase {
 	}
 }
 
-func (uc *DeleteUserUseCase) Execute(id int64) error {
+func (uc *DeleteUserUseCase) Execute(id int64) (err error) {
 
-	_, err := uc.UserRepository.GetUser(context.Background(), id)
+	_, err = uc.UserRepository.GetUser(context.Background(), id)
 	if err != nil {
 		return err
 	}
 
 	err = uc.UserRepository.DeleteUser(context.Background(), id)
 	if err != nil {
-		return err
+		return
 	}
-	return nil
+	return
 }

@@ -16,10 +16,10 @@ func NewUpdateUserUseCase(userRepository *db.Queries) *UpdateUserUseCase {
 	}
 }
 
-func (uc *UpdateUserUseCase) Execute(UpdateUserParams db.UpdateUserParams) (db.User, error) {
-	repo, err := uc.UserRepository.UpdateUser(context.Background(), UpdateUserParams)
+func (uc *UpdateUserUseCase) Execute(UpdateUserParams db.UpdateUserParams) (repo db.User, err error) {
+	repo, err = uc.UserRepository.UpdateUser(context.Background(), UpdateUserParams)
 	if err != nil {
 		return db.User{}, err
 	}
-	return repo, nil
+	return
 }

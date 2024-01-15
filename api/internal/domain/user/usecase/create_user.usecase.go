@@ -17,14 +17,14 @@ func NewCreateUserUseCase(userRepository *db.Queries) *CreateUserUseCase {
 	}
 }
 
-func (uc *CreateUserUseCase) Execute(CreateUserParams db.CreateUserParams) (db.User, error) {
+func (uc *CreateUserUseCase) Execute(CreateUserParams db.CreateUserParams) (repo db.User, err error) {
 
 	user, err := entity.NewUser(CreateUserParams.Username, CreateUserParams.Password, CreateUserParams.Photo)
 	if err != nil {
 		return db.User{}, err
 	}
 
-	repo, err := uc.UserRepository.CreateUser(context.Background(), db.CreateUserParams{
+	repo, err = uc.UserRepository.CreateUser(context.Background(), db.CreateUserParams{
 		Username: user.GetUserName(),
 		Password: user.GetPassword(),
 		Photo:    user.GetPhoto(),
@@ -32,5 +32,5 @@ func (uc *CreateUserUseCase) Execute(CreateUserParams db.CreateUserParams) (db.U
 	if err != nil {
 		return db.User{}, err
 	}
-	return repo, nil
+	return
 }
