@@ -18,6 +18,8 @@ services:
       - ${PORT}:3000
     volumes:
       - ./api/:/api
+    networks:
+      - net
 
   db:
     container_name: db
@@ -30,6 +32,8 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
     - ${DB_PORT}:5432
+    networks:
+      - net
 
   # keycloak:
   #   container_name: keycloak
@@ -137,3 +141,7 @@ volumes:
   #   driver: local
   # db-data-kong-postgres:
   #   driver: local
+
+networks:
+  net:
+    driver: bridge
