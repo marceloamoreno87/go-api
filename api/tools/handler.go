@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 	"strconv"
@@ -55,4 +56,18 @@ func (h *HandlerTools) GetIDFromURL(r *http.Request) (idInt int64, err error) {
 	}
 
 	return
+}
+
+type Response struct {
+	Msg  string      `json:"msg"`
+	Data interface{} `json:"data"`
+}
+
+func (h *HandlerTools) ResponseJSON(w http.ResponseWriter, msg string, statusCode int, data interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	json.NewEncoder(w).Encode(&Response{
+		Data: data,
+		Msg:  msg,
+	})
 }

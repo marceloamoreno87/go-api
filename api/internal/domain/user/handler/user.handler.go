@@ -35,8 +35,8 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	h.HandlerTools.ResponseJSON(w, "Success", http.StatusOK, user)
 
-	json.NewEncoder(w).Encode(user)
 }
 
 func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
@@ -57,9 +57,7 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	json.NewEncoder(w).Encode(users)
-
+	h.HandlerTools.ResponseJSON(w, "Success", http.StatusOK, users)
 }
 
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -77,8 +75,8 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	h.HandlerTools.ResponseJSON(w, "Created user successfully", http.StatusOK, user)
 
-	json.NewEncoder(w).Encode(user)
 }
 
 func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
@@ -104,8 +102,7 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	json.NewEncoder(w).Encode(user)
+	h.HandlerTools.ResponseJSON(w, "Updated user successfully", http.StatusOK, user)
 }
 
 func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
@@ -122,6 +119,5 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	w.WriteHeader(http.StatusNoContent)
+	h.HandlerTools.ResponseJSON(w, "Deleted user successfully", http.StatusOK, nil)
 }
