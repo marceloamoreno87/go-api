@@ -1,9 +1,8 @@
 package routes
 
 import (
-	"os"
-
 	"github.com/go-chi/chi/v5"
+	"github.com/marceloamoreno/izimoney/configs"
 	_ "github.com/marceloamoreno/izimoney/docs"
 	"github.com/marceloamoreno/izimoney/internal/domain/user/handler"
 	"github.com/marceloamoreno/izimoney/pkg/sqlc/db"
@@ -38,6 +37,6 @@ func (r *Route) GetUserRoutes() {
 
 func (r *Route) GetSwaggerRoutes() {
 	r.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:"+os.Getenv("PORT")+"/swagger/doc.json"),
+		httpSwagger.URL("http://localhost:"+configs.Environment.Port+"/swagger/doc.json"),
 	))
 }

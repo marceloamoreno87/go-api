@@ -17,7 +17,6 @@ func NewDeleteUserUseCase(userRepository *db.Queries) *DeleteUserUseCase {
 }
 
 func (uc *DeleteUserUseCase) Execute(id int64) (err error) {
-
 	_, err = uc.UserRepository.GetUser(context.Background(), id)
 	if err != nil {
 		return err

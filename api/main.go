@@ -1,6 +1,9 @@
 package main
 
-import "github.com/marceloamoreno/izimoney/internal/infra/webserver"
+import (
+	"github.com/marceloamoreno/izimoney/configs"
+	"github.com/marceloamoreno/izimoney/internal/infra/webserver"
+)
 
 // @title IZI Money API
 // @version 1.0
@@ -18,5 +21,7 @@ import "github.com/marceloamoreno/izimoney/internal/infra/webserver"
 // @BasePath /v2
 
 func main() {
+	env := configs.NewEnv()
+	env.LoadEnv()
 	webserver.StartServer()
 }
