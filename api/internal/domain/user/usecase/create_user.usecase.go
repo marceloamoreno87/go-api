@@ -32,7 +32,6 @@ func NewCreateUserUseCase(userRepository repository.UserRepositoryInterface) *Cr
 func (uc *CreateUserUseCase) Execute(input CreateUserInputDTO) (output CreateUserOutputDTO, err error) {
 
 	user, err := entity.NewUser(input.Username, input.Password, input.Photo)
-
 	if err != nil {
 		return CreateUserOutputDTO{}, err
 	}

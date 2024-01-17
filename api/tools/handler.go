@@ -9,6 +9,10 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+const Error string = "Error"
+const Success string = "Success"
+const Info string = "Info"
+
 type HandlerTools struct {
 }
 
@@ -59,15 +63,25 @@ func (h *HandlerTools) GetIDFromURL(r *http.Request) (idInt int64, err error) {
 }
 
 type Response struct {
-	Msg  string      `json:"msg"`
 	Data interface{} `json:"data"`
 }
 
-func (h *HandlerTools) ResponseJSON(w http.ResponseWriter, msg string, statusCode int, data interface{}) {
+type ResponseError struct {
+	Err interface{} `json:"err"`
+}
+
+func (h *HandlerTools) ResponseJSON(w http.ResponseWriter, statusCode int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	json.NewEncoder(w).Encode(&Response{
 		Data: data,
-		Msg:  msg,
+	})
+}
+
+func (h *HandlerTools) ResponseErrorJSON(w http.ResponseWriter, statusCode int, err interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	json.NewEncoder(w).Encode(&ResponseError{
+		Err: err,
 	})
 }
