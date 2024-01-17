@@ -1,6 +1,8 @@
 package entity
 
-import "errors"
+import (
+	"errors"
+)
 
 type User struct {
 	ID        int64  `json:"id"`
@@ -19,7 +21,7 @@ func NewUser(username string, password string, photo string) (user *User, err er
 	}
 	valid := user.Validate()
 	if valid != nil {
-		return
+		return nil, valid
 	}
 	return
 }

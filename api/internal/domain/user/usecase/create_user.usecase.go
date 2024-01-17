@@ -30,18 +30,14 @@ func NewCreateUserUseCase(userRepository repository.UserRepositoryInterface) *Cr
 }
 
 func (uc *CreateUserUseCase) Execute(input CreateUserInputDTO) (output CreateUserOutputDTO, err error) {
-	user := entity.User{
-		ID:       input.ID,
-		Username: input.Username,
-		Password: input.Password,
-		Photo:    input.Photo,
-	}
+
+	user, err := entity.NewUser(input.Username, input.Password, input.Photo)
 
 	if err != nil {
 		return CreateUserOutputDTO{}, err
 	}
 
-	u, err := uc.UserRepository.CreateUser(&user)
+	u, err := uc.UserRepository.CreateUser(user)
 	if err != nil {
 		return CreateUserOutputDTO{}, err
 	}
