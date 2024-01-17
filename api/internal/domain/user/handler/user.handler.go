@@ -4,17 +4,17 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/marceloamoreno/izimoney/internal/domain/user/repository"
 	"github.com/marceloamoreno/izimoney/internal/domain/user/usecase"
-	"github.com/marceloamoreno/izimoney/pkg/sqlc/db"
 	"github.com/marceloamoreno/izimoney/tools"
 )
 
 type UserHandler struct {
 	HandlerTools   *tools.HandlerTools
-	UserRepository *db.Queries
+	UserRepository repository.UserRepositoryInterface
 }
 
-func NewUserHandler(userRepository *db.Queries, handlerTools *tools.HandlerTools) *UserHandler {
+func NewUserHandler(userRepository repository.UserRepositoryInterface, handlerTools *tools.HandlerTools) *UserHandler {
 	return &UserHandler{
 		UserRepository: userRepository,
 		HandlerTools:   handlerTools,
@@ -30,83 +30,84 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	uc := usecase.NewGetUserUseCase(h.UserRepository)
-	user, err := uc.Execute(id)
+	u, err := uc.Execute(usecase.GetUserInputDTO{
+		ID: id,
+	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	h.HandlerTools.ResponseJSON(w, "Success", http.StatusOK, user)
+
+	h.HandlerTools.ResponseJSON(w, "Success", http.StatusOK, u)
 
 }
 
 func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
-
 	limit, offset, err := h.HandlerTools.GetLimitOffsetFromURL(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	GetUsersParams := db.GetUsersParams{
+	params := usecase.GetUsersInputDTO{
 		Limit:  limit,
 		Offset: offset,
 	}
 
 	uc := usecase.NewGetUsersUseCase(h.UserRepository)
-	users, err := uc.Execute(GetUsersParams)
+	u, err := uc.Execute(params)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	h.HandlerTools.ResponseJSON(w, "Success", http.StatusOK, users)
+	h.HandlerTools.ResponseJSON(w, "Success", http.StatusOK, u)
 }
 
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 
-	var CreateUserParams db.CreateUserParams
-	err := json.NewDecoder(r.Body).Decode(&CreateUserParams)
+	var user usecase.CreateUserInputDTO
+	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	uc := usecase.NewCreateUserUseCase(h.UserRepository)
-	user, err := uc.Execute(CreateUserParams)
+	u, err := uc.Execute(user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	h.HandlerTools.ResponseJSON(w, "Created user successfully", http.StatusOK, user)
+	h.HandlerTools.ResponseJSON(w, "Created user successfully", http.StatusOK, u)
 
 }
 
 func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	id, err := h.HandlerTools.GetIDFromURL(r)
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	UpdateUserParams := db.UpdateUserParams{
-		ID: id,
-	}
-
-	err = json.NewDecoder(r.Body).Decode(&UpdateUserParams)
+	var user usecase.UpdateUserInputDTO
+	err = json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
+	user.ID = id
 	uc := usecase.NewUpdateUserUseCase(h.UserRepository)
-	user, err := uc.Execute(UpdateUserParams)
+	u, err := uc.Execute(user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	h.HandlerTools.ResponseJSON(w, "Updated user successfully", http.StatusOK, user)
+
+	h.HandlerTools.ResponseJSON(w, "Updated user successfully", http.StatusOK, u)
 }
 
 func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
-
 	id, err := h.HandlerTools.GetIDFromURL(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -114,10 +115,13 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	uc := usecase.NewDeleteUserUseCase(h.UserRepository)
-	err = uc.Execute(id)
+	err = uc.Execute(usecase.DeleteUserInputDTO{
+		ID: id,
+	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
 	h.HandlerTools.ResponseJSON(w, "Deleted user successfully", http.StatusOK, nil)
 }

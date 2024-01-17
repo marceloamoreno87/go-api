@@ -1,30 +1,34 @@
 package usecase
 
-import (
-	"context"
+import "github.com/marceloamoreno/izimoney/internal/domain/user/repository"
 
-	"github.com/marceloamoreno/izimoney/pkg/sqlc/db"
-)
-
-type DeleteUserUseCase struct {
-	UserRepository *db.Queries
+type DeleteUserInputDTO struct {
+	ID int64 `json:"id"`
 }
 
-func NewDeleteUserUseCase(userRepository *db.Queries) *DeleteUserUseCase {
+type DeleteUserOutputDTO struct {
+}
+
+type DeleteUserUseCase struct {
+	UserRepository repository.UserRepositoryInterface
+}
+
+func NewDeleteUserUseCase(userRepository repository.UserRepositoryInterface) *DeleteUserUseCase {
 	return &DeleteUserUseCase{
 		UserRepository: userRepository,
 	}
 }
 
-func (uc *DeleteUserUseCase) Execute(id int64) (err error) {
-	_, err = uc.UserRepository.GetUser(context.Background(), id)
-	if err != nil {
-		return err
-	}
-
-	err = uc.UserRepository.DeleteUser(context.Background(), id)
+func (uc *DeleteUserUseCase) Execute(input DeleteUserInputDTO) (err error) {
+	_, err = uc.UserRepository.GetUser(input.ID)
 	if err != nil {
 		return
 	}
+
+	err = uc.UserRepository.DeleteUser(input.ID)
+	if err != nil {
+		return
+	}
+
 	return
 }

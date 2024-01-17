@@ -1,34 +1,57 @@
 package usecase
 
 import (
-	"context"
-
 	"github.com/marceloamoreno/izimoney/internal/domain/user/entity"
-	"github.com/marceloamoreno/izimoney/pkg/sqlc/db"
+	"github.com/marceloamoreno/izimoney/internal/domain/user/repository"
 )
 
-type CreateUserUseCase struct {
-	UserRepository *db.Queries
+type CreateUserInputDTO struct {
+	ID       int64  `json:"id"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Photo    string `json:"photo"`
 }
 
-func NewCreateUserUseCase(userRepository *db.Queries) *CreateUserUseCase {
+type CreateUserOutputDTO struct {
+	ID       int64  `json:"id"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Photo    string `json:"photo"`
+}
+
+type CreateUserUseCase struct {
+	UserRepository repository.UserRepositoryInterface
+}
+
+func NewCreateUserUseCase(userRepository repository.UserRepositoryInterface) *CreateUserUseCase {
 	return &CreateUserUseCase{
 		UserRepository: userRepository,
 	}
 }
 
-func (uc *CreateUserUseCase) Execute(CreateUserParams db.CreateUserParams) (repo db.User, err error) {
-	user, err := entity.NewUser(CreateUserParams.Username, CreateUserParams.Password, CreateUserParams.Photo)
-	if err != nil {
-		return db.User{}, err
+func (uc *CreateUserUseCase) Execute(input CreateUserInputDTO) (output CreateUserOutputDTO, err error) {
+	user := entity.User{
+		ID:       input.ID,
+		Username: input.Username,
+		Password: input.Password,
+		Photo:    input.Photo,
 	}
-	repo, err = uc.UserRepository.CreateUser(context.Background(), db.CreateUserParams{
-		Username: user.GetUserName(),
-		Password: user.GetPassword(),
-		Photo:    user.GetPhoto(),
-	})
+
 	if err != nil {
-		return db.User{}, err
+		return CreateUserOutputDTO{}, err
 	}
+
+	u, err := uc.UserRepository.CreateUser(&user)
+	if err != nil {
+		return CreateUserOutputDTO{}, err
+	}
+
+	output = CreateUserOutputDTO{
+		ID:       u.ID,
+		Username: u.Username,
+		Password: u.Password,
+		Photo:    u.Photo,
+	}
+
 	return
 }

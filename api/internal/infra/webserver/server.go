@@ -7,7 +7,6 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 
 	"github.com/marceloamoreno/izimoney/configs"
-	"github.com/marceloamoreno/izimoney/internal/infra/database"
 	"github.com/marceloamoreno/izimoney/internal/routes"
 	"github.com/marceloamoreno/izimoney/tools"
 )
@@ -21,8 +20,8 @@ func StartServer() {
 }
 
 func loadRoutes(r *chi.Mux) {
-	HandlerTools := tools.NewHandlerTools()
-	route := routes.NewRoute(r, database.Db(), HandlerTools)
+	handlerTools := tools.NewHandlerTools()
+	route := routes.NewRoute(r, handlerTools)
 	route.GetUserRoutes()
 	route.GetSwaggerRoutes()
 }

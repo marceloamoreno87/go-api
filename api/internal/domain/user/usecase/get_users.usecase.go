@@ -1,25 +1,38 @@
 package usecase
 
 import (
-	"context"
-
-	"github.com/marceloamoreno/izimoney/pkg/sqlc/db"
+	"github.com/marceloamoreno/izimoney/internal/domain/user/entity"
+	"github.com/marceloamoreno/izimoney/internal/domain/user/repository"
 )
 
-type GetUsersUseCase struct {
-	UserRepository *db.Queries
+type GetUsersInputDTO struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
 }
 
-func NewGetUsersUseCase(userRepository *db.Queries) *GetUsersUseCase {
+type GetUsersOutputDTO struct {
+	Users []*entity.User
+}
+
+type GetUsersUseCase struct {
+	UserRepository repository.UserRepositoryInterface
+}
+
+func NewGetUsersUseCase(userRepository repository.UserRepositoryInterface) *GetUsersUseCase {
 	return &GetUsersUseCase{
 		UserRepository: userRepository,
 	}
 }
 
-func (uc *GetUsersUseCase) Execute(GetUsersParams db.GetUsersParams) (repo []db.User, err error) {
-	repo, err = uc.UserRepository.GetUsers(context.Background(), GetUsersParams)
+func (uc *GetUsersUseCase) Execute(input GetUsersInputDTO) (output GetUsersOutputDTO, err error) {
+	users, err := uc.UserRepository.GetUsers(input.Limit, input.Offset)
 	if err != nil {
-		return []db.User{}, err
+		return GetUsersOutputDTO{}, err
 	}
+
+	output = GetUsersOutputDTO{
+		Users: users,
+	}
+
 	return
 }
