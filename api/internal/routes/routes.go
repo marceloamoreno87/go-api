@@ -25,13 +25,13 @@ func NewRoute(r *chi.Mux, handlerTools *tools.HandlerTools) *Route {
 
 func (r *Route) GetUserRoutes() {
 	repository := repository.NewUserRepository(database.Db())
-	UserHandler := handler.NewUserHandler(repository, r.HandlerTools)
+	userHandler := handler.NewUserHandler(repository, r.HandlerTools)
 	r.Route("/user", func(r chi.Router) {
-		r.Get("/", UserHandler.GetUsers)
-		r.Get("/{id}", UserHandler.GetUser)
-		r.Post("/", UserHandler.CreateUser)
-		r.Put("/{id}", UserHandler.UpdateUser)
-		r.Delete("/{id}", UserHandler.DeleteUser)
+		r.Get("/", userHandler.GetUsers)
+		r.Get("/{id}", userHandler.GetUser)
+		r.Post("/", userHandler.CreateUser)
+		r.Put("/{id}", userHandler.UpdateUser)
+		r.Delete("/{id}", userHandler.DeleteUser)
 	})
 }
 

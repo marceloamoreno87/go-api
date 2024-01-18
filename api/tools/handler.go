@@ -20,6 +20,14 @@ type HandlerToolsInterface interface {
 	ResponseErrorJSON(w http.ResponseWriter, statusCode int, err interface{})
 }
 
+type Response struct {
+	Data interface{} `json:"data"`
+}
+
+type ResponseError struct {
+	Err interface{} `json:"err"`
+}
+
 type HandlerTools struct {
 }
 
@@ -67,14 +75,6 @@ func (h *HandlerTools) GetIDFromURL(r *http.Request) (idInt int64, err error) {
 	}
 
 	return
-}
-
-type Response struct {
-	Data interface{} `json:"data"`
-}
-
-type ResponseError struct {
-	Err interface{} `json:"err"`
 }
 
 func (h *HandlerTools) ResponseJSON(w http.ResponseWriter, statusCode int, data interface{}) {
