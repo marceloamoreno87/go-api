@@ -13,6 +13,13 @@ const Error string = "Error"
 const Success string = "Success"
 const Info string = "Info"
 
+type HandlerToolsInterface interface {
+	GetLimitOffsetFromURL(r *http.Request) (int32, int32, error)
+	GetIDFromURL(r *http.Request) (int64, error)
+	ResponseJSON(w http.ResponseWriter, statusCode int, data interface{})
+	ResponseErrorJSON(w http.ResponseWriter, statusCode int, err interface{})
+}
+
 type HandlerTools struct {
 }
 

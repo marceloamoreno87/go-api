@@ -11,7 +11,6 @@ import (
 
 func Db() *db.Queries {
 	ctx := context.Background()
-
 	conn, err := pgx.Connect(ctx, "postgres://"+configs.Environment.DBUser+":"+configs.Environment.DBPassword+"@"+configs.Environment.DBHost+":5432/"+configs.Environment.DBName)
 	if err != nil {
 		log.Fatal(err)
