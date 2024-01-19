@@ -2,7 +2,7 @@
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 #
 
-/api/tmp
+/api/cmd/tmp
 
 # Binaries for programs and plugins
 *.exe
@@ -24,3 +24,4 @@
 go.work
 
 .env
+
