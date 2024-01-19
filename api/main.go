@@ -1,27 +1,18 @@
 package main
 
 import (
-	"github.com/marceloamoreno/izimoney/configs"
+	"github.com/marceloamoreno/izimoney/config"
 	"github.com/marceloamoreno/izimoney/internal/infra/webserver"
 )
 
-// @title IZI Money API
-// @version 1.0
-// @description This is a sample server Petstore server.
-// @termsOfService http://swagger.io/terms/
-
-// @contact.name API Support
-// @contact.url http://www.swagger.io/support
-// @contact.email support@swagger.io
-
-// @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-
-// @host petstore.swagger.io
-// @BasePath /v2
+// @title GO API
+// @description This is a sample server celler server.
+// @version v1
+// @host localhost:3000
+// @BasePath /api/v1
 
 func main() {
-	env := configs.NewEnv()
+	env := config.NewEnv()
 	env.LoadEnv()
 	webserver.StartServer()
 }

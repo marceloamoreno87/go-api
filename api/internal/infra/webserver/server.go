@@ -6,7 +6,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
-	"github.com/marceloamoreno/izimoney/configs"
+	"github.com/marceloamoreno/izimoney/config"
 	"github.com/marceloamoreno/izimoney/internal/routes"
 	"github.com/marceloamoreno/izimoney/tools"
 )
@@ -16,7 +16,7 @@ func StartServer() {
 	loggerMiddleware(r)
 	corsMiddleware(r)
 	loadRoutes(r)
-	http.ListenAndServe(":"+configs.Environment.Port, r)
+	http.ListenAndServe(":"+config.Environment.Port, r)
 }
 
 func loadRoutes(r *chi.Mux) {
@@ -24,6 +24,10 @@ func loadRoutes(r *chi.Mux) {
 	route := routes.NewRoute(r, handlerTools)
 	route.GetUserRoutes()
 	route.GetSwaggerRoutes()
+
+	// Example of route with JWT
+	route.GetExampleRoute()
+
 }
 
 func loggerMiddleware(r *chi.Mux) {

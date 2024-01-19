@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/marceloamoreno/izimoney/configs"
+	"github.com/marceloamoreno/izimoney/config"
 	"github.com/marceloamoreno/izimoney/internal/domain/user/repository"
 )
 
@@ -37,13 +37,13 @@ func (uc *GetJWTUseCase) Execute(input GetJWTInputDTO) (output GetJWTOutputDTO, 
 		return GetJWTOutputDTO{}, err
 	}
 
-	jwtExpiresInStr := configs.Environment.JWTExperiesIn
+	jwtExpiresInStr := config.Environment.JWTExpiresIn
 	jwtExpiresIn, err := strconv.Atoi(jwtExpiresInStr)
 	if err != nil {
 		return GetJWTOutputDTO{}, err
 	}
 
-	_, tokenString, err := configs.TokenAuth.Encode(map[string]interface{}{
+	_, tokenString, err := config.TokenAuth.Encode(map[string]interface{}{
 		"id":  user.GetID(),
 		"exp": time.Now().Add(time.Second * time.Duration(jwtExpiresIn)).Unix(),
 	})
