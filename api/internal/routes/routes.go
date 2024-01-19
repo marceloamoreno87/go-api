@@ -4,10 +4,10 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/jwtauth/v5"
 	"github.com/marceloamoreno/izimoney/config"
 	_ "github.com/marceloamoreno/izimoney/docs"
-	"github.com/marceloamoreno/izimoney/internal/domain/user/handler"
+	authHandler "github.com/marceloamoreno/izimoney/internal/domain/auth/handler"
+	userHandler "github.com/marceloamoreno/izimoney/internal/domain/user/handler"
 	"github.com/marceloamoreno/izimoney/internal/domain/user/repository"
 	"github.com/marceloamoreno/izimoney/internal/infra/database"
 	"github.com/marceloamoreno/izimoney/tools"
@@ -26,38 +26,43 @@ func NewRoute(r *chi.Mux, handlerTools *tools.HandlerTools) *Route {
 	}
 }
 
-func (r *Route) GetUserRoutes() {
+func (r *Route) GetAuthRoutes(router chi.Router) {
 	repository := repository.NewUserRepository(database.Db())
-	userHandler := handler.NewUserHandler(repository, r.HandlerTools)
-	r.Route("/api/v1/user", func(r chi.Router) {
+	authHandler := authHandler.NewAuthHandler(repository, r.HandlerTools)
+	router.Route("/auth", func(r chi.Router) {
+		r.Post("/token", authHandler.GetJWT)
+	})
+}
+
+func (r *Route) GetUserRoutes(router chi.Router) {
+	repository := repository.NewUserRepository(database.Db())
+	userHandler := userHandler.NewUserHandler(repository, r.HandlerTools)
+	router.Route("/user", func(r chi.Router) {
 		r.Get("/", userHandler.GetUsers)
 		r.Get("/{id}", userHandler.GetUser)
 		r.Post("/", userHandler.CreateUser)
-		r.Post("/generate-token", userHandler.GetJWT)
 		r.Put("/{id}", userHandler.UpdateUser)
 		r.Delete("/{id}", userHandler.DeleteUser)
 	})
 }
 
-func (r *Route) GetSwaggerRoutes() {
-	r.Get("/api/v1/swagger/*", httpSwagger.Handler(
+func (r *Route) GetSwaggerRoutes(router chi.Router) {
+	router.Get("/swagger/*", httpSwagger.Handler(
 		httpSwagger.URL("http://localhost:"+config.Environment.Port+"/swagger/doc.json"),
 	))
 }
 
 // Example of route with JWT
-func (r *Route) GetExampleRoute() {
-	r.Route("/api/v1/teste", func(r chi.Router) {
-		r.Use(jwtauth.Verifier(config.TokenAuth))
-		r.Use(jwtauth.Authenticator(config.TokenAuth))
+func (r *Route) GetExampleRoute(router chi.Router) {
+	router.Route("/teste", func(r chi.Router) {
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("Teste"))
 		})
 	})
 }
 
-func (r *Route) GetHealthRoutes() {
-	r.Route("/api/v1/health", func(r chi.Router) {
+func (r *Route) GetHealthRoutes(router chi.Router) {
+	router.Route("/api/v1/health", func(r chi.Router) {
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("OK"))
 		})

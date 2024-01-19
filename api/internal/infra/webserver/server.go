@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/jwtauth/v5"
 
 	"github.com/marceloamoreno/izimoney/config"
 	"github.com/marceloamoreno/izimoney/internal/routes"
@@ -22,11 +23,19 @@ func StartServer() {
 func loadRoutes(r *chi.Mux) {
 	handlerTools := tools.NewHandlerTools()
 	route := routes.NewRoute(r, handlerTools)
-	route.GetUserRoutes()
-	route.GetSwaggerRoutes()
+	route.Route("/api/v1", func(r chi.Router) {
+		r.Group(func(r chi.Router) {
+			route.GetAuthRoutes(r)
+			route.GetSwaggerRoutes(r)
+			route.GetHealthRoutes(r)
+		})
 
-	// Example of route with JWT
-	route.GetExampleRoute()
+		r.Group(func(r chi.Router) {
+			authMiddleware(r)
+			route.GetUserRoutes(r)
+			route.GetExampleRoute(r)
+		})
+	})
 
 }
 
@@ -39,4 +48,9 @@ func corsMiddleware(r *chi.Mux) {
 	r.Use(middleware.SetHeader("Access-Control-Allow-Origin", "*"))
 	r.Use(middleware.SetHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE"))
 	r.Use(middleware.SetHeader("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization"))
+}
+
+func authMiddleware(r chi.Router) {
+	r.Use(jwtauth.Verifier(config.TokenAuth))
+	r.Use(jwtauth.Authenticator(config.TokenAuth))
 }
