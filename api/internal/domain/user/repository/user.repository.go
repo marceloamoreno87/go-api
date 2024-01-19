@@ -10,6 +10,7 @@ import (
 type UserRepositoryInterface interface {
 	CreateUser(user *entity.User) (*entity.User, error)
 	GetUser(id int64) (*entity.User, error)
+	GetUserByEmail(email string) (*entity.User, error)
 	GetUsers(limit int32, offset int32) ([]*entity.User, error)
 	UpdateUser(user *entity.User) (*entity.User, error)
 	DeleteUser(id int64) error
@@ -27,9 +28,9 @@ func NewUserRepository(DB *db.Queries) *UserRepository {
 
 func (ur *UserRepository) CreateUser(user *entity.User) (*entity.User, error) {
 	repo, err := ur.DB.CreateUser(context.Background(), db.CreateUserParams{
-		Username: user.Username,
+		Name:     user.Name,
+		Email:    user.Email,
 		Password: user.Password,
-		Photo:    user.Photo,
 	})
 	if err != nil {
 		return &entity.User{}, err
@@ -37,9 +38,9 @@ func (ur *UserRepository) CreateUser(user *entity.User) (*entity.User, error) {
 
 	return &entity.User{
 		ID:       repo.ID,
-		Username: repo.Username,
+		Name:     repo.Name,
+		Email:    repo.Email,
 		Password: repo.Password,
-		Photo:    repo.Photo,
 	}, nil
 }
 
@@ -51,9 +52,23 @@ func (ur *UserRepository) GetUser(id int64) (*entity.User, error) {
 
 	return &entity.User{
 		ID:       repo.ID,
-		Username: repo.Username,
+		Name:     repo.Name,
+		Email:    repo.Email,
 		Password: repo.Password,
-		Photo:    repo.Photo,
+	}, nil
+}
+
+func (ur *UserRepository) GetUserByEmail(email string) (*entity.User, error) {
+	repo, err := ur.DB.GetUserByEmail(context.Background(), email)
+	if err != nil {
+		return &entity.User{}, err
+	}
+
+	return &entity.User{
+		ID:       repo.ID,
+		Name:     repo.Name,
+		Email:    repo.Email,
+		Password: repo.Password,
 	}, nil
 }
 
@@ -69,9 +84,9 @@ func (ur *UserRepository) GetUsers(limit int32, offset int32) (users []*entity.U
 	for _, u := range repo {
 		users = append(users, &entity.User{
 			ID:       u.ID,
-			Username: u.Username,
+			Name:     u.Name,
+			Email:    u.Email,
 			Password: u.Password,
-			Photo:    u.Photo,
 		})
 	}
 
@@ -81,9 +96,9 @@ func (ur *UserRepository) GetUsers(limit int32, offset int32) (users []*entity.U
 func (ur *UserRepository) UpdateUser(user *entity.User) (*entity.User, error) {
 	repo, err := ur.DB.UpdateUser(context.Background(), db.UpdateUserParams{
 		ID:       user.ID,
-		Username: user.Username,
+		Name:     user.Name,
+		Email:    user.Email,
 		Password: user.Password,
-		Photo:    user.Photo,
 	})
 	if err != nil {
 		return &entity.User{}, err
@@ -91,9 +106,9 @@ func (ur *UserRepository) UpdateUser(user *entity.User) (*entity.User, error) {
 
 	return &entity.User{
 		ID:       repo.ID,
-		Username: repo.Username,
+		Name:     repo.Name,
+		Email:    repo.Email,
 		Password: repo.Password,
-		Photo:    repo.Photo,
 	}, nil
 }
 

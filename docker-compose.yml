@@ -14,6 +14,8 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      JWT_EXPERIES_IN: ${JWT_EXPERIES_IN}
     ports:
       - ${PORT}:3000
     volumes:

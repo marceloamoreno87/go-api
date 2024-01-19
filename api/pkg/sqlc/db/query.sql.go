@@ -11,29 +11,29 @@ import (
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (
-  username,
-  password,
-  photo
+  name,
+  email,
+  password
 ) VALUES (
   $1, $2, $3
 )
-RETURNING id, username, password, photo, created_at, updated_at
+RETURNING id, name, email, password, created_at, updated_at
 `
 
 type CreateUserParams struct {
-	Username string `json:"username"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
-	Photo    string `json:"photo"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, createUser, arg.Username, arg.Password, arg.Photo)
+	row := q.db.QueryRow(ctx, createUser, arg.Name, arg.Email, arg.Password)
 	var i User
 	err := row.Scan(
 		&i.ID,
-		&i.Username,
+		&i.Name,
+		&i.Email,
 		&i.Password,
-		&i.Photo,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -51,7 +51,7 @@ func (q *Queries) DeleteUser(ctx context.Context, id int64) error {
 }
 
 const getUser = `-- name: GetUser :one
-SELECT id, username, password, photo, created_at, updated_at FROM users
+SELECT id, name, email, password, created_at, updated_at FROM users
 WHERE id = $1 LIMIT 1
 `
 
@@ -60,9 +60,28 @@ func (q *Queries) GetUser(ctx context.Context, id int64) (User, error) {
 	var i User
 	err := row.Scan(
 		&i.ID,
-		&i.Username,
+		&i.Name,
+		&i.Email,
 		&i.Password,
-		&i.Photo,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getUserByEmail = `-- name: GetUserByEmail :one
+SELECT id, name, email, password, created_at, updated_at FROM users
+WHERE email = $1 LIMIT 1
+`
+
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByEmail, email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.Password,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -70,7 +89,7 @@ func (q *Queries) GetUser(ctx context.Context, id int64) (User, error) {
 }
 
 const getUsers = `-- name: GetUsers :many
-SELECT id, username, password, photo, created_at, updated_at FROM users
+SELECT id, name, email, password, created_at, updated_at FROM users
 ORDER BY id ASC
 LIMIT $1 OFFSET $2
 `
@@ -91,9 +110,9 @@ func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]User, err
 		var i User
 		if err := rows.Scan(
 			&i.ID,
-			&i.Username,
+			&i.Name,
+			&i.Email,
 			&i.Password,
-			&i.Photo,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -109,33 +128,33 @@ func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]User, err
 
 const updateUser = `-- name: UpdateUser :one
 UPDATE users SET
-  username = $1,
-  password = $2,
-  photo = $3
+  name = $1,
+  email = $2,
+  password = $3
 WHERE id = $4
-RETURNING id, username, password, photo, created_at, updated_at
+RETURNING id, name, email, password, created_at, updated_at
 `
 
 type UpdateUserParams struct {
-	Username string `json:"username"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
-	Photo    string `json:"photo"`
 	ID       int64  `json:"id"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
 	row := q.db.QueryRow(ctx, updateUser,
-		arg.Username,
+		arg.Name,
+		arg.Email,
 		arg.Password,
-		arg.Photo,
 		arg.ID,
 	)
 	var i User
 	err := row.Scan(
 		&i.ID,
-		&i.Username,
+		&i.Name,
+		&i.Email,
 		&i.Password,
-		&i.Photo,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

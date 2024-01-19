@@ -21,6 +21,27 @@ func NewUserHandler(userRepository repository.UserRepositoryInterface, handlerTo
 	}
 }
 
+func (h *UserHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
+	
+	var credentials usecase.GetJWTInputDTO
+	err := json.NewDecoder(r.Body).Decode(&credentials)
+	if err != nil {
+		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	// Get user from database
+	uc := usecase.NewGetJWTUseCase(h.UserRepository)
+	u, err := uc.Execute(credentials)
+	if err != nil {
+		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	h.HandlerTools.ResponseJSON(w, http.StatusOK, u.Token)
+
+}
+
 func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 
 	id, err := h.HandlerTools.GetIDFromURL(r)

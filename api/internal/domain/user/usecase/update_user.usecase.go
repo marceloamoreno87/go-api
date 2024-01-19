@@ -7,16 +7,16 @@ import (
 
 type UpdateUserInputDTO struct {
 	ID       int64  `json:"id"`
-	Username string `json:"username"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
-	Photo    string `json:"photo"`
 }
 
 type UpdateUserOutputDTO struct {
 	ID       int64  `json:"id"`
-	Username string `json:"username"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
-	Photo    string `json:"photo"`
 }
 
 type UpdateUserUseCase struct {
@@ -32,9 +32,9 @@ func NewUpdateUserUseCase(userRepository repository.UserRepositoryInterface) *Up
 func (uc *UpdateUserUseCase) Execute(input UpdateUserInputDTO) (output UpdateUserOutputDTO, err error) {
 	user := entity.User{
 		ID:       input.ID,
-		Username: input.Username,
+		Name:     input.Name,
+		Email:    input.Email,
 		Password: input.Password,
-		Photo:    input.Photo,
 	}
 
 	if err != nil {
@@ -48,9 +48,9 @@ func (uc *UpdateUserUseCase) Execute(input UpdateUserInputDTO) (output UpdateUse
 
 	output = UpdateUserOutputDTO{
 		ID:       u.ID,
-		Username: u.Username,
+		Name:     u.Name,
+		Email:    u.Email,
 		Password: u.Password,
-		Photo:    u.Photo,
 	}
 
 	return

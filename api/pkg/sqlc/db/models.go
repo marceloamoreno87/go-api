@@ -10,9 +10,9 @@ import (
 
 type User struct {
 	ID        int64            `json:"id"`
-	Username  string           `json:"username"`
+	Name      string           `json:"name"`
+	Email     string           `json:"email"`
 	Password  string           `json:"password"`
-	Photo     string           `json:"photo"`
 	CreatedAt pgtype.Timestamp `json:"created_at"`
 	UpdatedAt pgtype.Timestamp `json:"updated_at"`
 }

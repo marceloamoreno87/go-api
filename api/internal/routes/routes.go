@@ -1,7 +1,10 @@
 package routes
 
 import (
+	"net/http"
+
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/jwtauth/v5"
 	"github.com/marceloamoreno/izimoney/configs"
 	_ "github.com/marceloamoreno/izimoney/docs"
 	"github.com/marceloamoreno/izimoney/internal/domain/user/handler"
@@ -26,12 +29,22 @@ func NewRoute(r *chi.Mux, handlerTools *tools.HandlerTools) *Route {
 func (r *Route) GetUserRoutes() {
 	repository := repository.NewUserRepository(database.Db())
 	userHandler := handler.NewUserHandler(repository, r.HandlerTools)
+
 	r.Route("/user", func(r chi.Router) {
+
 		r.Get("/", userHandler.GetUsers)
 		r.Get("/{id}", userHandler.GetUser)
 		r.Post("/", userHandler.CreateUser)
+		r.Post("/generate-token", userHandler.GetJWT)
 		r.Put("/{id}", userHandler.UpdateUser)
 		r.Delete("/{id}", userHandler.DeleteUser)
+	})
+	r.Route("/teste", func(r chi.Router) {
+		r.Use(jwtauth.Verifier(configs.TokenAuth))
+		r.Use(jwtauth.Authenticator(configs.TokenAuth))
+		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte("Teste"))
+		})
 	})
 }
 

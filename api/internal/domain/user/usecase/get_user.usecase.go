@@ -8,9 +8,9 @@ type GetUserInputDTO struct {
 
 type GetUserOutputDTO struct {
 	ID       int64  `json:"id"`
-	Username string `json:"username"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
-	Photo    string `json:"photo"`
 }
 
 type GetUserUseCase struct {
@@ -31,9 +31,9 @@ func (uc *GetUserUseCase) Execute(input GetUserInputDTO) (output GetUserOutputDT
 
 	output = GetUserOutputDTO{
 		ID:       user.ID,
-		Username: user.Username,
+		Name:     user.Name,
+		Email:    user.Email,
 		Password: user.Password,
-		Photo:    user.Photo,
 	}
 
 	return
