@@ -21,6 +21,17 @@ func NewAuthHandler(userRepository repository.UserRepositoryInterface, handlerTo
 	}
 }
 
+// GetJWT godoc
+// @Summary Get JWT
+// @Description Get JWT
+// @Tags Auth
+// @Accept  json
+// @Produce  json
+// @Param credentials body GetJWTInputDTO true "Credentials"
+// @Success 200 {string} string	"ok"
+// @Failure 400 {string} string "bad request"
+// @Router /auth/jwt [post]
+
 func (h *AuthHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 
 	var credentials usecase.GetJWTInputDTO

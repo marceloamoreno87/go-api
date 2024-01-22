@@ -9,7 +9,7 @@ import (
 	"github.com/marceloamoreno/izimoney/pkg/sqlc/db"
 )
 
-func Db() *db.Queries {
+func GetQueries() *db.Queries {
 	ctx := context.Background()
 	conn, err := pgx.Connect(ctx, "postgres://"+config.Environment.DBUser+":"+config.Environment.DBPassword+"@"+config.Environment.DBHost+":5432/"+config.Environment.DBName)
 	if err != nil {

@@ -21,6 +21,17 @@ func NewUserHandler(userRepository repository.UserRepositoryInterface, handlerTo
 	}
 }
 
+// GetUser godoc
+// @Summary Get User
+// @Description Get User
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param id path string true "User ID"
+// @Success 200 {string} string	"ok"
+// @Failure 400 {string} string "bad request"
+// @Router /user/{id} [get]
+
 func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 
 	id, err := h.HandlerTools.GetIDFromURL(r)
@@ -42,6 +53,18 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// GetUsers godoc
+// @Summary Get Users
+// @Description Get Users
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param limit query int false "Limit"
+// @Param offset query int false "Offset"
+// @Success 200 {string} string	"ok"
+// @Failure 400 {string} string "bad request"
+// @Router /user [get]
+
 func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	limit, offset, err := h.HandlerTools.GetLimitOffsetFromURL(r)
 	if err != nil {
@@ -62,6 +85,17 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	h.HandlerTools.ResponseJSON(w, http.StatusOK, u)
 }
 
+// CreateUser godoc
+// @Summary Create User
+// @Description Create User
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param user body CreateUserInputDTO true "User"
+// @Success 200 {string} string	"ok"
+// @Failure 400 {string} string "bad request"
+// @Router /user [post]
+
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	var user usecase.CreateUserInputDTO
@@ -80,6 +114,18 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	h.HandlerTools.ResponseJSON(w, http.StatusOK, u)
 
 }
+
+// UpdateUser godoc
+// @Summary Update User
+// @Description Update User
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param id path string true "User ID"
+// @Param user body UpdateUserInputDTO true "User"
+// @Success 200 {string} string	"ok"
+// @Failure 400 {string} string "bad request"
+// @Router /user/{id} [put]
 
 func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	id, err := h.HandlerTools.GetIDFromURL(r)
@@ -106,6 +152,17 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	h.HandlerTools.ResponseJSON(w, http.StatusOK, u)
 }
+
+// DeleteUser godoc
+// @Summary Delete User
+// @Description Delete User
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param id path string true "User ID"
+// @Success 200 {string} string	"ok"
+// @Failure 400 {string} string "bad request"
+// @Router /user/{id} [delete]
 
 func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	id, err := h.HandlerTools.GetIDFromURL(r)

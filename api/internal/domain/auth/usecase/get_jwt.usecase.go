@@ -28,6 +28,7 @@ func NewGetJWTUseCase(userRepository repository.UserRepositoryInterface) *GetJWT
 }
 
 func (uc *GetJWTUseCase) Execute(input GetJWTInputDTO) (output GetJWTOutputDTO, err error) {
+
 	user, err := uc.UserRepository.GetUserByEmail(input.Email)
 	if err != nil {
 		return GetJWTOutputDTO{}, err
