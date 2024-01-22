@@ -48,14 +48,9 @@ func (uc *GetJWTUseCase) Execute(input GetJWTInputDTO) (output GetJWTOutputDTO, 
 		"id":  user.GetID(),
 		"exp": time.Now().Add(time.Second * time.Duration(jwtExpiresIn)).Unix(),
 	})
-	accessToken := struct {
-		AccessToken string `json:"access_token"`
-	}{
-		AccessToken: tokenString,
-	}
 
 	output = GetJWTOutputDTO{
-		Token: accessToken,
+		Token: tokenString,
 	}
 	return
 }

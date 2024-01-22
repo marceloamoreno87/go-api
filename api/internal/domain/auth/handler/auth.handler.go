@@ -27,11 +27,10 @@ func NewAuthHandler(userRepository repository.UserRepositoryInterface, handlerTo
 // @Tags Auth
 // @Accept  json
 // @Produce  json
-// @Param credentials body GetJWTInputDTO true "Credentials"
-// @Success 200 {string} string	"ok"
-// @Failure 400 {string} string "bad request"
-// @Router /auth/jwt [post]
-
+// @Param credentials body usecase.GetJWTInputDTO true "Credentials"
+// @Success 200 {object} tools.Response{data=usecase.GetJWTOutputDTO}
+// @Failure 400 {object} tools.ResponseError
+// @Router /auth/token [post]
 func (h *AuthHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 
 	var credentials usecase.GetJWTInputDTO
@@ -48,6 +47,6 @@ func (h *AuthHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.HandlerTools.ResponseJSON(w, http.StatusOK, u.Token)
+	h.HandlerTools.ResponseJSON(w, http.StatusOK, u)
 
 }

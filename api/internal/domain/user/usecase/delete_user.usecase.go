@@ -7,6 +7,9 @@ type DeleteUserInputDTO struct {
 }
 
 type DeleteUserOutputDTO struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type DeleteUserUseCase struct {
@@ -19,16 +22,21 @@ func NewDeleteUserUseCase(userRepository repository.UserRepositoryInterface) *De
 	}
 }
 
-func (uc *DeleteUserUseCase) Execute(input DeleteUserInputDTO) (err error) {
-	_, err = uc.UserRepository.GetUser(input.ID)
+func (uc *DeleteUserUseCase) Execute(input DeleteUserInputDTO) (output DeleteUserOutputDTO, err error) {
+	user, err := uc.UserRepository.GetUser(input.ID)
 	if err != nil {
-		return
+		return DeleteUserOutputDTO{}, err
 	}
 
 	err = uc.UserRepository.DeleteUser(input.ID)
 	if err != nil {
-		return
+		return DeleteUserOutputDTO{}, err
 	}
 
+	output = DeleteUserOutputDTO{
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: user.Password,
+	}
 	return
 }

@@ -12,7 +12,7 @@ type UserRepositoryInterface interface {
 	GetUser(id int64) (*entity.User, error)
 	GetUserByEmail(email string) (*entity.User, error)
 	GetUsers(limit int32, offset int32) ([]*entity.User, error)
-	UpdateUser(user *entity.User) (*entity.User, error)
+	UpdateUser(user *entity.User, id int64) (*entity.User, error)
 	DeleteUser(id int64) error
 }
 
@@ -93,9 +93,9 @@ func (ur *UserRepository) GetUsers(limit int32, offset int32) (users []*entity.U
 	return
 }
 
-func (ur *UserRepository) UpdateUser(user *entity.User) (*entity.User, error) {
+func (ur *UserRepository) UpdateUser(user *entity.User, id int64) (*entity.User, error) {
 	repo, err := ur.DB.UpdateUser(context.Background(), db.UpdateUserParams{
-		ID:       user.ID,
+		ID:       id,
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,

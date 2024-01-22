@@ -1,9 +1,304 @@
 basePath: /api/v1
+definitions:
+  entity.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  tools.Response:
+    properties:
+      data: {}
+    type: object
+  tools.ResponseError:
+    properties:
+      err: {}
+    type: object
+  usecase.CreateUserInputDTO:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  usecase.DeleteUserOutputDTO:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  usecase.GetJWTInputDTO:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  usecase.GetJWTOutputDTO:
+    properties:
+      token: {}
+    type: object
+  usecase.UpdateUserInputDTO:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
 host: localhost:3000
 info:
   contact: {}
-  description: This is a sample server celler server.
+  description: This is a sample server for GO API.
   title: GO API
   version: v1
-paths: {}
+paths:
+  /auth/token:
+    post:
+      consumes:
+      - application/json
+      description: Get JWT
+      parameters:
+      - description: Credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/usecase.GetJWTInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/tools.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/usecase.GetJWTOutputDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/tools.ResponseError'
+      summary: Get JWT
+      tags:
+      - Auth
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: Get Users
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/tools.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.User'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/tools.ResponseError'
+            - properties:
+                err:
+                  type: string
+              type: object
+      security:
+      - JWT: []
+      summary: Get Users
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      description: Create User
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/usecase.CreateUserInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/tools.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.User'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/tools.ResponseError'
+            - properties:
+                err:
+                  type: string
+              type: object
+      security:
+      - JWT: []
+      summary: Create User
+      tags:
+      - User
+  /user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete User
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/tools.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/usecase.DeleteUserOutputDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/tools.ResponseError'
+            - properties:
+                err:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      - JWT: []
+      summary: Delete User
+      tags:
+      - User
+    get:
+      consumes:
+      - application/json
+      description: Get User
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/tools.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.User'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/tools.ResponseError'
+            - properties:
+                err:
+                  type: string
+              type: object
+      security:
+      - JWT: []
+      summary: Get User
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update User
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/usecase.UpdateUserInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/tools.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.User'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/tools.ResponseError'
+            - properties:
+                err:
+                  type: string
+              type: object
+      security:
+      - JWT: []
+      summary: Update User
+      tags:
+      - User
+schemes:
+- http
+securityDefinitions:
+  JWT:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
