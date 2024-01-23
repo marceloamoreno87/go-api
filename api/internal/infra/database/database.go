@@ -17,3 +17,4 @@ func GetQueries() *db.Queries {
 	}
 	return db.New(conn)
 }
+

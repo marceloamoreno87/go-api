@@ -2,12 +2,9 @@ package config
 
 import (
 	"os"
-
-	"github.com/go-chi/jwtauth/v5"
 )
 
 var Environment *Env
-var TokenAuth *jwtauth.JWTAuth
 
 type Env struct {
 	NameProject  string
@@ -37,11 +34,6 @@ func NewEnv() *Env {
 	}
 }
 
-func NewTokenAuth() *jwtauth.JWTAuth {
-	return jwtauth.New("HS256", []byte(Environment.JWTSecretKey), nil)
-}
-
 func (env *Env) LoadEnv() {
 	Environment = NewEnv()
-	TokenAuth = NewTokenAuth()
 }
