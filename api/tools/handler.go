@@ -9,9 +9,9 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-const Error string = "Error"
-const Success string = "Success"
-const Info string = "Info"
+const ERROR string = "Error"
+const SUCCESS string = "Success"
+const INFO string = "Info"
 
 type HandlerToolsInterface interface {
 	GetLimitOffsetFromURL(r *http.Request) (int32, int32, error)
