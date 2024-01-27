@@ -1,16 +1,21 @@
 package usecase
 
-import "github.com/marceloamoreno/goapi/internal/domain/user/repository"
+import (
+	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
+)
 
 type GetUserInputDTO struct {
 	ID int64 `json:"id"`
 }
 
 type GetUserOutputDTO struct {
-	ID       int64  `json:"id"`
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	ID        int64            `json:"id"`
+	Name      string           `json:"name"`
+	Email     string           `json:"email"`
+	Password  string           `json:"password"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
+	UpdatedAt pgtype.Timestamp `json:"updated_at"`
 }
 
 type GetUserUseCase struct {
@@ -30,10 +35,12 @@ func (uc *GetUserUseCase) Execute(input GetUserInputDTO) (output GetUserOutputDT
 	}
 
 	output = GetUserOutputDTO{
-		ID:       user.ID,
-		Name:     user.Name,
-		Email:    user.Email,
-		Password: user.Password,
+		ID:        user.ID,
+		Name:      user.Name,
+		Email:     user.Email,
+		Password:  user.Password,
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
 	}
 
 	return

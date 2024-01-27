@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"errors"
 	"strconv"
 	"time"
 
@@ -31,17 +32,17 @@ func (uc *GetJWTUseCase) Execute(input GetJWTInputDTO) (output GetJWTOutputDTO, 
 
 	user, err := uc.UserRepository.GetUserByEmail(input.Email)
 	if err != nil {
-		return GetJWTOutputDTO{}, err
+		return GetJWTOutputDTO{}, errors.New("Not Authorized")
 	}
 
 	if !user.ComparePassword(input.Password) {
-		return GetJWTOutputDTO{}, err
+		return GetJWTOutputDTO{}, errors.New("Not Authorized")
 	}
 
 	jwtExpiresInStr := config.Environment.JWTExpiresIn
 	jwtExpiresIn, err := strconv.Atoi(jwtExpiresInStr)
 	if err != nil {
-		return GetJWTOutputDTO{}, err
+		return GetJWTOutputDTO{}, errors.New("Not Authorized")
 	}
 
 	_, tokenString, err := config.TokenAuth.Encode(map[string]interface{}{
@@ -49,8 +50,13 @@ func (uc *GetJWTUseCase) Execute(input GetJWTInputDTO) (output GetJWTOutputDTO, 
 		"exp": time.Now().Add(time.Second * time.Duration(jwtExpiresIn)).Unix(),
 	})
 
+	if err != nil {
+		return GetJWTOutputDTO{}, errors.New("Not Authorized")
+	}
+
 	output = GetJWTOutputDTO{
 		Token: tokenString,
 	}
+
 	return
 }

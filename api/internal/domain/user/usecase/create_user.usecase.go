@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -12,10 +13,12 @@ type CreateUserInputDTO struct {
 }
 
 type CreateUserOutputDTO struct {
-	ID       int64  `json:"id"`
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	ID        int64            `json:"id"`
+	Name      string           `json:"name"`
+	Email     string           `json:"email"`
+	Password  string           `json:"password"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
+	UpdatedAt pgtype.Timestamp `json:"updated_at"`
 }
 
 type CreateUserUseCase struct {
@@ -41,10 +44,12 @@ func (uc *CreateUserUseCase) Execute(input CreateUserInputDTO) (output CreateUse
 	}
 
 	output = CreateUserOutputDTO{
-		ID:       u.ID,
-		Name:     u.Name,
-		Email:    u.Email,
-		Password: u.Password,
+		ID:        u.ID,
+		Name:      u.Name,
+		Email:     u.Email,
+		Password:  u.Password,
+		CreatedAt: u.CreatedAt,
+		UpdatedAt: u.UpdatedAt,
 	}
 
 	return

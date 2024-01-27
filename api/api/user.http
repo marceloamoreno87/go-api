@@ -1,11 +1,11 @@
 GET http://localhost:3000/api/v1/user
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzOTM4OTAsImlkIjoxfQ.iyRxNvSPZXzj1ZKRQ264XGrD_HTSGUKPZ-GPXTjCNhI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzOTU2OTYsImlkIjoxfQ.319BkILD_U15jfn9nBlBsxnG-F6r0lHcW7hi2LZ-Nbc
 
 ###
 POST http://localhost:3000/api/v1/user
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzOTM4OTAsImlkIjoxfQ.iyRxNvSPZXzj1ZKRQ264XGrD_HTSGUKPZ-GPXTjCNhI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzOTU2OTYsImlkIjoxfQ.319BkILD_U15jfn9nBlBsxnG-F6r0lHcW7hi2LZ-Nbc
 
     {
         "name": "marcelo",
@@ -13,14 +13,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzOTM4O
         "password": "admin"
     }
 ###
-GET http://localhost:3000/api/v1/user/2
+GET http://localhost:3000/api/v1/user/6
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzOTM4OTAsImlkIjoxfQ.iyRxNvSPZXzj1ZKRQ264XGrD_HTSGUKPZ-GPXTjCNhI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzOTU2OTYsImlkIjoxfQ.319BkILD_U15jfn9nBlBsxnG-F6r0lHcW7hi2LZ-Nbc
 
 ###
-PUT http://localhost:3000/api/v1/user/2
+PUT http://localhost:3000/api/v1/user/6
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzOTM4OTAsImlkIjoxfQ.iyRxNvSPZXzj1ZKRQ264XGrD_HTSGUKPZ-GPXTjCNhI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzOTU2OTYsImlkIjoxfQ.319BkILD_U15jfn9nBlBsxnG-F6r0lHcW7hi2LZ-Nbc
 
     {
         "name": "jabiraca",
@@ -29,7 +29,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzOTM4O
     }
 
 ###
-DELETE http://localhost:3000/api/v1/user/2
+DELETE http://localhost:3000/api/v1/user/6
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzOTM4OTAsImlkIjoxfQ.iyRxNvSPZXzj1ZKRQ264XGrD_HTSGUKPZ-GPXTjCNhI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzOTU2OTYsImlkIjoxfQ.319BkILD_U15jfn9nBlBsxnG-F6r0lHcW7hi2LZ-Nbc
 
