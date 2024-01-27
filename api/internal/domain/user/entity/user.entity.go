@@ -66,10 +66,6 @@ func (u *User) GetPassword() string {
 	return u.Password
 }
 
-func (u *User) GetPhoto() string {
-	return u.Email
-}
-
 func (u *User) GetCreatedAt() string {
 	return u.CreatedAt
 }

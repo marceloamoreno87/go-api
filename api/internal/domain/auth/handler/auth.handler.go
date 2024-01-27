@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/marceloamoreno/izimoney/internal/domain/auth/usecase"
@@ -36,17 +37,17 @@ func (h *AuthHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 	var credentials usecase.GetJWTInputDTO
 	err := json.NewDecoder(r.Body).Decode(&credentials)
 	if err != nil {
-		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err.Error())
+		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err)
 		return
 	}
 
 	uc := usecase.NewGetJWTUseCase(h.UserRepository)
 	u, err := uc.Execute(credentials)
 	if err != nil {
-		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err.Error())
+		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err)
 		return
 	}
-
+	slog.Info("Token generated", "token", u)
 	h.HandlerTools.ResponseJSON(w, http.StatusOK, u)
 
 }

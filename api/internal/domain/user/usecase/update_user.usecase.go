@@ -31,17 +31,12 @@ func NewUpdateUserUseCase(userRepository repository.UserRepositoryInterface, id 
 }
 
 func (uc *UpdateUserUseCase) Execute(input UpdateUserInputDTO) (output UpdateUserOutputDTO, err error) {
-	user := entity.User{
-		Name:     input.Name,
-		Email:    input.Email,
-		Password: input.Password,
-	}
-
+	user, err := entity.NewUser(input.Name, input.Email, input.Password)
 	if err != nil {
 		return UpdateUserOutputDTO{}, err
 	}
 
-	u, err := uc.UserRepository.UpdateUser(&user, uc.ID)
+	u, err := uc.UserRepository.UpdateUser(user, uc.ID)
 	if err != nil {
 		return UpdateUserOutputDTO{}, err
 	}

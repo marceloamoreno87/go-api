@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log/slog"
+
 	"github.com/marceloamoreno/izimoney/config"
 	"github.com/marceloamoreno/izimoney/internal/infra/webserver"
 )
@@ -10,7 +12,7 @@ func init() {
 	env.LoadEnv()
 	token := config.NewTokenAuth()
 	config.TokenAuth = token
-
+	slog.Info("Environment OK")
 }
 
 // @title GO API

@@ -3,6 +3,7 @@ package tools
 import (
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 	"strconv"
 
@@ -17,7 +18,7 @@ type HandlerToolsInterface interface {
 	GetLimitOffsetFromURL(r *http.Request) (int32, int32, error)
 	GetIDFromURL(r *http.Request) (int64, error)
 	ResponseJSON(w http.ResponseWriter, statusCode int, data interface{})
-	ResponseErrorJSON(w http.ResponseWriter, statusCode int, err interface{})
+	ResponseErrorJSON(w http.ResponseWriter, statusCode int, err error)
 }
 
 type Response struct {
@@ -25,7 +26,7 @@ type Response struct {
 }
 
 type ResponseError struct {
-	Err interface{} `json:"err"`
+	Err string `json:"err"`
 }
 
 type HandlerTools struct {
@@ -85,10 +86,11 @@ func (h *HandlerTools) ResponseJSON(w http.ResponseWriter, statusCode int, data 
 	})
 }
 
-func (h *HandlerTools) ResponseErrorJSON(w http.ResponseWriter, statusCode int, err interface{}) {
+func (h *HandlerTools) ResponseErrorJSON(w http.ResponseWriter, statusCode int, err error) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
+	slog.Error(err.Error())
 	json.NewEncoder(w).Encode(&ResponseError{
-		Err: err,
+		Err: err.Error(),
 	})
 }

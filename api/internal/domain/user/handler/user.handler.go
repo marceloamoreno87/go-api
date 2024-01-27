@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/marceloamoreno/izimoney/internal/domain/user/repository"
@@ -36,7 +37,7 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 
 	id, err := h.HandlerTools.GetIDFromURL(r)
 	if err != nil {
-		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err.Error())
+		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err)
 		return
 	}
 
@@ -45,10 +46,10 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 		ID: id,
 	})
 	if err != nil {
-		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err.Error())
+		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err)
 		return
 	}
-
+	slog.Info("User get", "users", u)
 	h.HandlerTools.ResponseJSON(w, http.StatusOK, u)
 
 }
@@ -68,7 +69,7 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	limit, offset, err := h.HandlerTools.GetLimitOffsetFromURL(r)
 	if err != nil {
-		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err.Error())
+		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err)
 		return
 	}
 	params := usecase.GetUsersInputDTO{
@@ -79,9 +80,10 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	uc := usecase.NewGetUsersUseCase(h.UserRepository)
 	u, err := uc.Execute(params)
 	if err != nil {
-		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err.Error())
+		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err)
 		return
 	}
+	slog.Info("Users getting", "users", u.Users)
 	h.HandlerTools.ResponseJSON(w, http.StatusOK, u.Users)
 }
 
@@ -101,16 +103,17 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var user usecase.CreateUserInputDTO
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err.Error())
+		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err)
 		return
 	}
 
 	uc := usecase.NewCreateUserUseCase(h.UserRepository)
 	u, err := uc.Execute(user)
 	if err != nil {
-		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err.Error())
+		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err)
 		return
 	}
+	slog.Info("User created", "user", u)
 	h.HandlerTools.ResponseJSON(w, http.StatusOK, u)
 
 }
@@ -130,24 +133,24 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	id, err := h.HandlerTools.GetIDFromURL(r)
 	if err != nil {
-		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err.Error())
+		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err)
 		return
 	}
 
 	var user usecase.UpdateUserInputDTO
 	err = json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err.Error())
+		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err)
 		return
 	}
 
 	uc := usecase.NewUpdateUserUseCase(h.UserRepository, id)
 	u, err := uc.Execute(user)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err)
 		return
 	}
-
+	slog.Info("User updated", "user", u)
 	h.HandlerTools.ResponseJSON(w, http.StatusOK, u)
 }
 
@@ -166,7 +169,7 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	id, err := h.HandlerTools.GetIDFromURL(r)
 	if err != nil {
-		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err.Error())
+		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err)
 		return
 	}
 
@@ -175,9 +178,9 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		ID: id,
 	})
 	if err != nil {
-		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err.Error())
+		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err)
 		return
 	}
-
+	slog.Info("User deleted", "user", u)
 	h.HandlerTools.ResponseJSON(w, http.StatusOK, u)
 }
