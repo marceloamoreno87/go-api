@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 
-	"github.com/marceloamoreno/izimoney/internal/domain/user/entity"
-	"github.com/marceloamoreno/izimoney/pkg/sqlc/db"
+	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
+	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
 )
 
 type UserRepositoryInterface interface {

@@ -6,3 +6,5 @@ CREATE TABLE users (
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
+-- Password: admin
+INSERT INTO users (name, password, email) VALUES ('admin', '$2a$10$FcjdWT805.CjOEz9xc/P9eJojZ0.3SLlLRAgI/2ve6zPjgGY2jFsS', 'admin@admin.com.br');

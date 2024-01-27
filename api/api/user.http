@@ -1,35 +1,35 @@
 GET http://localhost:3000/api/v1/user
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzODE1MTUsImlkIjoxfQ.R5X-Tm8Z8lcfNbPu-Q8C_OLtBPFLuIz2oDeXORXtpaU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzOTM4OTAsImlkIjoxfQ.iyRxNvSPZXzj1ZKRQ264XGrD_HTSGUKPZ-GPXTjCNhI
 
 ###
 POST http://localhost:3000/api/v1/user
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzODE1MTUsImlkIjoxfQ.R5X-Tm8Z8lcfNbPu-Q8C_OLtBPFLuIz2oDeXORXtpaU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzOTM4OTAsImlkIjoxfQ.iyRxNvSPZXzj1ZKRQ264XGrD_HTSGUKPZ-GPXTjCNhI
 
     {
-        "name": "xibiuzin",
+        "name": "marcelo",
         "email": "marcelo@gmail.com",
-        "password": "jabiraca"
+        "password": "admin"
     }
 ###
+GET http://localhost:3000/api/v1/user/2
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzOTM4OTAsImlkIjoxfQ.iyRxNvSPZXzj1ZKRQ264XGrD_HTSGUKPZ-GPXTjCNhI
 
-PUT http://localhost:3000/api/v1/user/1
+###
+PUT http://localhost:3000/api/v1/user/2
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzODE1MTUsImlkIjoxfQ.R5X-Tm8Z8lcfNbPu-Q8C_OLtBPFLuIz2oDeXORXtpaU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzOTM4OTAsImlkIjoxfQ.iyRxNvSPZXzj1ZKRQ264XGrD_HTSGUKPZ-GPXTjCNhI
 
     {
-        "name": "jabiraco",
-        "password": "jabiraca2",
-        "email": "jabiraca@jabiraca.com"
+        "name": "jabiraca",
+        "email": "jabiraca@jabiraca.com.br",
+        "password": "admin"
     }
 
 ###
-DELETE http://localhost:3000/api/v1/user/1
+DELETE http://localhost:3000/api/v1/user/2
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzODE1MTUsImlkIjoxfQ.R5X-Tm8Z8lcfNbPu-Q8C_OLtBPFLuIz2oDeXORXtpaU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzOTM4OTAsImlkIjoxfQ.iyRxNvSPZXzj1ZKRQ264XGrD_HTSGUKPZ-GPXTjCNhI
 
-###
-GET http://localhost:3000/api/v1/user/1
-content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzODE1MTUsImlkIjoxfQ.R5X-Tm8Z8lcfNbPu-Q8C_OLtBPFLuIz2oDeXORXtpaU

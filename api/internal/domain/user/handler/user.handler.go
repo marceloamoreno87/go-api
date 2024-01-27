@@ -5,9 +5,9 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/marceloamoreno/izimoney/internal/domain/user/repository"
-	"github.com/marceloamoreno/izimoney/internal/domain/user/usecase"
-	"github.com/marceloamoreno/izimoney/tools"
+	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
+	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
+	"github.com/marceloamoreno/goapi/tools"
 )
 
 type UserHandler struct {

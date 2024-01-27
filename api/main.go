@@ -3,8 +3,8 @@ package main
 import (
 	"log/slog"
 
-	"github.com/marceloamoreno/izimoney/config"
-	"github.com/marceloamoreno/izimoney/internal/infra/webserver"
+	"github.com/marceloamoreno/goapi/config"
+	"github.com/marceloamoreno/goapi/internal/infra/webserver"
 )
 
 func init() {

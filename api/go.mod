@@ -1,4 +1,4 @@
-module github.com/marceloamoreno/izimoney
+module github.com/marceloamoreno/goapi
 
 go 1.21
 

@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"github.com/marceloamoreno/izimoney/internal/domain/user/entity"
-	"github.com/marceloamoreno/izimoney/internal/domain/user/repository"
+	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
+	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
 type CreateUserInputDTO struct {

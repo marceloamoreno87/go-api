@@ -4,8 +4,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/marceloamoreno/izimoney/config"
-	"github.com/marceloamoreno/izimoney/internal/domain/user/repository"
+	"github.com/marceloamoreno/goapi/config"
+	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
 type GetJWTInputDTO struct {

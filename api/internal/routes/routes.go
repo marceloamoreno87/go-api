@@ -4,13 +4,13 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/marceloamoreno/izimoney/config"
-	_ "github.com/marceloamoreno/izimoney/docs"
-	authHandler "github.com/marceloamoreno/izimoney/internal/domain/auth/handler"
-	userHandler "github.com/marceloamoreno/izimoney/internal/domain/user/handler"
-	"github.com/marceloamoreno/izimoney/internal/domain/user/repository"
-	"github.com/marceloamoreno/izimoney/pkg/sqlc/db"
-	"github.com/marceloamoreno/izimoney/tools"
+	"github.com/marceloamoreno/goapi/config"
+	_ "github.com/marceloamoreno/goapi/docs"
+	authHandler "github.com/marceloamoreno/goapi/internal/domain/auth/handler"
+	userHandler "github.com/marceloamoreno/goapi/internal/domain/user/handler"
+	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
+	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
+	"github.com/marceloamoreno/goapi/tools"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 

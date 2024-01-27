@@ -5,8 +5,8 @@ import (
 	"log"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/marceloamoreno/izimoney/config"
-	"github.com/marceloamoreno/izimoney/pkg/sqlc/db"
+	"github.com/marceloamoreno/goapi/config"
+	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
 )
 
 func GetQueries() *db.Queries {
@@ -17,4 +17,3 @@ func GetQueries() *db.Queries {
 	}
 	return db.New(conn)
 }
-

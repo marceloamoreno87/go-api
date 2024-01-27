@@ -8,10 +8,10 @@ import (
 	"github.com/go-chi/jwtauth/v5"
 	"golang.org/x/exp/slog"
 
-	"github.com/marceloamoreno/izimoney/config"
-	"github.com/marceloamoreno/izimoney/internal/infra/database"
-	"github.com/marceloamoreno/izimoney/internal/routes"
-	"github.com/marceloamoreno/izimoney/tools"
+	"github.com/marceloamoreno/goapi/config"
+	"github.com/marceloamoreno/goapi/internal/infra/database"
+	"github.com/marceloamoreno/goapi/internal/routes"
+	"github.com/marceloamoreno/goapi/tools"
 )
 
 func StartServer() {

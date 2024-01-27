@@ -1,6 +1,6 @@
 package usecase
 
-import "github.com/marceloamoreno/izimoney/internal/domain/user/repository"
+import "github.com/marceloamoreno/goapi/internal/domain/user/repository"
 
 type DeleteUserInputDTO struct {
 	ID int64 `json:"id"`

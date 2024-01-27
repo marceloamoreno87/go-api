@@ -13,3 +13,7 @@ migratedown:
 swaggen:
 	swag init --parseDependency
 	chown -R 1000:1000 docs
+
+build go:
+	go test -v ./...
+	go build
