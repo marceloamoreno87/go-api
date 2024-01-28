@@ -1,11 +1,10 @@
-package handler
+package unit
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
-
 
 func TestNewUserHandler(t *testing.T) {
 	assert.NotNil(t, nil)
@@ -34,4 +33,3 @@ func TestUserHandlerDeleteUser(t *testing.T) {
 
 	assert.NotNil(t, nil)
 }
-

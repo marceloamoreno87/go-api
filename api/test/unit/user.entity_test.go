@@ -1,13 +1,14 @@
-package entity
+package unit
 
 import (
 	"testing"
 
+	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewUser(t *testing.T) {
-	user, err := NewUser("test", "test@test.com", "123456")
+	user, err := entity.NewUser("test", "test@test.com", "123456")
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 	assert.NotEmpty(t, user.Password)
@@ -18,7 +19,7 @@ func TestNewUser(t *testing.T) {
 }
 
 func TestUserValidatePassword(t *testing.T) {
-	user, err := NewUser("test", "test@test.com", "123456")
+	user, err := entity.NewUser("test", "test@test.com", "123456")
 	assert.Nil(t, err)
 	assert.True(t, user.ComparePassword("123456"))
 	assert.False(t, user.ComparePassword("1234567"))
@@ -26,21 +27,21 @@ func TestUserValidatePassword(t *testing.T) {
 }
 
 func TestUserNameValidate(t *testing.T) {
-	user, err := NewUser("", "", "")
+	user, err := entity.NewUser("", "", "")
 	assert.NotNil(t, err)
 	assert.Nil(t, user)
 	assert.Equal(t, err.Error(), "Name is required")
 }
 
 func TestUserEmailValidate(t *testing.T) {
-	user, err := NewUser("test", "", "")
+	user, err := entity.NewUser("test", "", "")
 	assert.NotNil(t, err)
 	assert.Nil(t, user)
 	assert.Equal(t, err.Error(), "Email is required")
 }
 
 func TestUserPasswordValidate(t *testing.T) {
-	user, err := NewUser("test", "test@test.com", "")
+	user, err := entity.NewUser("test", "test@test.com", "")
 	assert.NotNil(t, err)
 	assert.Nil(t, user)
 	assert.Equal(t, err.Error(), "Password is required")

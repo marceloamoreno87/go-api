@@ -12,7 +12,7 @@ import (
 	CorsMiddleware "github.com/marceloamoreno/goapi/internal/infra/middleware"
 	LogMiddleware "github.com/marceloamoreno/goapi/internal/infra/middleware"
 	"github.com/marceloamoreno/goapi/internal/routes"
-	"github.com/marceloamoreno/goapi/tools"
+	"github.com/marceloamoreno/goapi/pkg/api"
 )
 
 func StartServer() {
@@ -31,7 +31,7 @@ func StartServer() {
 }
 
 func loadRoutes(r *chi.Mux) {
-	handlerTools := tools.NewHandlerTools()
+	handlerTools := api.NewHandlerTools()
 	db := database.GetQueries()
 	slog.Info("Database OK")
 	route := routes.NewRoute(r, handlerTools, db)

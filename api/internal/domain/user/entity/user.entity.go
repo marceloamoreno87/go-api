@@ -17,7 +17,6 @@ type User struct {
 }
 
 func NewUser(name string, email string, password string) (user *User, err error) {
-
 	user = &User{
 		Name:     name,
 		Email:    email,

@@ -1,4 +1,4 @@
-package tools
+package api
 
 import (
 	"encoding/json"
@@ -10,23 +10,11 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-const ERROR string = "Error"
-const SUCCESS string = "Success"
-const INFO string = "Info"
-
 type HandlerToolsInterface interface {
 	GetLimitOffsetFromURL(r *http.Request) (int32, int32, error)
 	GetIDFromURL(r *http.Request) (int64, error)
-	ResponseJSON(w http.ResponseWriter, statusCode int, data interface{})
-	ResponseErrorJSON(w http.ResponseWriter, statusCode int, err error)
-}
-
-type Response struct {
-	Data interface{} `json:"data"`
-}
-
-type ResponseError struct {
-	Err string `json:"err"`
+	ResponseJSON(w http.ResponseWriter, data interface{})
+	ResponseErrorJSON(w http.ResponseWriter, responseError ResponseError)
 }
 
 type HandlerTools struct {
@@ -78,19 +66,16 @@ func (h *HandlerTools) GetIDFromURL(r *http.Request) (idInt int64, err error) {
 	return
 }
 
-func (h *HandlerTools) ResponseJSON(w http.ResponseWriter, statusCode int, data interface{}) {
+func (h *HandlerTools) ResponseJSON(w http.ResponseWriter, data interface{}) {
+	response := NewResponse(data, http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(statusCode)
-	json.NewEncoder(w).Encode(&Response{
-		Data: data,
-	})
+	w.WriteHeader(response.StatusCode)
+	json.NewEncoder(w).Encode(response)
 }
 
-func (h *HandlerTools) ResponseErrorJSON(w http.ResponseWriter, statusCode int, err error) {
+func (h *HandlerTools) ResponseErrorJSON(w http.ResponseWriter, responseError ResponseError) {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(statusCode)
-	slog.Error(err.Error())
-	json.NewEncoder(w).Encode(&ResponseError{
-		Err: err.Error(),
-	})
+	w.WriteHeader(responseError.StatusCode)
+	slog.Error(responseError.Msg, "code_error", responseError.CodeError)
+	json.NewEncoder(w).Encode(responseError)
 }

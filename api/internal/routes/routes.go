@@ -9,18 +9,18 @@ import (
 	authHandler "github.com/marceloamoreno/goapi/internal/domain/auth/handler"
 	userHandler "github.com/marceloamoreno/goapi/internal/domain/user/handler"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
+	"github.com/marceloamoreno/goapi/pkg/api"
 	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
-	"github.com/marceloamoreno/goapi/tools"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type Route struct {
-	HandlerTools *tools.HandlerTools
+	HandlerTools *api.HandlerTools
 	Mux          *chi.Mux
 	DB           *db.Queries
 }
 
-func NewRoute(r *chi.Mux, handlerTools *tools.HandlerTools, db *db.Queries) *Route {
+func NewRoute(r *chi.Mux, handlerTools *api.HandlerTools, db *db.Queries) *Route {
 	return &Route{
 		Mux:          r,
 		HandlerTools: handlerTools,
