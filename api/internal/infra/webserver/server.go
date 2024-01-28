@@ -4,20 +4,21 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/jwtauth/v5"
 	"golang.org/x/exp/slog"
 
 	"github.com/marceloamoreno/goapi/config"
+	AuthMiddleware "github.com/marceloamoreno/goapi/internal/domain/auth/middleware"
 	"github.com/marceloamoreno/goapi/internal/infra/database"
+	CorsMiddleware "github.com/marceloamoreno/goapi/internal/infra/middleware"
+	LogMiddleware "github.com/marceloamoreno/goapi/internal/infra/middleware"
 	"github.com/marceloamoreno/goapi/internal/routes"
 	"github.com/marceloamoreno/goapi/tools"
 )
 
 func StartServer() {
 	r := chi.NewRouter()
-	loggerMiddleware(r)
-	corsMiddleware(r)
+	LogMiddleware.NewLogMiddleware(r).LogMiddleware()
+	CorsMiddleware.NewCorsMiddleware(r).CorsMiddleware()
 	loadRoutes(r)
 	slog.Info("Server started on port http://localhost:" + config.Environment.Port + "/api/v1")
 	slog.Info("Swagger started on port http://localhost:" + config.Environment.Port + "/api/v1/swagger/index.html")
@@ -43,28 +44,9 @@ func loadRoutes(r *chi.Mux) {
 		})
 
 		r.Group(func(r chi.Router) {
-			authMiddleware(r)
+			AuthMiddleware.NewMiddleware(r).AuthMiddleware()
 			route.GetUserRoutes(r)
 		})
 	})
 	slog.Info("Routes OK")
-}
-
-func loggerMiddleware(r *chi.Mux) {
-	r.Use(middleware.Logger)
-	slog.Info("Logger OK")
-}
-
-func corsMiddleware(r *chi.Mux) {
-	r.Use(middleware.AllowContentType("application/json"))
-	r.Use(middleware.SetHeader("Access-Control-Allow-Origin", "*"))
-	r.Use(middleware.SetHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE"))
-	r.Use(middleware.SetHeader("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization"))
-	slog.Info("Cors OK")
-}
-
-func authMiddleware(r chi.Router) {
-	r.Use(jwtauth.Verifier(config.TokenAuth))
-	r.Use(jwtauth.Authenticator(config.TokenAuth))
-	slog.Info("Auth OK")
 }

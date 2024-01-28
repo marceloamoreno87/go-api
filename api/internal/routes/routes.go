@@ -33,6 +33,7 @@ func (r *Route) GetAuthRoutes(router chi.Router) {
 	authHandler := authHandler.NewAuthHandler(repository, r.HandlerTools)
 	router.Route("/auth", func(r chi.Router) {
 		r.Post("/token", authHandler.GetJWT)
+		r.Post("/token/refresh", authHandler.GetRefreshJWT)
 	})
 }
 

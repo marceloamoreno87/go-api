@@ -2,10 +2,9 @@ package usecase
 
 import (
 	"errors"
-	"strconv"
-	"time"
 
 	"github.com/marceloamoreno/goapi/config"
+	"github.com/marceloamoreno/goapi/internal/domain/auth/entity"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -15,7 +14,7 @@ type GetJWTInputDTO struct {
 }
 
 type GetJWTOutputDTO struct {
-	Token interface{} `json:"token"`
+	Token string `json:"token"`
 }
 
 type GetJWTUseCase struct {
@@ -39,23 +38,13 @@ func (uc *GetJWTUseCase) Execute(input GetJWTInputDTO) (output GetJWTOutputDTO, 
 		return GetJWTOutputDTO{}, errors.New("Not Authorized")
 	}
 
-	jwtExpiresInStr := config.Environment.JWTExpiresIn
-	jwtExpiresIn, err := strconv.Atoi(jwtExpiresInStr)
-	if err != nil {
-		return GetJWTOutputDTO{}, errors.New("Not Authorized")
-	}
-
-	_, tokenString, err := config.TokenAuth.Encode(map[string]interface{}{
-		"id":  user.GetID(),
-		"exp": time.Now().Add(time.Second * time.Duration(jwtExpiresIn)).Unix(),
-	})
-
+	token, err := entity.NewAuth().NewToken(config.TokenAuth, config.Environment.JWTExpiresIn, user.GetID())
 	if err != nil {
 		return GetJWTOutputDTO{}, errors.New("Not Authorized")
 	}
 
 	output = GetJWTOutputDTO{
-		Token: tokenString,
+		Token: token,
 	}
 
 	return

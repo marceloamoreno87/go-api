@@ -11,6 +11,7 @@ type UserRepositoryInterface interface {
 	CreateUser(user *entity.User) (*entity.User, error)
 	GetUser(id int64) (*entity.User, error)
 	GetUserByEmail(email string) (*entity.User, error)
+	GetUserByID(id int64) (*entity.User, error)
 	GetUsers(limit int32, offset int32) ([]*entity.User, error)
 	UpdateUser(user *entity.User, id int64) (*entity.User, error)
 	DeleteUser(id int64) error
@@ -64,6 +65,22 @@ func (ur *UserRepository) GetUser(id int64) (*entity.User, error) {
 
 func (ur *UserRepository) GetUserByEmail(email string) (*entity.User, error) {
 	repo, err := ur.DB.GetUserByEmail(context.Background(), email)
+	if err != nil {
+		return &entity.User{}, err
+	}
+
+	return &entity.User{
+		ID:        repo.ID,
+		Name:      repo.Name,
+		Email:     repo.Email,
+		Password:  repo.Password,
+		CreatedAt: repo.CreatedAt,
+		UpdatedAt: repo.UpdatedAt,
+	}, nil
+}
+
+func (ur *UserRepository) GetUserByID(id int64) (*entity.User, error) {
+	repo, err := ur.DB.GetUserById(context.Background(), id)
 	if err != nil {
 		return &entity.User{}, err
 	}

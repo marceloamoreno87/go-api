@@ -51,3 +51,33 @@ func (h *AuthHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 	h.HandlerTools.ResponseJSON(w, http.StatusOK, u)
 
 }
+
+// GetRefreshJWT godoc
+// @Summary Get Refresh JWT
+// @Description Get Refresh JWT
+// @Tags Auth
+// @Accept  json
+// @Produce  json
+// @Param token body usecaseGetRefreshJWTInputDTO true "Token"
+// @Success 200 {object} toolsResponse{data=usecaseGetRefreshJWTOutputDTO}
+// @Failure 400 {object} toolsResponseError
+// @Router /auth/token/refresh [post]
+func (h *AuthHandler) GetRefreshJWT(w http.ResponseWriter, r *http.Request) {
+
+	var token usecase.GetRefreshJWTInputDTO
+	err := json.NewDecoder(r.Body).Decode(&token)
+	if err != nil {
+		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err)
+		return
+	}
+
+	uc := usecase.NewGetRefreshJWTUseCase(h.UserRepository)
+	u, err := uc.Execute(token)
+	if err != nil {
+		h.HandlerTools.ResponseErrorJSON(w, http.StatusBadRequest, err)
+		return
+	}
+	slog.Info("Token refreshed", "token", u)
+	h.HandlerTools.ResponseJSON(w, http.StatusOK, u)
+
+}
