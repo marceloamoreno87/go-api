@@ -58,9 +58,9 @@ func (h *AuthHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 // @Tags Auth
 // @Accept  json
 // @Produce  json
-// @Param token body usecaseGetRefreshJWTInputDTO true "Token"
-// @Success 200 {object} toolsResponse{data=usecaseGetRefreshJWTOutputDTO}
-// @Failure 400 {object} toolsResponseError
+// @Param token body usecase.GetRefreshJWTInputDTO true "Token"
+// @Success 200 {object} tools.Response{data=usecase.GetRefreshJWTOutputDTO}
+// @Failure 400 {object} tools.ResponseError
 // @Router /auth/token/refresh [post]
 func (h *AuthHandler) GetRefreshJWT(w http.ResponseWriter, r *http.Request) {
 

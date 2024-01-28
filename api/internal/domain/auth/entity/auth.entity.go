@@ -22,7 +22,7 @@ func NewAuth() *Auth {
 func (a *Auth) NewToken(tokenAuth *jwtauth.JWTAuth, jwtExpiresIn string, id int64) error {
 	jwtExpiresInInt, err := strconv.Atoi(jwtExpiresIn)
 	if err != nil {
-		return errors.New("Not Authorized")
+		return errors.New("not authorized")
 	}
 
 	_, tokenString, err := config.TokenAuth.Encode(map[string]interface{}{
@@ -31,7 +31,7 @@ func (a *Auth) NewToken(tokenAuth *jwtauth.JWTAuth, jwtExpiresIn string, id int6
 	})
 
 	if err != nil {
-		return errors.New("Not Authorized")
+		return errors.New("not authorized")
 	}
 
 	a.SetToken(tokenString)
@@ -41,17 +41,17 @@ func (a *Auth) NewToken(tokenAuth *jwtauth.JWTAuth, jwtExpiresIn string, id int6
 func (a *Auth) RefreshToken(tokenAuth *jwtauth.JWTAuth, token string) error {
 	tokenString, err := config.TokenAuth.Decode(token)
 	if err != nil {
-		return errors.New("Not Authorized")
+		return errors.New("not authorized")
 	}
 
 	idStr, bool := tokenString.Get("id")
 	if !bool {
-		return errors.New("Not Authorized")
+		return errors.New("not authorized")
 	}
 
 	idInt64, err := strconv.ParseInt(fmt.Sprintf("%v", idStr), 10, 64)
 	if err != nil {
-		return errors.New("Not Authorized")
+		return errors.New("not authorized")
 	}
 
 	a.SetId(idInt64)

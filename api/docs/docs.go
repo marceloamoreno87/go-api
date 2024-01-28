@@ -67,6 +67,58 @@ const docTemplate = `{
                 }
             }
         },
+        "/auth/token/refresh": {
+            "post": {
+                "description": "Get Refresh JWT",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get Refresh JWT",
+                "parameters": [
+                    {
+                        "description": "Token",
+                        "name": "token",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecase.GetRefreshJWTInputDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/tools.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.GetRefreshJWTOutputDTO"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tools.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/user": {
             "get": {
                 "security": [
@@ -424,7 +476,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "created_at": {
-                    "type": "string"
+                    "$ref": "#/definitions/pgtype.Timestamp"
                 },
                 "email": {
                     "type": "string"
@@ -439,7 +491,35 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updated_at": {
+                    "$ref": "#/definitions/pgtype.Timestamp"
+                }
+            }
+        },
+        "pgtype.InfinityModifier": {
+            "type": "integer",
+            "enum": [
+                1,
+                0,
+                -1
+            ],
+            "x-enum-varnames": [
+                "Infinity",
+                "Finite",
+                "NegativeInfinity"
+            ]
+        },
+        "pgtype.Timestamp": {
+            "type": "object",
+            "properties": {
+                "infinityModifier": {
+                    "$ref": "#/definitions/pgtype.InfinityModifier"
+                },
+                "time": {
+                    "description": "Time zone will be ignored when encoding to PostgreSQL.",
                     "type": "string"
+                },
+                "valid": {
+                    "type": "boolean"
                 }
             }
         },
@@ -452,7 +532,9 @@ const docTemplate = `{
         "tools.ResponseError": {
             "type": "object",
             "properties": {
-                "err": {}
+                "err": {
+                    "type": "string"
+                }
             }
         },
         "usecase.CreateUserInputDTO": {
@@ -472,6 +554,9 @@ const docTemplate = `{
         "usecase.DeleteUserOutputDTO": {
             "type": "object",
             "properties": {
+                "created_at": {
+                    "$ref": "#/definitions/pgtype.Timestamp"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -480,6 +565,9 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
+                },
+                "updated_at": {
+                    "$ref": "#/definitions/pgtype.Timestamp"
                 }
             }
         },
@@ -497,7 +585,25 @@ const docTemplate = `{
         "usecase.GetJWTOutputDTO": {
             "type": "object",
             "properties": {
-                "token": {}
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.GetRefreshJWTInputDTO": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecase.GetRefreshJWTOutputDTO": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
             }
         },
         "usecase.UpdateUserInputDTO": {

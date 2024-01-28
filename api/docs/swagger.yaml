@@ -3,7 +3,7 @@ definitions:
   entity.User:
     properties:
       created_at:
-        type: string
+        $ref: '#/definitions/pgtype.Timestamp'
       email:
         type: string
       id:
@@ -13,7 +13,27 @@ definitions:
       password:
         type: string
       updated_at:
+        $ref: '#/definitions/pgtype.Timestamp'
+    type: object
+  pgtype.InfinityModifier:
+    enum:
+    - 1
+    - 0
+    - -1
+    type: integer
+    x-enum-varnames:
+    - Infinity
+    - Finite
+    - NegativeInfinity
+  pgtype.Timestamp:
+    properties:
+      infinityModifier:
+        $ref: '#/definitions/pgtype.InfinityModifier'
+      time:
+        description: Time zone will be ignored when encoding to PostgreSQL.
         type: string
+      valid:
+        type: boolean
     type: object
   tools.Response:
     properties:
@@ -21,7 +41,8 @@ definitions:
     type: object
   tools.ResponseError:
     properties:
-      err: {}
+      err:
+        type: string
     type: object
   usecase.CreateUserInputDTO:
     properties:
@@ -34,12 +55,16 @@ definitions:
     type: object
   usecase.DeleteUserOutputDTO:
     properties:
+      created_at:
+        $ref: '#/definitions/pgtype.Timestamp'
       email:
         type: string
       name:
         type: string
       password:
         type: string
+      updated_at:
+        $ref: '#/definitions/pgtype.Timestamp'
     type: object
   usecase.GetJWTInputDTO:
     properties:
@@ -50,7 +75,18 @@ definitions:
     type: object
   usecase.GetJWTOutputDTO:
     properties:
-      token: {}
+      token:
+        type: string
+    type: object
+  usecase.GetRefreshJWTInputDTO:
+    properties:
+      token:
+        type: string
+    type: object
+  usecase.GetRefreshJWTOutputDTO:
+    properties:
+      token:
+        type: string
     type: object
   usecase.UpdateUserInputDTO:
     properties:
@@ -97,6 +133,37 @@ paths:
           schema:
             $ref: '#/definitions/tools.ResponseError'
       summary: Get JWT
+      tags:
+      - Auth
+  /auth/token/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Get Refresh JWT
+      parameters:
+      - description: Token
+        in: body
+        name: token
+        required: true
+        schema:
+          $ref: '#/definitions/usecase.GetRefreshJWTInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/tools.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/usecase.GetRefreshJWTOutputDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/tools.ResponseError'
+      summary: Get Refresh JWT
       tags:
       - Auth
   /user:
