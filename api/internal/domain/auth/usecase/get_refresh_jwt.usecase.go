@@ -35,7 +35,7 @@ func (uc *GetRefreshJWTUseCase) Execute(input GetRefreshJWTInputDTO) (output Get
 		return GetRefreshJWTOutputDTO{}, err
 	}
 
-	user, err := uc.UserRepository.GetUserByID(auth.GetId())
+	user, err := uc.UserRepository.GetUser(auth.GetId())
 	if err != nil {
 		return GetRefreshJWTOutputDTO{}, err
 	}
