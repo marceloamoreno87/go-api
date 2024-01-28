@@ -7,3 +7,10 @@ content-type: application/json
     }
 
 ###
+
+POST http://localhost:3000/api/v1/auth/token/refresh
+content-type: application/json
+
+    {
+        "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYzOTU2OTYsImlkIjoxfQ.319BkILD_U15jfn9nBlBsxnG-F6r0lHcW7hi2LZ-Nbc"
+    }
