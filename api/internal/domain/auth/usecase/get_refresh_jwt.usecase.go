@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"errors"
-
 	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/auth/entity"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -27,23 +25,28 @@ func NewGetRefreshJWTUseCase(userRepository repository.UserRepositoryInterface) 
 }
 
 func (uc *GetRefreshJWTUseCase) Execute(input GetRefreshJWTInputDTO) (output GetRefreshJWTOutputDTO, err error) {
-	id, err := entity.NewAuth().ValidateToken(config.TokenAuth, input.Token)
+	auth := entity.NewAuth()
 	if err != nil {
-		return GetRefreshJWTOutputDTO{}, errors.New("Not Authorized")
+		return GetRefreshJWTOutputDTO{}, err
 	}
 
-	user, err := uc.UserRepository.GetUserByID(id)
+	err = auth.RefreshToken(config.TokenAuth, input.Token)
 	if err != nil {
-		return GetRefreshJWTOutputDTO{}, errors.New("Not Authorized")
+		return GetRefreshJWTOutputDTO{}, err
 	}
 
-	token, err := entity.NewAuth().NewToken(config.TokenAuth, config.Environment.JWTExpiresIn, user.GetID())
+	user, err := uc.UserRepository.GetUserByID(auth.GetId())
 	if err != nil {
-		return GetRefreshJWTOutputDTO{}, errors.New("Not Authorized")
+		return GetRefreshJWTOutputDTO{}, err
+	}
+
+	err = auth.NewToken(config.TokenAuth, config.Environment.JWTExpiresIn, user.GetID())
+	if err != nil {
+		return GetRefreshJWTOutputDTO{}, err
 	}
 
 	output = GetRefreshJWTOutputDTO{
-		Token: token,
+		Token: auth.GetToken(),
 	}
 
 	return
