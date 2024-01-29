@@ -9,8 +9,8 @@ import (
 	"github.com/marceloamoreno/goapi/config"
 	AuthMiddleware "github.com/marceloamoreno/goapi/internal/domain/auth/middleware"
 	"github.com/marceloamoreno/goapi/internal/infra/database"
-	CorsMiddleware "github.com/marceloamoreno/goapi/internal/infra/middleware"
-	LogMiddleware "github.com/marceloamoreno/goapi/internal/infra/middleware"
+	CorsMiddleware "github.com/marceloamoreno/goapi/internal/infra/webserver/middleware"
+	LogMiddleware "github.com/marceloamoreno/goapi/internal/infra/webserver/middleware"
 	"github.com/marceloamoreno/goapi/pkg/api"
 )
 
