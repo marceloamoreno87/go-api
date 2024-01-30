@@ -26,6 +26,20 @@ func TestUserValidatePassword(t *testing.T) {
 	assert.NotEqual(t, user.Password, "123456")
 }
 
+func TestUserEmailValidateEmail(t *testing.T) {
+	user, err := entity.NewUser("test", "test@test.com", "123456")
+	assert.Nil(t, err)
+	valid, err := user.IsEmailValid()
+	assert.True(t, valid)
+	assert.Equal(t, user.Email, "test@test.com")
+}
+
+func TestUserEmailValidateInvalidEmail(t *testing.T) {
+	_, err := entity.NewUser("test", "test", "123456")
+	assert.NotNil(t, err)
+	assert.Equal(t, err.Error(), "Email is invalid")
+}
+
 func TestUserNameValidate(t *testing.T) {
 	user, err := entity.NewUser("", "", "")
 	assert.NotNil(t, err)

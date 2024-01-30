@@ -2,6 +2,7 @@ package entity
 
 import (
 	"errors"
+	"net/mail"
 
 	"github.com/jackc/pgx/v5/pgtype"
 	"golang.org/x/crypto/bcrypt"
@@ -26,6 +27,10 @@ func NewUser(name string, email string, password string) (user *User, err error)
 	if valid != nil {
 		return nil, valid
 	}
+	_, valid = user.IsEmailValid()
+	if valid != nil {
+		return nil, valid
+	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -47,6 +52,14 @@ func (u *User) Validate() (err error) {
 		return errors.New("Password is required")
 	}
 	return
+}
+
+func (u *User) IsEmailValid() (bool, error) {
+	_, err := mail.ParseAddress(u.Email)
+	if err != nil {
+		return false, errors.New("Email is invalid")
+	}
+	return true, err
 }
 
 func (u *User) ComparePassword(password string) bool {
