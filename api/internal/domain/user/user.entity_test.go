@@ -1,4 +1,4 @@
-package unit
+package user
 
 import (
 	"testing"
