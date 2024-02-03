@@ -8,9 +8,9 @@ services:
       context: .
       dockerfile: ./api/.docker/dockerfile
     environment:
+      PORT: ${PORT}
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
-      PORT: ${PORT}
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
@@ -29,9 +29,9 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
     - ${DB_PORT}:5432
     networks:
@@ -137,6 +137,8 @@ services:
   #     - "15672:15672"
 
 volumes:
+  dbmock_data:
+    driver: local
   db_data:
     driver: local
   # keycloak_db_data:
