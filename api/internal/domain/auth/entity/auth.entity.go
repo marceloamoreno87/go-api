@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/go-chi/jwtauth/v5"
-	"github.com/marceloamoreno/goapi/config"
 )
 
 type Auth struct {
@@ -25,7 +24,7 @@ func (a *Auth) NewToken(tokenAuth *jwtauth.JWTAuth, jwtExpiresIn string, id int6
 		return errors.New("not authorized")
 	}
 
-	_, tokenString, err := config.TokenAuth.Encode(map[string]interface{}{
+	_, tokenString, err := tokenAuth.Encode(map[string]interface{}{
 		"id":  id,
 		"exp": time.Now().Add(time.Second * time.Duration(jwtExpiresInInt)).Unix(),
 	})
@@ -39,7 +38,7 @@ func (a *Auth) NewToken(tokenAuth *jwtauth.JWTAuth, jwtExpiresIn string, id int6
 }
 
 func (a *Auth) RefreshToken(tokenAuth *jwtauth.JWTAuth, token string) error {
-	tokenString, err := config.TokenAuth.Decode(token)
+	tokenString, err := tokenAuth.Decode(token)
 	if err != nil {
 		return errors.New("not authorized")
 	}

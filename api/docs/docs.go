@@ -476,7 +476,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "created_at": {
-                    "$ref": "#/definitions/pgtype.Timestamp"
+                    "$ref": "#/definitions/time.Time"
                 },
                 "email": {
                     "type": "string"
@@ -491,7 +491,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updated_at": {
-                    "$ref": "#/definitions/pgtype.Timestamp"
+                    "$ref": "#/definitions/time.Time"
                 }
             }
         },
@@ -508,7 +508,7 @@ const docTemplate = `{
                 "NegativeInfinity"
             ]
         },
-        "pgtype.Timestamp": {
+        "time.Time": {
             "type": "object",
             "properties": {
                 "infinityModifier": {
@@ -555,7 +555,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "created_at": {
-                    "$ref": "#/definitions/pgtype.Timestamp"
+                    "$ref": "#/definitions/time.Time"
                 },
                 "email": {
                     "type": "string"
@@ -567,7 +567,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updated_at": {
-                    "$ref": "#/definitions/pgtype.Timestamp"
+                    "$ref": "#/definitions/time.Time"
                 }
             }
         },

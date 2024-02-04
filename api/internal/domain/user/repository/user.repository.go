@@ -3,31 +3,25 @@ package repository
 import (
 	"context"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
 )
 
-type UserRepositoryInterface interface {
-	CreateUser(user *entity.User) (*entity.User, error)
-	GetUser(id int64) (*entity.User, error)
-	GetUserByEmail(email string) (*entity.User, error)
-	GetUsers(limit int32, offset int32) ([]*entity.User, error)
-	UpdateUser(user *entity.User, id int64) (*entity.User, error)
-	DeleteUser(id int64) error
-}
-
 type UserRepository struct {
-	DB *db.Queries
+	DBConn    *pgx.Conn
+	DBQueries *db.Queries
 }
 
-func NewUserRepository(DB *db.Queries) *UserRepository {
+func NewUserRepository(DBConn *pgx.Conn) *UserRepository {
 	return &UserRepository{
-		DB: DB,
+		DBConn:    DBConn,
+		DBQueries: db.New(DBConn),
 	}
 }
 
 func (ur *UserRepository) CreateUser(user *entity.User) (*entity.User, error) {
-	repo, err := ur.DB.CreateUser(context.Background(), db.CreateUserParams{
+	repo, err := ur.DBQueries.CreateUser(context.Background(), db.CreateUserParams{
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
@@ -41,13 +35,13 @@ func (ur *UserRepository) CreateUser(user *entity.User) (*entity.User, error) {
 		Name:      repo.Name,
 		Email:     repo.Email,
 		Password:  repo.Password,
-		CreatedAt: repo.CreatedAt,
-		UpdatedAt: repo.UpdatedAt,
+		CreatedAt: repo.CreatedAt.Time,
+		UpdatedAt: repo.UpdatedAt.Time,
 	}, nil
 }
 
 func (ur *UserRepository) GetUser(id int64) (*entity.User, error) {
-	repo, err := ur.DB.GetUser(context.Background(), id)
+	repo, err := ur.DBQueries.GetUser(context.Background(), id)
 	if err != nil {
 		return &entity.User{}, err
 	}
@@ -57,13 +51,13 @@ func (ur *UserRepository) GetUser(id int64) (*entity.User, error) {
 		Name:      repo.Name,
 		Email:     repo.Email,
 		Password:  repo.Password,
-		CreatedAt: repo.CreatedAt,
-		UpdatedAt: repo.UpdatedAt,
+		CreatedAt: repo.CreatedAt.Time,
+		UpdatedAt: repo.UpdatedAt.Time,
 	}, nil
 }
 
 func (ur *UserRepository) GetUserByEmail(email string) (*entity.User, error) {
-	repo, err := ur.DB.GetUserByEmail(context.Background(), email)
+	repo, err := ur.DBQueries.GetUserByEmail(context.Background(), email)
 	if err != nil {
 		return &entity.User{}, err
 	}
@@ -73,13 +67,13 @@ func (ur *UserRepository) GetUserByEmail(email string) (*entity.User, error) {
 		Name:      repo.Name,
 		Email:     repo.Email,
 		Password:  repo.Password,
-		CreatedAt: repo.CreatedAt,
-		UpdatedAt: repo.UpdatedAt,
+		CreatedAt: repo.CreatedAt.Time,
+		UpdatedAt: repo.UpdatedAt.Time,
 	}, nil
 }
 
 func (ur *UserRepository) GetUsers(limit int32, offset int32) (users []*entity.User, err error) {
-	repo, err := ur.DB.GetUsers(context.Background(), db.GetUsersParams{
+	repo, err := ur.DBQueries.GetUsers(context.Background(), db.GetUsersParams{
 		Limit:  limit,
 		Offset: offset,
 	})
@@ -93,8 +87,8 @@ func (ur *UserRepository) GetUsers(limit int32, offset int32) (users []*entity.U
 			Name:      u.Name,
 			Email:     u.Email,
 			Password:  u.Password,
-			CreatedAt: u.CreatedAt,
-			UpdatedAt: u.UpdatedAt,
+			CreatedAt: u.CreatedAt.Time,
+			UpdatedAt: u.UpdatedAt.Time,
 		})
 	}
 
@@ -102,7 +96,7 @@ func (ur *UserRepository) GetUsers(limit int32, offset int32) (users []*entity.U
 }
 
 func (ur *UserRepository) UpdateUser(user *entity.User, id int64) (*entity.User, error) {
-	repo, err := ur.DB.UpdateUser(context.Background(), db.UpdateUserParams{
+	repo, err := ur.DBQueries.UpdateUser(context.Background(), db.UpdateUserParams{
 		ID:       id,
 		Name:     user.Name,
 		Email:    user.Email,
@@ -117,13 +111,14 @@ func (ur *UserRepository) UpdateUser(user *entity.User, id int64) (*entity.User,
 		Name:      repo.Name,
 		Email:     repo.Email,
 		Password:  repo.Password,
-		CreatedAt: repo.CreatedAt,
-		UpdatedAt: repo.UpdatedAt,
+		CreatedAt: repo.CreatedAt.Time,
+		UpdatedAt: repo.UpdatedAt.Time,
 	}, nil
 }
 
 func (ur *UserRepository) DeleteUser(id int64) (err error) {
-	err = ur.DB.DeleteUser(context.Background(), id)
+	err = ur.DBQueries.DeleteUser(context.Background(), id)
+
 	if err != nil {
 		return
 	}

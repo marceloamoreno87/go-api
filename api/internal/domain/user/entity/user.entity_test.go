@@ -7,55 +7,56 @@ import (
 )
 
 func TestNewUser(t *testing.T) {
-	user, err := NewUser("test", "test@test.com", "123456")
-	assert.Nil(t, err)
+	user, err := NewUser("Test User", "test@example.com", "password")
+	assert.NoError(t, err)
 	assert.NotNil(t, user)
-	assert.NotEmpty(t, user.Password)
-	assert.NotEmpty(t, user.Name)
-	assert.NotEmpty(t, user.Email)
-	assert.Equal(t, user.Name, "test")
-	assert.Equal(t, user.Email, "test@test.com")
+	assert.Equal(t, "Test User", user.GetName())
+	assert.Equal(t, "test@example.com", user.GetEmail())
+	assert.True(t, user.ComparePassword("password"))
 }
 
-func TestUserValidatePassword(t *testing.T) {
-	user, err := NewUser("test", "test@test.com", "123456")
-	assert.Nil(t, err)
-	assert.True(t, user.ComparePassword("123456"))
-	assert.False(t, user.ComparePassword("1234567"))
-	assert.NotEqual(t, user.Password, "123456")
+func TestValidate(t *testing.T) {
+	user := &User{
+		Name:     "Test User",
+		Email:    "test@example.com",
+		Password: "password",
+	}
+	err := user.Validate()
+	assert.NoError(t, err)
+
+	user.Name = ""
+	err = user.Validate()
+	assert.EqualError(t, err, "Name is required")
+
+	user.Name = "Test User"
+	user.Email = ""
+	err = user.Validate()
+	assert.EqualError(t, err, "Email is required")
+
+	user.Email = "test@example.com"
+	user.Password = ""
+	err = user.Validate()
+	assert.EqualError(t, err, "Password is required")
 }
 
-func TestUserEmailValidateEmail(t *testing.T) {
-	user, err := NewUser("test", "test@test.com", "123456")
-	assert.Nil(t, err)
+func TestIsEmailValid(t *testing.T) {
+	user := &User{
+		Name:     "Test User",
+		Email:    "test@example.com",
+		Password: "password",
+	}
 	valid, err := user.IsEmailValid()
+	assert.NoError(t, err)
 	assert.True(t, valid)
-	assert.Equal(t, user.Email, "test@test.com")
+
+	user.Email = "invalid email"
+	valid, err = user.IsEmailValid()
+	assert.EqualError(t, err, "Email is invalid")
+	assert.False(t, valid)
 }
 
-func TestUserEmailValidateInvalidEmail(t *testing.T) {
-	_, err := NewUser("test", "test", "123456")
-	assert.NotNil(t, err)
-	assert.Equal(t, err.Error(), "Email is invalid")
-}
-
-func TestUserNameValidate(t *testing.T) {
-	user, err := NewUser("", "", "")
-	assert.NotNil(t, err)
-	assert.Nil(t, user)
-	assert.Equal(t, err.Error(), "Name is required")
-}
-
-func TestUserEmailValidate(t *testing.T) {
-	user, err := NewUser("test", "", "")
-	assert.NotNil(t, err)
-	assert.Nil(t, user)
-	assert.Equal(t, err.Error(), "Email is required")
-}
-
-func TestUserPasswordValidate(t *testing.T) {
-	user, err := NewUser("test", "test@test.com", "")
-	assert.NotNil(t, err)
-	assert.Nil(t, user)
-	assert.Equal(t, err.Error(), "Password is required")
+func TestComparePassword(t *testing.T) {
+	user, _ := NewUser("Test User", "test@example.com", "password")
+	assert.True(t, user.ComparePassword("password"))
+	assert.False(t, user.ComparePassword("wrongpassword"))
 }

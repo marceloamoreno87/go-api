@@ -1,7 +1,8 @@
 package usecase
 
 import (
-	"github.com/jackc/pgx/v5/pgtype"
+	"time"
+
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -13,12 +14,12 @@ type UpdateUserInputDTO struct {
 }
 
 type UpdateUserOutputDTO struct {
-	ID        int64            `json:"id"`
-	Name      string           `json:"name"`
-	Email     string           `json:"email"`
-	Password  string           `json:"password"`
-	CreatedAt pgtype.Timestamp `json:"created_at"`
-	UpdatedAt pgtype.Timestamp `json:"updated_at"`
+	ID        int64     `json:"id"`
+	Name      string    `json:"name"`
+	Email     string    `json:"email"`
+	Password  string    `json:"password"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type UpdateUserUseCase struct {
@@ -33,7 +34,7 @@ func NewUpdateUserUseCase(userRepository repository.UserRepositoryInterface, id 
 	}
 }
 
-func (uc *UpdateUserUseCase)  Execute(input UpdateUserInputDTO) (output UpdateUserOutputDTO, err error) {
+func (uc *UpdateUserUseCase) Execute(input UpdateUserInputDTO) (output UpdateUserOutputDTO, err error) {
 	user, err := entity.NewUser(input.Name, input.Email, input.Password)
 	if err != nil {
 		return UpdateUserOutputDTO{}, err

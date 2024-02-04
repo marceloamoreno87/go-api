@@ -4,54 +4,60 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/jackc/pgx/v5"
 	"github.com/marceloamoreno/goapi/config"
 	_ "github.com/marceloamoreno/goapi/docs"
-	authHandler "github.com/marceloamoreno/goapi/internal/domain/auth/handler"
-	userHandler "github.com/marceloamoreno/goapi/internal/domain/user/handler"
+	AuthHandler "github.com/marceloamoreno/goapi/internal/domain/auth/handler"
+	UserHandler "github.com/marceloamoreno/goapi/internal/domain/user/handler"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
+	"github.com/marceloamoreno/goapi/internal/infra/database"
 	"github.com/marceloamoreno/goapi/pkg/api"
-	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
-	httpSwagger "github.com/swaggo/http-swagger"
+	HttpSwagger "github.com/swaggo/http-swagger"
 )
 
 type Route struct {
 	HandlerTools *api.HandlerTools
 	Mux          *chi.Mux
-	DB           *db.Queries
+	DBConn       *pgx.Conn
 }
 
-func NewRoute(r *chi.Mux, handlerTools *api.HandlerTools, db *db.Queries) *Route {
+func NewRoute(r *chi.Mux, handlerTools *api.HandlerTools) *Route {
+	DBConn, err := database.GetDBConn()
+	if err != nil {
+		panic(err)
+	}
+
 	return &Route{
 		Mux:          r,
 		HandlerTools: handlerTools,
-		DB:           db,
+		DBConn:       DBConn,
 	}
 }
 
 func (r *Route) GetAuthRoutes(router chi.Router) {
-	repository := repository.NewUserRepository(r.DB)
-	authHandler := authHandler.NewAuthHandler(repository, r.HandlerTools)
+	AuthRepository := repository.NewUserRepository(r.DBConn)
+	AuthHandler := AuthHandler.NewAuthHandler(AuthRepository, r.HandlerTools)
 	router.Route("/auth", func(r chi.Router) {
-		r.Post("/token", authHandler.GetJWT)
-		r.Post("/token/refresh", authHandler.GetRefreshJWT)
+		r.Post("/token", AuthHandler.GetJWT)
+		r.Post("/token/refresh", AuthHandler.GetRefreshJWT)
 	})
 }
 
 func (r *Route) GetUserRoutes(router chi.Router) {
-	repository := repository.NewUserRepository(r.DB)
-	userHandler := userHandler.NewUserHandler(repository, r.HandlerTools)
+	UserRepository := repository.NewUserRepository(r.DBConn)
+	UserHandler := UserHandler.NewUserHandler(UserRepository, r.HandlerTools)
 	router.Route("/user", func(r chi.Router) {
-		r.Get("/", userHandler.GetUsers)
-		r.Get("/{id}", userHandler.GetUser)
-		r.Post("/", userHandler.CreateUser)
-		r.Put("/{id}", userHandler.UpdateUser)
-		r.Delete("/{id}", userHandler.DeleteUser)
+		r.Get("/", UserHandler.GetUsers)
+		r.Get("/{id}", UserHandler.GetUser)
+		r.Post("/", UserHandler.CreateUser)
+		r.Put("/{id}", UserHandler.UpdateUser)
+		r.Delete("/{id}", UserHandler.DeleteUser)
 	})
 }
 
 func (r *Route) GetSwaggerRoutes(router chi.Router) {
-	router.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:"+config.Environment.Port+"/api/v1/swagger/doc.json"),
+	router.Get("/swagger/*", HttpSwagger.Handler(
+		HttpSwagger.URL("http://localhost:"+config.Environment.Port+"/api/v1/swagger/doc.json"),
 	))
 }
 

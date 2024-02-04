@@ -8,7 +8,6 @@ import (
 
 	"github.com/marceloamoreno/goapi/config"
 	AuthMiddleware "github.com/marceloamoreno/goapi/internal/domain/auth/middleware"
-	"github.com/marceloamoreno/goapi/internal/infra/database"
 	CorsMiddleware "github.com/marceloamoreno/goapi/internal/infra/webserver/middleware"
 	LogMiddleware "github.com/marceloamoreno/goapi/internal/infra/webserver/middleware"
 	"github.com/marceloamoreno/goapi/pkg/api"
@@ -31,9 +30,7 @@ func StartServer() {
 
 func loadRoutes(r *chi.Mux) {
 	handlerTools := api.NewHandlerTools()
-	db := database.GetQueries()
-	slog.Info("Database OK")
-	route := NewRoute(r, handlerTools, db)
+	route := NewRoute(r, handlerTools)
 	route.Mux.Route("/api/v1", func(r chi.Router) {
 		r.Group(func(r chi.Router) {
 			route.GetAuthRoutes(r)

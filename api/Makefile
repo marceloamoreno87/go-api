@@ -15,7 +15,6 @@ swaggen:
 	chown -R 1000:1000 docs
 
 testgo:
-	migrate -path internal/sql/migrations -database "postgres://${DB_USER_MOCK}:${DB_PASSWORD_MOCK}@${DB_HOST}:${DB_PORT}/${DB_NAME_MOCK}?sslmode=disable" up
 	go test -v ./...
 
 build go:

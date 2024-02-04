@@ -473,7 +473,7 @@
             "type": "object",
             "properties": {
                 "created_at": {
-                    "$ref": "#/definitions/pgtype.Timestamp"
+                    "$ref": "#/definitions/time.Time"
                 },
                 "email": {
                     "type": "string"
@@ -488,7 +488,7 @@
                     "type": "string"
                 },
                 "updated_at": {
-                    "$ref": "#/definitions/pgtype.Timestamp"
+                    "$ref": "#/definitions/time.Time"
                 }
             }
         },
@@ -505,7 +505,7 @@
                 "NegativeInfinity"
             ]
         },
-        "pgtype.Timestamp": {
+        "time.Time": {
             "type": "object",
             "properties": {
                 "infinityModifier": {
@@ -552,7 +552,7 @@
             "type": "object",
             "properties": {
                 "created_at": {
-                    "$ref": "#/definitions/pgtype.Timestamp"
+                    "$ref": "#/definitions/time.Time"
                 },
                 "email": {
                     "type": "string"
@@ -564,7 +564,7 @@
                     "type": "string"
                 },
                 "updated_at": {
-                    "$ref": "#/definitions/pgtype.Timestamp"
+                    "$ref": "#/definitions/time.Time"
                 }
             }
         },

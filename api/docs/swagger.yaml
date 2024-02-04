@@ -3,7 +3,7 @@ definitions:
   entity.User:
     properties:
       created_at:
-        $ref: '#/definitions/pgtype.Timestamp'
+        $ref: '#/definitions/time.Time'
       email:
         type: string
       id:
@@ -13,7 +13,7 @@ definitions:
       password:
         type: string
       updated_at:
-        $ref: '#/definitions/pgtype.Timestamp'
+        $ref: '#/definitions/time.Time'
     type: object
   pgtype.InfinityModifier:
     enum:
@@ -25,7 +25,7 @@ definitions:
     - Infinity
     - Finite
     - NegativeInfinity
-  pgtype.Timestamp:
+  time.Time:
     properties:
       infinityModifier:
         $ref: '#/definitions/pgtype.InfinityModifier'
@@ -56,7 +56,7 @@ definitions:
   usecase.DeleteUserOutputDTO:
     properties:
       created_at:
-        $ref: '#/definitions/pgtype.Timestamp'
+        $ref: '#/definitions/time.Time'
       email:
         type: string
       name:
@@ -64,7 +64,7 @@ definitions:
       password:
         type: string
       updated_at:
-        $ref: '#/definitions/pgtype.Timestamp'
+        $ref: '#/definitions/time.Time'
     type: object
   usecase.GetJWTInputDTO:
     properties:
