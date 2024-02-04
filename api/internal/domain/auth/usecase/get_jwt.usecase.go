@@ -4,8 +4,10 @@ import (
 	"errors"
 
 	"github.com/marceloamoreno/goapi/config"
-	"github.com/marceloamoreno/goapi/internal/domain/auth/entity"
+	AuthEntity "github.com/marceloamoreno/goapi/internal/domain/auth/entity"
+	UserEntity "github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
+	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type GetJWTInputDTO struct {
@@ -18,32 +20,42 @@ type GetJWTOutputDTO struct {
 }
 
 type GetJWTUseCase struct {
-	UserRepository repository.UserRepositoryInterface
+	GetUserByEmailUseCase usecase.GetUserByEmailUseCaseInterface
+	UserRepository        repository.UserRepositoryInterface
 }
 
-func NewGetJWTUseCase(userRepository repository.UserRepositoryInterface) *GetJWTUseCase {
+func NewGetJWTUseCase(UserRepository repository.UserRepositoryInterface) *GetJWTUseCase {
 	return &GetJWTUseCase{
-		UserRepository: userRepository,
+		GetUserByEmailUseCase: usecase.NewGetUserByEmailUseCase(UserRepository),
 	}
 }
 
 func (uc *GetJWTUseCase) Execute(input GetJWTInputDTO) (output GetJWTOutputDTO, err error) {
 
-	auth := entity.NewAuth()
+	auth := AuthEntity.NewAuth()
 	if err != nil {
 		return GetJWTOutputDTO{}, err
 	}
 
-	user, err := uc.UserRepository.GetUserByEmail(input.Email)
+	user, err := uc.GetUserByEmailUseCase.Execute(usecase.GetUserByEmailInputDTO{Email: input.Email})
 	if err != nil {
 		return GetJWTOutputDTO{}, errors.New("not authorized")
 	}
 
-	if !user.ComparePassword(input.Password) {
+	newUser := &UserEntity.User{
+		ID:        user.ID,
+		Name:      user.Name,
+		Email:     user.Email,
+		Password:  user.Password,
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
+	}
+
+	if !newUser.ComparePassword(input.Password) {
 		return GetJWTOutputDTO{}, errors.New("not authorized")
 	}
 
-	err = auth.NewToken(config.TokenAuth, config.Environment.JWTExpiresIn, user.GetID())
+	err = auth.NewToken(config.TokenAuth, config.Environment.JWTExpiresIn, newUser.GetID())
 	if err != nil {
 		return GetJWTOutputDTO{}, errors.New("not authorized")
 	}

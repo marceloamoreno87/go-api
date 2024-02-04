@@ -15,10 +15,10 @@ type AuthHandler struct {
 	UserRepository repository.UserRepositoryInterface
 }
 
-func NewAuthHandler(userRepository repository.UserRepositoryInterface, handlerTools api.HandlerToolsInterface) *AuthHandler {
+func NewAuthHandler(UserRepository repository.UserRepositoryInterface, handlerTools api.HandlerToolsInterface) *AuthHandler {
 	return &AuthHandler{
-		UserRepository: userRepository,
 		HandlerTools:   handlerTools,
+		UserRepository: UserRepository,
 	}
 }
 
