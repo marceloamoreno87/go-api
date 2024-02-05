@@ -2,18 +2,18 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 
-	"github.com/jackc/pgx/v5"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
 )
 
 type UserRepository struct {
-	DBConn    *pgx.Conn
-	DBQueries *db.Queries
+	DBConn    *sql.DB
+	DBQueries db.Querier
 }
 
-func NewUserRepository(DBConn *pgx.Conn) *UserRepository {
+func NewUserRepository(DBConn *sql.DB) *UserRepository {
 	return &UserRepository{
 		DBConn:    DBConn,
 		DBQueries: db.New(DBConn),

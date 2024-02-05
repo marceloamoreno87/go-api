@@ -1,10 +1,10 @@
 package webserver
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/jackc/pgx/v5"
 	"github.com/marceloamoreno/goapi/config"
 	_ "github.com/marceloamoreno/goapi/docs"
 	AuthHandler "github.com/marceloamoreno/goapi/internal/domain/auth/handler"
@@ -18,7 +18,7 @@ import (
 type Route struct {
 	HandlerTools *api.HandlerTools
 	Mux          *chi.Mux
-	DBConn       *pgx.Conn
+	DBConn       *sql.DB
 }
 
 func NewRoute(r *chi.Mux, handlerTools *api.HandlerTools) *Route {
@@ -26,7 +26,6 @@ func NewRoute(r *chi.Mux, handlerTools *api.HandlerTools) *Route {
 	if err != nil {
 		panic(err)
 	}
-
 	return &Route{
 		Mux:          r,
 		HandlerTools: handlerTools,

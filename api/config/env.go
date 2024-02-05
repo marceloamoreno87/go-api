@@ -17,6 +17,8 @@ type Env struct {
 	DBName       string
 	JWTSecretKey string
 	JWTExpiresIn string
+
+	DBMockName string
 }
 
 func NewEnv() *Env {
@@ -31,6 +33,8 @@ func NewEnv() *Env {
 		DBName:       os.Getenv("DB_NAME"),
 		JWTSecretKey: os.Getenv("JWT_SECRET_KEY"),
 		JWTExpiresIn: os.Getenv("JWT_EXPIRES_IN"),
+
+		DBMockName: os.Getenv("DBMOCK_NAME"),
 	}
 }
 

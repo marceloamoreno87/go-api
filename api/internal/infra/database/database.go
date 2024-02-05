@@ -1,18 +1,31 @@
 package database
 
 import (
-	"context"
-	"log"
+	"database/sql"
+	"fmt"
 
-	"github.com/jackc/pgx/v5"
+	_ "github.com/lib/pq"
 	"github.com/marceloamoreno/goapi/config"
 )
 
-func GetDBConn() (*pgx.Conn, error) {
-	ctx := context.Background()
-	conn, err := pgx.Connect(ctx, "postgres://"+config.Environment.DBUser+":"+config.Environment.DBPassword+"@"+config.Environment.DBHost+":"+config.Environment.DBPort+"/"+config.Environment.DBName)
+func GetDBConn() (*sql.DB, error) {
+	databaseConfig := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", config.Environment.DBHost, config.Environment.DBPort, config.Environment.DBUser, config.Environment.DBPassword, config.Environment.DBName)
+	db, err := sql.Open("postgres", databaseConfig)
+
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
-	return conn, err
+	err = db.Ping()
+	return db, err
+}
+
+func GetDbMockConn() (*sql.DB, error) {
+	databaseConfig := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", config.Environment.DBHost, config.Environment.DBPort, config.Environment.DBUser, config.Environment.DBPassword, config.Environment.DBMockName)
+	db, err := sql.Open("postgres", databaseConfig)
+
+	if err != nil {
+		panic(err)
+	}
+	err = db.Ping()
+	return db, err
 }

@@ -14,6 +14,7 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
+      DBMOCK_NAME: ${DBMOCK_NAME}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
     ports:
@@ -28,10 +29,10 @@ services:
     image: postgres:alpine
     volumes:
       - db_data:/var/lib/postgresql/data
+      - ./database.sh:/docker-entrypoint-initdb.d/database.sh
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
+      POSTGRES_MULTIPLE_DATABASES: ${DB_NAME}, ${DBMOCK_NAME}
     ports:
     - ${DB_PORT}:5432
     networks:
