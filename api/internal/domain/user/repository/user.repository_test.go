@@ -151,3 +151,35 @@ func TestUpdateUser(t *testing.T) {
 	assert.Equal(t, user.Email, updatedUser.Email)
 	assert.Equal(t, user.Password, updatedUser.Password)
 }
+
+func TestGetUsers(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	ur := NewUserRepository(db)
+
+	user := &entity.User{
+		Name:     "Test",
+		Email:    "test@teste.com",
+		Password: "123456",
+	}
+
+	rows := sqlmock.NewRows([]string{"id", "name", "email", "password", "created_at", "updated_at"}).
+		AddRow(1, user.Name, user.Email, user.Password, time.Now(), time.Now())
+
+	mock.ExpectQuery(`-- name: GetUsers :many SELECT id, name, email, password, created_at, updated_at FROM users ORDER BY id ASC LIMIT \$1 OFFSET \$2`).
+		WithArgs(int32(10), int32(0)).
+		WillReturnRows(rows)
+
+	users, err := ur.GetUsers(10, 0)
+
+	assert.NoError(t, err)
+
+	assert.Equal(t, 1, len(users))
+	assert.Equal(t, user.Name, users[0].Name)
+	assert.Equal(t, user.Email, users[0].Email)
+	assert.Equal(t, user.Password, users[0].Password)
+}
