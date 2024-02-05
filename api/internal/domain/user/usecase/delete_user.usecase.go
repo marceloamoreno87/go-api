@@ -7,13 +7,14 @@ import (
 )
 
 type DeleteUserInputDTO struct {
-	ID int64 `json:"id"`
+	ID int32 `json:"id"`
 }
 
 type DeleteUserOutputDTO struct {
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`
+	RoleId    int32     `json:"role_id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

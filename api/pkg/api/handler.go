@@ -10,13 +10,6 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-type HandlerToolsInterface interface {
-	GetLimitOffsetFromURL(r *http.Request) (int32, int32, error)
-	GetIDFromURL(r *http.Request) (int64, error)
-	ResponseJSON(w http.ResponseWriter, data interface{})
-	ResponseErrorJSON(w http.ResponseWriter, responseError ResponseError)
-}
-
 type HandlerTools struct {
 }
 
@@ -51,19 +44,14 @@ func (h *HandlerTools) GetLimitOffsetFromURL(r *http.Request) (int32, int32, err
 	return int32(limitInt), int32(offsetInt), nil
 }
 
-func (h *HandlerTools) GetIDFromURL(r *http.Request) (idInt int64, err error) {
-
+func (h *HandlerTools) GetIDFromURL(r *http.Request) (idInt int32, err error) {
 	id := chi.URLParam(r, "id")
-	if id == "" {
-		return 0, errors.New("id is required")
-	}
 
-	idInt, err = strconv.ParseInt(id, 10, 64)
+	i, err := strconv.ParseInt(id, 10, 32)
 	if err != nil {
-		return 0, errors.New("id must be a number")
+		panic(err)
 	}
-
-	return
+	return int32(i), err
 }
 
 func (h *HandlerTools) ResponseJSON(w http.ResponseWriter, data interface{}) {

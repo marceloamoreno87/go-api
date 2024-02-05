@@ -2,7 +2,6 @@ package entity
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 	"time"
 
@@ -11,14 +10,14 @@ import (
 
 type Auth struct {
 	Token string `json:"token"`
-	Id    int64  `json:"id"`
+	Id    int32  `json:"id"`
 }
 
 func NewAuth() *Auth {
 	return &Auth{}
 }
 
-func (a *Auth) NewToken(tokenAuth *jwtauth.JWTAuth, jwtExpiresIn string, id int64) error {
+func (a *Auth) NewToken(tokenAuth *jwtauth.JWTAuth, jwtExpiresIn string, id int32) error {
 	jwtExpiresInInt, err := strconv.Atoi(jwtExpiresIn)
 	if err != nil {
 		return errors.New("not authorized")
@@ -48,12 +47,8 @@ func (a *Auth) RefreshToken(tokenAuth *jwtauth.JWTAuth, token string) error {
 		return errors.New("not authorized")
 	}
 
-	idInt64, err := strconv.ParseInt(fmt.Sprintf("%v", idStr), 10, 64)
-	if err != nil {
-		return errors.New("not authorized")
-	}
-
-	a.SetId(idInt64)
+	idInt32 := int32(idStr.(float64))
+	a.SetId(idInt32)
 	return nil
 }
 
@@ -65,10 +60,10 @@ func (a *Auth) SetToken(token string) {
 	a.Token = token
 }
 
-func (a *Auth) GetId() int64 {
+func (a *Auth) GetId() int32 {
 	return a.Id
 }
 
-func (a *Auth) SetId(id int64) {
+func (a *Auth) SetId(id int32) {
 	a.Id = id
 }

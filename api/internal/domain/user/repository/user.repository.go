@@ -25,6 +25,7 @@ func (ur *UserRepository) CreateUser(user *entity.User) (*entity.User, error) {
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
+		RoleID:   user.RoleId,
 	})
 	if err != nil {
 		return &entity.User{}, err
@@ -35,12 +36,14 @@ func (ur *UserRepository) CreateUser(user *entity.User) (*entity.User, error) {
 		Name:      repo.Name,
 		Email:     repo.Email,
 		Password:  repo.Password,
-		CreatedAt: repo.CreatedAt.Time,
-		UpdatedAt: repo.UpdatedAt.Time,
+		RoleId:    repo.RoleID,
+		CreatedAt: repo.CreatedAt,
+		UpdatedAt: repo.UpdatedAt,
 	}, nil
 }
 
-func (ur *UserRepository) GetUser(id int64) (*entity.User, error) {
+func (ur *UserRepository) GetUser(id int32) (*entity.User, error) {
+
 	repo, err := ur.DBQueries.GetUser(context.Background(), id)
 	if err != nil {
 		return &entity.User{}, err
@@ -51,8 +54,9 @@ func (ur *UserRepository) GetUser(id int64) (*entity.User, error) {
 		Name:      repo.Name,
 		Email:     repo.Email,
 		Password:  repo.Password,
-		CreatedAt: repo.CreatedAt.Time,
-		UpdatedAt: repo.UpdatedAt.Time,
+		RoleId:    repo.RoleID,
+		CreatedAt: repo.CreatedAt,
+		UpdatedAt: repo.UpdatedAt,
 	}, nil
 }
 
@@ -67,8 +71,9 @@ func (ur *UserRepository) GetUserByEmail(email string) (*entity.User, error) {
 		Name:      repo.Name,
 		Email:     repo.Email,
 		Password:  repo.Password,
-		CreatedAt: repo.CreatedAt.Time,
-		UpdatedAt: repo.UpdatedAt.Time,
+		RoleId:    repo.RoleID,
+		CreatedAt: repo.CreatedAt,
+		UpdatedAt: repo.UpdatedAt,
 	}, nil
 }
 
@@ -87,36 +92,40 @@ func (ur *UserRepository) GetUsers(limit int32, offset int32) (users []*entity.U
 			Name:      u.Name,
 			Email:     u.Email,
 			Password:  u.Password,
-			CreatedAt: u.CreatedAt.Time,
-			UpdatedAt: u.UpdatedAt.Time,
+			RoleId:    u.RoleID,
+			CreatedAt: u.CreatedAt,
+			UpdatedAt: u.UpdatedAt,
 		})
 	}
 
 	return
 }
 
-func (ur *UserRepository) UpdateUser(user *entity.User, id int64) (*entity.User, error) {
-	repo, err := ur.DBQueries.UpdateUser(context.Background(), db.UpdateUserParams{
+func (ur *UserRepository) UpdateUser(user *entity.User, id int32) (*entity.User, error) {
+
+	userUpdated, err := ur.DBQueries.UpdateUser(context.Background(), db.UpdateUserParams{
 		ID:       id,
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
+		RoleID:   user.RoleId,
 	})
 	if err != nil {
 		return &entity.User{}, err
 	}
 
 	return &entity.User{
-		ID:        repo.ID,
-		Name:      repo.Name,
-		Email:     repo.Email,
-		Password:  repo.Password,
-		CreatedAt: repo.CreatedAt.Time,
-		UpdatedAt: repo.UpdatedAt.Time,
+		ID:        userUpdated.ID,
+		Name:      userUpdated.Name,
+		Email:     userUpdated.Email,
+		Password:  userUpdated.Password,
+		RoleId:    userUpdated.RoleID,
+		CreatedAt: userUpdated.CreatedAt,
+		UpdatedAt: userUpdated.UpdatedAt,
 	}, nil
 }
 
-func (ur *UserRepository) DeleteUser(id int64) (err error) {
+func (ur *UserRepository) DeleteUser(id int32) (err error) {
 	err = ur.DBQueries.DeleteUser(context.Background(), id)
 
 	if err != nil {

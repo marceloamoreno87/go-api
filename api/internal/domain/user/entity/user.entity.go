@@ -9,19 +9,21 @@ import (
 )
 
 type User struct {
-	ID        int64     `json:"id"`
+	ID        int32     `json:"id"`
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`
+	RoleId    int32     `json:"role_id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func NewUser(name string, email string, password string) (user *User, err error) {
+func NewUser(name string, email string, password string, roleId int32) (user *User, err error) {
 	user = &User{
 		Name:     name,
 		Email:    email,
 		Password: password,
+		RoleId:   roleId,
 	}
 	valid := user.Validate()
 	if valid != nil {
@@ -51,6 +53,9 @@ func (u *User) Validate() (err error) {
 	if u.Password == "" {
 		return errors.New("Password is required")
 	}
+	if u.RoleId == 0 {
+		return errors.New("Role is required")
+	}
 	return
 }
 
@@ -67,7 +72,7 @@ func (u *User) ComparePassword(password string) bool {
 	return err == nil
 }
 
-func (u *User) GetID() int64 {
+func (u *User) GetID() int32 {
 	return u.ID
 }
 
@@ -83,6 +88,10 @@ func (u *User) GetPassword() string {
 	return u.Password
 }
 
+func (u *User) GetRoleId() int32 {
+	return u.RoleId
+}
+
 func (u *User) GetCreatedAt() time.Time {
 	return u.CreatedAt
 }
@@ -91,7 +100,7 @@ func (u *User) GetUpdatedAt() time.Time {
 	return u.UpdatedAt
 }
 
-func (u *User) SetID(id int64) {
+func (u *User) SetID(id int32) {
 	u.ID = id
 }
 
@@ -105,6 +114,10 @@ func (u *User) SetEmail(email string) {
 
 func (u *User) SetPassword(password string) {
 	u.Password = password
+}
+
+func (u *User) SetRoleId(roleId int32) {
+	u.RoleId = roleId
 }
 
 func (u *User) SetCreatedAt(createdAt time.Time) {

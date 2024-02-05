@@ -5,14 +5,57 @@
 package db
 
 import (
-	"database/sql"
+	"time"
 )
 
+// Permissions table
+type Permission struct {
+	// Permission id
+	ID int32 `json:"id"`
+	// Permission name
+	Name string `json:"name"`
+	// Permission internal name
+	InternalName string `json:"internal_name"`
+	// Permission description
+	Description string    `json:"description"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+// Roles table
+type Role struct {
+	// Role id
+	ID int32 `json:"id"`
+	// Role name
+	Name string `json:"name"`
+	// Role internal name
+	InternalName string `json:"internal_name"`
+	// Role description
+	Description string    `json:"description"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+// Roles and permissions table
+type RolePermission struct {
+	// Role id
+	RoleID int32 `json:"role_id"`
+	// Permission id
+	PermissionID int32 `json:"permission_id"`
+}
+
+// Users table
 type User struct {
-	ID        int64        `json:"id"`
-	Name      string       `json:"name"`
-	Email     string       `json:"email"`
-	Password  string       `json:"password"`
-	CreatedAt sql.NullTime `json:"created_at"`
-	UpdatedAt sql.NullTime `json:"updated_at"`
+	// User id
+	ID int32 `json:"id"`
+	// User name
+	Name string `json:"name"`
+	// User email
+	Email string `json:"email"`
+	// User password
+	Password string `json:"password"`
+	// User role id
+	RoleID    int32     `json:"role_id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }

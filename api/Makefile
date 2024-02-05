@@ -1,6 +1,6 @@
 createmigration:
-	migrate create -ext sql -dir pkg/sqlc/migrations -seq $(name) 
-	chown -R 1000:1000 sql
+	migrate create -ext sql -dir internal/sql/migrations -seq $(name) 
+	chown -R 1000:1000 internal/sql/migrations
 
 migrate:
 	migrate -path internal/sql/migrations -database "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable" up
@@ -8,7 +8,6 @@ migrate:
 
 migratedown:
 	migrate -path internal/sql/migrations -database "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable" down
-	sqlc generate
 
 swaggen:
 	swag init --parseDependency
