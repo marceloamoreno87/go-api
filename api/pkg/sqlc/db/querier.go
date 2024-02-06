@@ -18,6 +18,7 @@ type Querier interface {
 	DeleteRolePermission(ctx context.Context, arg DeleteRolePermissionParams) error
 	DeleteUser(ctx context.Context, id int32) (User, error)
 	GetPermission(ctx context.Context, id int32) (Permission, error)
+	GetPermissionByInternalName(ctx context.Context, internalName string) (Permission, error)
 	GetPermissions(ctx context.Context, arg GetPermissionsParams) ([]Permission, error)
 	GetRole(ctx context.Context, id int32) (Role, error)
 	GetRoleByInternalName(ctx context.Context, internalName string) (Role, error)

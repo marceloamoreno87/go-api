@@ -7,7 +7,7 @@ import (
 
 // Permission Entity
 type Permission struct {
-	ID           int       `json:"id"`
+	ID           int32     `json:"id"`
 	Name         string    `json:"name"`
 	InternalName string    `json:"internal_name"`
 	Description  string    `json:"description"`
@@ -15,16 +15,16 @@ type Permission struct {
 	UpdatedAt    time.Time `json:"updated_at"`
 }
 
-func NewPermission(name, internalName, description string) (permission *Permission, err error) {
+func NewPermission(name string, internalName string, description string) (permission *Permission, err error) {
 	permission = &Permission{
 		Name:         name,
 		InternalName: internalName,
 		Description:  description,
 	}
 
-	err = permission.Validate()
-	if err != nil {
-		return nil, err
+	valid := permission.Validate()
+	if valid != nil {
+		return nil, valid
 	}
 
 	return
@@ -43,7 +43,7 @@ func (p *Permission) Validate() (err error) {
 	return
 }
 
-func (p *Permission) GetID() int {
+func (p *Permission) GetID() int32 {
 	return p.ID
 }
 
@@ -67,7 +67,7 @@ func (p *Permission) GetUpdatedAt() time.Time {
 	return p.UpdatedAt
 }
 
-func (p *Permission) SetID(id int) {
+func (p *Permission) SetID(id int32) {
 	p.ID = id
 }
 

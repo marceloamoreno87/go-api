@@ -12,9 +12,10 @@ import (
 const createPermission = `-- name: CreatePermission :one
 INSERT INTO permissions (
   name,
-  internal_name
+  internal_name,
+  description
 ) VALUES (
-  $1, $2
+  $1, $2, $3
 )
 RETURNING id, name, internal_name, description, created_at, updated_at
 `
@@ -22,10 +23,11 @@ RETURNING id, name, internal_name, description, created_at, updated_at
 type CreatePermissionParams struct {
 	Name         string `json:"name"`
 	InternalName string `json:"internal_name"`
+	Description  string `json:"description"`
 }
 
 func (q *Queries) CreatePermission(ctx context.Context, arg CreatePermissionParams) (Permission, error) {
-	row := q.db.QueryRowContext(ctx, createPermission, arg.Name, arg.InternalName)
+	row := q.db.QueryRowContext(ctx, createPermission, arg.Name, arg.InternalName, arg.Description)
 	var i Permission
 	err := row.Scan(
 		&i.ID,
@@ -214,6 +216,25 @@ WHERE id = $1 LIMIT 1
 
 func (q *Queries) GetPermission(ctx context.Context, id int32) (Permission, error) {
 	row := q.db.QueryRowContext(ctx, getPermission, id)
+	var i Permission
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.InternalName,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getPermissionByInternalName = `-- name: GetPermissionByInternalName :one
+SELECT id, name, internal_name, description, created_at, updated_at FROM permissions
+WHERE internal_name = $1 LIMIT 1
+`
+
+func (q *Queries) GetPermissionByInternalName(ctx context.Context, internalName string) (Permission, error) {
+	row := q.db.QueryRowContext(ctx, getPermissionByInternalName, internalName)
 	var i Permission
 	err := row.Scan(
 		&i.ID,
@@ -554,19 +575,26 @@ func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]User, err
 const updatePermission = `-- name: UpdatePermission :one
 UPDATE permissions SET
   name = $1,
-  internal_name = $2
-WHERE id = $3
+  internal_name = $2,
+  description = $3
+WHERE id = $4
 RETURNING id, name, internal_name, description, created_at, updated_at
 `
 
 type UpdatePermissionParams struct {
 	Name         string `json:"name"`
 	InternalName string `json:"internal_name"`
+	Description  string `json:"description"`
 	ID           int32  `json:"id"`
 }
 
 func (q *Queries) UpdatePermission(ctx context.Context, arg UpdatePermissionParams) (Permission, error) {
-	row := q.db.QueryRowContext(ctx, updatePermission, arg.Name, arg.InternalName, arg.ID)
+	row := q.db.QueryRowContext(ctx, updatePermission,
+		arg.Name,
+		arg.InternalName,
+		arg.Description,
+		arg.ID,
+	)
 	var i Permission
 	err := row.Scan(
 		&i.ID,

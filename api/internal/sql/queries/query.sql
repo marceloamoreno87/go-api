@@ -76,6 +76,10 @@ RETURNING *;
 SELECT * FROM permissions
 WHERE id = $1 LIMIT 1;
 
+-- name: GetPermissionByInternalName :one
+SELECT * FROM permissions
+WHERE internal_name = $1 LIMIT 1;
+
 -- name: GetPermissions :many
 SELECT * FROM permissions
 ORDER BY id ASC
@@ -84,17 +88,19 @@ LIMIT $1 OFFSET $2;
 -- name: CreatePermission :one
 INSERT INTO permissions (
   name,
-  internal_name
+  internal_name,
+  description
 ) VALUES (
-  $1, $2
+  $1, $2, $3
 )
 RETURNING *;
 
 -- name: UpdatePermission :one
 UPDATE permissions SET
   name = $1,
-  internal_name = $2
-WHERE id = $3
+  internal_name = $2,
+  description = $3
+WHERE id = $4
 RETURNING *;
 
 -- name: DeletePermission :one
