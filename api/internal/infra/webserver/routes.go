@@ -8,8 +8,10 @@ import (
 	"github.com/marceloamoreno/goapi/config"
 	_ "github.com/marceloamoreno/goapi/docs"
 	AuthHandler "github.com/marceloamoreno/goapi/internal/domain/auth/handler"
+	RoleHandler "github.com/marceloamoreno/goapi/internal/domain/role/handler"
+	RoleRepository "github.com/marceloamoreno/goapi/internal/domain/role/repository"
 	UserHandler "github.com/marceloamoreno/goapi/internal/domain/user/handler"
-	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
+	UserRepository "github.com/marceloamoreno/goapi/internal/domain/user/repository"
 	"github.com/marceloamoreno/goapi/internal/infra/database"
 	"github.com/marceloamoreno/goapi/pkg/api"
 	HttpSwagger "github.com/swaggo/http-swagger"
@@ -34,7 +36,7 @@ func NewRoute(r *chi.Mux, handlerTools *api.HandlerTools) *Route {
 }
 
 func (r *Route) GetAuthRoutes(router chi.Router) {
-	AuthRepository := repository.NewUserRepository(r.DBConn)
+	AuthRepository := UserRepository.NewUserRepository(r.DBConn)
 	AuthHandler := AuthHandler.NewAuthHandler(AuthRepository, r.HandlerTools)
 	router.Route("/auth", func(r chi.Router) {
 		r.Post("/token", AuthHandler.GetJWT)
@@ -43,7 +45,7 @@ func (r *Route) GetAuthRoutes(router chi.Router) {
 }
 
 func (r *Route) GetUserRoutes(router chi.Router) {
-	UserRepository := repository.NewUserRepository(r.DBConn)
+	UserRepository := UserRepository.NewUserRepository(r.DBConn)
 	UserHandler := UserHandler.NewUserHandler(UserRepository, r.HandlerTools)
 	router.Route("/user", func(r chi.Router) {
 		r.Get("/", UserHandler.GetUsers)
@@ -51,6 +53,18 @@ func (r *Route) GetUserRoutes(router chi.Router) {
 		r.Post("/", UserHandler.CreateUser)
 		r.Put("/{id}", UserHandler.UpdateUser)
 		r.Delete("/{id}", UserHandler.DeleteUser)
+	})
+}
+
+func (r *Route) GetRoleRoutes(router chi.Router) {
+	RoleRepository := RoleRepository.NewRoleRepository(r.DBConn)
+	RoleHandler := RoleHandler.NewRoleHandler(RoleRepository, r.HandlerTools)
+	router.Route("/role", func(r chi.Router) {
+		r.Get("/", RoleHandler.GetRoles)
+		r.Get("/{id}", RoleHandler.GetRole)
+		r.Post("/", RoleHandler.CreateRole)
+		r.Put("/{id}", RoleHandler.UpdateRole)
+		r.Delete("/{id}", RoleHandler.DeleteRole)
 	})
 }
 

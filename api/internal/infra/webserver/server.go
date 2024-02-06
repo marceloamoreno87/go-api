@@ -42,6 +42,7 @@ func loadRoutes(r *chi.Mux) {
 		r.Group(func(r chi.Router) {
 			AuthMiddleware.NewMiddleware(r).AuthMiddleware()
 			route.GetUserRoutes(r)
+			route.GetRoleRoutes(r)
 		})
 	})
 	slog.Info("Routes OK")
