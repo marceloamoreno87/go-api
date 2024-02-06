@@ -1,46 +1,40 @@
 package usecase
 
 import (
-	"testing"
-
-	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
+	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	"github.com/stretchr/testify/mock"
 )
 
-type MockUserRepository struct {
+type MockRoleRepository struct {
 	mock.Mock
 }
 
-func (m *MockUserRepository) CreateUser(user *entity.User) (*entity.User, error) {
-	args := m.Called(user)
-	return args.Get(0).(*entity.User), args.Error(1)
+func (m *MockRoleRepository) CreateRole(role *entity.Role) (*entity.Role, error) {
+	args := m.Called(role)
+	return args.Get(0).(*entity.Role), args.Error(1)
 }
 
-func (m *MockUserRepository) GetUser(id int64) (*entity.User, error) {
+func (m *MockRoleRepository) GetRole(id int32) (*entity.Role, error) {
 	args := m.Called(id)
-	return args.Get(0).(*entity.User), args.Error(1)
+	return args.Get(0).(*entity.Role), args.Error(1)
 }
 
-func (m *MockUserRepository) GetUserByEmail(email string) (*entity.User, error) {
-	args := m.Called(email)
-	return args.Get(0).(*entity.User), args.Error(1)
-}
-
-func (m *MockUserRepository) GetUsers(limit int32, offset int32) ([]*entity.User, error) {
+func (m *MockRoleRepository) GetRoles(limit int32, offset int32) ([]*entity.Role, error) {
 	args := m.Called(limit, offset)
-	return args.Get(0).([]*entity.User), args.Error(1)
+	return args.Get(0).([]*entity.Role), args.Error(1)
 }
 
-func (m *MockUserRepository) UpdateUser(user *entity.User, id int64) (*entity.User, error) {
-	args := m.Called(user, id)
-	return args.Get(0).(*entity.User), args.Error(1)
+func (m *MockRoleRepository) UpdateRole(role *entity.Role, id int32) (*entity.Role, error) {
+	args := m.Called(role, id)
+	return args.Get(0).(*entity.Role), args.Error(1)
 }
 
-func (m *MockUserRepository) DeleteUser(id int64) error {
+func (m *MockRoleRepository) DeleteRole(id int32) error {
 	args := m.Called(id)
 	return args.Error(0)
 }
 
-func TestCreateUserUseCase_Execute(t *testing.T) {
-	// TODO: Implement
+func (m *MockRoleRepository) GetRoleByInternalName(internal_name string) (*entity.Role, error) {
+	args := m.Called(internal_name)
+	return args.Get(0).(*entity.Role), args.Error(1)
 }

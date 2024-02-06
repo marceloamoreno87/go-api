@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"testing"
-
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	"github.com/stretchr/testify/mock"
 )
@@ -39,8 +37,4 @@ func (m *MockUserRepository) UpdateUser(user *entity.User, id int64) (*entity.Us
 func (m *MockUserRepository) DeleteUser(id int64) error {
 	args := m.Called(id)
 	return args.Error(0)
-}
-
-func TestCreateUserUseCase_Execute(t *testing.T) {
-	// TODO: Implement
 }
