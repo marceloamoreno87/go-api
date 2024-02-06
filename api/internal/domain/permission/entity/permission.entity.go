@@ -2,128 +2,91 @@ package entity
 
 import (
 	"errors"
-	"net/mail"
 	"time"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
-type User struct {
-	ID        int32     `json:"id"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
-	Password  string    `json:"password"`
-	RoleId    int32     `json:"role_id"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+// Permission Entity
+type Permission struct {
+	ID           int       `json:"id"`
+	Name         string    `json:"name"`
+	InternalName string    `json:"internal_name"`
+	Description  string    `json:"description"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
 }
 
-func NewUser(name string, email string, password string, roleId int32) (user *User, err error) {
-	user = &User{
-		Name:     name,
-		Email:    email,
-		Password: password,
-		RoleId:   roleId,
-	}
-	valid := user.Validate()
-	if valid != nil {
-		return nil, valid
-	}
-	_, valid = user.IsEmailValid()
-	if valid != nil {
-		return nil, valid
+func NewPermission(name, internalName, description string) (permission *Permission, err error) {
+	permission = &Permission{
+		Name:         name,
+		InternalName: internalName,
+		Description:  description,
 	}
 
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	err = permission.Validate()
 	if err != nil {
 		return nil, err
 	}
-	user.SetPassword(string(hash))
 
 	return
 }
 
-func (u *User) Validate() (err error) {
-	if u.Name == "" {
+func (p *Permission) Validate() (err error) {
+	if p.Name == "" {
 		return errors.New("Name is required")
 	}
-	if u.Email == "" {
-		return errors.New("Email is required")
+	if p.InternalName == "" {
+		return errors.New("Internal Name is required")
 	}
-	if u.Password == "" {
-		return errors.New("Password is required")
-	}
-	if u.RoleId == 0 {
-		return errors.New("Role is required")
+	if p.Description == "" {
+		return errors.New("Description is required")
 	}
 	return
 }
 
-func (u *User) IsEmailValid() (bool, error) {
-	_, err := mail.ParseAddress(u.Email)
-	if err != nil {
-		return false, errors.New("Email is invalid")
-	}
-	return true, err
+func (p *Permission) GetID() int {
+	return p.ID
 }
 
-func (u *User) ComparePassword(password string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
-	return err == nil
+func (p *Permission) GetName() string {
+	return p.Name
 }
 
-func (u *User) GetID() int32 {
-	return u.ID
+func (p *Permission) GetInternalName() string {
+	return p.InternalName
 }
 
-func (u *User) GetName() string {
-	return u.Name
+func (p *Permission) GetDescription() string {
+	return p.Description
 }
 
-func (u *User) GetEmail() string {
-	return u.Email
+func (p *Permission) GetCreatedAt() time.Time {
+	return p.CreatedAt
 }
 
-func (u *User) GetPassword() string {
-	return u.Password
+func (p *Permission) GetUpdatedAt() time.Time {
+	return p.UpdatedAt
 }
 
-func (u *User) GetRoleId() int32 {
-	return u.RoleId
+func (p *Permission) SetID(id int) {
+	p.ID = id
 }
 
-func (u *User) GetCreatedAt() time.Time {
-	return u.CreatedAt
+func (p *Permission) SetName(name string) {
+	p.Name = name
 }
 
-func (u *User) GetUpdatedAt() time.Time {
-	return u.UpdatedAt
+func (p *Permission) SetInternalName(internalName string) {
+	p.InternalName = internalName
 }
 
-func (u *User) SetID(id int32) {
-	u.ID = id
+func (p *Permission) SetDescription(description string) {
+	p.Description = description
 }
 
-func (u *User) SetName(name string) {
-	u.Name = name
+func (p *Permission) SetCreatedAt(createdAt time.Time) {
+	p.CreatedAt = createdAt
 }
 
-func (u *User) SetEmail(email string) {
-	u.Email = email
-}
-
-func (u *User) SetPassword(password string) {
-	u.Password = password
-}
-
-func (u *User) SetRoleId(roleId int32) {
-	u.RoleId = roleId
-}
-
-func (u *User) SetCreatedAt(createdAt time.Time) {
-	u.CreatedAt = createdAt
-}
-
-func (u *User) SetUpdatedAt(updatedAt time.Time) {
-	u.UpdatedAt = updatedAt
+func (p *Permission) SetUpdatedAt(updatedAt time.Time) {
+	p.UpdatedAt = updatedAt
 }

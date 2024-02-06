@@ -4,22 +4,15 @@ import (
 	"time"
 )
 
-type UserInterface interface {
-	Validate() error
-	IsEmailValid() (bool, error)
-	ComparePassword(password string) bool
-	GetID() int32
+type PermissionInterface interface {
+	GetID() int
 	GetName() string
-	GetEmail() string
-	GetPassword() string
-	GetRoleId() int32
+	GetInternalName() string
+	GetDescription() string
 	GetCreatedAt() time.Time
 	GetUpdatedAt() time.Time
-	SetID(id int32)
+	SetID(id int)
 	SetName(name string)
-	SetEmail(email string)
-	SetPassword(password string)
-	SetRoleId(roleId int32)
-	SetCreatedAt(createdAt time.Time)
-	SetUpdatedAt(updatedAt time.Time)
+	SetInternalName(internalName string)
+	SetDescription(description string)
 }
