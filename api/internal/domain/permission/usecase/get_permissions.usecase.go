@@ -28,17 +28,17 @@ func NewGetPermissionsUseCase(permissionRepository repository.PermissionReposito
 
 func (uc *GetPermissionsUseCase) Execute(input GetPermissionsInputDTO) (output []GetPermissionsOutputDTO, err error) {
 
-	roles, err := uc.PermissionRepository.GetPermissions(input.Limit, input.Offset)
+	permissions, err := uc.PermissionRepository.GetPermissions(input.Limit, input.Offset)
 	if err != nil {
 		return []GetPermissionsOutputDTO{}, err
 	}
 
-	for _, role := range roles {
+	for _, permission := range permissions {
 		output = append(output, GetPermissionsOutputDTO{
-			ID:           role.ID,
-			Name:         role.Name,
-			InternalName: role.InternalName,
-			Description:  role.Description,
+			ID:           permission.ID,
+			Name:         permission.Name,
+			InternalName: permission.InternalName,
+			Description:  permission.Description,
 		})
 	}
 

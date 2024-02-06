@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"time"
+
 	"github.com/marceloamoreno/goapi/internal/domain/permission/entity"
 	"github.com/marceloamoreno/goapi/internal/domain/permission/repository"
 )
@@ -13,39 +15,46 @@ type UpdatePermissionInputDTO struct {
 }
 
 type UpdatePermissionOutputDTO struct {
-	ID           int32  `json:"id"`
-	Name         string `json:"name"`
-	InternalName string `json:"internal_name"`
-	Description  string `json:"description"`
+	ID           int32     `json:"id"`
+	Name         string    `json:"name"`
+	InternalName string    `json:"internal_name"`
+	Description  string    `json:"description"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
 }
 
 type UpdatePermissionUseCase struct {
 	PermissionRepository repository.PermissionRepositoryInterface
 }
 
-func NewUpdatePermissionUseCase(permissionRepository repository.PermissionRepositoryInterface) *UpdatePermissionUseCase {
+func NewUpdatePermissionUseCase(permissionRepository repository.PermissionRepositoryInterface, id int32) *UpdatePermissionUseCase {
 	return &UpdatePermissionUseCase{
 		PermissionRepository: permissionRepository,
 	}
 }
 
-func (uc *UpdatePermissionUseCase) Execute(input *UpdatePermissionInputDTO) (*UpdatePermissionOutputDTO, error) {
-	permission := &entity.Permission{
-		ID:           input.ID,
-		Name:         input.Name,
-		InternalName: input.InternalName,
-		Description:  input.Description,
-	}
+func (uc *UpdatePermissionUseCase) Execute(input UpdatePermissionInputDTO) (output UpdatePermissionOutputDTO, err error) {
 
-	permission, err := uc.PermissionRepository.UpdatePermission(permission, input.ID)
+	permission, err := entity.NewPermission(input.Name, input.InternalName, input.Description)
 	if err != nil {
-		return &UpdatePermissionOutputDTO{}, err
+		return UpdatePermissionOutputDTO{}, err
 	}
 
-	return &UpdatePermissionOutputDTO{
-		ID:           permission.ID,
-		Name:         permission.Name,
-		InternalName: permission.InternalName,
-		Description:  permission.Description,
-	}, nil
+	permission.SetID(input.ID)
+
+	u, err := uc.PermissionRepository.UpdatePermission(permission, input.ID)
+	if err != nil {
+		return UpdatePermissionOutputDTO{}, err
+	}
+
+	output = UpdatePermissionOutputDTO{
+		ID:           u.ID,
+		Name:         u.Name,
+		InternalName: u.InternalName,
+		Description:  u.Description,
+		CreatedAt:    u.CreatedAt,
+		UpdatedAt:    u.UpdatedAt,
+	}
+
+	return
 }

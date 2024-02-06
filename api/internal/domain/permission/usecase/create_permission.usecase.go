@@ -32,24 +32,26 @@ func NewCreatePermissionUseCase(permissionRepository repository.PermissionReposi
 	}
 }
 
-func (uc *CreatePermissionUseCase) Execute(input *CreatePermissionInputDTO) (*CreatePermissionOutputDTO, error) {
+func (uc *CreatePermissionUseCase) Execute(input CreatePermissionInputDTO) (output CreatePermissionOutputDTO, err error) {
 	permission := &entity.Permission{
 		Name:         input.Name,
 		InternalName: input.InternalName,
 		Description:  input.Description,
 	}
 
-	permission, err := uc.PermissionRepository.CreatePermission(permission)
+	permission, err = uc.PermissionRepository.CreatePermission(permission)
 	if err != nil {
-		return &CreatePermissionOutputDTO{}, err
+		return CreatePermissionOutputDTO{}, err
 	}
 
-	return &CreatePermissionOutputDTO{
+	output = CreatePermissionOutputDTO{
 		ID:           permission.ID,
 		Name:         permission.Name,
 		InternalName: permission.InternalName,
 		Description:  permission.Description,
 		CreatedAt:    permission.CreatedAt,
 		UpdatedAt:    permission.UpdatedAt,
-	}, nil
+	}
+
+	return
 }

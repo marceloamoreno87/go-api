@@ -8,6 +8,8 @@ import (
 	"github.com/marceloamoreno/goapi/config"
 	_ "github.com/marceloamoreno/goapi/docs"
 	AuthHandler "github.com/marceloamoreno/goapi/internal/domain/auth/handler"
+	PermissionHandler "github.com/marceloamoreno/goapi/internal/domain/permission/handler"
+	PermissionRepository "github.com/marceloamoreno/goapi/internal/domain/permission/repository"
 	RoleHandler "github.com/marceloamoreno/goapi/internal/domain/role/handler"
 	RoleRepository "github.com/marceloamoreno/goapi/internal/domain/role/repository"
 	UserHandler "github.com/marceloamoreno/goapi/internal/domain/user/handler"
@@ -65,6 +67,18 @@ func (r *Route) GetRoleRoutes(router chi.Router) {
 		r.Post("/", RoleHandler.CreateRole)
 		r.Put("/{id}", RoleHandler.UpdateRole)
 		r.Delete("/{id}", RoleHandler.DeleteRole)
+	})
+}
+
+func (r *Route) GetPermissionRoutes(router chi.Router) {
+	PermissionRepository := PermissionRepository.NewPermissionRepository(r.DBConn)
+	PermissionHandler := PermissionHandler.NewPermissionHandler(PermissionRepository, r.HandlerTools)
+	router.Route("/permission", func(r chi.Router) {
+		r.Get("/", PermissionHandler.GetPermissions)
+		r.Get("/{id}", PermissionHandler.GetPermission)
+		r.Post("/", PermissionHandler.CreatePermission)
+		r.Put("/{id}", PermissionHandler.UpdatePermission)
+		r.Delete("/{id}", PermissionHandler.DeletePermission)
 	})
 }
 

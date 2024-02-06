@@ -30,12 +30,12 @@ func NewDeletePermissionUseCase(permissionRepository repository.PermissionReposi
 }
 
 func (uc *DeletePermissionUseCase) Execute(input DeletePermissionInputDTO) (output DeletePermissionOutputDTO, err error) {
-	role, err := uc.PermissionRepository.GetPermission(input.ID)
+	permission, err := uc.PermissionRepository.GetPermission(input.ID)
 	if err != nil {
 		return DeletePermissionOutputDTO{}, err
 	}
 
-	u, err := uc.PermissionRepository.DeletePermission(role.GetID())
+	u, err := uc.PermissionRepository.DeletePermission(permission.GetID())
 	if err != nil {
 		return DeletePermissionOutputDTO{}, err
 	}
