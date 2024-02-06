@@ -103,7 +103,7 @@ func (ur *UserRepository) GetUsers(limit int32, offset int32) (users []*entity.U
 
 func (ur *UserRepository) UpdateUser(user *entity.User, id int32) (*entity.User, error) {
 
-	u, err := ur.DBQueries.UpdateUser(context.Background(), db.UpdateUserParams{
+	userUpdated, err := ur.DBQueries.UpdateUser(context.Background(), db.UpdateUserParams{
 		ID:       id,
 		Name:     user.Name,
 		Email:    user.Email,
@@ -115,29 +115,21 @@ func (ur *UserRepository) UpdateUser(user *entity.User, id int32) (*entity.User,
 	}
 
 	return &entity.User{
-		ID:        u.ID,
-		Name:      u.Name,
-		Email:     u.Email,
-		Password:  u.Password,
-		RoleId:    u.RoleID,
-		CreatedAt: u.CreatedAt,
-		UpdatedAt: u.UpdatedAt,
+		ID:        userUpdated.ID,
+		Name:      userUpdated.Name,
+		Email:     userUpdated.Email,
+		Password:  userUpdated.Password,
+		RoleId:    userUpdated.RoleID,
+		CreatedAt: userUpdated.CreatedAt,
+		UpdatedAt: userUpdated.UpdatedAt,
 	}, nil
 }
 
-func (ur *UserRepository) DeleteUser(id int32) (*entity.User, error) {
-	u, err := ur.DBQueries.DeleteUser(context.Background(), id)
+func (ur *UserRepository) DeleteUser(id int32) (err error) {
+	err = ur.DBQueries.DeleteUser(context.Background(), id)
 
 	if err != nil {
-		return &entity.User{}, err
+		return
 	}
-	return &entity.User{
-		ID:        u.ID,
-		Name:      u.Name,
-		Email:     u.Email,
-		Password:  u.Password,
-		RoleId:    u.RoleID,
-		CreatedAt: u.CreatedAt,
-		UpdatedAt: u.UpdatedAt,
-	}, nil
+	return
 }

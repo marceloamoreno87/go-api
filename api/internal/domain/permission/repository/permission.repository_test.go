@@ -19,7 +19,6 @@ func TestCreateUser(t *testing.T) {
 	ur := NewUserRepository(db)
 
 	user := &entity.User{
-		ID:       1,
 		Name:     "Test",
 		Email:    "test@test.com",
 		Password: "123456",
@@ -27,20 +26,20 @@ func TestCreateUser(t *testing.T) {
 	}
 
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "password", "role_id", "created_at", "updated_at"}).
-		AddRow(user.ID, user.Name, user.Email, user.Password, user.RoleId, time.Now(), time.Now())
+		AddRow(1, user.Name, user.Email, user.Password, user.RoleId, time.Now(), time.Now())
 
 	mock.ExpectQuery(`-- name: CreateUser :one INSERT INTO users \( name, email, password, role_id \) VALUES \( \$1, \$2, \$3, \$4 \) RETURNING id, name, email, password, role_id, created_at, updated_at`).
 		WithArgs(user.Name, user.Email, user.Password, user.RoleId).
 		WillReturnRows(rows)
 
-	u, err := ur.CreateUser(user)
+	createdUser, err := ur.CreateUser(user)
 
 	assert.NoError(t, err)
 
-	assert.Equal(t, user.Name, u.Name)
-	assert.Equal(t, user.Email, u.Email)
-	assert.Equal(t, user.Password, u.Password)
-	assert.Equal(t, user.RoleId, u.RoleId)
+	assert.Equal(t, user.Name, createdUser.Name)
+	assert.Equal(t, user.Email, createdUser.Email)
+	assert.Equal(t, user.Password, createdUser.Password)
+	assert.Equal(t, user.RoleId, createdUser.RoleId)
 }
 
 func TestGetUser(t *testing.T) {
@@ -53,7 +52,6 @@ func TestGetUser(t *testing.T) {
 	ur := NewUserRepository(db)
 
 	user := &entity.User{
-		ID:       1,
 		Name:     "Test",
 		Email:    "test@test.com",
 		Password: "123456",
@@ -61,20 +59,20 @@ func TestGetUser(t *testing.T) {
 	}
 
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "password", "role_id", "created_at", "updated_at"}).
-		AddRow(user.ID, user.Name, user.Email, user.Password, user.RoleId, time.Now(), time.Now())
+		AddRow(1, user.Name, user.Email, user.Password, user.RoleId, time.Now(), time.Now())
 
 	mock.ExpectQuery(`-- name: GetUser :one SELECT id, name, email, password, role_id, created_at, updated_at FROM users WHERE id = \$1`).
-		WithArgs(user.ID).
+		WithArgs(1).
 		WillReturnRows(rows)
 
-	u, err := ur.GetUser(user.ID)
+	createdUser, err := ur.GetUser(1)
 
 	assert.NoError(t, err)
 
-	assert.Equal(t, user.Name, u.Name)
-	assert.Equal(t, user.Email, u.Email)
-	assert.Equal(t, user.Password, u.Password)
-	assert.Equal(t, user.RoleId, u.RoleId)
+	assert.Equal(t, user.Name, createdUser.Name)
+	assert.Equal(t, user.Email, createdUser.Email)
+	assert.Equal(t, user.Password, createdUser.Password)
+	assert.Equal(t, user.RoleId, createdUser.RoleId)
 }
 
 func TestGetUserByEmail(t *testing.T) {
@@ -87,7 +85,6 @@ func TestGetUserByEmail(t *testing.T) {
 	ur := NewUserRepository(db)
 
 	user := &entity.User{
-		ID:       1,
 		Name:     "Test",
 		Email:    "test@test.com",
 		Password: "123456",
@@ -95,20 +92,20 @@ func TestGetUserByEmail(t *testing.T) {
 	}
 
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "password", "role_id", "created_at", "updated_at"}).
-		AddRow(user.ID, user.Name, user.Email, user.Password, user.RoleId, time.Now(), time.Now())
+		AddRow(1, user.Name, user.Email, user.Password, user.RoleId, time.Now(), time.Now())
 
 	mock.ExpectQuery(`-- name: GetUserByEmail :one SELECT id, name, email, password, role_id, created_at, updated_at FROM users WHERE email = \$1`).
 		WithArgs(user.Email).
 		WillReturnRows(rows)
 
-	u, err := ur.GetUserByEmail(user.Email)
+	createdUser, err := ur.GetUserByEmail(user.Email)
 
 	assert.NoError(t, err)
 
-	assert.Equal(t, user.Name, u.Name)
-	assert.Equal(t, user.Email, u.Email)
-	assert.Equal(t, user.Password, u.Password)
-	assert.Equal(t, user.RoleId, u.RoleId)
+	assert.Equal(t, user.Name, createdUser.Name)
+	assert.Equal(t, user.Email, createdUser.Email)
+	assert.Equal(t, user.Password, createdUser.Password)
+	assert.Equal(t, user.RoleId, createdUser.RoleId)
 }
 
 func TestDeleteUser(t *testing.T) {
@@ -120,31 +117,13 @@ func TestDeleteUser(t *testing.T) {
 
 	ur := NewUserRepository(db)
 
-	user := &entity.User{
-		ID:       1,
-		Name:     "Test",
-		Email:    "test@test.com",
-		Password: "123456",
-		RoleId:   1,
-	}
-	rows := sqlmock.NewRows([]string{"id", "name", "email", "password", "role_id", "created_at", "updated_at"}).
-		AddRow(user.ID, user.Name, user.Email, user.Password, user.RoleId, time.Now(), time.Now())
+	mock.ExpectExec(`-- name: DeleteUser :exec DELETE FROM users WHERE id = \$1`).
+		WithArgs(1).
+		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	deleteUserSQL := `-- name: DeleteUser :one DELETE FROM users WHERE id = \$1 RETURNING id, name, email, password, role_id, created_at, updated_at`
-
-	mock.ExpectQuery(deleteUserSQL).
-		WithArgs(user.ID).
-		WillReturnRows(rows)
-
-	u, err := ur.DeleteUser(user.ID)
+	err = ur.DeleteUser(1)
 
 	assert.NoError(t, err)
-
-	assert.Equal(t, user.Name, u.Name)
-	assert.Equal(t, user.Email, u.Email)
-	assert.Equal(t, user.Password, u.Password)
-	assert.Equal(t, user.RoleId, u.RoleId)
-
 }
 
 func TestUpdateUser(t *testing.T) {
@@ -171,14 +150,14 @@ func TestUpdateUser(t *testing.T) {
 		WithArgs(user.Name, user.Email, user.Password, user.RoleId, 1).
 		WillReturnRows(rows)
 
-	u, err := ur.UpdateUser(user, 1)
+	createdUser, err := ur.UpdateUser(user, 1)
 
 	assert.NoError(t, err)
 
-	assert.Equal(t, user.Name, u.Name)
-	assert.Equal(t, user.Email, u.Email)
-	assert.Equal(t, user.Password, u.Password)
-	assert.Equal(t, user.RoleId, u.RoleId)
+	assert.Equal(t, user.Name, createdUser.Name)
+	assert.Equal(t, user.Email, createdUser.Email)
+	assert.Equal(t, user.Password, createdUser.Password)
+	assert.Equal(t, user.RoleId, createdUser.RoleId)
 
 }
 
@@ -192,7 +171,6 @@ func TestGetUsers(t *testing.T) {
 	ur := NewUserRepository(db)
 
 	user := &entity.User{
-		ID:       1,
 		Name:     "Test",
 		Email:    "test@teste.com",
 		Password: "123456",
@@ -200,7 +178,7 @@ func TestGetUsers(t *testing.T) {
 	}
 
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "password", "role_id", "created_at", "updated_at"}).
-		AddRow(user.ID, user.Name, user.Email, user.Password, user.RoleId, time.Now(), time.Now())
+		AddRow(1, user.Name, user.Email, user.Password, user.RoleId, time.Now(), time.Now())
 
 	mock.ExpectQuery(`-- name: GetUsers :many SELECT id, name, email, password, role_id, created_at, updated_at FROM users ORDER BY id ASC LIMIT \$1 OFFSET \$2`).
 		WithArgs(int32(10), int32(0)).

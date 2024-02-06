@@ -1,7 +1,8 @@
 package usecase
 
 import (
-	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
+	"time"
+
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -11,7 +12,13 @@ type GetUsersInputDTO struct {
 }
 
 type GetUsersOutputDTO struct {
-	Users []*entity.User
+	ID        int32     `json:"id"`
+	Email     string    `json:"email"`
+	Name      string    `json:"name"`
+	Password  string    `json:"password"`
+	RoleID    int32     `json:"role_id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type GetUsersUseCase struct {
@@ -24,14 +31,22 @@ func NewGetUsersUseCase(userRepository repository.UserRepositoryInterface) *GetU
 	}
 }
 
-func (uc *GetUsersUseCase) Execute(input GetUsersInputDTO) (output GetUsersOutputDTO, err error) {
+func (uc *GetUsersUseCase) Execute(input GetUsersInputDTO) (output []GetUsersOutputDTO, err error) {
 	users, err := uc.UserRepository.GetUsers(input.Limit, input.Offset)
 	if err != nil {
-		return GetUsersOutputDTO{}, err
+		return []GetUsersOutputDTO{}, err
 	}
 
-	output = GetUsersOutputDTO{
-		Users: users,
+	for _, user := range users {
+		output = append(output, GetUsersOutputDTO{
+			ID:        user.ID,
+			Email:     user.Email,
+			Name:      user.Name,
+			Password:  user.Password,
+			RoleID:    user.RoleId,
+			CreatedAt: user.CreatedAt,
+			UpdatedAt: user.UpdatedAt,
+		})
 	}
 
 	return

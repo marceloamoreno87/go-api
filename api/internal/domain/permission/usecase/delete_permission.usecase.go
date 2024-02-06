@@ -35,17 +35,17 @@ func (uc *DeleteUserUseCase) Execute(input DeleteUserInputDTO) (output DeleteUse
 		return DeleteUserOutputDTO{}, err
 	}
 
-	u, err := uc.UserRepository.DeleteUser(user.GetID())
+	err = uc.UserRepository.DeleteUser(input.ID)
 	if err != nil {
 		return DeleteUserOutputDTO{}, err
 	}
 
 	output = DeleteUserOutputDTO{
-		Name:      u.Name,
-		Email:     u.Email,
-		Password:  u.Password,
-		CreatedAt: u.CreatedAt,
-		UpdatedAt: u.UpdatedAt,
+		Name:      user.Name,
+		Email:     user.Email,
+		Password:  user.Password,
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
 	}
 	return
 }

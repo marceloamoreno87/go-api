@@ -130,26 +130,44 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
-const deletePermission = `-- name: DeletePermission :exec
+const deletePermission = `-- name: DeletePermission :one
 DELETE FROM permissions
 WHERE id = $1
 RETURNING id, name, internal_name, description, created_at, updated_at
 `
 
-func (q *Queries) DeletePermission(ctx context.Context, id int32) error {
-	_, err := q.db.ExecContext(ctx, deletePermission, id)
-	return err
+func (q *Queries) DeletePermission(ctx context.Context, id int32) (Permission, error) {
+	row := q.db.QueryRowContext(ctx, deletePermission, id)
+	var i Permission
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.InternalName,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const deleteRole = `-- name: DeleteRole :exec
+const deleteRole = `-- name: DeleteRole :one
 DELETE FROM roles
 WHERE id = $1
 RETURNING id, name, internal_name, description, created_at, updated_at
 `
 
-func (q *Queries) DeleteRole(ctx context.Context, id int32) error {
-	_, err := q.db.ExecContext(ctx, deleteRole, id)
-	return err
+func (q *Queries) DeleteRole(ctx context.Context, id int32) (Role, error) {
+	row := q.db.QueryRowContext(ctx, deleteRole, id)
+	var i Role
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.InternalName,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const deleteRolePermission = `-- name: DeleteRolePermission :exec
@@ -168,15 +186,25 @@ func (q *Queries) DeleteRolePermission(ctx context.Context, arg DeleteRolePermis
 	return err
 }
 
-const deleteUser = `-- name: DeleteUser :exec
+const deleteUser = `-- name: DeleteUser :one
 DELETE FROM users
 WHERE id = $1
 RETURNING id, name, email, password, role_id, created_at, updated_at
 `
 
-func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
-	_, err := q.db.ExecContext(ctx, deleteUser, id)
-	return err
+func (q *Queries) DeleteUser(ctx context.Context, id int32) (User, error) {
+	row := q.db.QueryRowContext(ctx, deleteUser, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+		&i.RoleID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const getPermission = `-- name: GetPermission :one
@@ -246,6 +274,25 @@ WHERE id = $1 LIMIT 1
 
 func (q *Queries) GetRole(ctx context.Context, id int32) (Role, error) {
 	row := q.db.QueryRowContext(ctx, getRole, id)
+	var i Role
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.InternalName,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getRoleByInternalName = `-- name: GetRoleByInternalName :one
+SELECT id, name, internal_name, description, created_at, updated_at FROM roles
+WHERE internal_name = $1 LIMIT 1
+`
+
+func (q *Queries) GetRoleByInternalName(ctx context.Context, internalName string) (Role, error) {
+	row := q.db.QueryRowContext(ctx, getRoleByInternalName, internalName)
 	var i Role
 	err := row.Scan(
 		&i.ID,
@@ -504,7 +551,7 @@ func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]User, err
 	return items, nil
 }
 
-const updatePermission = `-- name: UpdatePermission :exec
+const updatePermission = `-- name: UpdatePermission :one
 UPDATE permissions SET
   name = $1,
   internal_name = $2
@@ -518,12 +565,21 @@ type UpdatePermissionParams struct {
 	ID           int32  `json:"id"`
 }
 
-func (q *Queries) UpdatePermission(ctx context.Context, arg UpdatePermissionParams) error {
-	_, err := q.db.ExecContext(ctx, updatePermission, arg.Name, arg.InternalName, arg.ID)
-	return err
+func (q *Queries) UpdatePermission(ctx context.Context, arg UpdatePermissionParams) (Permission, error) {
+	row := q.db.QueryRowContext(ctx, updatePermission, arg.Name, arg.InternalName, arg.ID)
+	var i Permission
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.InternalName,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const updateRole = `-- name: UpdateRole :exec
+const updateRole = `-- name: UpdateRole :one
 UPDATE roles SET
   name = $1,
   internal_name = $2,
@@ -539,14 +595,23 @@ type UpdateRoleParams struct {
 	ID           int32  `json:"id"`
 }
 
-func (q *Queries) UpdateRole(ctx context.Context, arg UpdateRoleParams) error {
-	_, err := q.db.ExecContext(ctx, updateRole,
+func (q *Queries) UpdateRole(ctx context.Context, arg UpdateRoleParams) (Role, error) {
+	row := q.db.QueryRowContext(ctx, updateRole,
 		arg.Name,
 		arg.InternalName,
 		arg.Description,
 		arg.ID,
 	)
-	return err
+	var i Role
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.InternalName,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const updateUser = `-- name: UpdateUser :one

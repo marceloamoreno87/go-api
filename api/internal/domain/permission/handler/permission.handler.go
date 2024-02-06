@@ -87,8 +87,8 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-	slog.Info("Users getting", "users", u)
-	h.HandlerTools.ResponseJSON(w, u)
+	slog.Info("Users getting", "users", u.Users)
+	h.HandlerTools.ResponseJSON(w, u.Users)
 }
 
 // CreateUser godoc

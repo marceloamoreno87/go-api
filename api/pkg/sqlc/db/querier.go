@@ -13,13 +13,14 @@ type Querier interface {
 	CreateRole(ctx context.Context, arg CreateRoleParams) (Role, error)
 	CreateRolePermission(ctx context.Context, arg CreateRolePermissionParams) (RolePermission, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
-	DeletePermission(ctx context.Context, id int32) error
-	DeleteRole(ctx context.Context, id int32) error
+	DeletePermission(ctx context.Context, id int32) (Permission, error)
+	DeleteRole(ctx context.Context, id int32) (Role, error)
 	DeleteRolePermission(ctx context.Context, arg DeleteRolePermissionParams) error
-	DeleteUser(ctx context.Context, id int32) error
+	DeleteUser(ctx context.Context, id int32) (User, error)
 	GetPermission(ctx context.Context, id int32) (Permission, error)
 	GetPermissions(ctx context.Context, arg GetPermissionsParams) ([]Permission, error)
 	GetRole(ctx context.Context, id int32) (Role, error)
+	GetRoleByInternalName(ctx context.Context, internalName string) (Role, error)
 	GetRolePermission(ctx context.Context, arg GetRolePermissionParams) (RolePermission, error)
 	GetRolePermissions(ctx context.Context, arg GetRolePermissionsParams) ([]RolePermission, error)
 	GetRolePermissionsByPermissionId(ctx context.Context, arg GetRolePermissionsByPermissionIdParams) ([]RolePermission, error)
@@ -28,8 +29,8 @@ type Querier interface {
 	GetUser(ctx context.Context, id int32) (User, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	GetUsers(ctx context.Context, arg GetUsersParams) ([]User, error)
-	UpdatePermission(ctx context.Context, arg UpdatePermissionParams) error
-	UpdateRole(ctx context.Context, arg UpdateRoleParams) error
+	UpdatePermission(ctx context.Context, arg UpdatePermissionParams) (Permission, error)
+	UpdateRole(ctx context.Context, arg UpdateRoleParams) (Role, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
 }
 

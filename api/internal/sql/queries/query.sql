@@ -31,7 +31,7 @@ UPDATE users SET
 WHERE id = $5
 RETURNING *;
 
--- name: DeleteUser :exec
+-- name: DeleteUser :one
 DELETE FROM users
 WHERE id = $1
 RETURNING *;
@@ -39,6 +39,10 @@ RETURNING *;
 -- name: GetRole :one
 SELECT * FROM roles
 WHERE id = $1 LIMIT 1;
+
+-- name: GetRoleByInternalName :one
+SELECT * FROM roles
+WHERE internal_name = $1 LIMIT 1;
 
 -- name: GetRoles :many
 SELECT * FROM roles
@@ -55,7 +59,7 @@ INSERT INTO roles (
 )
 RETURNING *;
 
--- name: UpdateRole :exec
+-- name: UpdateRole :one
 UPDATE roles SET
   name = $1,
   internal_name = $2,
@@ -63,7 +67,7 @@ UPDATE roles SET
 WHERE id = $4
 RETURNING *;
 
--- name: DeleteRole :exec
+-- name: DeleteRole :one
 DELETE FROM roles
 WHERE id = $1
 RETURNING *;
@@ -86,14 +90,14 @@ INSERT INTO permissions (
 )
 RETURNING *;
 
--- name: UpdatePermission :exec
+-- name: UpdatePermission :one
 UPDATE permissions SET
   name = $1,
   internal_name = $2
 WHERE id = $3
 RETURNING *;
 
--- name: DeletePermission :exec
+-- name: DeletePermission :one
 DELETE FROM permissions
 WHERE id = $1
 RETURNING *;
