@@ -42,8 +42,6 @@ func (uc *UpdatePermissionUseCase) Execute(input UpdatePermissionInputDTO) (outp
 		return UpdatePermissionOutputDTO{}, err
 	}
 
-	permission.SetID(input.ID)
-
 	u, err := uc.PermissionRepository.UpdatePermission(permission, uc.ID)
 	if err != nil {
 		return UpdatePermissionOutputDTO{}, err
