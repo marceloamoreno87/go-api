@@ -7,6 +7,6 @@ type RoleRepositoryInterface interface {
 	GetRole(id int32) (*entity.Role, error)
 	GetRoleByInternalName(internal_name string) (*entity.Role, error)
 	GetRoles(limit int32, offset int32) ([]*entity.Role, error)
-	UpdateRole(Role *entity.Role, id int32) (*entity.Role, error)
+	UpdateRole(Role *entity.Role) (*entity.Role, error)
 	DeleteRole(id int32) (*entity.Role, error)
 }

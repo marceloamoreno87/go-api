@@ -165,7 +165,7 @@ func TestUpdatePermission(t *testing.T) {
 		WithArgs(permission.Name, permission.InternalName, permission.Description, permission.ID).
 		WillReturnRows(rows)
 
-	r, err := rr.UpdatePermission(permission, permission.ID)
+	r, err := rr.UpdatePermission(permission)
 
 	assert.NoError(t, err)
 

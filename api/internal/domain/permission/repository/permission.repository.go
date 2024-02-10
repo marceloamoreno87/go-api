@@ -82,9 +82,9 @@ func (pr *PermissionRepository) GetPermissions(limit int32, offset int32) ([]*en
 	return permissions, nil
 }
 
-func (pr *PermissionRepository) UpdatePermission(permission *entity.Permission, id int32) (*entity.Permission, error) {
+func (pr *PermissionRepository) UpdatePermission(permission *entity.Permission) (*entity.Permission, error) {
 	repo, err := pr.DBQueries.UpdatePermission(context.Background(), db.UpdatePermissionParams{
-		ID:           id,
+		ID:           permission.ID,
 		Name:         permission.Name,
 		InternalName: permission.InternalName,
 		Description:  permission.Description,

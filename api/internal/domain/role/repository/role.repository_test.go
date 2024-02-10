@@ -163,7 +163,7 @@ func TestUpdateRole(t *testing.T) {
 		WithArgs(role.Name, role.InternalName, role.Description, 1).
 		WillReturnRows(rows)
 
-	r, err := rr.UpdateRole(role, 1)
+	r, err := rr.UpdateRole(role)
 
 	assert.NoError(t, err)
 

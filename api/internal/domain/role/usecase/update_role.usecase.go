@@ -41,8 +41,8 @@ func (uc *UpdateRoleUseCase) Execute(input UpdateRoleInputDTO) (output UpdateRol
 	if err != nil {
 		return UpdateRoleOutputDTO{}, err
 	}
-
-	u, err := uc.RoleRepository.UpdateRole(role, uc.ID)
+	role.SetID(uc.ID)
+	u, err := uc.RoleRepository.UpdateRole(role)
 	if err != nil {
 		return UpdateRoleOutputDTO{}, err
 	}

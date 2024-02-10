@@ -96,10 +96,10 @@ func (rr *RoleRepository) GetRoles(limit int32, offset int32) (roles []*entity.R
 	return
 }
 
-func (rr *RoleRepository) UpdateRole(role *entity.Role, id int32) (*entity.Role, error) {
+func (rr *RoleRepository) UpdateRole(role *entity.Role) (*entity.Role, error) {
 
 	r, err := rr.DBQueries.UpdateRole(context.Background(), db.UpdateRoleParams{
-		ID:           id,
+		ID:           role.ID,
 		Name:         role.Name,
 		InternalName: role.InternalName,
 		Description:  role.Description,
