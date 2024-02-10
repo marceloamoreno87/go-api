@@ -44,6 +44,7 @@ func (uc *DeleteUserUseCase) Execute(input DeleteUserInputDTO) (output DeleteUse
 		Name:      u.Name,
 		Email:     u.Email,
 		Password:  u.Password,
+		RoleId:    u.RoleId,
 		CreatedAt: u.CreatedAt,
 		UpdatedAt: u.UpdatedAt,
 	}

@@ -41,6 +41,7 @@ func (uc *GetUserUseCase) Execute(input GetUserInputDTO) (output GetUserOutputDT
 		Name:      user.Name,
 		Email:     user.Email,
 		Password:  user.Password,
+		RoleId:    user.RoleId,
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 	}

@@ -41,6 +41,7 @@ func (uc *DeletePermissionUseCase) Execute(input DeletePermissionInputDTO) (outp
 	}
 
 	output = DeletePermissionOutputDTO{
+		ID:           u.ID,
 		Name:         u.Name,
 		InternalName: u.InternalName,
 		Description:  u.Description,

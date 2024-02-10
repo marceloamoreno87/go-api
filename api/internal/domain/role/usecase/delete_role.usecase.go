@@ -42,6 +42,7 @@ func (uc *DeleteRoleUseCase) Execute(input DeleteRoleInputDTO) (output DeleteRol
 	}
 
 	output = DeleteRoleOutputDTO{
+		ID:           u.ID,
 		Name:         u.Name,
 		InternalName: u.InternalName,
 		Description:  u.Description,

@@ -51,6 +51,7 @@ func (uc *CreateUserUseCase) Execute(input CreateUserInputDTO) (output CreateUse
 		Name:      u.Name,
 		Email:     u.Email,
 		Password:  u.Password,
+		RoleId:    u.RoleId,
 		CreatedAt: u.CreatedAt,
 		UpdatedAt: u.UpdatedAt,
 	}

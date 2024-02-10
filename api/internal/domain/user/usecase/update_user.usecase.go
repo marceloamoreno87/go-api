@@ -52,6 +52,7 @@ func (uc *UpdateUserUseCase) Execute(input UpdateUserInputDTO) (output UpdateUse
 		Name:      u.Name,
 		Email:     u.Email,
 		Password:  u.Password,
+		RoleId:    u.RoleId,
 		CreatedAt: u.CreatedAt,
 		UpdatedAt: u.UpdatedAt,
 	}
