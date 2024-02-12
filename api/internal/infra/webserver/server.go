@@ -44,6 +44,7 @@ func loadRoutes(r *chi.Mux) {
 			route.GetUserRoutes(r)
 			route.GetRoleRoutes(r)
 			route.GetPermissionRoutes(r)
+			route.GetRolePermissionRoutes(r)
 		})
 	})
 	slog.Info("Routes OK")

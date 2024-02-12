@@ -1,4 +1,4 @@
-package usecase
+package usecase_test
 
 import (
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"

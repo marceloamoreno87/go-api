@@ -1,3 +1,3 @@
-package usecase
+package usecase_test
 
 // TODO: Implement

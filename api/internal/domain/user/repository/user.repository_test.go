@@ -1,4 +1,4 @@
-package repository
+package repository_test
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
+	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -16,7 +17,7 @@ func TestCreateUser(t *testing.T) {
 	}
 	defer db.Close()
 
-	ur := NewUserRepository(db)
+	ur := repository.NewUserRepository(db)
 
 	user := &entity.User{
 		ID:       1,
@@ -50,7 +51,7 @@ func TestGetUser(t *testing.T) {
 	}
 	defer db.Close()
 
-	ur := NewUserRepository(db)
+	ur := repository.NewUserRepository(db)
 
 	user := &entity.User{
 		ID:       1,
@@ -84,7 +85,7 @@ func TestGetUserByEmail(t *testing.T) {
 	}
 	defer db.Close()
 
-	ur := NewUserRepository(db)
+	ur := repository.NewUserRepository(db)
 
 	user := &entity.User{
 		ID:       1,
@@ -118,7 +119,7 @@ func TestDeleteUser(t *testing.T) {
 	}
 	defer db.Close()
 
-	ur := NewUserRepository(db)
+	ur := repository.NewUserRepository(db)
 
 	user := &entity.User{
 		ID:       1,
@@ -154,7 +155,7 @@ func TestUpdateUser(t *testing.T) {
 	}
 	defer db.Close()
 
-	ur := NewUserRepository(db)
+	ur := repository.NewUserRepository(db)
 
 	user := &entity.User{
 		Name:     "Test",
@@ -189,7 +190,7 @@ func TestGetUsers(t *testing.T) {
 	}
 	defer db.Close()
 
-	ur := NewUserRepository(db)
+	ur := repository.NewUserRepository(db)
 
 	user := &entity.User{
 		ID:       1,

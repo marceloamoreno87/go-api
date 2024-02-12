@@ -1,4 +1,4 @@
-package repository
+package repository_test
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/marceloamoreno/goapi/internal/domain/permission/entity"
+	"github.com/marceloamoreno/goapi/internal/domain/permission/repository"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,7 +18,7 @@ func TestCreatePermission(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := NewPermissionRepository(db)
+	rr := repository.NewPermissionRepository(db)
 
 	permission := &entity.Permission{
 		ID:           1,
@@ -50,7 +51,7 @@ func TestGetPermission(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := NewPermissionRepository(db)
+	rr := repository.NewPermissionRepository(db)
 
 	permission := &entity.Permission{
 		ID:           1,
@@ -83,7 +84,7 @@ func TestGetPermissionByInternalName(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := NewPermissionRepository(db)
+	rr := repository.NewPermissionRepository(db)
 
 	permission := &entity.Permission{
 		ID:           1,
@@ -116,7 +117,7 @@ func TestDeletePermission(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := NewPermissionRepository(db)
+	rr := repository.NewPermissionRepository(db)
 
 	permission := &entity.Permission{
 		ID:           1,
@@ -148,7 +149,7 @@ func TestUpdatePermission(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := NewPermissionRepository(db)
+	rr := repository.NewPermissionRepository(db)
 
 	permission := &entity.Permission{
 		ID:           1,
@@ -182,7 +183,7 @@ func TestGetPermissions(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := NewPermissionRepository(db)
+	rr := repository.NewPermissionRepository(db)
 
 	permission := &entity.Permission{
 		ID:           1,

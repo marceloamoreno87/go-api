@@ -5,17 +5,19 @@ import (
 	"net/mail"
 	"time"
 
+	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
-	ID        int32     `json:"id"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
-	Password  string    `json:"password"`
-	RoleId    int32     `json:"role_id"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        int32        `json:"id"`
+	Name      string       `json:"name"`
+	Email     string       `json:"email"`
+	Password  string       `json:"password"`
+	RoleId    int32        `json:"role_id"`
+	CreatedAt time.Time    `json:"created_at"`
+	UpdatedAt time.Time    `json:"updated_at"`
+	Role      *entity.Role `json:"role"`
 }
 
 func NewUser(name string, email string, password string, roleId int32) (user *User, err error) {
@@ -100,6 +102,10 @@ func (u *User) GetUpdatedAt() time.Time {
 	return u.UpdatedAt
 }
 
+func (u *User) GetRole() *entity.Role {
+	return u.Role
+}
+
 func (u *User) SetID(id int32) {
 	u.ID = id
 }
@@ -126,4 +132,8 @@ func (u *User) SetCreatedAt(createdAt time.Time) {
 
 func (u *User) SetUpdatedAt(updatedAt time.Time) {
 	u.UpdatedAt = updatedAt
+}
+
+func (u *User) SetRole(role *entity.Role) {
+	u.Role = role
 }

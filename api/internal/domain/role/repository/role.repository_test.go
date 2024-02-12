@@ -1,4 +1,4 @@
-package repository
+package repository_test
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
+	"github.com/marceloamoreno/goapi/internal/domain/role/repository"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -16,7 +17,7 @@ func TestCreateRole(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := NewRoleRepository(db)
+	rr := repository.NewRoleRepository(db)
 
 	role := &entity.Role{
 		ID:           1,
@@ -48,7 +49,7 @@ func TestGetRole(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := NewRoleRepository(db)
+	rr := repository.NewRoleRepository(db)
 
 	role := &entity.Role{
 		ID:           1,
@@ -81,7 +82,7 @@ func TestGetRoleByInternalName(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := NewRoleRepository(db)
+	rr := repository.NewRoleRepository(db)
 
 	role := &entity.Role{
 		ID:           1,
@@ -114,7 +115,7 @@ func TestDeleteRole(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := NewRoleRepository(db)
+	rr := repository.NewRoleRepository(db)
 
 	role := &entity.Role{
 		ID:           1,
@@ -146,7 +147,7 @@ func TestUpdateRole(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := NewRoleRepository(db)
+	rr := repository.NewRoleRepository(db)
 
 	role := &entity.Role{
 		ID:           1,
@@ -180,7 +181,7 @@ func TestGetRoles(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := NewRoleRepository(db)
+	rr := repository.NewRoleRepository(db)
 
 	role := &entity.Role{
 		ID:           1,

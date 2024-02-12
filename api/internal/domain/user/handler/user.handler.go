@@ -22,6 +22,39 @@ func NewUserHandler(userRepository repository.UserRepositoryInterface, handlerTo
 	}
 }
 
+// CreateUser godoc
+// @Summary Create User
+// @Description Create User
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param user body usecase.CreateUserInputDTO true "User"
+// @Success 200 {object} api.Response{data=entity.User}
+// @Failure 400 {object} api.ResponseError{err=string}
+// @Router /user [post]
+// @Security     JWT
+func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
+
+	var user usecase.CreateUserInputDTO
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		slog.Info("err", err)
+		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+
+	uc := usecase.NewCreateUserUseCase(h.UserRepository)
+	u, err := uc.Execute(user)
+	if err != nil {
+		slog.Info("err", err)
+		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+	slog.Info("User created", "user", u)
+	h.HandlerTools.ResponseJSON(w, u)
+
+}
+
 // GetUser godoc
 // @Summary Get User
 // @Description Get User
@@ -91,38 +124,6 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	h.HandlerTools.ResponseJSON(w, u)
 }
 
-// CreateUser godoc
-// @Summary Create User
-// @Description Create User
-// @Tags User
-// @Accept  json
-// @Produce  json
-// @Param user body usecase.CreateUserInputDTO true "User"
-// @Success 200 {object} api.Response{data=entity.User}
-// @Failure 400 {object} api.ResponseError{err=string}
-// @Router /user [post]
-// @Security     JWT
-func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
-
-	var user usecase.CreateUserInputDTO
-	err := json.NewDecoder(r.Body).Decode(&user)
-	if err != nil {
-		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
-		return
-	}
-
-	uc := usecase.NewCreateUserUseCase(h.UserRepository)
-	u, err := uc.Execute(user)
-	if err != nil {
-		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
-		return
-	}
-	slog.Info("User created", "user", u)
-	h.HandlerTools.ResponseJSON(w, u)
-
-}
 
 // UpdateUser godoc
 // @Summary Update User
