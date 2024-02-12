@@ -25,7 +25,7 @@ func (ur *UserRepository) CreateUser(user *entity.User) (*entity.User, error) {
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
-		RoleID:   user.RoleId,
+		RoleID:   user.RoleID,
 	})
 	if err != nil {
 		return &entity.User{}, err
@@ -36,7 +36,7 @@ func (ur *UserRepository) CreateUser(user *entity.User) (*entity.User, error) {
 		Name:      repo.Name,
 		Email:     repo.Email,
 		Password:  repo.Password,
-		RoleId:    repo.RoleID,
+		RoleID:    repo.RoleID,
 		CreatedAt: repo.CreatedAt,
 		UpdatedAt: repo.UpdatedAt,
 	}, nil
@@ -54,7 +54,7 @@ func (ur *UserRepository) GetUser(id int32) (*entity.User, error) {
 		Name:      repo.Name,
 		Email:     repo.Email,
 		Password:  repo.Password,
-		RoleId:    repo.RoleID,
+		RoleID:    repo.RoleID,
 		CreatedAt: repo.CreatedAt,
 		UpdatedAt: repo.UpdatedAt,
 	}, nil
@@ -71,7 +71,7 @@ func (ur *UserRepository) GetUserByEmail(email string) (*entity.User, error) {
 		Name:      repo.Name,
 		Email:     repo.Email,
 		Password:  repo.Password,
-		RoleId:    repo.RoleID,
+		RoleID:    repo.RoleID,
 		CreatedAt: repo.CreatedAt,
 		UpdatedAt: repo.UpdatedAt,
 	}, nil
@@ -92,7 +92,7 @@ func (ur *UserRepository) GetUsers(limit int32, offset int32) (users []*entity.U
 			Name:      u.Name,
 			Email:     u.Email,
 			Password:  u.Password,
-			RoleId:    u.RoleID,
+			RoleID:    u.RoleID,
 			CreatedAt: u.CreatedAt,
 			UpdatedAt: u.UpdatedAt,
 		})
@@ -108,7 +108,7 @@ func (ur *UserRepository) UpdateUser(user *entity.User, id int32) (*entity.User,
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
-		RoleID:   user.RoleId,
+		RoleID:   user.RoleID,
 	})
 	if err != nil {
 		return &entity.User{}, err
@@ -119,7 +119,7 @@ func (ur *UserRepository) UpdateUser(user *entity.User, id int32) (*entity.User,
 		Name:      u.Name,
 		Email:     u.Email,
 		Password:  u.Password,
-		RoleId:    u.RoleID,
+		RoleID:    u.RoleID,
 		CreatedAt: u.CreatedAt,
 		UpdatedAt: u.UpdatedAt,
 	}, nil
@@ -136,7 +136,7 @@ func (ur *UserRepository) DeleteUser(id int32) (*entity.User, error) {
 		Name:      u.Name,
 		Email:     u.Email,
 		Password:  u.Password,
-		RoleId:    u.RoleID,
+		RoleID:    u.RoleID,
 		CreatedAt: u.CreatedAt,
 		UpdatedAt: u.UpdatedAt,
 	}, nil

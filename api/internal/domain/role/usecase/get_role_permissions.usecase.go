@@ -29,7 +29,7 @@ func NewGetRolePermissionsUseCase(
 
 func (uc *GetRolePermissionsUseCase) Execute(input GetRolePermissionsInputDTO) (output GetRolePermissionsOutputDTO, err error) {
 	rolePermission := &RoleEntity.RolePermission{
-		RoleId: input.RoleID,
+		RoleID: input.RoleID,
 	}
 	rolePermission, err = uc.RolePermissionRepository.GetRolePermissions(rolePermission)
 	if err != nil {

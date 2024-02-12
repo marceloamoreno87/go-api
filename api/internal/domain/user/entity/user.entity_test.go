@@ -14,7 +14,7 @@ func TestNewUser(t *testing.T) {
 	assert.Equal(t, "Test User", user.GetName())
 	assert.Equal(t, "test@example.com", user.GetEmail())
 	assert.True(t, user.ComparePassword("password"))
-	assert.Equal(t, int32(1), user.GetRoleId())
+	assert.Equal(t, int32(1), user.GetRoleID())
 }
 
 func TestValidate(t *testing.T) {
@@ -22,7 +22,7 @@ func TestValidate(t *testing.T) {
 		Name:     "Test User",
 		Email:    "test@example.com",
 		Password: "password",
-		RoleId:   1,
+		RoleID:   1,
 	}
 	err := user.Validate()
 	assert.NoError(t, err)
@@ -42,18 +42,18 @@ func TestValidate(t *testing.T) {
 	assert.EqualError(t, err, "Password is required")
 
 	user.Password = "password"
-	user.RoleId = 0
+	user.RoleID = 0
 	err = user.Validate()
 	assert.EqualError(t, err, "Role is required")
 
-	user.RoleId = 1
+	user.RoleID = 1
 	err = user.Validate()
 	assert.NoError(t, err)
 
 	user.Name = ""
 	user.Email = ""
 	user.Password = ""
-	user.RoleId = 0
+	user.RoleID = 0
 	err = user.Validate()
 	assert.EqualError(t, err, "Name is required")
 
@@ -64,7 +64,7 @@ func TestIsEmailValid(t *testing.T) {
 		Name:     "Test User",
 		Email:    "test@example.com",
 		Password: "password",
-		RoleId:   1,
+		RoleID:   1,
 	}
 	valid, err := user.IsEmailValid()
 	assert.NoError(t, err)
@@ -81,4 +81,3 @@ func TestComparePassword(t *testing.T) {
 	assert.True(t, user.ComparePassword("password"))
 	assert.False(t, user.ComparePassword("wrongpassword"))
 }
-

@@ -14,7 +14,7 @@ type User struct {
 	Name      string       `json:"name"`
 	Email     string       `json:"email"`
 	Password  string       `json:"password"`
-	RoleId    int32        `json:"role_id"`
+	RoleID    int32        `json:"role_id"`
 	CreatedAt time.Time    `json:"created_at"`
 	UpdatedAt time.Time    `json:"updated_at"`
 	Role      *entity.Role `json:"role"`
@@ -25,7 +25,7 @@ func NewUser(name string, email string, password string, roleId int32) (user *Us
 		Name:     name,
 		Email:    email,
 		Password: password,
-		RoleId:   roleId,
+		RoleID:   roleId,
 	}
 	valid := user.Validate()
 	if valid != nil {
@@ -55,7 +55,7 @@ func (u *User) Validate() (err error) {
 	if u.Password == "" {
 		return errors.New("Password is required")
 	}
-	if u.RoleId == 0 {
+	if u.RoleID == 0 {
 		return errors.New("Role is required")
 	}
 	return
@@ -90,8 +90,8 @@ func (u *User) GetPassword() string {
 	return u.Password
 }
 
-func (u *User) GetRoleId() int32 {
-	return u.RoleId
+func (u *User) GetRoleID() int32 {
+	return u.RoleID
 }
 
 func (u *User) GetCreatedAt() time.Time {
@@ -122,8 +122,8 @@ func (u *User) SetPassword(password string) {
 	u.Password = password
 }
 
-func (u *User) SetRoleId(roleId int32) {
-	u.RoleId = roleId
+func (u *User) SetRoleID(roleId int32) {
+	u.RoleID = roleId
 }
 
 func (u *User) SetCreatedAt(createdAt time.Time) {

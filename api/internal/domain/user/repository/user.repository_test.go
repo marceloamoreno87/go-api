@@ -24,14 +24,14 @@ func TestCreateUser(t *testing.T) {
 		Name:     "Test",
 		Email:    "test@test.com",
 		Password: "123456",
-		RoleId:   1,
+		RoleID:   1,
 	}
 
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "password", "role_id", "created_at", "updated_at"}).
-		AddRow(user.ID, user.Name, user.Email, user.Password, user.RoleId, time.Now(), time.Now())
+		AddRow(user.ID, user.Name, user.Email, user.Password, user.RoleID, time.Now(), time.Now())
 
 	mock.ExpectQuery(`-- name: CreateUser :one INSERT INTO users \( name, email, password, role_id \) VALUES \( \$1, \$2, \$3, \$4 \) RETURNING id, name, email, password, role_id, created_at, updated_at`).
-		WithArgs(user.Name, user.Email, user.Password, user.RoleId).
+		WithArgs(user.Name, user.Email, user.Password, user.RoleID).
 		WillReturnRows(rows)
 
 	u, err := ur.CreateUser(user)
@@ -41,7 +41,7 @@ func TestCreateUser(t *testing.T) {
 	assert.Equal(t, user.Name, u.Name)
 	assert.Equal(t, user.Email, u.Email)
 	assert.Equal(t, user.Password, u.Password)
-	assert.Equal(t, user.RoleId, u.RoleId)
+	assert.Equal(t, user.RoleID, u.RoleID)
 }
 
 func TestGetUser(t *testing.T) {
@@ -58,11 +58,11 @@ func TestGetUser(t *testing.T) {
 		Name:     "Test",
 		Email:    "test@test.com",
 		Password: "123456",
-		RoleId:   1,
+		RoleID:   1,
 	}
 
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "password", "role_id", "created_at", "updated_at"}).
-		AddRow(user.ID, user.Name, user.Email, user.Password, user.RoleId, time.Now(), time.Now())
+		AddRow(user.ID, user.Name, user.Email, user.Password, user.RoleID, time.Now(), time.Now())
 
 	mock.ExpectQuery(`-- name: GetUser :one SELECT id, name, email, password, role_id, created_at, updated_at FROM users WHERE id = \$1`).
 		WithArgs(user.ID).
@@ -75,7 +75,7 @@ func TestGetUser(t *testing.T) {
 	assert.Equal(t, user.Name, u.Name)
 	assert.Equal(t, user.Email, u.Email)
 	assert.Equal(t, user.Password, u.Password)
-	assert.Equal(t, user.RoleId, u.RoleId)
+	assert.Equal(t, user.RoleID, u.RoleID)
 }
 
 func TestGetUserByEmail(t *testing.T) {
@@ -92,11 +92,11 @@ func TestGetUserByEmail(t *testing.T) {
 		Name:     "Test",
 		Email:    "test@test.com",
 		Password: "123456",
-		RoleId:   1,
+		RoleID:   1,
 	}
 
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "password", "role_id", "created_at", "updated_at"}).
-		AddRow(user.ID, user.Name, user.Email, user.Password, user.RoleId, time.Now(), time.Now())
+		AddRow(user.ID, user.Name, user.Email, user.Password, user.RoleID, time.Now(), time.Now())
 
 	mock.ExpectQuery(`-- name: GetUserByEmail :one SELECT id, name, email, password, role_id, created_at, updated_at FROM users WHERE email = \$1`).
 		WithArgs(user.Email).
@@ -109,7 +109,7 @@ func TestGetUserByEmail(t *testing.T) {
 	assert.Equal(t, user.Name, u.Name)
 	assert.Equal(t, user.Email, u.Email)
 	assert.Equal(t, user.Password, u.Password)
-	assert.Equal(t, user.RoleId, u.RoleId)
+	assert.Equal(t, user.RoleID, u.RoleID)
 }
 
 func TestDeleteUser(t *testing.T) {
@@ -126,10 +126,10 @@ func TestDeleteUser(t *testing.T) {
 		Name:     "Test",
 		Email:    "test@test.com",
 		Password: "123456",
-		RoleId:   1,
+		RoleID:   1,
 	}
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "password", "role_id", "created_at", "updated_at"}).
-		AddRow(user.ID, user.Name, user.Email, user.Password, user.RoleId, time.Now(), time.Now())
+		AddRow(user.ID, user.Name, user.Email, user.Password, user.RoleID, time.Now(), time.Now())
 
 	deleteUserSQL := `-- name: DeleteUser :one DELETE FROM users WHERE id = \$1 RETURNING id, name, email, password, role_id, created_at, updated_at`
 
@@ -144,7 +144,7 @@ func TestDeleteUser(t *testing.T) {
 	assert.Equal(t, user.Name, u.Name)
 	assert.Equal(t, user.Email, u.Email)
 	assert.Equal(t, user.Password, u.Password)
-	assert.Equal(t, user.RoleId, u.RoleId)
+	assert.Equal(t, user.RoleID, u.RoleID)
 
 }
 
@@ -161,15 +161,15 @@ func TestUpdateUser(t *testing.T) {
 		Name:     "Test",
 		Email:    "test@test.com",
 		Password: "123456",
-		RoleId:   1,
+		RoleID:   1,
 	}
 
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "password", "role_id", "created_at", "updated_at"}).
-		AddRow(1, user.Name, user.Email, user.Password, user.RoleId, time.Now(), time.Now())
+		AddRow(1, user.Name, user.Email, user.Password, user.RoleID, time.Now(), time.Now())
 
 	updateUserSQL := `-- name: UpdateUser :one UPDATE users SET name = \$1, email = \$2, password = \$3, role_id = \$4 WHERE id = \$5 RETURNING id, name, email, password, role_id, created_at, updated_at`
 	mock.ExpectQuery(updateUserSQL).
-		WithArgs(user.Name, user.Email, user.Password, user.RoleId, 1).
+		WithArgs(user.Name, user.Email, user.Password, user.RoleID, 1).
 		WillReturnRows(rows)
 
 	u, err := ur.UpdateUser(user, 1)
@@ -179,7 +179,7 @@ func TestUpdateUser(t *testing.T) {
 	assert.Equal(t, user.Name, u.Name)
 	assert.Equal(t, user.Email, u.Email)
 	assert.Equal(t, user.Password, u.Password)
-	assert.Equal(t, user.RoleId, u.RoleId)
+	assert.Equal(t, user.RoleID, u.RoleID)
 
 }
 
@@ -197,11 +197,11 @@ func TestGetUsers(t *testing.T) {
 		Name:     "Test",
 		Email:    "test@teste.com",
 		Password: "123456",
-		RoleId:   1,
+		RoleID:   1,
 	}
 
 	rows := sqlmock.NewRows([]string{"id", "name", "email", "password", "role_id", "created_at", "updated_at"}).
-		AddRow(user.ID, user.Name, user.Email, user.Password, user.RoleId, time.Now(), time.Now())
+		AddRow(user.ID, user.Name, user.Email, user.Password, user.RoleID, time.Now(), time.Now())
 
 	mock.ExpectQuery(`-- name: GetUsers :many SELECT id, name, email, password, role_id, created_at, updated_at FROM users ORDER BY id ASC LIMIT \$1 OFFSET \$2`).
 		WithArgs(int32(10), int32(0)).
@@ -215,5 +215,5 @@ func TestGetUsers(t *testing.T) {
 	assert.Equal(t, user.Name, users[0].Name)
 	assert.Equal(t, user.Email, users[0].Email)
 	assert.Equal(t, user.Password, users[0].Password)
-	assert.Equal(t, user.RoleId, users[0].RoleId)
+	assert.Equal(t, user.RoleID, users[0].RoleID)
 }

@@ -14,7 +14,7 @@ type DeleteUserOutputDTO struct {
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`
-	RoleId    int32     `json:"role_id"`
+	RoleID    int32     `json:"role_id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -44,7 +44,7 @@ func (uc *DeleteUserUseCase) Execute(input DeleteUserInputDTO) (output DeleteUse
 		Name:      u.Name,
 		Email:     u.Email,
 		Password:  u.Password,
-		RoleId:    u.RoleId,
+		RoleID:    u.RoleID,
 		CreatedAt: u.CreatedAt,
 		UpdatedAt: u.UpdatedAt,
 	}

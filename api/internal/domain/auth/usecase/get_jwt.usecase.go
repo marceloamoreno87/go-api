@@ -47,7 +47,7 @@ func (uc *GetJWTUseCase) Execute(input GetJWTInputDTO) (output GetJWTOutputDTO, 
 		Name:      user.Name,
 		Email:     user.Email,
 		Password:  user.Password,
-		RoleId:    user.RoleId,
+		RoleID:    user.RoleID,
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 	}
