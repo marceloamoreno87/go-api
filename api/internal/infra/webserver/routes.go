@@ -83,11 +83,12 @@ func (r *Route) GetPermissionRoutes(router chi.Router) {
 }
 
 func (r *Route) GetRolePermissionRoutes(router chi.Router) {
-	RoleRepository := RoleRepository.NewRoleRepository(r.DBConn)
-	PermissionRepository := PermissionRepository.NewPermissionRepository(r.DBConn)
-	RolePermissionHandler := RoleHandler.NewRolePermissionHandler(RoleRepository, PermissionRepository, r.HandlerTools)
+	RolePermissionRepository := RoleRepository.NewRolePermissionRepository(r.DBConn)
+	RolePermissionHandler := RoleHandler.NewRolePermissionHandler(RolePermissionRepository, r.HandlerTools)
 	router.Route("/role/{id}", func(r chi.Router) {
+		r.Get("/permission", RolePermissionHandler.GetRolePermissions)
 		r.Post("/permission", RolePermissionHandler.CreateRolePermission)
+		r.Put("/permission", RolePermissionHandler.UpdateRolePermission)
 	})
 }
 

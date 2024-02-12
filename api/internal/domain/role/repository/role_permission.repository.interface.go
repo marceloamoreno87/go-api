@@ -1,9 +1,9 @@
 package repository
 
-import (
-	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
-)
+import "github.com/marceloamoreno/goapi/internal/domain/role/entity"
 
 type RolePermissionRepositoryInterface interface {
-	CreateRolePermission(rolePermission *entity.RolePermission) (*entity.RolePermission, error)
+	GetRolePermissions(rolePermission *entity.RolePermission) (rolePermissions *entity.RolePermission, err error)
+	CreateRolePermission(rolePermission *entity.RolePermission) (rolePermissions *entity.RolePermission, err error)
+	UpdateRolePermission(rolePermission *entity.RolePermission) (rolePermissions *entity.RolePermission, err error)
 }

@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"time"
 )
 
 const createPermission = `-- name: CreatePermission :one
@@ -172,20 +173,17 @@ func (q *Queries) DeleteRole(ctx context.Context, id int32) (Role, error) {
 	return i, err
 }
 
-const deleteRolePermission = `-- name: DeleteRolePermission :exec
+const deleteRolePermission = `-- name: DeleteRolePermission :one
 DELETE FROM role_permissions
-WHERE role_id = $1 AND permission_id = $2
+WHERE role_id = $1 
 RETURNING role_id, permission_id
 `
 
-type DeleteRolePermissionParams struct {
-	RoleID       int32 `json:"role_id"`
-	PermissionID int32 `json:"permission_id"`
-}
-
-func (q *Queries) DeleteRolePermission(ctx context.Context, arg DeleteRolePermissionParams) error {
-	_, err := q.db.ExecContext(ctx, deleteRolePermission, arg.RoleID, arg.PermissionID)
-	return err
+func (q *Queries) DeleteRolePermission(ctx context.Context, roleID int32) (RolePermission, error) {
+	row := q.db.QueryRowContext(ctx, deleteRolePermission, roleID)
+	var i RolePermission
+	err := row.Scan(&i.RoleID, &i.PermissionID)
+	return i, err
 }
 
 const deleteUser = `-- name: DeleteUser :one
@@ -326,116 +324,56 @@ func (q *Queries) GetRoleByInternalName(ctx context.Context, internalName string
 	return i, err
 }
 
-const getRolePermission = `-- name: GetRolePermission :one
-SELECT role_id, permission_id FROM role_permissions
-WHERE role_id = $1 AND permission_id = $2 LIMIT 1
-`
-
-type GetRolePermissionParams struct {
-	RoleID       int32 `json:"role_id"`
-	PermissionID int32 `json:"permission_id"`
-}
-
-func (q *Queries) GetRolePermission(ctx context.Context, arg GetRolePermissionParams) (RolePermission, error) {
-	row := q.db.QueryRowContext(ctx, getRolePermission, arg.RoleID, arg.PermissionID)
-	var i RolePermission
-	err := row.Scan(&i.RoleID, &i.PermissionID)
-	return i, err
-}
-
 const getRolePermissions = `-- name: GetRolePermissions :many
-SELECT role_id, permission_id FROM role_permissions
-ORDER BY role_id ASC, permission_id ASC
-LIMIT $1 OFFSET $2
-`
-
-type GetRolePermissionsParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
-}
-
-func (q *Queries) GetRolePermissions(ctx context.Context, arg GetRolePermissionsParams) ([]RolePermission, error) {
-	rows, err := q.db.QueryContext(ctx, getRolePermissions, arg.Limit, arg.Offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []RolePermission{}
-	for rows.Next() {
-		var i RolePermission
-		if err := rows.Scan(&i.RoleID, &i.PermissionID); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getRolePermissionsByPermissionId = `-- name: GetRolePermissionsByPermissionId :many
-SELECT role_id, permission_id FROM role_permissions
-WHERE permission_id = $1
-ORDER BY role_id ASC
-LIMIT $2 OFFSET $3
-`
-
-type GetRolePermissionsByPermissionIdParams struct {
-	PermissionID int32 `json:"permission_id"`
-	Limit        int32 `json:"limit"`
-	Offset       int32 `json:"offset"`
-}
-
-func (q *Queries) GetRolePermissionsByPermissionId(ctx context.Context, arg GetRolePermissionsByPermissionIdParams) ([]RolePermission, error) {
-	rows, err := q.db.QueryContext(ctx, getRolePermissionsByPermissionId, arg.PermissionID, arg.Limit, arg.Offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []RolePermission{}
-	for rows.Next() {
-		var i RolePermission
-		if err := rows.Scan(&i.RoleID, &i.PermissionID); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getRolePermissionsByRoleId = `-- name: GetRolePermissionsByRoleId :many
-SELECT role_id, permission_id FROM role_permissions
+SELECT role_id, permission_id, permissions.id, permissions.name, permissions.internal_name, permissions.description, permissions.created_at, permissions.updated_at, roles.id, roles.name, roles.internal_name, roles.description, roles.created_at, roles.updated_at FROM role_permissions
+INNER JOIN permissions ON role_permissions.permission_id = permissions.id
+INNER JOIN roles ON role_permissions.role_id = roles.id
 WHERE role_id = $1
 ORDER BY permission_id ASC
-LIMIT $2 OFFSET $3
 `
 
-type GetRolePermissionsByRoleIdParams struct {
-	RoleID int32 `json:"role_id"`
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+type GetRolePermissionsRow struct {
+	RoleID         int32     `json:"role_id"`
+	PermissionID   int32     `json:"permission_id"`
+	ID             int32     `json:"id"`
+	Name           string    `json:"name"`
+	InternalName   string    `json:"internal_name"`
+	Description    string    `json:"description"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
+	ID_2           int32     `json:"id_2"`
+	Name_2         string    `json:"name_2"`
+	InternalName_2 string    `json:"internal_name_2"`
+	Description_2  string    `json:"description_2"`
+	CreatedAt_2    time.Time `json:"created_at_2"`
+	UpdatedAt_2    time.Time `json:"updated_at_2"`
 }
 
-func (q *Queries) GetRolePermissionsByRoleId(ctx context.Context, arg GetRolePermissionsByRoleIdParams) ([]RolePermission, error) {
-	rows, err := q.db.QueryContext(ctx, getRolePermissionsByRoleId, arg.RoleID, arg.Limit, arg.Offset)
+func (q *Queries) GetRolePermissions(ctx context.Context, roleID int32) ([]GetRolePermissionsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getRolePermissions, roleID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []RolePermission{}
+	items := []GetRolePermissionsRow{}
 	for rows.Next() {
-		var i RolePermission
-		if err := rows.Scan(&i.RoleID, &i.PermissionID); err != nil {
+		var i GetRolePermissionsRow
+		if err := rows.Scan(
+			&i.RoleID,
+			&i.PermissionID,
+			&i.ID,
+			&i.Name,
+			&i.InternalName,
+			&i.Description,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.ID_2,
+			&i.Name_2,
+			&i.InternalName_2,
+			&i.Description_2,
+			&i.CreatedAt_2,
+			&i.UpdatedAt_2,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

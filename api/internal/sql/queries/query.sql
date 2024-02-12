@@ -108,15 +108,6 @@ DELETE FROM permissions
 WHERE id = $1
 RETURNING *;
 
--- name: GetRolePermission :one
-SELECT * FROM role_permissions
-WHERE role_id = $1 AND permission_id = $2 LIMIT 1;
-
--- name: GetRolePermissions :many
-SELECT * FROM role_permissions
-ORDER BY role_id ASC, permission_id ASC
-LIMIT $1 OFFSET $2;
-
 -- name: CreateRolePermission :one
 INSERT INTO role_permissions (
   role_id,
@@ -126,19 +117,14 @@ INSERT INTO role_permissions (
 )
 RETURNING *;
 
--- name: DeleteRolePermission :exec
-DELETE FROM role_permissions
-WHERE role_id = $1 AND permission_id = $2
-RETURNING *;
-
--- name: GetRolePermissionsByRoleId :many
+-- name: GetRolePermissions :many
 SELECT * FROM role_permissions
+INNER JOIN permissions ON role_permissions.permission_id = permissions.id
+INNER JOIN roles ON role_permissions.role_id = roles.id
 WHERE role_id = $1
-ORDER BY permission_id ASC
-LIMIT $2 OFFSET $3;
+ORDER BY permission_id ASC;
 
--- name: GetRolePermissionsByPermissionId :many
-SELECT * FROM role_permissions
-WHERE permission_id = $1
-ORDER BY role_id ASC
-LIMIT $2 OFFSET $3;
+-- name: DeleteRolePermission :one
+DELETE FROM role_permissions
+WHERE role_id = $1 
+RETURNING *;
