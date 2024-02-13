@@ -13,13 +13,6 @@ type UpdateRolePermissionInputDTO struct {
 	PermissionID []int32 `json:"permission_id"`
 }
 
-type UpdateRolePermissionOutputDTO struct {
-	RoleID       int32                          `json:"role_id"`
-	PermissionID []int32                        `json:"permission_id"`
-	Role         RoleEntity.Role                `json:"role"`
-	Permission   []*PermissionEntity.Permission `json:"permission"`
-}
-
 type UpdateRolePermissionUseCase struct {
 	RolePermissionRepository RoleRepository.RolePermissionRepositoryInterface
 	PermissionReposity       PermissionRepository.PermissionRepositoryInterface
@@ -33,21 +26,14 @@ func NewUpdateRolePermissionUseCase(
 	}
 }
 
-func (uc *UpdateRolePermissionUseCase) Execute(input UpdateRolePermissionInputDTO) (output UpdateRolePermissionOutputDTO, err error) {
+func (uc *UpdateRolePermissionUseCase) Execute(input UpdateRolePermissionInputDTO) (err error) {
 	rolePermission, err := RolePermissionEntity.NewRolePermission(&RoleEntity.Role{ID: input.RoleID}, []*PermissionEntity.Permission{})
 	if err != nil {
-		return UpdateRolePermissionOutputDTO{}, err
+		return
 	}
 	rolePermission, err = uc.RolePermissionRepository.UpdateRolePermission(rolePermission)
 	if err != nil {
-		return UpdateRolePermissionOutputDTO{}, err
-	}
-
-	output = UpdateRolePermissionOutputDTO{
-		RoleID:       rolePermission.Role.ID,
-		PermissionID: input.PermissionID,
-		Role:         *rolePermission.Role,
-		Permission:   rolePermission.Permissions,
+		return
 	}
 
 	return

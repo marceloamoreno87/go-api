@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"errors"
 	"strconv"
 	"time"
 
@@ -17,10 +16,10 @@ func NewAuth() *Auth {
 	return &Auth{}
 }
 
-func (a *Auth) NewToken(tokenAuth *jwtauth.JWTAuth, jwtExpiresIn string, id int32) error {
+func (a *Auth) NewToken(tokenAuth *jwtauth.JWTAuth, jwtExpiresIn string, id int32) (err error) {
 	jwtExpiresInInt, err := strconv.Atoi(jwtExpiresIn)
 	if err != nil {
-		return errors.New("not authorized")
+		return
 	}
 
 	_, tokenString, err := tokenAuth.Encode(map[string]interface{}{
@@ -29,27 +28,27 @@ func (a *Auth) NewToken(tokenAuth *jwtauth.JWTAuth, jwtExpiresIn string, id int3
 	})
 
 	if err != nil {
-		return errors.New("not authorized")
+		return
 	}
 
 	a.SetToken(tokenString)
-	return nil
+	return
 }
 
-func (a *Auth) RefreshToken(tokenAuth *jwtauth.JWTAuth, token string) error {
+func (a *Auth) RefreshToken(tokenAuth *jwtauth.JWTAuth, token string) (err error) {
 	tokenString, err := tokenAuth.Decode(token)
 	if err != nil {
-		return errors.New("not authorized")
+		return
 	}
 
 	idStr, bool := tokenString.Get("id")
 	if !bool {
-		return errors.New("not authorized")
+		return
 	}
 
 	idInt32 := int32(idStr.(float64))
 	a.SetID(idInt32)
-	return nil
+	return
 }
 
 func (a *Auth) GetToken() string {

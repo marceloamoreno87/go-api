@@ -31,7 +31,7 @@ func (uc *GetRolePermissionsUseCase) Execute(input GetRolePermissionsInputDTO) (
 	rolePermission := &RoleEntity.RolePermission{
 		RoleID: input.RoleID,
 	}
-	rolePermission, err = uc.RolePermissionRepository.GetRolePermissions(rolePermission)
+	rolePermission, err = uc.RolePermissionRepository.GetRolePermissions(input.RoleID)
 	if err != nil {
 		return GetRolePermissionsOutputDTO{}, err
 	}

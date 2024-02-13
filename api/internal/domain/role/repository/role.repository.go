@@ -5,7 +5,6 @@ import (
 	"database/sql"
 
 	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
-	"github.com/marceloamoreno/goapi/pkg/api"
 	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
 )
 
@@ -63,10 +62,10 @@ func (repo *RoleRepository) GetRoleByInternalName(internal_name string) (*entity
 	}, nil
 }
 
-func (repo *RoleRepository) GetRoles(page *api.Paginate) (roles []*entity.Role, err error) {
+func (repo *RoleRepository) GetRoles(limit int32, offset int32) (roles []*entity.Role, err error) {
 	rs, err := repo.DBQueries.GetRoles(context.Background(), db.GetRolesParams{
-		Limit:  page.Limit,
-		Offset: page.Offset,
+		Limit:  limit,
+		Offset: offset,
 	})
 	if err != nil {
 		return

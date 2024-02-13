@@ -5,7 +5,6 @@ import (
 	"time"
 )
 
-// Permission Entity
 type Permission struct {
 	ID           int32     `json:"id"`
 	Name         string    `json:"name"`
@@ -22,9 +21,9 @@ func NewPermission(name string, internalName string, description string) (permis
 		Description:  description,
 	}
 
-	valid := permission.Validate()
-	if valid != nil {
-		return nil, valid
+	err = permission.Validate()
+	if err != nil {
+		return
 	}
 
 	return

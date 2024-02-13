@@ -32,7 +32,7 @@ func NewGetPermissionUseCase(permissionRepository repository.PermissionRepositor
 func (uc *GetPermissionUseCase) Execute(input GetPermissionInputDTO) (output GetPermissionOutputDTO, err error) {
 	permission, err := uc.PermissionRepository.GetPermission(input.ID)
 	if err != nil {
-		return GetPermissionOutputDTO{}, err
+		return
 	}
 
 	output = GetPermissionOutputDTO{

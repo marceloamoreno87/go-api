@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"errors"
-
 	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/auth/entity"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -29,22 +27,22 @@ func NewGetRefreshJWTUseCase(userRepository repository.UserRepositoryInterface) 
 func (uc *GetRefreshJWTUseCase) Execute(input GetRefreshJWTInputDTO) (output GetRefreshJWTOutputDTO, err error) {
 	auth := entity.NewAuth()
 	if err != nil {
-		return GetRefreshJWTOutputDTO{}, errors.New("not authorized")
+		return
 	}
 
 	err = auth.RefreshToken(config.TokenAuth, input.Token)
 	if err != nil {
-		return GetRefreshJWTOutputDTO{}, errors.New("not authorized")
+		return
 	}
 
 	user, err := uc.UserRepository.GetUser(auth.GetID())
 	if err != nil {
-		return GetRefreshJWTOutputDTO{}, errors.New("not authorized")
+		return
 	}
 
 	err = auth.NewToken(config.TokenAuth, config.Environment.JWTExpiresIn, user.GetID())
 	if err != nil {
-		return GetRefreshJWTOutputDTO{}, errors.New("not authorized")
+		return
 	}
 
 	output = GetRefreshJWTOutputDTO{

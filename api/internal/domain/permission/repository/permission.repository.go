@@ -5,7 +5,6 @@ import (
 	"database/sql"
 
 	"github.com/marceloamoreno/goapi/internal/domain/permission/entity"
-	"github.com/marceloamoreno/goapi/pkg/api"
 	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
 )
 
@@ -33,7 +32,7 @@ func (repo *PermissionRepository) CreatePermission(permission *entity.Permission
 	return
 }
 
-func (repo *PermissionRepository) GetPermission(id int32) (*entity.Permission, error) {
+func (repo *PermissionRepository) GetPermission(id int32) (permission *entity.Permission, err error) {
 	p, err := repo.DBQueries.GetPermission(context.Background(), id)
 	if err != nil {
 		return &entity.Permission{}, err
@@ -48,10 +47,10 @@ func (repo *PermissionRepository) GetPermission(id int32) (*entity.Permission, e
 	}, nil
 }
 
-func (repo *PermissionRepository) GetPermissions(page *api.Paginate) (permissions []*entity.Permission, err error) {
+func (repo *PermissionRepository) GetPermissions(limit int32, offset int32) (permissions []*entity.Permission, err error) {
 	ps, err := repo.DBQueries.GetPermissions(context.Background(), db.GetPermissionsParams{
-		Limit:  page.Limit,
-		Offset: page.Offset,
+		Limit:  limit,
+		Offset: offset,
 	})
 	if err != nil {
 		return
@@ -69,7 +68,7 @@ func (repo *PermissionRepository) GetPermissions(page *api.Paginate) (permission
 	return
 }
 
-func (repo *PermissionRepository) UpdatePermission(permission *entity.Permission) (err error) {
+func (repo *PermissionRepository) UpdatePermission(permission *entity.Permission, id int32) (err error) {
 	err = repo.DBQueries.UpdatePermission(context.Background(), db.UpdatePermissionParams{
 		ID:           permission.ID,
 		Name:         permission.Name,
@@ -90,7 +89,7 @@ func (repo *PermissionRepository) DeletePermission(id int32) (err error) {
 	return
 }
 
-func (repo *PermissionRepository) GetPermissionByInternalName(internal_name string) (*entity.Permission, error) {
+func (repo *PermissionRepository) GetPermissionByInternalName(internal_name string) (permission *entity.Permission, err error) {
 	p, err := repo.DBQueries.GetPermissionByInternalName(context.Background(), internal_name)
 	if err != nil {
 		return &entity.Permission{}, err

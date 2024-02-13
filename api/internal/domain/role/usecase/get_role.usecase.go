@@ -33,7 +33,7 @@ func (uc *GetRoleUseCase) Execute(input GetRoleInputDTO) (output GetRoleOutputDT
 
 	role, err := uc.RoleRepository.GetRole(input.ID)
 	if err != nil {
-		return GetRoleOutputDTO{}, err
+		return
 	}
 
 	output = GetRoleOutputDTO{

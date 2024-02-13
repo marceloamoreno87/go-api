@@ -1,7 +1,7 @@
 package usecase
 
 type CreateRolePermissionsUseCaseInterface interface {
-	Execute(input CreateRolePermissionInputDTO) (output CreateRolePermissionOutputDTO, err error)
+	Execute(input CreateRolePermissionInputDTO) (err error)
 }
 
 type GetRolePermissionUseCaseInterface interface {
@@ -9,5 +9,5 @@ type GetRolePermissionUseCaseInterface interface {
 }
 
 type UpdateRolePermissionUseCaseInterface interface {
-	Execute(input UpdateRolePermissionInputDTO) (output UpdateRolePermissionOutputDTO, err error)
+	Execute(input UpdateRolePermissionInputDTO) (err error)
 }

@@ -5,7 +5,6 @@ import (
 	"database/sql"
 
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
-	"github.com/marceloamoreno/goapi/pkg/api"
 	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
 )
 
@@ -67,10 +66,10 @@ func (repo *UserRepository) GetUserByEmail(email string) (*entity.User, error) {
 	}, nil
 }
 
-func (repo *UserRepository) GetUsers(page *api.Paginate) (users []*entity.User, err error) {
+func (repo *UserRepository) GetUsers(limit int32, offset int32) (users []*entity.User, err error) {
 	us, err := repo.DBQueries.GetUsers(context.Background(), db.GetUsersParams{
-		Limit:  page.Limit,
-		Offset: page.Offset,
+		Limit:  limit,
+		Offset: offset,
 	})
 	if err != nil {
 		return

@@ -32,25 +32,15 @@ func NewCreateRoleUseCase(roleRepository repository.RoleRepositoryInterface) *Cr
 	}
 }
 
-func (uc *CreateRoleUseCase) Execute(input CreateRoleInputDTO) (output CreateRoleOutputDTO, err error) {
-
+func (uc *CreateRoleUseCase) Execute(input CreateRoleInputDTO) (err error) {
 	role, err := entity.NewRole(input.Name, input.InternalName, input.Description)
 	if err != nil {
-		return CreateRoleOutputDTO{}, err
+		return
 	}
 
-	u, err := uc.RoleRepository.CreateRole(role)
+	err = uc.RoleRepository.CreateRole(role)
 	if err != nil {
-		return CreateRoleOutputDTO{}, err
-	}
-
-	output = CreateRoleOutputDTO{
-		ID:           u.ID,
-		Name:         u.Name,
-		InternalName: u.InternalName,
-		Description:  u.Description,
-		CreatedAt:    u.CreatedAt,
-		UpdatedAt:    u.UpdatedAt,
+		return
 	}
 
 	return

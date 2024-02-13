@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"errors"
-
 	"github.com/marceloamoreno/goapi/config"
 	AuthEntity "github.com/marceloamoreno/goapi/internal/domain/auth/entity"
 	UserEntity "github.com/marceloamoreno/goapi/internal/domain/user/entity"
@@ -34,12 +32,12 @@ func (uc *GetJWTUseCase) Execute(input GetJWTInputDTO) (output GetJWTOutputDTO, 
 
 	auth := AuthEntity.NewAuth()
 	if err != nil {
-		return GetJWTOutputDTO{}, err
+		return
 	}
-
-	user, err := uc.GetUserByEmailUseCase.Execute(usecase.GetUserByEmailInputDTO{Email: input.Email})
+	dto := usecase.GetUserByEmailInputDTO{Email: input.Email}
+	user, err := uc.GetUserByEmailUseCase.Execute(dto)
 	if err != nil {
-		return GetJWTOutputDTO{}, errors.New("not authorized")
+		return
 	}
 
 	newUser := &UserEntity.User{
@@ -53,17 +51,14 @@ func (uc *GetJWTUseCase) Execute(input GetJWTInputDTO) (output GetJWTOutputDTO, 
 	}
 
 	if !newUser.ComparePassword(input.Password) {
-		return GetJWTOutputDTO{}, errors.New("not authorized")
+		return
 	}
 
 	err = auth.NewToken(config.TokenAuth, config.Environment.JWTExpiresIn, newUser.GetID())
 	if err != nil {
-		return GetJWTOutputDTO{}, errors.New("not authorized")
+		return
 	}
 
-	output = GetJWTOutputDTO{
-		Token: auth.GetToken(),
-	}
-
+	output.Token = auth.GetToken()
 	return
 }

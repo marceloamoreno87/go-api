@@ -32,7 +32,7 @@ func NewGetPermissionByInternalNameUseCase(permissionRepository repository.Permi
 func (uc *GetPermissionByInternalNameUseCase) Execute(input GetPermissionByInternalNameInputDTO) (output GetPermissionByInternalNameOutputDTO, err error) {
 	permission, err := uc.PermissionRepository.GetPermissionByInternalName(input.InternalName)
 	if err != nil {
-		return GetPermissionByInternalNameOutputDTO{}, err
+		return
 	}
 
 	output = GetPermissionByInternalNameOutputDTO{

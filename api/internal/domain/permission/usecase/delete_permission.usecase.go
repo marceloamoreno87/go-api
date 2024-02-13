@@ -29,24 +29,16 @@ func NewDeletePermissionUseCase(permissionRepository repository.PermissionReposi
 	}
 }
 
-func (uc *DeletePermissionUseCase) Execute(input DeletePermissionInputDTO) (output DeletePermissionOutputDTO, err error) {
+func (uc *DeletePermissionUseCase) Execute(input DeletePermissionInputDTO) (err error) {
 	permission, err := uc.PermissionRepository.GetPermission(input.ID)
 	if err != nil {
-		return DeletePermissionOutputDTO{}, err
+		return
 	}
 
-	u, err := uc.PermissionRepository.DeletePermission(permission.GetID())
+	err = uc.PermissionRepository.DeletePermission(permission.GetID())
 	if err != nil {
-		return DeletePermissionOutputDTO{}, err
+		return
 	}
 
-	output = DeletePermissionOutputDTO{
-		ID:           u.ID,
-		Name:         u.Name,
-		InternalName: u.InternalName,
-		Description:  u.Description,
-		CreatedAt:    u.CreatedAt,
-		UpdatedAt:    u.UpdatedAt,
-	}
 	return
 }
