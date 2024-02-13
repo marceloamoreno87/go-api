@@ -5,6 +5,7 @@ import (
 	"database/sql"
 
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
+	"github.com/marceloamoreno/goapi/pkg/api"
 	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
 )
 
@@ -20,73 +21,61 @@ func NewUserRepository(DBConn *sql.DB) *UserRepository {
 	}
 }
 
-func (ur *UserRepository) CreateUser(user *entity.User) (*entity.User, error) {
-	repo, err := ur.DBQueries.CreateUser(context.Background(), db.CreateUserParams{
+func (repo *UserRepository) CreateUser(user *entity.User) (err error) {
+	err = repo.DBQueries.CreateUser(context.Background(), db.CreateUserParams{
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
 		RoleID:   user.RoleID,
 	})
 	if err != nil {
-		return &entity.User{}, err
+		return
 	}
-
-	return &entity.User{
-		ID:        repo.ID,
-		Name:      repo.Name,
-		Email:     repo.Email,
-		Password:  repo.Password,
-		RoleID:    repo.RoleID,
-		CreatedAt: repo.CreatedAt,
-		UpdatedAt: repo.UpdatedAt,
-	}, nil
+	return
 }
 
-func (ur *UserRepository) GetUser(id int32) (*entity.User, error) {
-
-	repo, err := ur.DBQueries.GetUser(context.Background(), id)
+func (repo *UserRepository) GetUser(id int32) (*entity.User, error) {
+	u, err := repo.DBQueries.GetUser(context.Background(), id)
 	if err != nil {
 		return &entity.User{}, err
 	}
 
 	return &entity.User{
-		ID:        repo.ID,
-		Name:      repo.Name,
-		Email:     repo.Email,
-		Password:  repo.Password,
-		RoleID:    repo.RoleID,
-		CreatedAt: repo.CreatedAt,
-		UpdatedAt: repo.UpdatedAt,
+		ID:        u.ID,
+		Name:      u.Name,
+		Email:     u.Email,
+		Password:  u.Password,
+		RoleID:    u.RoleID,
+		CreatedAt: u.CreatedAt,
+		UpdatedAt: u.UpdatedAt,
 	}, nil
 }
 
-func (ur *UserRepository) GetUserByEmail(email string) (*entity.User, error) {
-	repo, err := ur.DBQueries.GetUserByEmail(context.Background(), email)
+func (repo *UserRepository) GetUserByEmail(email string) (*entity.User, error) {
+	u, err := repo.DBQueries.GetUserByEmail(context.Background(), email)
 	if err != nil {
 		return &entity.User{}, err
 	}
-
 	return &entity.User{
-		ID:        repo.ID,
-		Name:      repo.Name,
-		Email:     repo.Email,
-		Password:  repo.Password,
-		RoleID:    repo.RoleID,
-		CreatedAt: repo.CreatedAt,
-		UpdatedAt: repo.UpdatedAt,
+		ID:        u.ID,
+		Name:      u.Name,
+		Email:     u.Email,
+		Password:  u.Password,
+		RoleID:    u.RoleID,
+		CreatedAt: u.CreatedAt,
+		UpdatedAt: u.UpdatedAt,
 	}, nil
 }
 
-func (ur *UserRepository) GetUsers(limit int32, offset int32) (users []*entity.User, err error) {
-	repo, err := ur.DBQueries.GetUsers(context.Background(), db.GetUsersParams{
-		Limit:  limit,
-		Offset: offset,
+func (repo *UserRepository) GetUsers(page *api.Paginate) (users []*entity.User, err error) {
+	us, err := repo.DBQueries.GetUsers(context.Background(), db.GetUsersParams{
+		Limit:  page.Limit,
+		Offset: page.Offset,
 	})
 	if err != nil {
-		return []*entity.User{}, err
+		return
 	}
-
-	for _, u := range repo {
+	for _, u := range us {
 		users = append(users, &entity.User{
 			ID:        u.ID,
 			Name:      u.Name,
@@ -97,13 +86,11 @@ func (ur *UserRepository) GetUsers(limit int32, offset int32) (users []*entity.U
 			UpdatedAt: u.UpdatedAt,
 		})
 	}
-
 	return
 }
 
-func (ur *UserRepository) UpdateUser(user *entity.User, id int32) (*entity.User, error) {
-
-	u, err := ur.DBQueries.UpdateUser(context.Background(), db.UpdateUserParams{
+func (repo *UserRepository) UpdateUser(user *entity.User, id int32) (err error) {
+	err = repo.DBQueries.UpdateUser(context.Background(), db.UpdateUserParams{
 		ID:       id,
 		Name:     user.Name,
 		Email:    user.Email,
@@ -111,33 +98,15 @@ func (ur *UserRepository) UpdateUser(user *entity.User, id int32) (*entity.User,
 		RoleID:   user.RoleID,
 	})
 	if err != nil {
-		return &entity.User{}, err
+		return
 	}
-
-	return &entity.User{
-		ID:        u.ID,
-		Name:      u.Name,
-		Email:     u.Email,
-		Password:  u.Password,
-		RoleID:    u.RoleID,
-		CreatedAt: u.CreatedAt,
-		UpdatedAt: u.UpdatedAt,
-	}, nil
+	return
 }
 
-func (ur *UserRepository) DeleteUser(id int32) (*entity.User, error) {
-	u, err := ur.DBQueries.DeleteUser(context.Background(), id)
-
+func (repo *UserRepository) DeleteUser(id int32) (err error) {
+	err = repo.DBQueries.DeleteUser(context.Background(), id)
 	if err != nil {
-		return &entity.User{}, err
+		return
 	}
-	return &entity.User{
-		ID:        u.ID,
-		Name:      u.Name,
-		Email:     u.Email,
-		Password:  u.Password,
-		RoleID:    u.RoleID,
-		CreatedAt: u.CreatedAt,
-		UpdatedAt: u.UpdatedAt,
-	}, nil
+	return
 }

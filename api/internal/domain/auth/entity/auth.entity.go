@@ -10,7 +10,7 @@ import (
 
 type Auth struct {
 	Token string `json:"token"`
-	Id    int32  `json:"id"`
+	ID    int32  `json:"id"`
 }
 
 func NewAuth() *Auth {
@@ -48,7 +48,7 @@ func (a *Auth) RefreshToken(tokenAuth *jwtauth.JWTAuth, token string) error {
 	}
 
 	idInt32 := int32(idStr.(float64))
-	a.SetId(idInt32)
+	a.SetID(idInt32)
 	return nil
 }
 
@@ -60,10 +60,10 @@ func (a *Auth) SetToken(token string) {
 	a.Token = token
 }
 
-func (a *Auth) GetId() int32 {
-	return a.Id
+func (a *Auth) GetID() int32 {
+	return a.ID
 }
 
-func (a *Auth) SetId(id int32) {
-	a.Id = id
+func (a *Auth) SetID(id int32) {
+	a.ID = id
 }

@@ -6,7 +6,6 @@ import (
 
 	PermissionEntity "github.com/marceloamoreno/goapi/internal/domain/permission/entity"
 	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
-	RoleEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
 )
 
@@ -22,25 +21,22 @@ func NewRolePermissionRepository(DBConn *sql.DB) *RolePermissionRepository {
 	}
 }
 
-func (r *RolePermissionRepository) GetRolePermissions(rolePermission *RoleEntity.RolePermission) (rolePermissions *RoleEntity.RolePermission, err error) {
-	repo, err := r.DBQueries.GetRolePermissions(context.Background(), rolePermission.RoleID)
+func (repo *RolePermissionRepository) GetRolePermissions(id int32) (rolePermissions *entity.RolePermission, err error) {
+	rps, err := repo.DBQueries.GetRolePermissions(context.Background(), id)
 	if err != nil {
 		return nil, err
 	}
-
-	rolePermissions = &RoleEntity.RolePermission{
-		Role: &entity.Role{
-			ID:           repo[0].RoleID,
-			Name:         repo[0].Name,
-			Description:  repo[0].Description,
-			InternalName: repo[0].InternalName,
-			CreatedAt:    repo[0].CreatedAt,
-			UpdatedAt:    repo[0].UpdatedAt,
-		},
+	rolePermissions.Role = &entity.Role{
+		ID:           rps[0].RoleID,
+		Name:         rps[0].Name,
+		Description:  rps[0].Description,
+		InternalName: rps[0].InternalName,
+		CreatedAt:    rps[0].CreatedAt,
+		UpdatedAt:    rps[0].UpdatedAt,
 	}
 
-	rolePermissions.Permissions = make([]*PermissionEntity.Permission, 0)
-	for _, p := range repo {
+	// TODO: Refactor this
+	for _, p := range rps {
 		rolePermissions.Permissions = append(rolePermissions.Permissions, &PermissionEntity.Permission{
 			ID:           p.PermissionID,
 			Name:         p.Name_2,
@@ -50,15 +46,35 @@ func (r *RolePermissionRepository) GetRolePermissions(rolePermission *RoleEntity
 			UpdatedAt:    p.UpdatedAt_2,
 		})
 	}
-
-	return
-
-}
-
-func (r *RolePermissionRepository) CreateRolePermission(rolePermission *entity.RolePermission) (rolePermissions *entity.RolePermission, err error) {
 	return
 }
 
-func (r *RolePermissionRepository) UpdateRolePermission(rolePermission *entity.RolePermission) (rolePermissions *entity.RolePermission, err error) {
+func (repo *RolePermissionRepository) CreateRolePermission(rolePermission *entity.RolePermission) (err error) {
+	for _, p := range rolePermission.Permissions {
+		err = repo.DBQueries.CreateRolePermission(context.Background(), db.CreateRolePermissionParams{
+			RoleID:       rolePermission.RoleID,
+			PermissionID: p.ID,
+		})
+		if err != nil {
+			return
+		}
+	}
+	return
+}
+
+func (repo *RolePermissionRepository) UpdateRolePermission(rolePermission *entity.RolePermission) (err error) {
+	err = repo.DBQueries.DeleteRolePermission(context.Background(), rolePermission.RoleID)
+	if err != nil {
+		return
+	}
+	for _, p := range rolePermission.Permissions {
+		err = repo.DBQueries.CreateRolePermission(context.Background(), db.CreateRolePermissionParams{
+			RoleID:       rolePermission.RoleID,
+			PermissionID: p.ID,
+		})
+		if err != nil {
+			return
+		}
+	}
 	return
 }

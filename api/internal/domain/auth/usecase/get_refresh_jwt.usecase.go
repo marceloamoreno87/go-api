@@ -37,7 +37,7 @@ func (uc *GetRefreshJWTUseCase) Execute(input GetRefreshJWTInputDTO) (output Get
 		return GetRefreshJWTOutputDTO{}, errors.New("not authorized")
 	}
 
-	user, err := uc.UserRepository.GetUser(auth.GetId())
+	user, err := uc.UserRepository.GetUser(auth.GetID())
 	if err != nil {
 		return GetRefreshJWTOutputDTO{}, errors.New("not authorized")
 	}

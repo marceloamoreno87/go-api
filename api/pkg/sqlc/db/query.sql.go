@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-const createPermission = `-- name: CreatePermission :one
+const createPermission = `-- name: CreatePermission :exec
 INSERT INTO permissions (
   name,
   internal_name,
@@ -18,7 +18,6 @@ INSERT INTO permissions (
 ) VALUES (
   $1, $2, $3
 )
-RETURNING id, name, internal_name, description, created_at, updated_at
 `
 
 type CreatePermissionParams struct {
@@ -27,21 +26,12 @@ type CreatePermissionParams struct {
 	Description  string `json:"description"`
 }
 
-func (q *Queries) CreatePermission(ctx context.Context, arg CreatePermissionParams) (Permission, error) {
-	row := q.db.QueryRowContext(ctx, createPermission, arg.Name, arg.InternalName, arg.Description)
-	var i Permission
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.InternalName,
-		&i.Description,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
+func (q *Queries) CreatePermission(ctx context.Context, arg CreatePermissionParams) error {
+	_, err := q.db.ExecContext(ctx, createPermission, arg.Name, arg.InternalName, arg.Description)
+	return err
 }
 
-const createRole = `-- name: CreateRole :one
+const createRole = `-- name: CreateRole :exec
 INSERT INTO roles (
   name,
   internal_name,
@@ -49,7 +39,6 @@ INSERT INTO roles (
 ) VALUES (
   $1, $2, $3
 )
-RETURNING id, name, internal_name, description, created_at, updated_at
 `
 
 type CreateRoleParams struct {
@@ -58,28 +47,18 @@ type CreateRoleParams struct {
 	Description  string `json:"description"`
 }
 
-func (q *Queries) CreateRole(ctx context.Context, arg CreateRoleParams) (Role, error) {
-	row := q.db.QueryRowContext(ctx, createRole, arg.Name, arg.InternalName, arg.Description)
-	var i Role
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.InternalName,
-		&i.Description,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
+func (q *Queries) CreateRole(ctx context.Context, arg CreateRoleParams) error {
+	_, err := q.db.ExecContext(ctx, createRole, arg.Name, arg.InternalName, arg.Description)
+	return err
 }
 
-const createRolePermission = `-- name: CreateRolePermission :one
+const createRolePermission = `-- name: CreateRolePermission :exec
 INSERT INTO role_permissions (
   role_id,
   permission_id
 ) VALUES (
   $1, $2
 )
-RETURNING role_id, permission_id
 `
 
 type CreateRolePermissionParams struct {
@@ -87,14 +66,12 @@ type CreateRolePermissionParams struct {
 	PermissionID int32 `json:"permission_id"`
 }
 
-func (q *Queries) CreateRolePermission(ctx context.Context, arg CreateRolePermissionParams) (RolePermission, error) {
-	row := q.db.QueryRowContext(ctx, createRolePermission, arg.RoleID, arg.PermissionID)
-	var i RolePermission
-	err := row.Scan(&i.RoleID, &i.PermissionID)
-	return i, err
+func (q *Queries) CreateRolePermission(ctx context.Context, arg CreateRolePermissionParams) error {
+	_, err := q.db.ExecContext(ctx, createRolePermission, arg.RoleID, arg.PermissionID)
+	return err
 }
 
-const createUser = `-- name: CreateUser :one
+const createUser = `-- name: CreateUser :exec
 INSERT INTO users (
   name,
   email,
@@ -103,7 +80,6 @@ INSERT INTO users (
 ) VALUES (
   $1, $2, $3, $4
 )
-RETURNING id, name, email, password, role_id, created_at, updated_at
 `
 
 type CreateUserParams struct {
@@ -113,98 +89,54 @@ type CreateUserParams struct {
 	RoleID   int32  `json:"role_id"`
 }
 
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, createUser,
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
+	_, err := q.db.ExecContext(ctx, createUser,
 		arg.Name,
 		arg.Email,
 		arg.Password,
 		arg.RoleID,
 	)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.Email,
-		&i.Password,
-		&i.RoleID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
+	return err
 }
 
-const deletePermission = `-- name: DeletePermission :one
+const deletePermission = `-- name: DeletePermission :exec
 DELETE FROM permissions
 WHERE id = $1
-RETURNING id, name, internal_name, description, created_at, updated_at
 `
 
-func (q *Queries) DeletePermission(ctx context.Context, id int32) (Permission, error) {
-	row := q.db.QueryRowContext(ctx, deletePermission, id)
-	var i Permission
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.InternalName,
-		&i.Description,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
+func (q *Queries) DeletePermission(ctx context.Context, id int32) error {
+	_, err := q.db.ExecContext(ctx, deletePermission, id)
+	return err
 }
 
-const deleteRole = `-- name: DeleteRole :one
+const deleteRole = `-- name: DeleteRole :exec
 DELETE FROM roles
 WHERE id = $1
-RETURNING id, name, internal_name, description, created_at, updated_at
 `
 
-func (q *Queries) DeleteRole(ctx context.Context, id int32) (Role, error) {
-	row := q.db.QueryRowContext(ctx, deleteRole, id)
-	var i Role
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.InternalName,
-		&i.Description,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
+func (q *Queries) DeleteRole(ctx context.Context, id int32) error {
+	_, err := q.db.ExecContext(ctx, deleteRole, id)
+	return err
 }
 
-const deleteRolePermission = `-- name: DeleteRolePermission :one
+const deleteRolePermission = `-- name: DeleteRolePermission :exec
 DELETE FROM role_permissions
-WHERE role_id = $1 
-RETURNING role_id, permission_id
+WHERE role_id = $1
 `
 
-func (q *Queries) DeleteRolePermission(ctx context.Context, roleID int32) (RolePermission, error) {
-	row := q.db.QueryRowContext(ctx, deleteRolePermission, roleID)
-	var i RolePermission
-	err := row.Scan(&i.RoleID, &i.PermissionID)
-	return i, err
+func (q *Queries) DeleteRolePermission(ctx context.Context, roleID int32) error {
+	_, err := q.db.ExecContext(ctx, deleteRolePermission, roleID)
+	return err
 }
 
-const deleteUser = `-- name: DeleteUser :one
+const deleteUser = `-- name: DeleteUser :exec
 DELETE FROM users
 WHERE id = $1
-RETURNING id, name, email, password, role_id, created_at, updated_at
 `
 
-func (q *Queries) DeleteUser(ctx context.Context, id int32) (User, error) {
-	row := q.db.QueryRowContext(ctx, deleteUser, id)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.Email,
-		&i.Password,
-		&i.RoleID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
+func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
+	_, err := q.db.ExecContext(ctx, deleteUser, id)
+	return err
 }
 
 const getPermission = `-- name: GetPermission :one
@@ -510,13 +442,12 @@ func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]User, err
 	return items, nil
 }
 
-const updatePermission = `-- name: UpdatePermission :one
+const updatePermission = `-- name: UpdatePermission :exec
 UPDATE permissions SET
   name = $1,
   internal_name = $2,
   description = $3
 WHERE id = $4
-RETURNING id, name, internal_name, description, created_at, updated_at
 `
 
 type UpdatePermissionParams struct {
@@ -526,32 +457,22 @@ type UpdatePermissionParams struct {
 	ID           int32  `json:"id"`
 }
 
-func (q *Queries) UpdatePermission(ctx context.Context, arg UpdatePermissionParams) (Permission, error) {
-	row := q.db.QueryRowContext(ctx, updatePermission,
+func (q *Queries) UpdatePermission(ctx context.Context, arg UpdatePermissionParams) error {
+	_, err := q.db.ExecContext(ctx, updatePermission,
 		arg.Name,
 		arg.InternalName,
 		arg.Description,
 		arg.ID,
 	)
-	var i Permission
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.InternalName,
-		&i.Description,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
+	return err
 }
 
-const updateRole = `-- name: UpdateRole :one
+const updateRole = `-- name: UpdateRole :exec
 UPDATE roles SET
   name = $1,
   internal_name = $2,
   description = $3
 WHERE id = $4
-RETURNING id, name, internal_name, description, created_at, updated_at
 `
 
 type UpdateRoleParams struct {
@@ -561,33 +482,23 @@ type UpdateRoleParams struct {
 	ID           int32  `json:"id"`
 }
 
-func (q *Queries) UpdateRole(ctx context.Context, arg UpdateRoleParams) (Role, error) {
-	row := q.db.QueryRowContext(ctx, updateRole,
+func (q *Queries) UpdateRole(ctx context.Context, arg UpdateRoleParams) error {
+	_, err := q.db.ExecContext(ctx, updateRole,
 		arg.Name,
 		arg.InternalName,
 		arg.Description,
 		arg.ID,
 	)
-	var i Role
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.InternalName,
-		&i.Description,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
+	return err
 }
 
-const updateUser = `-- name: UpdateUser :one
+const updateUser = `-- name: UpdateUser :exec
 UPDATE users SET
   name = $1,
   email = $2,
   password = $3,
   role_id = $4
 WHERE id = $5
-RETURNING id, name, email, password, role_id, created_at, updated_at
 `
 
 type UpdateUserParams struct {
@@ -598,23 +509,13 @@ type UpdateUserParams struct {
 	ID       int32  `json:"id"`
 }
 
-func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUser,
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
+	_, err := q.db.ExecContext(ctx, updateUser,
 		arg.Name,
 		arg.Email,
 		arg.Password,
 		arg.RoleID,
 		arg.ID,
 	)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.Email,
-		&i.Password,
-		&i.RoleID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
+	return err
 }

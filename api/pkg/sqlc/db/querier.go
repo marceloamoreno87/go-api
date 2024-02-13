@@ -9,14 +9,14 @@ import (
 )
 
 type Querier interface {
-	CreatePermission(ctx context.Context, arg CreatePermissionParams) (Permission, error)
-	CreateRole(ctx context.Context, arg CreateRoleParams) (Role, error)
-	CreateRolePermission(ctx context.Context, arg CreateRolePermissionParams) (RolePermission, error)
-	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
-	DeletePermission(ctx context.Context, id int32) (Permission, error)
-	DeleteRole(ctx context.Context, id int32) (Role, error)
-	DeleteRolePermission(ctx context.Context, roleID int32) (RolePermission, error)
-	DeleteUser(ctx context.Context, id int32) (User, error)
+	CreatePermission(ctx context.Context, arg CreatePermissionParams) error
+	CreateRole(ctx context.Context, arg CreateRoleParams) error
+	CreateRolePermission(ctx context.Context, arg CreateRolePermissionParams) error
+	CreateUser(ctx context.Context, arg CreateUserParams) error
+	DeletePermission(ctx context.Context, id int32) error
+	DeleteRole(ctx context.Context, id int32) error
+	DeleteRolePermission(ctx context.Context, roleID int32) error
+	DeleteUser(ctx context.Context, id int32) error
 	GetPermission(ctx context.Context, id int32) (Permission, error)
 	GetPermissionByInternalName(ctx context.Context, internalName string) (Permission, error)
 	GetPermissions(ctx context.Context, arg GetPermissionsParams) ([]Permission, error)
@@ -27,9 +27,9 @@ type Querier interface {
 	GetUser(ctx context.Context, id int32) (User, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	GetUsers(ctx context.Context, arg GetUsersParams) ([]User, error)
-	UpdatePermission(ctx context.Context, arg UpdatePermissionParams) (Permission, error)
-	UpdateRole(ctx context.Context, arg UpdateRoleParams) (Role, error)
-	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
+	UpdatePermission(ctx context.Context, arg UpdatePermissionParams) error
+	UpdateRole(ctx context.Context, arg UpdateRoleParams) error
+	UpdateUser(ctx context.Context, arg UpdateUserParams) error
 }
 
 var _ Querier = (*Queries)(nil)

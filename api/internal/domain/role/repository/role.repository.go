@@ -5,6 +5,7 @@ import (
 	"database/sql"
 
 	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
+	"github.com/marceloamoreno/goapi/pkg/api"
 	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
 )
 
@@ -20,69 +21,57 @@ func NewRoleRepository(DBConn *sql.DB) *RoleRepository {
 	}
 }
 
-func (rr *RoleRepository) CreateRole(role *entity.Role) (*entity.Role, error) {
-	repo, err := rr.DBQueries.CreateRole(context.Background(), db.CreateRoleParams{
+func (repo *RoleRepository) CreateRole(role *entity.Role) (err error) {
+	err = repo.DBQueries.CreateRole(context.Background(), db.CreateRoleParams{
 		Name:         role.Name,
 		InternalName: role.InternalName,
 		Description:  role.Description,
 	})
 	if err != nil {
-		return &entity.Role{}, err
+		return
 	}
-
-	return &entity.Role{
-		ID:           repo.ID,
-		Name:         repo.Name,
-		InternalName: repo.InternalName,
-		Description:  repo.Description,
-		CreatedAt:    repo.CreatedAt,
-		UpdatedAt:    repo.UpdatedAt,
-	}, nil
+	return
 }
 
-func (rr *RoleRepository) GetRole(id int32) (*entity.Role, error) {
-
-	repo, err := rr.DBQueries.GetRole(context.Background(), id)
+func (repo *RoleRepository) GetRole(id int32) (*entity.Role, error) {
+	r, err := repo.DBQueries.GetRole(context.Background(), id)
 	if err != nil {
 		return &entity.Role{}, err
 	}
-
 	return &entity.Role{
-		ID:           repo.ID,
-		Name:         repo.Name,
-		InternalName: repo.InternalName,
-		Description:  repo.Description,
-		CreatedAt:    repo.CreatedAt,
-		UpdatedAt:    repo.UpdatedAt,
+		ID:           r.ID,
+		Name:         r.Name,
+		InternalName: r.InternalName,
+		Description:  r.Description,
+		CreatedAt:    r.CreatedAt,
+		UpdatedAt:    r.UpdatedAt,
 	}, nil
 }
 
-func (rr *RoleRepository) GetRoleByInternalName(internal_name string) (*entity.Role, error) {
-	repo, err := rr.DBQueries.GetRoleByInternalName(context.Background(), internal_name)
+func (repo *RoleRepository) GetRoleByInternalName(internal_name string) (*entity.Role, error) {
+	r, err := repo.DBQueries.GetRoleByInternalName(context.Background(), internal_name)
 	if err != nil {
 		return &entity.Role{}, err
 	}
-
 	return &entity.Role{
-		ID:           repo.ID,
-		Name:         repo.Name,
-		InternalName: repo.InternalName,
-		Description:  repo.Description,
-		CreatedAt:    repo.CreatedAt,
-		UpdatedAt:    repo.UpdatedAt,
+		ID:           r.ID,
+		Name:         r.Name,
+		InternalName: r.InternalName,
+		Description:  r.Description,
+		CreatedAt:    r.CreatedAt,
+		UpdatedAt:    r.UpdatedAt,
 	}, nil
 }
 
-func (rr *RoleRepository) GetRoles(limit int32, offset int32) (roles []*entity.Role, err error) {
-	repo, err := rr.DBQueries.GetRoles(context.Background(), db.GetRolesParams{
-		Limit:  limit,
-		Offset: offset,
+func (repo *RoleRepository) GetRoles(page *api.Paginate) (roles []*entity.Role, err error) {
+	rs, err := repo.DBQueries.GetRoles(context.Background(), db.GetRolesParams{
+		Limit:  page.Limit,
+		Offset: page.Offset,
 	})
 	if err != nil {
-		return []*entity.Role{}, err
+		return
 	}
-
-	for _, r := range repo {
+	for _, r := range rs {
 		roles = append(roles, &entity.Role{
 			ID:           r.ID,
 			Name:         r.Name,
@@ -92,44 +81,26 @@ func (rr *RoleRepository) GetRoles(limit int32, offset int32) (roles []*entity.R
 			UpdatedAt:    r.UpdatedAt,
 		})
 	}
-
 	return
 }
 
-func (rr *RoleRepository) UpdateRole(role *entity.Role) (*entity.Role, error) {
-
-	r, err := rr.DBQueries.UpdateRole(context.Background(), db.UpdateRoleParams{
+func (repo *RoleRepository) UpdateRole(role *entity.Role, id int32) (err error) {
+	err = repo.DBQueries.UpdateRole(context.Background(), db.UpdateRoleParams{
 		ID:           role.ID,
 		Name:         role.Name,
 		InternalName: role.InternalName,
 		Description:  role.Description,
 	})
 	if err != nil {
-		return &entity.Role{}, err
+		return
 	}
-
-	return &entity.Role{
-		ID:           r.ID,
-		Name:         r.Name,
-		InternalName: r.InternalName,
-		Description:  r.Description,
-		CreatedAt:    r.CreatedAt,
-		UpdatedAt:    r.UpdatedAt,
-	}, nil
+	return
 }
 
-func (ur *RoleRepository) DeleteRole(id int32) (*entity.Role, error) {
-	r, err := ur.DBQueries.DeleteRole(context.Background(), id)
-
+func (repo *RoleRepository) DeleteRole(id int32) (err error) {
+	err = repo.DBQueries.DeleteRole(context.Background(), id)
 	if err != nil {
-		return &entity.Role{}, err
+		return err
 	}
-	return &entity.Role{
-		ID:           r.ID,
-		Name:         r.Name,
-		InternalName: r.InternalName,
-		Description:  r.Description,
-		CreatedAt:    r.CreatedAt,
-		UpdatedAt:    r.UpdatedAt,
-	}, nil
+	return
 }
