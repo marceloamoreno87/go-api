@@ -19,9 +19,9 @@ func NewRolePermission(roleId int32, permissionIds []int32) (rolePermission *Rol
 		PermissionIDs: permissionIds,
 	}
 
-	valid := rolePermission.Validate()
-	if valid != nil {
-		return nil, valid
+	err = rolePermission.Validate()
+	if err != nil {
+		return
 	}
 
 	return
@@ -48,7 +48,7 @@ func (r *RolePermission) GetPermission() []*PermissionEntity.Permission {
 	return r.Permissions
 }
 
-func (r *RolePermission) GetPermissionID() []int32 {
+func (r *RolePermission) GetPermissionIDs() []int32 {
 	return r.PermissionIDs
 }
 
@@ -64,7 +64,7 @@ func (r *RolePermission) SetPermission(permissions []*PermissionEntity.Permissio
 	r.Permissions = permissions
 }
 
-func (r *RolePermission) SetPermissionID(permissionId []int32) {
+func (r *RolePermission) SetPermissionIDs(permissionId []int32) {
 	r.PermissionIDs = permissionId
 }
 

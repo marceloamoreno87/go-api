@@ -8,10 +8,8 @@ import (
 )
 
 func init() {
-	env := config.NewEnv()
-	env.LoadEnv()
-	token := config.NewTokenAuth()
-	config.TokenAuth = token
+	config.NewEnv()
+	config.NewTokenAuth()
 	slog.Info("Environment OK")
 }
 

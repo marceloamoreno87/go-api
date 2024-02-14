@@ -19,8 +19,8 @@ type Env struct {
 	JWTExpiresIn string
 }
 
-func NewEnv() *Env {
-	return &Env{
+func NewEnv() {
+	Environment = &Env{
 		NameProject:  os.Getenv("NAME_PROJECT"),
 		Host:         os.Getenv("HOST"),
 		Port:         os.Getenv("PORT"),
@@ -32,8 +32,4 @@ func NewEnv() *Env {
 		JWTSecretKey: os.Getenv("JWT_SECRET_KEY"),
 		JWTExpiresIn: os.Getenv("JWT_EXPIRES_IN"),
 	}
-}
-
-func (env *Env) LoadEnv() {
-	Environment = NewEnv()
 }
