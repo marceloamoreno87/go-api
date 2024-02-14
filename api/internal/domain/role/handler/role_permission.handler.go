@@ -31,6 +31,7 @@ func NewRolePermissionHandler(
 // @Tags RolePermission
 // @Accept  json
 // @Produce  json
+// @Param id path string true "Role ID"
 // @Success 200 {object} api.Response{data=usecase.GetRolePermissionsOutputDTO}
 // @Failure 400 {object} api.ResponseError{err=string}
 // @Router /role/{id}/permission [get]
@@ -63,7 +64,7 @@ func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *htt
 // @Tags RolePermission
 // @Accept  json
 // @Produce  json
-// @Param user body usecase.RolePermissionInputDTO true "RolePermission"
+// @Param user body usecase.CreateRolePermissionInputDTO true "RolePermission"
 // @Success 200 {object} api.Response{data=nil}
 // @Failure 400 {object} api.ResponseError{err=string}
 // @Router /role/{id}/permission [post]
@@ -93,7 +94,7 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 // @Accept  json
 // @Produce  json
 // @Param id path string true "RolePermission ID"
-// @Param user body usecase.RolePermissionInputDTO true "RolePermission"
+// @Param user body usecase.UpdateRolePermissionInputDTO true "RolePermission"
 // @Success 200 {object} api.Response{data=nil}
 // @Failure 400 {object} api.ResponseError{err=string}
 // @Router /role/{id}/permission [put]
