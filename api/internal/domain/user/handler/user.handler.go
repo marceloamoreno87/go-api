@@ -29,7 +29,7 @@ func NewUserHandler(userRepository repository.UserRepositoryInterface, handlerTo
 // @Accept  json
 // @Produce  json
 // @Param user body usecase.CreateUserInputDTO true "User"
-// @Success 200 {object} api.Response{data=entity.User}
+// @Success 200 {object} api.Response{data=nil}
 // @Failure 400 {object} api.ResponseError{err=string}
 // @Router /user [post]
 // @Security     JWT
@@ -50,7 +50,7 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-	slog.Info("User created", "user")
+	slog.Info("User created")
 	h.HandlerTools.ResponseJSON(w, nil)
 
 }
@@ -62,7 +62,7 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "User ID"
-// @Success 200 {object} api.Response{data=entity.User}
+// @Success 200 {object} api.Response{data=usecase.GetUserOutputDTO}
 // @Failure 400 {object} api.ResponseError{err=string}
 // @Router /user/{id} [get]
 // @Security     JWT
@@ -97,7 +97,7 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param limit query int false "Limit"
 // @Param offset query int false "Offset"
-// @Success 200 {object} api.Response{data=[]entity.User}
+// @Success 200 {object} api.Response{data=[]usecase.GetUsersOutputDTO}
 // @Failure 400 {object} api.ResponseError{err=string}
 // @Router /user [get]
 // @Security     JWT
@@ -132,7 +132,7 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param id path string true "User ID"
 // @Param user body usecase.UpdateUserInputDTO true "User"
-// @Success 200 {object} api.Response{data=entity.User}
+// @Success 200 {object} api.Response{data=nil}
 // @Failure 400 {object} api.ResponseError{err=string}
 // @Router /user/{id} [put]
 // @Security     JWT
@@ -170,7 +170,7 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "User ID"
-// @Success 200 {object} api.Response{data=usecase.DeleteUserOutputDTO}
+// @Success 200 {object} api.Response{data=nil}
 // @Failure 400 {object} api.ResponseError{err=string}
 // @Security ApiKeyAuth
 // @Router /user/{id} [delete]

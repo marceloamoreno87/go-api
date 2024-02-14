@@ -31,7 +31,7 @@ func NewRolePermissionHandler(
 // @Tags RolePermission
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} api.Response{data=entity.RolePermission}
+// @Success 200 {object} api.Response{data=usecase.GetRolePermissionsOutputDTO}
 // @Failure 400 {object} api.ResponseError{err=string}
 // @Router /role/{id}/permission [get]
 // @Security     JWT
@@ -64,9 +64,9 @@ func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *htt
 // @Accept  json
 // @Produce  json
 // @Param user body usecase.RolePermissionInputDTO true "RolePermission"
-// @Success 200 {object} api.Response{data=entity.RolePermission}
+// @Success 200 {object} api.Response{data=nil}
 // @Failure 400 {object} api.ResponseError{err=string}
-// @Router /role/permission [post]
+// @Router /role/{id}/permission [post]
 // @Security     JWT
 func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *http.Request) {
 	var input usecase.CreateRolePermissionInputDTO
@@ -94,7 +94,7 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 // @Produce  json
 // @Param id path string true "RolePermission ID"
 // @Param user body usecase.RolePermissionInputDTO true "RolePermission"
-// @Success 200 {object} api.Response{data=entity.RolePermission}
+// @Success 200 {object} api.Response{data=nil}
 // @Failure 400 {object} api.ResponseError{err=string}
 // @Router /role/{id}/permission [put]
 // @Security     JWT
