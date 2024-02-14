@@ -34,13 +34,9 @@ func TestCreatePermission(t *testing.T) {
 		WithArgs(permission.Name, permission.InternalName, permission.Description).
 		WillReturnRows(rows)
 
-	r, err := rr.CreatePermission(permission)
+	err = rr.CreatePermission(permission)
 
 	assert.NoError(t, err)
-
-	assert.Equal(t, permission.Name, r.Name)
-	assert.Equal(t, permission.InternalName, r.InternalName)
-	assert.Equal(t, permission.Description, r.Description)
 
 }
 
@@ -132,13 +128,9 @@ func TestDeletePermission(t *testing.T) {
 		WithArgs(permission.ID).
 		WillReturnRows(rows)
 
-	u, err := rr.DeletePermission(permission.ID)
+	err = rr.DeletePermission(permission.ID)
 
 	assert.NoError(t, err)
-
-	assert.Equal(t, permission.Name, u.Name)
-	assert.Equal(t, permission.InternalName, u.InternalName)
-	assert.Equal(t, permission.Description, u.Description)
 
 }
 
@@ -166,13 +158,9 @@ func TestUpdatePermission(t *testing.T) {
 		WithArgs(permission.Name, permission.InternalName, permission.Description, permission.ID).
 		WillReturnRows(rows)
 
-	r, err := rr.UpdatePermission(permission)
+	err = rr.UpdatePermission(permission, permission.ID)
 
 	assert.NoError(t, err)
-
-	assert.Equal(t, permission.Name, r.Name)
-	assert.Equal(t, permission.InternalName, r.InternalName)
-	assert.Equal(t, permission.Description, r.Description)
 
 }
 

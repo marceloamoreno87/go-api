@@ -33,13 +33,9 @@ func TestCreateRole(t *testing.T) {
 		WithArgs(role.Name, role.InternalName, role.Description).
 		WillReturnRows(rows)
 
-	r, err := rr.CreateRole(role)
+	err = rr.CreateRole(role)
 
 	assert.NoError(t, err)
-
-	assert.Equal(t, role.Name, r.Name)
-	assert.Equal(t, role.InternalName, r.InternalName)
-	assert.Equal(t, role.Description, r.Description)
 }
 
 func TestGetRole(t *testing.T) {
@@ -130,14 +126,9 @@ func TestDeleteRole(t *testing.T) {
 		WithArgs(role.ID).
 		WillReturnRows(rows)
 
-	u, err := rr.DeleteRole(role.ID)
+	err = rr.DeleteRole(role.ID)
 
 	assert.NoError(t, err)
-
-	assert.Equal(t, role.Name, u.Name)
-	assert.Equal(t, role.InternalName, u.InternalName)
-	assert.Equal(t, role.Description, u.Description)
-
 }
 
 func TestUpdateRole(t *testing.T) {
@@ -164,13 +155,9 @@ func TestUpdateRole(t *testing.T) {
 		WithArgs(role.Name, role.InternalName, role.Description, 1).
 		WillReturnRows(rows)
 
-	r, err := rr.UpdateRole(role)
+	err = rr.UpdateRole(role, role.ID)
 
 	assert.NoError(t, err)
-
-	assert.Equal(t, role.Name, r.Name)
-	assert.Equal(t, role.InternalName, r.InternalName)
-	assert.Equal(t, role.Description, r.Description)
 
 }
 
