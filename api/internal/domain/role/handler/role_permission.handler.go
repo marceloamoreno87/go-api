@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"log/slog"
 	"net/http"
 
@@ -68,6 +69,21 @@ func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *htt
 // @Router /role/permission [post]
 // @Security     JWT
 func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *http.Request) {
+	var input usecase.CreateRolePermissionInputDTO
+	err := json.NewDecoder(r.Body).Decode(&input)
+	if err != nil {
+		slog.Info("err", err)
+		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+	uc := usecase.NewCreateRolePermissionUseCase(h.RolePermissionRepository)
+	err = uc.Execute(input)
+	if err != nil {
+		slog.Info("err", err)
+		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+	h.HandlerTools.ResponseJSON(w, nil)
 }
 
 // UpdateRolePermission godoc
@@ -80,7 +96,22 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 // @Param user body usecase.RolePermissionInputDTO true "RolePermission"
 // @Success 200 {object} api.Response{data=entity.RolePermission}
 // @Failure 400 {object} api.ResponseError{err=string}
-// @Router /role/permission/{id} [put]
+// @Router /role/{id}/permission [put]
 // @Security     JWT
 func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *http.Request) {
+	var input usecase.UpdateRolePermissionInputDTO
+	err := json.NewDecoder(r.Body).Decode(&input)
+	if err != nil {
+		slog.Info("err", err)
+		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+	uc := usecase.NewUpdateRolePermissionUseCase(h.RolePermissionRepository)
+	err = uc.Execute(input)
+	if err != nil {
+		slog.Info("err", err)
+		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+	h.HandlerTools.ResponseJSON(w, nil)
 }

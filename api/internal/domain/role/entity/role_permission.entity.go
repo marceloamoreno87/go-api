@@ -8,22 +8,15 @@ import (
 
 type RolePermission struct {
 	RoleID        int32
-	Role          *Role
 	PermissionIDs []int32
+	Role          *Role
 	Permissions   []*PermissionEntity.Permission
 }
 
-func NewRolePermission(role *Role, permissions []*PermissionEntity.Permission) (rolePermission *RolePermission, err error) {
-
+func NewRolePermission(roleId int32, permissionIds []int32) (rolePermission *RolePermission, err error) {
 	rolePermission = &RolePermission{
-		Role:          role,
-		RoleID:        role.ID,
-		PermissionIDs: make([]int32, len(permissions)),
-		Permissions:   permissions,
-	}
-
-	for i, permission := range permissions {
-		rolePermission.PermissionIDs[i] = permission.ID
+		RoleID:        roleId,
+		PermissionIDs: permissionIds,
 	}
 
 	valid := rolePermission.Validate()
@@ -40,16 +33,8 @@ func (r *RolePermission) Validate() (err error) {
 		return errors.New("RoleId is required")
 	}
 
-	if r.Role == nil {
-		return errors.New("Role is required")
-	}
-
 	if len(r.PermissionIDs) == 0 {
 		return errors.New("PermissionId is required")
-	}
-
-	if len(r.Permissions) == 0 {
-		return errors.New("Permissions is required")
 	}
 
 	return

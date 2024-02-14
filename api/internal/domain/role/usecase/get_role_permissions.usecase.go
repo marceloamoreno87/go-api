@@ -11,7 +11,7 @@ type GetRolePermissionsInputDTO struct {
 }
 
 type GetRolePermissionsOutputDTO struct {
-	Role        RoleEntity.Role                `json:"role"`
+	Role        *RoleEntity.Role               `json:"role"`
 	Permissions []*PermissionEntity.Permission `json:"permissions"`
 }
 
@@ -33,13 +33,11 @@ func (uc *GetRolePermissionsUseCase) Execute(input GetRolePermissionsInputDTO) (
 	}
 	rolePermission, err = uc.RolePermissionRepository.GetRolePermissions(input.RoleID)
 	if err != nil {
-		return GetRolePermissionsOutputDTO{}, err
+		return
 	}
 
-	output = GetRolePermissionsOutputDTO{
-		Role:        *rolePermission.Role,
-		Permissions: rolePermission.Permissions,
-	}
+	output.Role = rolePermission.Role
+	output.Permissions = rolePermission.Permissions
 
 	return
 }

@@ -11,6 +11,8 @@ import (
 	PermissionHandler "github.com/marceloamoreno/goapi/internal/domain/permission/handler"
 	PermissionRepository "github.com/marceloamoreno/goapi/internal/domain/permission/repository"
 	RoleHandler "github.com/marceloamoreno/goapi/internal/domain/role/handler"
+	RolePermissionHandler "github.com/marceloamoreno/goapi/internal/domain/role/handler"
+	RolePermissionRepository "github.com/marceloamoreno/goapi/internal/domain/role/repository"
 	RoleRepository "github.com/marceloamoreno/goapi/internal/domain/role/repository"
 	UserHandler "github.com/marceloamoreno/goapi/internal/domain/user/handler"
 	UserRepository "github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -61,12 +63,21 @@ func (r *Route) GetUserRoutes(router chi.Router) {
 func (r *Route) GetRoleRoutes(router chi.Router) {
 	RoleRepository := RoleRepository.NewRoleRepository(r.DBConn)
 	RoleHandler := RoleHandler.NewRoleHandler(RoleRepository, r.HandlerTools)
+	RolePermissionRepository := RolePermissionRepository.NewRolePermissionRepository(r.DBConn)
+	RolePermissionHandler := RolePermissionHandler.NewRolePermissionHandler(RolePermissionRepository, r.HandlerTools)
 	router.Route("/role", func(r chi.Router) {
 		r.Get("/", RoleHandler.GetRoles)
 		r.Get("/{id}", RoleHandler.GetRole)
 		r.Post("/", RoleHandler.CreateRole)
 		r.Put("/{id}", RoleHandler.UpdateRole)
 		r.Delete("/{id}", RoleHandler.DeleteRole)
+
+		r.Route("/{id}/permission", func(r chi.Router) {
+			r.Get("/", RolePermissionHandler.GetRolePermissions)
+			r.Post("/", RolePermissionHandler.CreateRolePermission)
+			r.Put("/", RolePermissionHandler.UpdateRolePermission)
+		})
+
 	})
 }
 
@@ -79,18 +90,9 @@ func (r *Route) GetPermissionRoutes(router chi.Router) {
 		r.Post("/", PermissionHandler.CreatePermission)
 		r.Put("/{id}", PermissionHandler.UpdatePermission)
 		r.Delete("/{id}", PermissionHandler.DeletePermission)
+
 	})
 }
-
-// func (r *Route) GetRolePermissionRoutes(router chi.Router) {
-// 	RolePermissionRepository := RoleRepository.NewRolePermissionRepository(r.DBConn)
-// 	RolePermissionHandler := RoleHandler.NewRolePermissionHandler(RolePermissionRepository, r.HandlerTools)
-// 	router.Route("/role/{id}", func(r chi.Router) {
-// 		r.Get("/permission", RolePermissionHandler.GetRolePermissions)
-// 		r.Post("/permission", RolePermissionHandler.CreateRolePermission)
-// 		r.Put("/permission", RolePermissionHandler.UpdateRolePermission)
-// 	})
-// }
 
 func (r *Route) GetSwaggerRoutes(router chi.Router) {
 	router.Get("/swagger/*", HttpSwagger.Handler(

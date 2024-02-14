@@ -27,12 +27,10 @@ func TestCreateUser(t *testing.T) {
 		RoleID:   1,
 	}
 
-	rows := sqlmock.NewRows([]string{"id", "name", "email", "password", "role_id", "created_at", "updated_at"}).
-		AddRow(user.ID, user.Name, user.Email, user.Password, user.RoleID, time.Now(), time.Now())
-
-	mock.ExpectQuery(`-- name: CreateUser :one INSERT INTO users \( name, email, password, role_id \) VALUES \( \$1, \$2, \$3, \$4 \) RETURNING id, name, email, password, role_id, created_at, updated_at`).
+	createUserSQL := `-- name: CreateUser :exec INSERT INTO users \( name, email, password, role_id \) VALUES \( \$1, \$2, \$3, \$4 \)`
+	mock.ExpectExec(createUserSQL).
 		WithArgs(user.Name, user.Email, user.Password, user.RoleID).
-		WillReturnRows(rows)
+		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	err = ur.CreateUser(user)
 
@@ -123,14 +121,11 @@ func TestDeleteUser(t *testing.T) {
 		Password: "123456",
 		RoleID:   1,
 	}
-	rows := sqlmock.NewRows([]string{"id", "name", "email", "password", "role_id", "created_at", "updated_at"}).
-		AddRow(user.ID, user.Name, user.Email, user.Password, user.RoleID, time.Now(), time.Now())
+	deleteUserSQL := `-- name: DeleteUser :exec DELETE FROM users WHERE id = \$1`
 
-	deleteUserSQL := `-- name: DeleteUser :one DELETE FROM users WHERE id = \$1 RETURNING id, name, email, password, role_id, created_at, updated_at`
-
-	mock.ExpectQuery(deleteUserSQL).
+	mock.ExpectExec(deleteUserSQL).
 		WithArgs(user.ID).
-		WillReturnRows(rows)
+		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	err = ur.DeleteUser(user.ID)
 
@@ -154,13 +149,10 @@ func TestUpdateUser(t *testing.T) {
 		RoleID:   1,
 	}
 
-	rows := sqlmock.NewRows([]string{"id", "name", "email", "password", "role_id", "created_at", "updated_at"}).
-		AddRow(1, user.Name, user.Email, user.Password, user.RoleID, time.Now(), time.Now())
-
-	updateUserSQL := `-- name: UpdateUser :one UPDATE users SET name = \$1, email = \$2, password = \$3, role_id = \$4 WHERE id = \$5 RETURNING id, name, email, password, role_id, created_at, updated_at`
-	mock.ExpectQuery(updateUserSQL).
+	updateUserSQL := `-- name: UpdateUser :exec UPDATE users SET name = \$1, email = \$2, password = \$3, role_id = \$4 WHERE id = \$5`
+	mock.ExpectExec(updateUserSQL).
 		WithArgs(user.Name, user.Email, user.Password, user.RoleID, 1).
-		WillReturnRows(rows)
+		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	err = ur.UpdateUser(user, 1)
 

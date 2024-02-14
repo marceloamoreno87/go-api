@@ -26,13 +26,10 @@ func TestCreatePermission(t *testing.T) {
 		InternalName: "test_test",
 		Description:  "testing",
 	}
-
-	rows := sqlmock.NewRows([]string{"id", "name", "internal_name", "description", "created_at", "updated_at"}).
-		AddRow(permission.ID, permission.Name, permission.InternalName, permission.Description, time.Now(), time.Now())
-
-	mock.ExpectQuery(`-- name: CreatePermission :one INSERT INTO permissions \( name, internal_name, description \) VALUES \( \$1, \$2, \$3 \) RETURNING id, name, internal_name, description, created_at, updated_at`).
+	createPermissionSQL := `-- name: CreatePermission :exec INSERT INTO permissions \( name, internal_name, description \) VALUES \( \$1, \$2, \$3 \)`
+	mock.ExpectExec(createPermissionSQL).
 		WithArgs(permission.Name, permission.InternalName, permission.Description).
-		WillReturnRows(rows)
+		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	err = rr.CreatePermission(permission)
 
@@ -121,12 +118,11 @@ func TestDeletePermission(t *testing.T) {
 		InternalName: "test_test",
 		Description:  "testing",
 	}
-	rows := sqlmock.NewRows([]string{"id", "name", "internal_name", "description", "created_at", "updated_at"}).
-		AddRow(permission.ID, permission.Name, permission.InternalName, permission.Description, time.Now(), time.Now())
 
-	mock.ExpectQuery(`-- name: DeletePermission :one DELETE FROM permissions WHERE id = \$1 RETURNING id, name, internal_name, description, created_at, updated_at`).
+	deletePermissionSQL := `-- name: DeletePermission :exec DELETE FROM permissions WHERE id = \$1`
+	mock.ExpectExec(deletePermissionSQL).
 		WithArgs(permission.ID).
-		WillReturnRows(rows)
+		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	err = rr.DeletePermission(permission.ID)
 
@@ -150,13 +146,11 @@ func TestUpdatePermission(t *testing.T) {
 		Description:  "testing",
 	}
 
-	rows := sqlmock.NewRows([]string{"id", "name", "internal_name", "description", "created_at", "updated_at"}).
-		AddRow(permission.ID, permission.Name, permission.InternalName, permission.Description, time.Now(), time.Now())
+	updatePermissionSQL := `-- name: UpdatePermission :exec UPDATE permissions SET name = \$1, internal_name = \$2, description = \$3 WHERE id = \$4`
 
-	updatePermissionSQL := `-- name: UpdatePermission :one UPDATE permissions SET name = \$1, internal_name = \$2, description = \$3 WHERE id = \$4 RETURNING id, name, internal_name, description, created_at, updated_at`
-	mock.ExpectQuery(updatePermissionSQL).
+	mock.ExpectExec(updatePermissionSQL).
 		WithArgs(permission.Name, permission.InternalName, permission.Description, permission.ID).
-		WillReturnRows(rows)
+		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	err = rr.UpdatePermission(permission, permission.ID)
 
