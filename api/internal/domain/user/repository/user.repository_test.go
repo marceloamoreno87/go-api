@@ -34,14 +34,9 @@ func TestCreateUser(t *testing.T) {
 		WithArgs(user.Name, user.Email, user.Password, user.RoleID).
 		WillReturnRows(rows)
 
-	u, err := ur.CreateUser(user)
+	err = ur.CreateUser(user)
 
 	assert.NoError(t, err)
-
-	assert.Equal(t, user.Name, u.Name)
-	assert.Equal(t, user.Email, u.Email)
-	assert.Equal(t, user.Password, u.Password)
-	assert.Equal(t, user.RoleID, u.RoleID)
 }
 
 func TestGetUser(t *testing.T) {
@@ -137,14 +132,9 @@ func TestDeleteUser(t *testing.T) {
 		WithArgs(user.ID).
 		WillReturnRows(rows)
 
-	u, err := ur.DeleteUser(user.ID)
+	err = ur.DeleteUser(user.ID)
 
 	assert.NoError(t, err)
-
-	assert.Equal(t, user.Name, u.Name)
-	assert.Equal(t, user.Email, u.Email)
-	assert.Equal(t, user.Password, u.Password)
-	assert.Equal(t, user.RoleID, u.RoleID)
 
 }
 
@@ -172,14 +162,9 @@ func TestUpdateUser(t *testing.T) {
 		WithArgs(user.Name, user.Email, user.Password, user.RoleID, 1).
 		WillReturnRows(rows)
 
-	u, err := ur.UpdateUser(user, 1)
+	err = ur.UpdateUser(user, 1)
 
 	assert.NoError(t, err)
-
-	assert.Equal(t, user.Name, u.Name)
-	assert.Equal(t, user.Email, u.Email)
-	assert.Equal(t, user.Password, u.Password)
-	assert.Equal(t, user.RoleID, u.RoleID)
 
 }
 

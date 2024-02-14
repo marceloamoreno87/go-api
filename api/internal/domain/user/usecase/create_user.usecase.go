@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"time"
-
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -12,16 +10,6 @@ type CreateUserInputDTO struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	RoleID   int32  `json:"role_id"`
-}
-
-type CreateUserOutputDTO struct {
-	ID        int32     `json:"id"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
-	Password  string    `json:"password"`
-	RoleID    int32     `json:"role_id"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type CreateUserUseCase struct {
@@ -34,26 +22,15 @@ func NewCreateUserUseCase(userRepository repository.UserRepositoryInterface) *Cr
 	}
 }
 
-func (uc *CreateUserUseCase) Execute(input CreateUserInputDTO) (output CreateUserOutputDTO, err error) {
-
+func (uc *CreateUserUseCase) Execute(input CreateUserInputDTO) (err error) {
 	user, err := entity.NewUser(input.Name, input.Email, input.Password, input.RoleID)
 	if err != nil {
-		return CreateUserOutputDTO{}, err
+		return
 	}
 
-	u, err := uc.UserRepository.CreateUser(user)
+	err = uc.UserRepository.CreateUser(user)
 	if err != nil {
-		return CreateUserOutputDTO{}, err
-	}
-
-	output = CreateUserOutputDTO{
-		ID:        u.ID,
-		Name:      u.Name,
-		Email:     u.Email,
-		Password:  u.Password,
-		RoleID:    u.RoleID,
-		CreatedAt: u.CreatedAt,
-		UpdatedAt: u.UpdatedAt,
+		return
 	}
 
 	return

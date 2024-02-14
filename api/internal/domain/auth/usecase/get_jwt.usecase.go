@@ -34,8 +34,8 @@ func (uc *GetJWTUseCase) Execute(input GetJWTInputDTO) (output GetJWTOutputDTO, 
 	if err != nil {
 		return
 	}
-	dto := usecase.GetUserByEmailInputDTO{Email: input.Email}
-	user, err := uc.GetUserByEmailUseCase.Execute(dto)
+	inputGetUser := usecase.GetUserByEmailInputDTO{Email: input.Email}
+	user, err := uc.GetUserByEmailUseCase.Execute(inputGetUser)
 	if err != nil {
 		return
 	}

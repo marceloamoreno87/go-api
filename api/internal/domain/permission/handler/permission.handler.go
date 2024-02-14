@@ -113,14 +113,14 @@ func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Requ
 	}
 
 	uc := usecase.NewCreatePermissionUseCase(h.PermissionRepository)
-	permission, err := uc.Execute(dto)
+	err = uc.Execute(dto)
 	if err != nil {
 		slog.Info("err", err)
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-	slog.Info("Permission created", "permission", permission)
-	h.HandlerTools.ResponseJSON(w, permission)
+	slog.Info("Permission created", "permission")
+	h.HandlerTools.ResponseJSON(w, nil)
 
 }
 
@@ -153,14 +153,14 @@ func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Requ
 	}
 
 	uc := usecase.NewUpdatePermissionUseCase(h.PermissionRepository, id)
-	permission, err := uc.Execute(dto)
+	err = uc.Execute(dto)
 	if err != nil {
 		slog.Info("err", err)
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-	slog.Info("Permission updated", "permission", permission)
-	h.HandlerTools.ResponseJSON(w, permission)
+	slog.Info("Permission updated", "permission")
+	h.HandlerTools.ResponseJSON(w, nil)
 }
 
 // DeletePermission godoc
@@ -184,7 +184,7 @@ func (h *PermissionHandler) DeletePermission(w http.ResponseWriter, r *http.Requ
 	}
 
 	uc := usecase.NewDeletePermissionUseCase(h.PermissionRepository)
-	permission, err := uc.Execute(usecase.DeletePermissionInputDTO{
+	err = uc.Execute(usecase.DeletePermissionInputDTO{
 		ID: id,
 	})
 	if err != nil {
@@ -192,6 +192,6 @@ func (h *PermissionHandler) DeletePermission(w http.ResponseWriter, r *http.Requ
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-	slog.Info("Permission deleted", "permission", permission)
-	h.HandlerTools.ResponseJSON(w, permission)
+	slog.Info("Permission deleted")
+	h.HandlerTools.ResponseJSON(w, nil)
 }

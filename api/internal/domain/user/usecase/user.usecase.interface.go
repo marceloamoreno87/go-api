@@ -1,7 +1,7 @@
 package usecase
 
 type CreateUserUseCaseInterface interface {
-	Execute(input CreateUserInputDTO) (output CreateUserOutputDTO, err error)
+	Execute(input CreateUserInputDTO) (err error)
 }
 
 type GetUserUseCaseInterface interface {
@@ -17,8 +17,8 @@ type GetUsersUseCaseInterface interface {
 }
 
 type UpdateUserUseCaseInterface interface {
-	Execute(input UpdateUserInputDTO) (output UpdateUserOutputDTO, err error)
+	Execute(input UpdateUserInputDTO) (err error)
 }
 type DeleteUserUseCaseInterface interface {
-	Execute(input DeleteUserInputDTO) (output DeleteUserOutputDTO, err error)
+	Execute(input DeleteUserInputDTO) (err error)
 }

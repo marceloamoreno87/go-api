@@ -33,7 +33,7 @@ func NewGetUserByEmailUseCase(userRepository repository.UserRepositoryInterface)
 func (uc *GetUserByEmailUseCase) Execute(input GetUserByEmailInputDTO) (output GetUserByEmailOutputDTO, err error) {
 	user, err := uc.UserRepository.GetUserByEmail(input.Email)
 	if err != nil {
-		return GetUserByEmailOutputDTO{}, err
+		return
 	}
 
 	output = GetUserByEmailOutputDTO{

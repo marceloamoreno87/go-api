@@ -104,8 +104,8 @@ func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
 // @Security     JWT
 func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
 
-	var dto usecase.CreateRoleInputDTO
-	err := json.NewDecoder(r.Body).Decode(&dto)
+	var input usecase.CreateRoleInputDTO
+	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
@@ -113,14 +113,14 @@ func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
 	}
 
 	uc := usecase.NewCreateRoleUseCase(h.RoleRepository)
-	role, err := uc.Execute(dto)
+	err = uc.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-	slog.Info("Role created", "role", role)
-	h.HandlerTools.ResponseJSON(w, role)
+	slog.Info("Role created")
+	h.HandlerTools.ResponseJSON(w, nil)
 
 }
 
@@ -144,8 +144,8 @@ func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var dto usecase.UpdateRoleInputDTO
-	err = json.NewDecoder(r.Body).Decode(&dto)
+	var input usecase.UpdateRoleInputDTO
+	err = json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
@@ -153,14 +153,14 @@ func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
 	}
 
 	uc := usecase.NewUpdateRoleUseCase(h.RoleRepository, id)
-	role, err := uc.Execute(dto)
+	err = uc.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-	slog.Info("Role updated", "role", role)
-	h.HandlerTools.ResponseJSON(w, role)
+	slog.Info("Role updated")
+	h.HandlerTools.ResponseJSON(w, nil)
 }
 
 // DeleteRole godoc
@@ -184,7 +184,7 @@ func (h *RoleHandler) DeleteRole(w http.ResponseWriter, r *http.Request) {
 	}
 
 	uc := usecase.NewDeleteRoleUseCase(h.RoleRepository)
-	role, err := uc.Execute(usecase.DeleteRoleInputDTO{
+	err = uc.Execute(usecase.DeleteRoleInputDTO{
 		ID: id,
 	})
 	if err != nil {
@@ -192,6 +192,6 @@ func (h *RoleHandler) DeleteRole(w http.ResponseWriter, r *http.Request) {
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-	slog.Info("Role deleted", "user", role)
-	h.HandlerTools.ResponseJSON(w, role)
+	slog.Info("Role deleted")
+	h.HandlerTools.ResponseJSON(w, nil)
 }

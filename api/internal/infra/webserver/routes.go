@@ -82,15 +82,15 @@ func (r *Route) GetPermissionRoutes(router chi.Router) {
 	})
 }
 
-func (r *Route) GetRolePermissionRoutes(router chi.Router) {
-	RolePermissionRepository := RoleRepository.NewRolePermissionRepository(r.DBConn)
-	RolePermissionHandler := RoleHandler.NewRolePermissionHandler(RolePermissionRepository, r.HandlerTools)
-	router.Route("/role/{id}", func(r chi.Router) {
-		r.Get("/permission", RolePermissionHandler.GetRolePermissions)
-		r.Post("/permission", RolePermissionHandler.CreateRolePermission)
-		r.Put("/permission", RolePermissionHandler.UpdateRolePermission)
-	})
-}
+// func (r *Route) GetRolePermissionRoutes(router chi.Router) {
+// 	RolePermissionRepository := RoleRepository.NewRolePermissionRepository(r.DBConn)
+// 	RolePermissionHandler := RoleHandler.NewRolePermissionHandler(RolePermissionRepository, r.HandlerTools)
+// 	router.Route("/role/{id}", func(r chi.Router) {
+// 		r.Get("/permission", RolePermissionHandler.GetRolePermissions)
+// 		r.Post("/permission", RolePermissionHandler.CreateRolePermission)
+// 		r.Put("/permission", RolePermissionHandler.UpdateRolePermission)
+// 	})
+// }
 
 func (r *Route) GetSwaggerRoutes(router chi.Router) {
 	router.Get("/swagger/*", HttpSwagger.Handler(

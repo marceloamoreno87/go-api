@@ -1,22 +1,11 @@
 package usecase
 
 import (
-	"time"
-
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
 type DeleteUserInputDTO struct {
 	ID int32 `json:"id"`
-}
-
-type DeleteUserOutputDTO struct {
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
-	Password  string    `json:"password"`
-	RoleID    int32     `json:"role_id"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type DeleteUserUseCase struct {
@@ -29,24 +18,16 @@ func NewDeleteUserUseCase(userRepository repository.UserRepositoryInterface) *De
 	}
 }
 
-func (uc *DeleteUserUseCase) Execute(input DeleteUserInputDTO) (output DeleteUserOutputDTO, err error) {
+func (uc *DeleteUserUseCase) Execute(input DeleteUserInputDTO) (err error) {
 	user, err := uc.UserRepository.GetUser(input.ID)
 	if err != nil {
-		return DeleteUserOutputDTO{}, err
+		return
 	}
 
-	u, err := uc.UserRepository.DeleteUser(user.GetID())
+	err = uc.UserRepository.DeleteUser(user.GetID())
 	if err != nil {
-		return DeleteUserOutputDTO{}, err
+		return
 	}
 
-	output = DeleteUserOutputDTO{
-		Name:      u.Name,
-		Email:     u.Email,
-		Password:  u.Password,
-		RoleID:    u.RoleID,
-		CreatedAt: u.CreatedAt,
-		UpdatedAt: u.UpdatedAt,
-	}
 	return
 }

@@ -31,7 +31,7 @@ func (uc *UpdateRolePermissionUseCase) Execute(input UpdateRolePermissionInputDT
 	if err != nil {
 		return
 	}
-	rolePermission, err = uc.RolePermissionRepository.UpdateRolePermission(rolePermission)
+	err = uc.RolePermissionRepository.UpdateRolePermission(rolePermission)
 	if err != nil {
 		return
 	}

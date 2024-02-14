@@ -35,8 +35,8 @@ func NewUserHandler(userRepository repository.UserRepositoryInterface, handlerTo
 // @Security     JWT
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 
-	var user usecase.CreateUserInputDTO
-	err := json.NewDecoder(r.Body).Decode(&user)
+	var input usecase.CreateUserInputDTO
+	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
@@ -44,14 +44,14 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	uc := usecase.NewCreateUserUseCase(h.UserRepository)
-	u, err := uc.Execute(user)
+	err = uc.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-	slog.Info("User created", "user", u)
-	h.HandlerTools.ResponseJSON(w, u)
+	slog.Info("User created", "user")
+	h.HandlerTools.ResponseJSON(w, nil)
 
 }
 
@@ -108,13 +108,13 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-	params := usecase.GetUsersInputDTO{
+	input := usecase.GetUsersInputDTO{
 		Limit:  limit,
 		Offset: offset,
 	}
 
 	uc := usecase.NewGetUsersUseCase(h.UserRepository)
-	u, err := uc.Execute(params)
+	u, err := uc.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
@@ -123,7 +123,6 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Users getting", "users", u)
 	h.HandlerTools.ResponseJSON(w, u)
 }
-
 
 // UpdateUser godoc
 // @Summary Update User
@@ -145,8 +144,8 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var user usecase.UpdateUserInputDTO
-	err = json.NewDecoder(r.Body).Decode(&user)
+	var input usecase.UpdateUserInputDTO
+	err = json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
@@ -154,14 +153,14 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	uc := usecase.NewUpdateUserUseCase(h.UserRepository, id)
-	u, err := uc.Execute(user)
+	err = uc.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-	slog.Info("User updated", "user", u)
-	h.HandlerTools.ResponseJSON(w, u)
+	slog.Info("User updated")
+	h.HandlerTools.ResponseJSON(w, nil)
 }
 
 // DeleteUser godoc
@@ -185,7 +184,7 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	uc := usecase.NewDeleteUserUseCase(h.UserRepository)
-	u, err := uc.Execute(usecase.DeleteUserInputDTO{
+	err = uc.Execute(usecase.DeleteUserInputDTO{
 		ID: id,
 	})
 	if err != nil {
@@ -193,6 +192,6 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-	slog.Info("User deleted", "user", u)
-	h.HandlerTools.ResponseJSON(w, u)
+	slog.Info("User deleted")
+	h.HandlerTools.ResponseJSON(w, nil)
 }

@@ -34,7 +34,7 @@ func NewGetUsersUseCase(userRepository repository.UserRepositoryInterface) *GetU
 func (uc *GetUsersUseCase) Execute(input GetUsersInputDTO) (output []GetUsersOutputDTO, err error) {
 	users, err := uc.UserRepository.GetUsers(input.Limit, input.Offset)
 	if err != nil {
-		return []GetUsersOutputDTO{}, err
+		return
 	}
 
 	for _, user := range users {
