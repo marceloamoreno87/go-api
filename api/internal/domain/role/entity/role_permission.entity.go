@@ -8,27 +8,20 @@ import (
 
 type RolePermission struct {
 	RoleID        int32
-	Role          *Role
 	PermissionIDs []int32
+	Role          *Role
 	Permissions   []*PermissionEntity.Permission
 }
 
-func NewRolePermission(role *Role, permissions []*PermissionEntity.Permission) (rolePermission *RolePermission, err error) {
-
+func NewRolePermission(roleId int32, permissionIds []int32) (rolePermission *RolePermission, err error) {
 	rolePermission = &RolePermission{
-		Role:          role,
-		RoleID:        role.ID,
-		PermissionIDs: make([]int32, len(permissions)),
-		Permissions:   permissions,
+		RoleID:        roleId,
+		PermissionIDs: permissionIds,
 	}
 
-	for i, permission := range permissions {
-		rolePermission.PermissionIDs[i] = permission.ID
-	}
-
-	valid := rolePermission.Validate()
-	if valid != nil {
-		return nil, valid
+	err = rolePermission.Validate()
+	if err != nil {
+		return
 	}
 
 	return
@@ -40,16 +33,8 @@ func (r *RolePermission) Validate() (err error) {
 		return errors.New("RoleId is required")
 	}
 
-	if r.Role == nil {
-		return errors.New("Role is required")
-	}
-
 	if len(r.PermissionIDs) == 0 {
 		return errors.New("PermissionId is required")
-	}
-
-	if len(r.Permissions) == 0 {
-		return errors.New("Permissions is required")
 	}
 
 	return
@@ -63,7 +48,7 @@ func (r *RolePermission) GetPermission() []*PermissionEntity.Permission {
 	return r.Permissions
 }
 
-func (r *RolePermission) GetPermissionID() []int32 {
+func (r *RolePermission) GetPermissionIDs() []int32 {
 	return r.PermissionIDs
 }
 
@@ -79,7 +64,7 @@ func (r *RolePermission) SetPermission(permissions []*PermissionEntity.Permissio
 	r.Permissions = permissions
 }
 
-func (r *RolePermission) SetPermissionID(permissionId []int32) {
+func (r *RolePermission) SetPermissionIDs(permissionId []int32) {
 	r.PermissionIDs = permissionId
 }
 

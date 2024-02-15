@@ -26,12 +26,10 @@ func TestCreateRole(t *testing.T) {
 		Description:  "testing",
 	}
 
-	rows := sqlmock.NewRows([]string{"id", "name", "internal_name", "description", "created_at", "updated_at"}).
-		AddRow(role.ID, role.Name, role.InternalName, role.Description, time.Now(), time.Now())
-
-	mock.ExpectQuery(`-- name: CreateRole :one INSERT INTO roles \( name, internal_name, description \) VALUES \( \$1, \$2, \$3 \) RETURNING id, name, internal_name, description, created_at, updated_at`).
+	createRoleSQL := `-- name: CreateRole :exec INSERT INTO roles \( name, internal_name, description \) VALUES \( \$1, \$2, \$3 \)`
+	mock.ExpectExec(createRoleSQL).
 		WithArgs(role.Name, role.InternalName, role.Description).
-		WillReturnRows(rows)
+		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	err = rr.CreateRole(role)
 
@@ -119,12 +117,10 @@ func TestDeleteRole(t *testing.T) {
 		InternalName: "test_test",
 		Description:  "testing",
 	}
-	rows := sqlmock.NewRows([]string{"id", "name", "internal_name", "description", "created_at", "updated_at"}).
-		AddRow(role.ID, role.Name, role.InternalName, role.Description, time.Now(), time.Now())
-
-	mock.ExpectQuery(`-- name: DeleteRole :one DELETE FROM roles WHERE id = \$1 RETURNING id, name, internal_name, description, created_at, updated_at`).
+	deleteRoleSQL := `-- name: DeleteRole :exec DELETE FROM roles WHERE id = \$1`
+	mock.ExpectExec(deleteRoleSQL).
 		WithArgs(role.ID).
-		WillReturnRows(rows)
+		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	err = rr.DeleteRole(role.ID)
 
@@ -147,13 +143,10 @@ func TestUpdateRole(t *testing.T) {
 		Description:  "testing",
 	}
 
-	rows := sqlmock.NewRows([]string{"id", "name", "internal_name", "description", "created_at", "updated_at"}).
-		AddRow(role.ID, role.Name, role.InternalName, role.Description, time.Now(), time.Now())
-
-	updateRoleSQL := `-- name: UpdateRole :one UPDATE roles SET name = \$1, internal_name = \$2, description = \$3 WHERE id = \$4 RETURNING id, name, internal_name, description, created_at, updated_at`
-	mock.ExpectQuery(updateRoleSQL).
+	updateRoleSQL := `-- name: UpdateRole :exec UPDATE roles SET name = \$1, internal_name = \$2, description = \$3 WHERE id = \$4`
+	mock.ExpectExec(updateRoleSQL).
 		WithArgs(role.Name, role.InternalName, role.Description, 1).
-		WillReturnRows(rows)
+		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	err = rr.UpdateRole(role, role.ID)
 

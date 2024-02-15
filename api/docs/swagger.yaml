@@ -1,48 +1,67 @@
 basePath: /api/v1
 definitions:
-  entity.User:
+  api.Response:
+    properties:
+      data: {}
+      status_code:
+        type: integer
+    type: object
+  api.ResponseError:
+    properties:
+      code_error:
+        type: string
+      msg:
+        type: string
+      status_code:
+        type: integer
+    type: object
+  entity.Permission:
     properties:
       created_at:
-        $ref: '#/definitions/time.Time'
-      email:
+        type: string
+      description:
         type: string
       id:
         type: integer
+      internal_name:
+        type: string
       name:
         type: string
-      password:
+      updated_at:
+        type: string
+    type: object
+  entity.Role:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
         type: string
       updated_at:
-        $ref: '#/definitions/time.Time'
-    type: object
-  pgtype.InfinityModifier:
-    enum:
-    - 1
-    - 0
-    - -1
-    type: integer
-    x-enum-varnames:
-    - Infinity
-    - Finite
-    - NegativeInfinity
-  time.Time:
-    properties:
-      infinityModifier:
-        $ref: '#/definitions/pgtype.InfinityModifier'
-      time:
-        description: Time zone will be ignored when encoding to PostgreSQL.
         type: string
-      valid:
-        type: boolean
     type: object
-  tools.Response:
+  usecase.CreateRoleInputDTO:
     properties:
-      data: {}
-    type: object
-  tools.ResponseError:
-    properties:
-      err:
+      description:
         type: string
+      internal_name:
+        type: string
+      name:
+        type: string
+    type: object
+  usecase.CreateRolePermissionInputDTO:
+    properties:
+      permission_ids:
+        items:
+          type: integer
+        type: array
+      role_id:
+        type: integer
     type: object
   usecase.CreateUserInputDTO:
     properties:
@@ -52,19 +71,8 @@ definitions:
         type: string
       password:
         type: string
-    type: object
-  usecase.DeleteUserOutputDTO:
-    properties:
-      created_at:
-        $ref: '#/definitions/time.Time'
-      email:
-        type: string
-      name:
-        type: string
-      password:
-        type: string
-      updated_at:
-        $ref: '#/definitions/time.Time'
+      role_id:
+        type: integer
     type: object
   usecase.GetJWTInputDTO:
     properties:
@@ -78,6 +86,36 @@ definitions:
       token:
         type: string
     type: object
+  usecase.GetPermissionOutputDTO:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  usecase.GetPermissionsOutputDTO:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
   usecase.GetRefreshJWTInputDTO:
     properties:
       token:
@@ -88,6 +126,88 @@ definitions:
       token:
         type: string
     type: object
+  usecase.GetRoleOutputDTO:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  usecase.GetRolePermissionsOutputDTO:
+    properties:
+      permissions:
+        items:
+          $ref: '#/definitions/entity.Permission'
+        type: array
+      role:
+        $ref: '#/definitions/entity.Role'
+    type: object
+  usecase.GetRolesOutputDTO:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  usecase.GetUserOutputDTO:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      role_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  usecase.GetUsersOutputDTO:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      role_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  usecase.UpdateRolePermissionInputDTO:
+    properties:
+      permission_ids:
+        items:
+          type: integer
+        type: array
+      role_id:
+        type: integer
+    type: object
   usecase.UpdateUserInputDTO:
     properties:
       email:
@@ -96,6 +216,8 @@ definitions:
         type: string
       password:
         type: string
+      role_id:
+        type: integer
     type: object
 host: localhost:3000
 info:
@@ -123,7 +245,7 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/tools.Response'
+            - $ref: '#/definitions/api.Response'
             - properties:
                 data:
                   $ref: '#/definitions/usecase.GetJWTOutputDTO'
@@ -131,7 +253,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/tools.ResponseError'
+            $ref: '#/definitions/api.ResponseError'
       summary: Get JWT
       tags:
       - Auth
@@ -154,7 +276,7 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/tools.Response'
+            - $ref: '#/definitions/api.Response'
             - properties:
                 data:
                   $ref: '#/definitions/usecase.GetRefreshJWTOutputDTO'
@@ -162,10 +284,479 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/tools.ResponseError'
+            $ref: '#/definitions/api.ResponseError'
       summary: Get Refresh JWT
       tags:
       - Auth
+  /permission:
+    get:
+      consumes:
+      - application/json
+      description: Get Permissions
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/usecase.GetPermissionsOutputDTO'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.ResponseError'
+            - properties:
+                err:
+                  type: string
+              type: object
+      security:
+      - JWT: []
+      summary: Get Permissions
+      tags:
+      - Permission
+  /permission/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Permission
+      parameters:
+      - description: Permission ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.ResponseError'
+            - properties:
+                err:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      - JWT: []
+      summary: Delete Permission
+      tags:
+      - Permission
+    get:
+      consumes:
+      - application/json
+      description: Get Permission
+      parameters:
+      - description: Permission ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/usecase.GetPermissionOutputDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.ResponseError'
+            - properties:
+                err:
+                  type: string
+              type: object
+      security:
+      - JWT: []
+      summary: Get Permission
+      tags:
+      - Permission
+    put:
+      consumes:
+      - application/json
+      description: Update Permission
+      parameters:
+      - description: Permission ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Permission
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/usecase.UpdateUserInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.ResponseError'
+            - properties:
+                err:
+                  type: string
+              type: object
+      security:
+      - JWT: []
+      summary: Update Permission
+      tags:
+      - Permission
+  /role:
+    get:
+      consumes:
+      - application/json
+      description: Get Roles
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/usecase.GetRolesOutputDTO'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.ResponseError'
+            - properties:
+                err:
+                  type: string
+              type: object
+      security:
+      - JWT: []
+      summary: Get Roles
+      tags:
+      - Role
+    post:
+      consumes:
+      - application/json
+      description: Create Role
+      parameters:
+      - description: Role
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/usecase.CreateRoleInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.ResponseError'
+            - properties:
+                err:
+                  type: string
+              type: object
+      security:
+      - JWT: []
+      summary: Create Role
+      tags:
+      - Role
+  /role/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Role
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.ResponseError'
+            - properties:
+                err:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      - JWT: []
+      summary: Delete Role
+      tags:
+      - Role
+    get:
+      consumes:
+      - application/json
+      description: Get Role
+      parameters:
+      - description: Role ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/usecase.GetRoleOutputDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.ResponseError'
+            - properties:
+                err:
+                  type: string
+              type: object
+      security:
+      - JWT: []
+      summary: Get Role
+      tags:
+      - Role
+    put:
+      consumes:
+      - application/json
+      description: Update Role
+      parameters:
+      - description: Role ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Role
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/usecase.UpdateUserInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.ResponseError'
+            - properties:
+                err:
+                  type: string
+              type: object
+      security:
+      - JWT: []
+      summary: Update Role
+      tags:
+      - Role
+  /role/{id}/permission:
+    get:
+      consumes:
+      - application/json
+      description: Get Role Permissions
+      parameters:
+      - description: Role ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/usecase.GetRolePermissionsOutputDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.ResponseError'
+            - properties:
+                err:
+                  type: string
+              type: object
+      security:
+      - JWT: []
+      summary: Get Role Permissions
+      tags:
+      - RolePermission
+    post:
+      consumes:
+      - application/json
+      description: Create Role Permission
+      parameters:
+      - description: RolePermission
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/usecase.CreateRolePermissionInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.ResponseError'
+            - properties:
+                err:
+                  type: string
+              type: object
+      security:
+      - JWT: []
+      summary: Create Role Permission
+      tags:
+      - RolePermission
+    put:
+      consumes:
+      - application/json
+      description: Update Role Permission
+      parameters:
+      - description: RolePermission ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: RolePermission
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/usecase.UpdateRolePermissionInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.ResponseError'
+            - properties:
+                err:
+                  type: string
+              type: object
+      security:
+      - JWT: []
+      summary: Update Role Permission
+      tags:
+      - RolePermission
   /user:
     get:
       consumes:
@@ -187,18 +778,18 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/tools.Response'
+            - $ref: '#/definitions/api.Response'
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/entity.User'
+                    $ref: '#/definitions/usecase.GetUsersOutputDTO'
                   type: array
               type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/tools.ResponseError'
+            - $ref: '#/definitions/api.ResponseError'
             - properties:
                 err:
                   type: string
@@ -226,16 +817,16 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/tools.Response'
+            - $ref: '#/definitions/api.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/entity.User'
+                  type: object
               type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/tools.ResponseError'
+            - $ref: '#/definitions/api.ResponseError'
             - properties:
                 err:
                   type: string
@@ -263,16 +854,16 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/tools.Response'
+            - $ref: '#/definitions/api.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/usecase.DeleteUserOutputDTO'
+                  type: object
               type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/tools.ResponseError'
+            - $ref: '#/definitions/api.ResponseError'
             - properties:
                 err:
                   type: string
@@ -300,16 +891,16 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/tools.Response'
+            - $ref: '#/definitions/api.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/entity.User'
+                  $ref: '#/definitions/usecase.GetUserOutputDTO'
               type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/tools.ResponseError'
+            - $ref: '#/definitions/api.ResponseError'
             - properties:
                 err:
                   type: string
@@ -342,16 +933,16 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/tools.Response'
+            - $ref: '#/definitions/api.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/entity.User'
+                  type: object
               type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/tools.ResponseError'
+            - $ref: '#/definitions/api.ResponseError'
             - properties:
                 err:
                   type: string

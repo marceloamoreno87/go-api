@@ -1,40 +1,36 @@
 package usecase
 
 import (
-	PermissionEntity "github.com/marceloamoreno/goapi/internal/domain/permission/entity"
-	PermissionRepository "github.com/marceloamoreno/goapi/internal/domain/permission/repository"
-	RoleEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
-	RolePermissionEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
+	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	RoleRepository "github.com/marceloamoreno/goapi/internal/domain/role/repository"
 )
 
 type UpdateRolePermissionInputDTO struct {
-	RoleID       int32   `json:"role_id"`
-	PermissionID []int32 `json:"permission_id"`
+	RoleID        int32   `json:"role_id"`
+	PermissionIDs []int32 `json:"permission_ids"`
 }
 
 type UpdateRolePermissionUseCase struct {
 	RolePermissionRepository RoleRepository.RolePermissionRepositoryInterface
-	PermissionReposity       PermissionRepository.PermissionRepositoryInterface
 }
 
 func NewUpdateRolePermissionUseCase(
-	permissionRepository PermissionRepository.PermissionRepositoryInterface,
+	rolePermissionRepository RoleRepository.RolePermissionRepositoryInterface,
 ) *UpdateRolePermissionUseCase {
 	return &UpdateRolePermissionUseCase{
-		PermissionReposity: permissionRepository,
+		RolePermissionRepository: rolePermissionRepository,
 	}
 }
 
 func (uc *UpdateRolePermissionUseCase) Execute(input UpdateRolePermissionInputDTO) (err error) {
-	rolePermission, err := RolePermissionEntity.NewRolePermission(&RoleEntity.Role{ID: input.RoleID}, []*PermissionEntity.Permission{})
-	if err != nil {
-		return
-	}
-	err = uc.RolePermissionRepository.UpdateRolePermission(rolePermission)
+	rolePermission, err := entity.NewRolePermission(input.RoleID, input.PermissionIDs)
 	if err != nil {
 		return
 	}
 
+	err = uc.RolePermissionRepository.UpdateRolePermission(rolePermission, input.RoleID)
+	if err != nil {
+		return
+	}
 	return
 }

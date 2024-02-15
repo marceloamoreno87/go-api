@@ -31,10 +31,6 @@ func NewUser(name string, email string, password string, roleId int32) (user *Us
 	if valid != nil {
 		return nil, valid
 	}
-	_, valid = user.IsEmailValid()
-	if valid != nil {
-		return nil, valid
-	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -58,15 +54,11 @@ func (u *User) Validate() (err error) {
 	if u.RoleID == 0 {
 		return errors.New("Role is required")
 	}
-	return
-}
-
-func (u *User) IsEmailValid() (bool, error) {
-	_, err := mail.ParseAddress(u.Email)
+	_, err = mail.ParseAddress(u.Email)
 	if err != nil {
-		return false, errors.New("Email is invalid")
+		return errors.New("Email is invalid")
 	}
-	return true, err
+	return
 }
 
 func (u *User) ComparePassword(password string) bool {

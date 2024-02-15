@@ -29,7 +29,7 @@ func NewPermissionHandler(permissionRepository repository.PermissionRepositoryIn
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Permission ID"
-// @Success 200 {object} api.Response{data=entity.Permission}
+// @Success 200 {object} api.Response{data=usecase.GetPermissionOutputDTO}
 // @Failure 400 {object} api.ResponseError{err=string}
 // @Router /permission/{id} [get]
 // @Security     JWT
@@ -64,7 +64,7 @@ func (h *PermissionHandler) GetPermission(w http.ResponseWriter, r *http.Request
 // @Produce  json
 // @Param limit query int false "Limit"
 // @Param offset query int false "Offset"
-// @Success 200 {object} api.Response{data=[]entity.Permission}
+// @Success 200 {object} api.Response{data=[]usecase.GetPermissionsOutputDTO}
 // @Failure 400 {object} api.ResponseError{err=string}
 // @Router /permission [get]
 // @Security     JWT
@@ -98,7 +98,7 @@ func (h *PermissionHandler) GetPermissions(w http.ResponseWriter, r *http.Reques
 // @Accept  json
 // @Produce  json
 // @Param role body usecase.CreateRoleInputDTO true "Permission"
-// @Success 200 {object} api.Response{data=entity.Permission}
+// @Success 200 {object} api.Response{data=nil}
 // @Failure 400 {object} api.ResponseError{err=string}
 // @Router /role [post]
 // @Security     JWT
@@ -119,7 +119,7 @@ func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Requ
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-	slog.Info("Permission created", "permission")
+	slog.Info("Permission created")
 	h.HandlerTools.ResponseJSON(w, nil)
 
 }
@@ -132,7 +132,7 @@ func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Requ
 // @Produce  json
 // @Param id path string true "Permission ID"
 // @Param role body usecase.UpdateUserInputDTO true "Permission"
-// @Success 200 {object} api.Response{data=entity.Permission}
+// @Success 200 {object} api.Response{data=nil}
 // @Failure 400 {object} api.ResponseError{err=string}
 // @Router /permission/{id} [put]
 // @Security     JWT
@@ -159,7 +159,7 @@ func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Requ
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-	slog.Info("Permission updated", "permission")
+	slog.Info("Permission updated")
 	h.HandlerTools.ResponseJSON(w, nil)
 }
 
@@ -170,7 +170,7 @@ func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Requ
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Permission ID"
-// @Success 200 {object} api.Response{data=usecase.DeletePermissionOutputDTO}
+// @Success 200 {object} api.Response{data=nil}
 // @Failure 400 {object} api.ResponseError{err=string}
 // @Security ApiKeyAuth
 // @Router /permission/{id} [delete]
