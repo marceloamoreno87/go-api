@@ -1,4 +1,3 @@
 package usecase_test
 
-
-type 
+// TODO: Implement

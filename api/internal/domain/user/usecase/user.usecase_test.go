@@ -9,32 +9,33 @@ type MockUserRepository struct {
 	mock.Mock
 }
 
-func (m *MockUserRepository) CreateUser(user *entity.User) (*entity.User, error) {
-	args := m.Called(user)
-	return args.Get(0).(*entity.User), args.Error(1)
+func (m *MockUserRepository) GetUsers() ([]entity.User, error) {
+	args := m.Called()
+	return args.Get(0).([]entity.User), args.Error(1)
 }
 
-func (m *MockUserRepository) GetUser(id int64) (*entity.User, error) {
+func (m *MockUserRepository) GetUserByID(id int) (entity.User, error) {
 	args := m.Called(id)
-	return args.Get(0).(*entity.User), args.Error(1)
+	return args.Get(0).(entity.User), args.Error(1)
 }
 
-func (m *MockUserRepository) GetUserByEmail(email string) (*entity.User, error) {
-	args := m.Called(email)
-	return args.Get(0).(*entity.User), args.Error(1)
+func (m *MockUserRepository) CreateUser(user entity.User) (entity.User, error) {
+	args := m.Called(user)
+	return args.Get(0).(entity.User), args.Error(1)
 }
 
-func (m *MockUserRepository) GetUsers(limit int32, offset int32) ([]*entity.User, error) {
-	args := m.Called(limit, offset)
-	return args.Get(0).([]*entity.User), args.Error(1)
+func (m *MockUserRepository) UpdateUser(user entity.User) (entity.User, error) {
+	args := m.Called(user)
+	return args.Get(0).(entity.User), args.Error(1)
 }
 
-func (m *MockUserRepository) UpdateUser(user *entity.User, id int64) (*entity.User, error) {
-	args := m.Called(user, id)
-	return args.Get(0).(*entity.User), args.Error(1)
-}
-
-func (m *MockUserRepository) DeleteUser(id int64) error {
+func (m *MockUserRepository) DeleteUser(id int) error {
 	args := m.Called(id)
 	return args.Error(0)
 }
+
+func (m *MockUserRepository) GetUserByEmail(email string) (entity.User, error) {
+	args := m.Called(email)
+	return args.Get(0).(entity.User), args.Error(1)
+}
+
