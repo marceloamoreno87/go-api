@@ -43,16 +43,31 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uc := usecase.NewCreateUserUseCase(h.UserRepository)
-	err = uc.Execute(input)
+	err = h.UserRepository.BeginTx()
 	if err != nil {
 		slog.Info("err", err)
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
+
+	uc := usecase.NewCreateUserUseCase(h.UserRepository)
+	err = uc.Execute(input)
+	if err != nil {
+		h.UserRepository.RollbackTx()
+		slog.Info("err", err)
+		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+
+	err = h.UserRepository.CommitTx()
+	if err != nil {
+		slog.Info("err", err)
+		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+
 	slog.Info("User created")
 	h.HandlerTools.ResponseJSON(w, nil)
-
 }
 
 // GetUser godoc
