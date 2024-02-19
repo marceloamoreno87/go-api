@@ -7,6 +7,7 @@ import (
 )
 
 type RolePermission struct {
+	ID            int32
 	RoleID        int32
 	PermissionIDs []int32
 	Role          *Role
@@ -40,6 +41,10 @@ func (r *RolePermission) Validate() (err error) {
 	return
 }
 
+func (r *RolePermission) GetID() int32 {
+	return r.ID
+}
+
 func (r *RolePermission) GetRole() *Role {
 	return r.Role
 }
@@ -54,6 +59,10 @@ func (r *RolePermission) GetPermissionIDs() []int32 {
 
 func (r *RolePermission) GetRoleID() int32 {
 	return r.RoleID
+}
+
+func (r *RolePermission) SetID(id int32) {
+	r.ID = id
 }
 
 func (r *RolePermission) SetRole(role *Role) {

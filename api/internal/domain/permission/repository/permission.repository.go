@@ -35,7 +35,7 @@ func (repo *PermissionRepository) CreatePermission(permission *entity.Permission
 func (repo *PermissionRepository) GetPermission(id int32) (permission *entity.Permission, err error) {
 	p, err := repo.DBQueries.GetPermission(context.Background(), id)
 	if err != nil {
-		return &entity.Permission{}, err
+		return
 	}
 	return &entity.Permission{
 		ID:           p.ID,
@@ -92,7 +92,7 @@ func (repo *PermissionRepository) DeletePermission(id int32) (err error) {
 func (repo *PermissionRepository) GetPermissionByInternalName(internal_name string) (permission *entity.Permission, err error) {
 	p, err := repo.DBQueries.GetPermissionByInternalName(context.Background(), internal_name)
 	if err != nil {
-		return &entity.Permission{}, err
+		return
 	}
 	return &entity.Permission{
 		ID:           p.ID,

@@ -38,6 +38,8 @@ type Role struct {
 
 // Roles and permissions table
 type RolePermission struct {
+	// Role permission id
+	ID int32 `json:"id"`
 	// Role id
 	RoleID int32 `json:"role_id"`
 	// Permission id

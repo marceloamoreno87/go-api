@@ -257,7 +257,7 @@ func (q *Queries) GetRoleByInternalName(ctx context.Context, internalName string
 }
 
 const getRolePermissions = `-- name: GetRolePermissions :many
-SELECT role_id, permission_id, permissions.id, permissions.name, permissions.internal_name, permissions.description, permissions.created_at, permissions.updated_at, roles.id, roles.name, roles.internal_name, roles.description, roles.created_at, roles.updated_at FROM role_permissions
+SELECT role_permissions.id, role_id, permission_id, permissions.id, permissions.name, permissions.internal_name, permissions.description, permissions.created_at, permissions.updated_at, roles.id, roles.name, roles.internal_name, roles.description, roles.created_at, roles.updated_at FROM role_permissions
 INNER JOIN permissions ON role_permissions.permission_id = permissions.id
 INNER JOIN roles ON role_permissions.role_id = roles.id
 WHERE role_id = $1
@@ -265,15 +265,16 @@ ORDER BY permission_id ASC
 `
 
 type GetRolePermissionsRow struct {
+	ID             int32     `json:"id"`
 	RoleID         int32     `json:"role_id"`
 	PermissionID   int32     `json:"permission_id"`
-	ID             int32     `json:"id"`
+	ID_2           int32     `json:"id_2"`
 	Name           string    `json:"name"`
 	InternalName   string    `json:"internal_name"`
 	Description    string    `json:"description"`
 	CreatedAt      time.Time `json:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at"`
-	ID_2           int32     `json:"id_2"`
+	ID_3           int32     `json:"id_3"`
 	Name_2         string    `json:"name_2"`
 	InternalName_2 string    `json:"internal_name_2"`
 	Description_2  string    `json:"description_2"`
@@ -291,15 +292,16 @@ func (q *Queries) GetRolePermissions(ctx context.Context, roleID int32) ([]GetRo
 	for rows.Next() {
 		var i GetRolePermissionsRow
 		if err := rows.Scan(
+			&i.ID,
 			&i.RoleID,
 			&i.PermissionID,
-			&i.ID,
+			&i.ID_2,
 			&i.Name,
 			&i.InternalName,
 			&i.Description,
 			&i.CreatedAt,
 			&i.UpdatedAt,
-			&i.ID_2,
+			&i.ID_3,
 			&i.Name_2,
 			&i.InternalName_2,
 			&i.Description_2,

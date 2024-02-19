@@ -33,7 +33,7 @@ func NewGetUserUseCase(userRepository repository.UserRepositoryInterface) *GetUs
 func (uc *GetUserUseCase) Execute(input GetUserInputDTO) (output GetUserOutputDTO, err error) {
 	user, err := uc.UserRepository.GetUser(input.ID)
 	if err != nil {
-		return GetUserOutputDTO{}, err
+		return
 	}
 
 	output = GetUserOutputDTO{

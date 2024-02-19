@@ -2,12 +2,11 @@ package entity
 
 import (
 	"time"
+
+	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
 )
 
 type UserInterface interface {
-	Validate() error
-	IsEmailValid() (bool, error)
-	ComparePassword(password string) bool
 	GetID() int32
 	GetName() string
 	GetEmail() string
@@ -15,6 +14,7 @@ type UserInterface interface {
 	GetRoleID() int32
 	GetCreatedAt() time.Time
 	GetUpdatedAt() time.Time
+	GetRole() *entity.Role
 	SetID(id int32)
 	SetName(name string)
 	SetEmail(email string)
@@ -22,4 +22,7 @@ type UserInterface interface {
 	SetRoleID(roleId int32)
 	SetCreatedAt(createdAt time.Time)
 	SetUpdatedAt(updatedAt time.Time)
+	SetRole(role *entity.Role)
+	Validate() (err error)
+	ComparePassword(password string) (b bool)
 }

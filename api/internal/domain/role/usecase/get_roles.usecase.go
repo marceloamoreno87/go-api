@@ -34,7 +34,7 @@ func (uc *GetRolesUseCase) Execute(input GetRolesInputDTO) (output []GetRolesOut
 
 	roles, err := uc.RoleRepository.GetRoles(input.Limit, input.Offset)
 	if err != nil {
-		return []GetRolesOutputDTO{}, err
+		return
 	}
 
 	for _, role := range roles {

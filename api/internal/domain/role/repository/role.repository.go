@@ -32,10 +32,10 @@ func (repo *RoleRepository) CreateRole(role *entity.Role) (err error) {
 	return
 }
 
-func (repo *RoleRepository) GetRole(id int32) (*entity.Role, error) {
+func (repo *RoleRepository) GetRole(id int32) (role *entity.Role, err error) {
 	r, err := repo.DBQueries.GetRole(context.Background(), id)
 	if err != nil {
-		return &entity.Role{}, err
+		return
 	}
 	return &entity.Role{
 		ID:           r.ID,
@@ -47,10 +47,10 @@ func (repo *RoleRepository) GetRole(id int32) (*entity.Role, error) {
 	}, nil
 }
 
-func (repo *RoleRepository) GetRoleByInternalName(internal_name string) (*entity.Role, error) {
+func (repo *RoleRepository) GetRoleByInternalName(internal_name string) (role *entity.Role, err error) {
 	r, err := repo.DBQueries.GetRoleByInternalName(context.Background(), internal_name)
 	if err != nil {
-		return &entity.Role{}, err
+		return
 	}
 	return &entity.Role{
 		ID:           r.ID,

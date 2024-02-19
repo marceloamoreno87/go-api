@@ -64,10 +64,10 @@ INSERT INTO users (name, password, email, role_id) VALUES ('admin', '$2a$10$Fcjd
 INSERT INTO users (name, password, email, role_id) VALUES ('user', '$2a$10$FcjdWT805.CjOEz9xc/P9eJojZ0.3SLlLRAgI/2ve6zPjgGY2jFsS', 'user@user.com',(SELECT id FROM roles WHERE internal_name = 'user'));
 
 -- Create the 'role_permission' table
-CREATE TABLE role_permissions (
+CREATE TABLE IF NOT EXISTS role_permissions (
+  id SERIAL PRIMARY KEY, -- Role permission id
   role_id INT NOT NULL, -- Role id
   permission_id INT NOT NULL, -- Permission id
-  PRIMARY KEY (role_id, permission_id),
   FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE,
   FOREIGN KEY (permission_id) REFERENCES permissions (id) ON DELETE CASCADE
 );
@@ -116,5 +116,6 @@ COMMENT ON COLUMN permissions.internal_name IS 'Permission internal name';
 COMMENT ON COLUMN permissions.description IS 'Permission description';
 
 COMMENT ON TABLE role_permissions IS 'Roles and permissions table';
+COMMENT ON COLUMN role_permissions.id IS 'Role permission id';
 COMMENT ON COLUMN role_permissions.role_id IS 'Role id';
 COMMENT ON COLUMN role_permissions.permission_id IS 'Permission id';

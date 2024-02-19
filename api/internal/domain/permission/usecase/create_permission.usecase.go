@@ -22,10 +22,9 @@ func NewCreatePermissionUseCase(permissionRepository repository.PermissionReposi
 }
 
 func (uc *CreatePermissionUseCase) Execute(input CreatePermissionInputDTO) (err error) {
-	permission := &entity.Permission{
-		Name:         input.Name,
-		InternalName: input.InternalName,
-		Description:  input.Description,
+	permission, err := entity.NewPermission(input.Name, input.InternalName, input.Description)
+	if err != nil {
+		return
 	}
 
 	err = uc.PermissionRepository.CreatePermission(permission)

@@ -33,10 +33,10 @@ func (repo *UserRepository) CreateUser(user *entity.User) (err error) {
 	return
 }
 
-func (repo *UserRepository) GetUser(id int32) (*entity.User, error) {
+func (repo *UserRepository) GetUser(id int32) (user *entity.User, err error) {
 	u, err := repo.DBQueries.GetUser(context.Background(), id)
 	if err != nil {
-		return &entity.User{}, err
+		return
 	}
 
 	return &entity.User{
@@ -50,10 +50,10 @@ func (repo *UserRepository) GetUser(id int32) (*entity.User, error) {
 	}, nil
 }
 
-func (repo *UserRepository) GetUserByEmail(email string) (*entity.User, error) {
+func (repo *UserRepository) GetUserByEmail(email string) (user *entity.User, err error) {
 	u, err := repo.DBQueries.GetUserByEmail(context.Background(), email)
 	if err != nil {
-		return &entity.User{}, err
+		return
 	}
 	return &entity.User{
 		ID:        u.ID,
