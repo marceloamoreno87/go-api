@@ -45,15 +45,16 @@ func TestGetRolePermissions(t *testing.T) {
 	rr := repository.NewRolePermissionRepository(db)
 
 	rolePermission := &entity.RolePermission{
+		ID:            1,
 		RoleID:        1,
 		PermissionIDs: []int32{1},
 	}
 
-	rows := sqlmock.NewRows([]string{"role_id", "permission_id", "id", "name", "internal_name", "description", "created_at", "updated_at", "id_2", "name", "internal_name", "description", "created_at", "updated_at"}).
-		AddRow(rolePermission.RoleID, rolePermission.PermissionIDs[0], 1, "Test", "test", "test", time.Now(), time.Now(), 1, "Test_2", "test_2", "test_2", time.Now(), time.Now()).
-		AddRow(rolePermission.RoleID, rolePermission.PermissionIDs[0], 1, "Test", "test", "test", time.Now(), time.Now(), 1, "Test_2", "test_2", "test_2", time.Now(), time.Now())
+	rows := sqlmock.NewRows([]string{"id", "role_id", "permission_id", "id", "name", "internal_name", "description", "created_at", "updated_at", "id_2", "name", "internal_name", "description", "created_at", "updated_at"}).
+		AddRow(rolePermission.ID, rolePermission.RoleID, rolePermission.PermissionIDs[0], 1, "Test", "test", "test", time.Now(), time.Now(), 1, "Test_2", "test_2", "test_2", time.Now(), time.Now()).
+		AddRow(rolePermission.ID, rolePermission.RoleID, rolePermission.PermissionIDs[0], 1, "Test", "test", "test", time.Now(), time.Now(), 1, "Test_2", "test_2", "test_2", time.Now(), time.Now())
 
-	gerRolePermissionSQL := `-- name: GetRolePermissions :many SELECT role_id, permission_id, permissions.id, permissions.name, permissions.internal_name, permissions.description, permissions.created_at, permissions.updated_at, roles.id, roles.name, roles.internal_name, roles.description, roles.created_at, roles.updated_at FROM role_permissions INNER JOIN permissions ON role_permissions.permission_id = permissions.id INNER JOIN roles ON role_permissions.role_id = roles.id WHERE role_id = \$1 ORDER BY permission_id ASC`
+	gerRolePermissionSQL := `-- name: GetRolePermissions :many SELECT role_permissions.id, role_id, permission_id, permissions.id, permissions.name, permissions.internal_name, permissions.description, permissions.created_at, permissions.updated_at, roles.id, roles.name, roles.internal_name, roles.description, roles.created_at, roles.updated_at FROM role_permissions INNER JOIN permissions ON role_permissions.permission_id = permissions.id INNER JOIN roles ON role_permissions.role_id = roles.id WHERE role_id = \$1 ORDER BY permission_id ASC`
 	mock.ExpectQuery(gerRolePermissionSQL).
 		WithArgs(rolePermission.RoleID).
 		WillReturnRows(rows)

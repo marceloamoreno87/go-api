@@ -33,7 +33,7 @@ func TestValidate(t *testing.T) {
 
 func TestGetID(t *testing.T) {
 	permission := &entity.Permission{ID: 1}
-	assert.Equal(t, 1, permission.GetID())
+	assert.Equal(t, int32(1), permission.GetID())
 }
 
 func TestGetName(t *testing.T) {
@@ -64,7 +64,7 @@ func TestGetUpdatedAt(t *testing.T) {
 func TestSetID(t *testing.T) {
 	permission := &entity.Permission{}
 	permission.SetID(1)
-	assert.Equal(t, 1, permission.ID)
+	assert.Equal(t, int32(1), permission.ID)
 }
 
 func TestSetName(t *testing.T) {
