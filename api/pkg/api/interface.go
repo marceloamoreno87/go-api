@@ -1,6 +1,8 @@
 package api
 
 import (
+	"context"
+	"database/sql"
 	"net/http"
 )
 
@@ -12,13 +14,7 @@ type HandlerToolsInterface interface {
 }
 
 type DatabaseTransaction interface {
-	BeginTx() (err error)
-	CommitTx() (err error)
-	RollbackTx() (err error)
+	BeginTx(ctx context.Context, options *sql.TxOptions) (tx *sql.Tx, err error)
+	CommitTx(tx *sql.Tx) (err error)
+	RollbackTx(tx *sql.Tx) (err error)
 }
-
-// type DatabaseTransaction interface {
-// 	BeginTx(ctx context.Context, options *sql.TxOptions) (tx *sql.Tx, err error)
-// 	CommitTx(tx *sql.Tx) (err error)
-// 	RollbackTx(tx *sql.Tx) (err error)
-// }

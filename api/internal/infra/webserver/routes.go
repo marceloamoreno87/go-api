@@ -16,7 +16,6 @@ import (
 	RoleRepository "github.com/marceloamoreno/goapi/internal/domain/role/repository"
 	UserHandler "github.com/marceloamoreno/goapi/internal/domain/user/handler"
 	UserRepository "github.com/marceloamoreno/goapi/internal/domain/user/repository"
-	"github.com/marceloamoreno/goapi/internal/infra/database"
 	"github.com/marceloamoreno/goapi/pkg/api"
 	HttpSwagger "github.com/swaggo/http-swagger"
 )
@@ -25,17 +24,15 @@ type Route struct {
 	HandlerTools *api.HandlerTools
 	Mux          *chi.Mux
 	DBConn       *sql.DB
+	Tx           api.DatabaseTransaction
 }
 
-func NewRoute(r *chi.Mux, handlerTools *api.HandlerTools) *Route {
-	DBConn, err := database.GetDBConn()
-	if err != nil {
-		panic(err)
-	}
+func NewRoute(r *chi.Mux, handlerTools *api.HandlerTools, db *sql.DB) *Route {
 	return &Route{
 		Mux:          r,
 		HandlerTools: handlerTools,
-		DBConn:       DBConn,
+		DBConn:       db,
+		Tx:           api.NewDefaultRepository(db),
 	}
 }
 
@@ -50,7 +47,7 @@ func (r *Route) GetAuthRoutes(router chi.Router) {
 
 func (r *Route) GetUserRoutes(router chi.Router) {
 	userRepository := UserRepository.NewUserRepository(r.DBConn)
-	userHandler := UserHandler.NewUserHandler(userRepository, r.HandlerTools)
+	userHandler := UserHandler.NewUserHandler(userRepository, r.HandlerTools, r.Tx)
 
 	router.Route("/user", func(r chi.Router) {
 		r.Get("/", userHandler.GetUsers)

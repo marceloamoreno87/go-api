@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"log/slog"
 	"net/http"
@@ -11,14 +12,20 @@ import (
 )
 
 type UserHandler struct {
-	HandlerTools   api.HandlerToolsInterface
-	UserRepository repository.UserRepositoryInterface
+	HandlerTools       api.HandlerToolsInterface
+	HandlerTransaction api.DatabaseTransaction
+	UserRepository     repository.UserRepositoryInterface
 }
 
-func NewUserHandler(userRepository repository.UserRepositoryInterface, handlerTools api.HandlerToolsInterface) *UserHandler {
+func NewUserHandler(
+	userRepository repository.UserRepositoryInterface,
+	handlerTools api.HandlerToolsInterface,
+	handlerTransaction api.DatabaseTransaction,
+) *UserHandler {
 	return &UserHandler{
-		UserRepository: userRepository,
-		HandlerTools:   handlerTools,
+		UserRepository:     userRepository,
+		HandlerTools:       handlerTools,
+		HandlerTransaction: handlerTransaction,
 	}
 }
 
@@ -43,23 +50,25 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.UserRepository.BeginTx()
+	tx, err := h.HandlerTransaction.BeginTx(context.Background(), nil)
 	if err != nil {
 		slog.Info("err", err)
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
+
+	h.UserRepository.SetTx(tx)
 
 	uc := usecase.NewCreateUserUseCase(h.UserRepository)
 	err = uc.Execute(input)
 	if err != nil {
-		h.UserRepository.RollbackTx()
+		h.HandlerTransaction.RollbackTx(tx)
 		slog.Info("err", err)
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 
-	err = h.UserRepository.CommitTx()
+	err = h.HandlerTransaction.CommitTx(tx)
 	if err != nil {
 		slog.Info("err", err)
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))

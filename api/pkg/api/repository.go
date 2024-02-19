@@ -15,17 +15,17 @@ func NewDefaultRepository(dbConn *sql.DB) *DefaultRepository {
 	}
 }
 
-func (d *DefaultRepository) BeginTx(ctx context.Context, options *sql.TxOptions) (tx *sql.Tx, err error) {
-	tx, err = d.DbConn.BeginTx(ctx, options)
+func (dr *DefaultRepository) BeginTx(ctx context.Context, options *sql.TxOptions) (tx *sql.Tx, err error) {
+	tx, err = dr.DbConn.BeginTx(ctx, options)
 	return
 }
 
-func (d *DefaultRepository) CommitTx(tx *sql.Tx) (err error) {
+func (dr *DefaultRepository) CommitTx(tx *sql.Tx) (err error) {
 	err = tx.Commit()
 	return
 }
 
-func (d *DefaultRepository) RollbackTx(tx *sql.Tx) (err error) {
+func (dr *DefaultRepository) RollbackTx(tx *sql.Tx) (err error) {
 	err = tx.Rollback()
 	return
 }
