@@ -2,10 +2,7 @@
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 #
 
-/api/tmp
-/api/cmd/tmp
 /api/build
-/api/cmd/build
 
 # Binaries for programs and plugins
 *.exe

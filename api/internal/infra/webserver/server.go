@@ -1,6 +1,7 @@
 package webserver
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -8,6 +9,7 @@ import (
 
 	"github.com/marceloamoreno/goapi/config"
 	AuthMiddleware "github.com/marceloamoreno/goapi/internal/domain/auth/middleware"
+	"github.com/marceloamoreno/goapi/internal/infra/database"
 	CorsMiddleware "github.com/marceloamoreno/goapi/internal/infra/webserver/middleware"
 	LogMiddleware "github.com/marceloamoreno/goapi/internal/infra/webserver/middleware"
 	"github.com/marceloamoreno/goapi/pkg/api"
@@ -15,22 +17,32 @@ import (
 
 func StartServer() {
 	r := chi.NewRouter()
+
 	LogMiddleware.NewLogMiddleware(r).LogMiddleware()
 	CorsMiddleware.NewCorsMiddleware(r).CorsMiddleware()
-	loadRoutes(r)
-	slog.Info("Server started on port http://localhost:" + config.Environment.Port + "/api/v1")
-	slog.Info("Swagger started on port http://localhost:" + config.Environment.Port + "/api/v1/swagger/index.html")
-	slog.Info("Health started on port http://localhost:" + config.Environment.Port + "/api/v1/health")
-	err := http.ListenAndServe(":"+config.Environment.Port, r)
+
+	dbConn, err := database.GetDBConn()
 	if err != nil {
 		panic(err)
 	}
 
+	slog.Info("Database OK")
+
+	loadRoutes(r, dbConn)
+
+	slog.Info("Server started on port http://localhost:" + config.Environment.Port + "/api/v1")
+	slog.Info("Swagger started on port http://localhost:" + config.Environment.Port + "/api/v1/swagger/index.html")
+	slog.Info("Health started on port http://localhost:" + config.Environment.Port + "/api/v1/health")
+
+	err = http.ListenAndServe(":"+config.Environment.Port, r)
+	if err != nil {
+		panic(err)
+	}
 }
 
-func loadRoutes(r *chi.Mux) {
-	handlerTools := api.NewHandlerTools()
-	route := NewRoute(r, handlerTools)
+func loadRoutes(r *chi.Mux, dbConn *sql.DB) {
+	handlerTools := api.NewHandlerTools(dbConn)
+	route := NewRoute(r, handlerTools, dbConn)
 	route.Mux.Route("/api/v1", func(r chi.Router) {
 		r.Group(func(r chi.Router) {
 			route.GetAuthRoutes(r)
@@ -44,7 +56,6 @@ func loadRoutes(r *chi.Mux) {
 			route.GetUserRoutes(r)
 			route.GetRoleRoutes(r)
 			route.GetPermissionRoutes(r)
-			// route.GetRolePermissionRoutes(r)
 		})
 	})
 	slog.Info("Routes OK")

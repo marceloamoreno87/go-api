@@ -1,11 +1,11 @@
-root = "./cmd"
+root = "./"
 testdata_dir = "testdata"
-tmp_dir = "build"
+tmp_dir = ""
 
 [build]
   args_bin = []
-  bin = "./cmd/build/main"
-  cmd = "go build -o ./cmd/build/main ./cmd/"
+  bin = "./build/main"
+  cmd = "go build -o ./build/ ./cmd/main.go"
   delay = 1000
   exclude_dir = ["assets", "build", "vendor", "testdata"]
   exclude_file = []
@@ -19,6 +19,7 @@ tmp_dir = "build"
   log = "build-errors.log"
   send_interrupt = false
   stop_on_error = true
+  poll = true
 
 [color]
   app = ""

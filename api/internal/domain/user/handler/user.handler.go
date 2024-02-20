@@ -12,13 +12,19 @@ import (
 
 type UserHandler struct {
 	HandlerTools   api.HandlerToolsInterface
+	Transaction    api.TransactionInterface
 	UserRepository repository.UserRepositoryInterface
 }
 
-func NewUserHandler(userRepository repository.UserRepositoryInterface, handlerTools api.HandlerToolsInterface) *UserHandler {
+func NewUserHandler(
+	userRepository repository.UserRepositoryInterface,
+	handlerTools api.HandlerToolsInterface,
+	transaction api.TransactionInterface,
+) *UserHandler {
 	return &UserHandler{
 		UserRepository: userRepository,
 		HandlerTools:   handlerTools,
+		Transaction:    transaction,
 	}
 }
 
@@ -43,7 +49,7 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.UserRepository.BeginTx()
+	tx, err := h.Transaction.Begin(h.UserRepository.SetTx)
 	if err != nil {
 		slog.Info("err", err)
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
@@ -53,13 +59,13 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	uc := usecase.NewCreateUserUseCase(h.UserRepository)
 	err = uc.Execute(input)
 	if err != nil {
-		h.UserRepository.RollbackTx()
+		h.Transaction.Rollback(tx)
 		slog.Info("err", err)
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 
-	err = h.UserRepository.CommitTx()
+	err = h.Transaction.Commit(tx)
 	if err != nil {
 		slog.Info("err", err)
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))

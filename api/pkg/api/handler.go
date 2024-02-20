@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"log/slog"
@@ -11,11 +12,13 @@ import (
 )
 
 type HandlerTools struct {
+	dbConn *sql.DB
 }
 
-func NewHandlerTools() *HandlerTools {
-	return &HandlerTools{}
-
+func NewHandlerTools(dbConn *sql.DB) *HandlerTools {
+	return &HandlerTools{
+		dbConn: dbConn,
+	}
 }
 
 func (h *HandlerTools) GetLimitOffsetFromURL(r *http.Request) (int32, int32, error) {

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"net/http"
 )
 
@@ -11,14 +12,8 @@ type HandlerToolsInterface interface {
 	ResponseErrorJSON(w http.ResponseWriter, responseError ResponseError)
 }
 
-type DatabaseTransaction interface {
-	BeginTx() (err error)
-	CommitTx() (err error)
-	RollbackTx() (err error)
+type TransactionInterface interface {
+	Begin(fn func(*sql.Tx)) (tx *sql.Tx, err error)
+	Commit(tx *sql.Tx) (err error)
+	Rollback(tx *sql.Tx) (err error)
 }
-
-// type DatabaseTransaction interface {
-// 	BeginTx(ctx context.Context, options *sql.TxOptions) (tx *sql.Tx, err error)
-// 	CommitTx(tx *sql.Tx) (err error)
-// 	RollbackTx(tx *sql.Tx) (err error)
-// }
