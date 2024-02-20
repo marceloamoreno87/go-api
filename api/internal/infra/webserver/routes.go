@@ -49,14 +49,15 @@ func (r *Route) GetAuthRoutes(router chi.Router) {
 }
 
 func (r *Route) GetUserRoutes(router chi.Router) {
-	UserRepository := UserRepository.NewUserRepository(r.DBConn)
-	UserHandler := UserHandler.NewUserHandler(UserRepository, r.HandlerTools)
+	userRepository := UserRepository.NewUserRepository(r.DBConn)
+	userHandler := UserHandler.NewUserHandler(userRepository, r.HandlerTools)
+
 	router.Route("/user", func(r chi.Router) {
-		r.Get("/", UserHandler.GetUsers)
-		r.Get("/{id}", UserHandler.GetUser)
-		r.Post("/", UserHandler.CreateUser)
-		r.Put("/{id}", UserHandler.UpdateUser)
-		r.Delete("/{id}", UserHandler.DeleteUser)
+		r.Get("/", userHandler.GetUsers)
+		r.Get("/{id}", userHandler.GetUser)
+		r.Post("/", userHandler.CreateUser)
+		r.Put("/{id}", userHandler.UpdateUser)
+		r.Delete("/{id}", userHandler.DeleteUser)
 	})
 }
 

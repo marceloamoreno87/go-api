@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
@@ -10,18 +11,39 @@ import (
 
 type UserRepository struct {
 	DBConn    *sql.DB
-	DBQueries db.Querier
+	DBQueries *db.Queries
+	tx        *sql.Tx
 }
 
 func NewUserRepository(DBConn *sql.DB) *UserRepository {
 	return &UserRepository{
 		DBConn:    DBConn,
 		DBQueries: db.New(DBConn),
+		tx:        nil,
 	}
 }
 
+func (repo *UserRepository) BeginTx() (err error) {
+	tx, err := repo.DBConn.BeginTx(context.Background(), &sql.TxOptions{})
+	if err != nil {
+		return
+	}
+	repo.tx = tx
+	return
+}
+
+func (repo *UserRepository) CommitTx() (err error) {
+	err = repo.tx.Commit()
+	return
+}
+
+func (repo *UserRepository) RollbackTx() (err error) {
+	err = repo.tx.Rollback()
+	return
+}
+
 func (repo *UserRepository) CreateUser(user *entity.User) (err error) {
-	err = repo.DBQueries.CreateUser(context.Background(), db.CreateUserParams{
+	err = repo.DBQueries.WithTx(repo.tx).CreateUser(context.Background(), db.CreateUserParams{
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
@@ -29,8 +51,20 @@ func (repo *UserRepository) CreateUser(user *entity.User) (err error) {
 		AvatarID: user.AvatarID,
 	})
 	if err != nil {
+		fmt.Println("err 01: ", err)
 		return
 	}
+
+	err = repo.DBQueries.WithTx(repo.tx).CreateUser(context.Background(), db.CreateUserParams{
+		Name:     "user.Name",
+		Email:    "user.Email",
+		Password: "user.Password",
+		RoleID:   2,
+	})
+	if err != nil {
+		fmt.Println("err 02: ", err)
+	}
+
 	return
 }
 
