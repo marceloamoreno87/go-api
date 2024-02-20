@@ -17,6 +17,7 @@ type GetUsersOutputDTO struct {
 	Name      string    `json:"name"`
 	Password  string    `json:"password"`
 	RoleID    int32     `json:"role_id"`
+	AvatarID  int32     `json:"avatar_id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -44,6 +45,7 @@ func (uc *GetUsersUseCase) Execute(input GetUsersInputDTO) (output []GetUsersOut
 			Name:      user.Name,
 			Password:  user.Password,
 			RoleID:    user.RoleID,
+			AvatarID:  user.AvatarID,
 			CreatedAt: user.CreatedAt,
 			UpdatedAt: user.UpdatedAt,
 		})

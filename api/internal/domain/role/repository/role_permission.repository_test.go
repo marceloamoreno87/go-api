@@ -34,7 +34,7 @@ func TestCreateRolePermission(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestGetRolePermissions(t *testing.T) {
+func GetRolePermissionsByRole(t *testing.T) {
 
 	db, mock, err := sqlmock.New()
 	if err != nil {
@@ -59,7 +59,7 @@ func TestGetRolePermissions(t *testing.T) {
 		WithArgs(rolePermission.RoleID).
 		WillReturnRows(rows)
 
-	_, err = rr.GetRolePermissions(rolePermission.RoleID)
+	_, err = rr.GetRolePermissionsByRole(rolePermission.RoleID)
 
 	assert.NoError(t, err)
 }

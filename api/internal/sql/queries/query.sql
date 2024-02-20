@@ -6,9 +6,44 @@ WHERE id = $1 LIMIT 1;
 SELECT * FROM users
 WHERE email = $1 LIMIT 1;
 
+-- name: GetUserWithRole :one
+SELECT * FROM users
+INNER JOIN roles ON users.role_id = roles.id
+WHERE users.id = $1 LIMIT 1;
+
+-- name: GetUserWithAvatar :one
+SELECT * FROM users
+INNER JOIN avatars ON users.id = avatars.user_id
+WHERE users.id = $1 LIMIT 1;
+
+-- name: GetUserWithRoleAndAvatar :one
+SELECT * FROM users
+INNER JOIN roles ON users.role_id = roles.id
+INNER JOIN avatars ON users.id = avatars.user_id
+WHERE users.id = $1 LIMIT 1;
+
 -- name: GetUsers :many
 SELECT * FROM users
 ORDER BY id ASC
+LIMIT $1 OFFSET $2;
+
+-- name: GetUsersWithRole :many
+SELECT * FROM users
+INNER JOIN roles ON users.role_id = roles.id
+ORDER BY users.id ASC
+LIMIT $1 OFFSET $2;
+
+-- name: GetUsersWithAvatar :many
+SELECT * FROM users
+INNER JOIN avatars ON users.id = avatars.user_id
+ORDER BY users.id ASC
+LIMIT $1 OFFSET $2;
+
+-- name: GetUsersWithRoleAndAvatar :many
+SELECT * FROM users
+INNER JOIN roles ON users.role_id = roles.id
+INNER JOIN avatars ON users.id = avatars.user_id
+ORDER BY users.id ASC
 LIMIT $1 OFFSET $2;
 
 -- name: CreateUser :exec
@@ -16,9 +51,10 @@ INSERT INTO users (
   name,
   email,
   password,
-  role_id
+  role_id,
+  avatar_id
 ) VALUES (
-  $1, $2, $3, $4
+  $1, $2, $3, $4, $5
 );
 
 -- name: UpdateUser :exec
@@ -26,8 +62,9 @@ UPDATE users SET
   name = $1,
   email = $2,
   password = $3,
-  role_id = $4
-WHERE id = $5;
+  role_id = $4,
+  avatar_id = $5
+WHERE id = $6;
 
 -- name: DeleteUser :exec
 DELETE FROM users
@@ -107,7 +144,11 @@ INSERT INTO role_permissions (
   $1, $2
 );
 
--- name: GetRolePermissions :many
+-- name: GetRolePermission :many
+SELECT * FROM role_permissions
+WHERE id = $1 LIMIT 1;
+
+-- name: GetRolePermissionsByRole :many
 SELECT * FROM role_permissions
 INNER JOIN permissions ON role_permissions.permission_id = permissions.id
 INNER JOIN roles ON role_permissions.role_id = roles.id
@@ -117,3 +158,28 @@ ORDER BY permission_id ASC;
 -- name: DeleteRolePermission :exec
 DELETE FROM role_permissions
 WHERE role_id = $1;
+
+-- name: GetAvatar :one
+SELECT * FROM avatars
+WHERE id = $1 LIMIT 1;
+
+-- name: GetAvatars :many
+SELECT * FROM avatars
+ORDER BY id ASC
+LIMIT $1 OFFSET $2;
+
+-- name: CreateAvatar :exec
+INSERT INTO avatars (
+  svg
+) VALUES (
+  $1
+);
+
+-- name: UpdateAvatar :exec
+UPDATE avatars SET
+  svg = $1
+WHERE id = $2;
+
+-- name: DeleteAvatar :exec
+DELETE FROM avatars
+WHERE id = $1;

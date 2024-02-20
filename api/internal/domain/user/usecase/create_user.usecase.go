@@ -10,6 +10,7 @@ type CreateUserInputDTO struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	RoleID   int32  `json:"role_id"`
+	AvatarID int32  `json:"avatar_id"`
 }
 
 type CreateUserUseCase struct {
@@ -23,7 +24,7 @@ func NewCreateUserUseCase(userRepository repository.UserRepositoryInterface) *Cr
 }
 
 func (uc *CreateUserUseCase) Execute(input CreateUserInputDTO) (err error) {
-	user, err := entity.NewUser(input.Name, input.Email, input.Password, input.RoleID)
+	user, err := entity.NewUser(input.Name, input.Email, input.Password, input.RoleID, input.AvatarID)
 	if err != nil {
 		return
 	}

@@ -15,17 +15,20 @@ type User struct {
 	Email     string       `json:"email"`
 	Password  string       `json:"password"`
 	RoleID    int32        `json:"role_id"`
+	AvatarID  int32        `json:"avatar_id"`
 	CreatedAt time.Time    `json:"created_at"`
 	UpdatedAt time.Time    `json:"updated_at"`
 	Role      *entity.Role `json:"role"`
+	Avatar    *Avatar      `json:"avatar"`
 }
 
-func NewUser(name string, email string, password string, roleId int32) (user *User, err error) {
+func NewUser(name string, email string, password string, roleID int32, avatarID int32) (user *User, err error) {
 	user = &User{
 		Name:     name,
 		Email:    email,
 		Password: password,
-		RoleID:   roleId,
+		RoleID:   roleID,
+		AvatarID: avatarID,
 	}
 	valid := user.Validate()
 	if valid != nil {
@@ -53,6 +56,9 @@ func (u *User) Validate() (err error) {
 	}
 	if u.RoleID == 0 {
 		return errors.New("Role is required")
+	}
+	if u.AvatarID == 0 {
+		return errors.New("Avatar is required")
 	}
 	_, err = mail.ParseAddress(u.Email)
 	if err != nil {
@@ -86,6 +92,10 @@ func (u *User) GetRoleID() int32 {
 	return u.RoleID
 }
 
+func (u *User) GetAvatarID() int32 {
+	return u.AvatarID
+}
+
 func (u *User) GetCreatedAt() time.Time {
 	return u.CreatedAt
 }
@@ -96,6 +106,10 @@ func (u *User) GetUpdatedAt() time.Time {
 
 func (u *User) GetRole() *entity.Role {
 	return u.Role
+}
+
+func (u *User) GetAvatar() *Avatar {
+	return u.Avatar
 }
 
 func (u *User) SetID(id int32) {
@@ -114,8 +128,12 @@ func (u *User) SetPassword(password string) {
 	u.Password = password
 }
 
-func (u *User) SetRoleID(roleId int32) {
-	u.RoleID = roleId
+func (u *User) SetRoleID(roleID int32) {
+	u.RoleID = roleID
+}
+
+func (u *User) SetAvatarID(avatarID int32) {
+	u.AvatarID = avatarID
 }
 
 func (u *User) SetCreatedAt(createdAt time.Time) {
@@ -128,4 +146,8 @@ func (u *User) SetUpdatedAt(updatedAt time.Time) {
 
 func (u *User) SetRole(role *entity.Role) {
 	u.Role = role
+}
+
+func (u *User) SetAvatar(avatar *Avatar) {
+	u.Avatar = avatar
 }

@@ -8,6 +8,16 @@ import (
 	"time"
 )
 
+// Avatars table
+type Avatar struct {
+	// Avatar id
+	ID int32 `json:"id"`
+	// Avatar base64
+	Svg       string    `json:"svg"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
 // Permissions table
 type Permission struct {
 	// Permission id
@@ -58,6 +68,7 @@ type User struct {
 	Password string `json:"password"`
 	// User role id
 	RoleID    int32     `json:"role_id"`
+	AvatarID  int32     `json:"avatar_id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

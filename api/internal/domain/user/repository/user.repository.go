@@ -26,6 +26,7 @@ func (repo *UserRepository) CreateUser(user *entity.User) (err error) {
 		Email:    user.Email,
 		Password: user.Password,
 		RoleID:   user.RoleID,
+		AvatarID: user.AvatarID,
 	})
 	if err != nil {
 		return
@@ -45,6 +46,7 @@ func (repo *UserRepository) GetUser(id int32) (user *entity.User, err error) {
 		Email:     u.Email,
 		Password:  u.Password,
 		RoleID:    u.RoleID,
+		AvatarID:  u.AvatarID,
 		CreatedAt: u.CreatedAt,
 		UpdatedAt: u.UpdatedAt,
 	}, nil
@@ -61,6 +63,7 @@ func (repo *UserRepository) GetUserByEmail(email string) (user *entity.User, err
 		Email:     u.Email,
 		Password:  u.Password,
 		RoleID:    u.RoleID,
+		AvatarID:  u.AvatarID,
 		CreatedAt: u.CreatedAt,
 		UpdatedAt: u.UpdatedAt,
 	}, nil
@@ -81,6 +84,7 @@ func (repo *UserRepository) GetUsers(limit int32, offset int32) (users []*entity
 			Email:     u.Email,
 			Password:  u.Password,
 			RoleID:    u.RoleID,
+			AvatarID:  u.AvatarID,
 			CreatedAt: u.CreatedAt,
 			UpdatedAt: u.UpdatedAt,
 		})
@@ -95,6 +99,7 @@ func (repo *UserRepository) UpdateUser(user *entity.User, id int32) (err error) 
 		Email:    user.Email,
 		Password: user.Password,
 		RoleID:   user.RoleID,
+		AvatarID: user.AvatarID,
 	})
 	if err != nil {
 		return

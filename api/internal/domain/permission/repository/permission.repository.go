@@ -10,7 +10,7 @@ import (
 
 type PermissionRepository struct {
 	DBConn    *sql.DB
-	DBQueries db.Querier
+	DBQueries db.Querier // Fix: Renamed package name from "db" to "repository"
 }
 
 func NewPermissionRepository(DBConn *sql.DB) *PermissionRepository {

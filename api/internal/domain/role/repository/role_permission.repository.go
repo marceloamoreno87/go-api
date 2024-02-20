@@ -23,8 +23,8 @@ func NewRolePermissionRepository(DBConn *sql.DB) *RolePermissionRepository {
 	}
 }
 
-func (repo *RolePermissionRepository) GetRolePermissions(id int32) (rolePermissions *RolePermissionEntity.RolePermission, err error) {
-	rps, err := repo.DBQueries.GetRolePermissions(context.Background(), id)
+func (repo *RolePermissionRepository) GetRolePermissionsByRole(id int32) (rolePermissions *RolePermissionEntity.RolePermission, err error) {
+	rps, err := repo.DBQueries.GetRolePermissionsByRole(context.Background(), id)
 	if err != nil {
 		return
 	}

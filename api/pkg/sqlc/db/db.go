@@ -24,6 +24,9 @@ func New(db DBTX) *Queries {
 func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	q := Queries{db: db}
 	var err error
+	if q.createAvatarStmt, err = db.PrepareContext(ctx, createAvatar); err != nil {
+		return nil, fmt.Errorf("error preparing query CreateAvatar: %w", err)
+	}
 	if q.createPermissionStmt, err = db.PrepareContext(ctx, createPermission); err != nil {
 		return nil, fmt.Errorf("error preparing query CreatePermission: %w", err)
 	}
@@ -36,6 +39,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.createUserStmt, err = db.PrepareContext(ctx, createUser); err != nil {
 		return nil, fmt.Errorf("error preparing query CreateUser: %w", err)
 	}
+	if q.deleteAvatarStmt, err = db.PrepareContext(ctx, deleteAvatar); err != nil {
+		return nil, fmt.Errorf("error preparing query DeleteAvatar: %w", err)
+	}
 	if q.deletePermissionStmt, err = db.PrepareContext(ctx, deletePermission); err != nil {
 		return nil, fmt.Errorf("error preparing query DeletePermission: %w", err)
 	}
@@ -47,6 +53,12 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	}
 	if q.deleteUserStmt, err = db.PrepareContext(ctx, deleteUser); err != nil {
 		return nil, fmt.Errorf("error preparing query DeleteUser: %w", err)
+	}
+	if q.getAvatarStmt, err = db.PrepareContext(ctx, getAvatar); err != nil {
+		return nil, fmt.Errorf("error preparing query GetAvatar: %w", err)
+	}
+	if q.getAvatarsStmt, err = db.PrepareContext(ctx, getAvatars); err != nil {
+		return nil, fmt.Errorf("error preparing query GetAvatars: %w", err)
 	}
 	if q.getPermissionStmt, err = db.PrepareContext(ctx, getPermission); err != nil {
 		return nil, fmt.Errorf("error preparing query GetPermission: %w", err)
@@ -63,8 +75,11 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getRoleByInternalNameStmt, err = db.PrepareContext(ctx, getRoleByInternalName); err != nil {
 		return nil, fmt.Errorf("error preparing query GetRoleByInternalName: %w", err)
 	}
-	if q.getRolePermissionsStmt, err = db.PrepareContext(ctx, getRolePermissions); err != nil {
-		return nil, fmt.Errorf("error preparing query GetRolePermissions: %w", err)
+	if q.getRolePermissionStmt, err = db.PrepareContext(ctx, getRolePermission); err != nil {
+		return nil, fmt.Errorf("error preparing query GetRolePermission: %w", err)
+	}
+	if q.getRolePermissionsByRoleStmt, err = db.PrepareContext(ctx, getRolePermissionsByRole); err != nil {
+		return nil, fmt.Errorf("error preparing query GetRolePermissionsByRole: %w", err)
 	}
 	if q.getRolesStmt, err = db.PrepareContext(ctx, getRoles); err != nil {
 		return nil, fmt.Errorf("error preparing query GetRoles: %w", err)
@@ -75,8 +90,29 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getUserByEmailStmt, err = db.PrepareContext(ctx, getUserByEmail); err != nil {
 		return nil, fmt.Errorf("error preparing query GetUserByEmail: %w", err)
 	}
+	if q.getUserWithAvatarStmt, err = db.PrepareContext(ctx, getUserWithAvatar); err != nil {
+		return nil, fmt.Errorf("error preparing query GetUserWithAvatar: %w", err)
+	}
+	if q.getUserWithRoleStmt, err = db.PrepareContext(ctx, getUserWithRole); err != nil {
+		return nil, fmt.Errorf("error preparing query GetUserWithRole: %w", err)
+	}
+	if q.getUserWithRoleAndAvatarStmt, err = db.PrepareContext(ctx, getUserWithRoleAndAvatar); err != nil {
+		return nil, fmt.Errorf("error preparing query GetUserWithRoleAndAvatar: %w", err)
+	}
 	if q.getUsersStmt, err = db.PrepareContext(ctx, getUsers); err != nil {
 		return nil, fmt.Errorf("error preparing query GetUsers: %w", err)
+	}
+	if q.getUsersWithAvatarStmt, err = db.PrepareContext(ctx, getUsersWithAvatar); err != nil {
+		return nil, fmt.Errorf("error preparing query GetUsersWithAvatar: %w", err)
+	}
+	if q.getUsersWithRoleStmt, err = db.PrepareContext(ctx, getUsersWithRole); err != nil {
+		return nil, fmt.Errorf("error preparing query GetUsersWithRole: %w", err)
+	}
+	if q.getUsersWithRoleAndAvatarStmt, err = db.PrepareContext(ctx, getUsersWithRoleAndAvatar); err != nil {
+		return nil, fmt.Errorf("error preparing query GetUsersWithRoleAndAvatar: %w", err)
+	}
+	if q.updateAvatarStmt, err = db.PrepareContext(ctx, updateAvatar); err != nil {
+		return nil, fmt.Errorf("error preparing query UpdateAvatar: %w", err)
 	}
 	if q.updatePermissionStmt, err = db.PrepareContext(ctx, updatePermission); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdatePermission: %w", err)
@@ -92,6 +128,11 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 
 func (q *Queries) Close() error {
 	var err error
+	if q.createAvatarStmt != nil {
+		if cerr := q.createAvatarStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing createAvatarStmt: %w", cerr)
+		}
+	}
 	if q.createPermissionStmt != nil {
 		if cerr := q.createPermissionStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing createPermissionStmt: %w", cerr)
@@ -112,6 +153,11 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing createUserStmt: %w", cerr)
 		}
 	}
+	if q.deleteAvatarStmt != nil {
+		if cerr := q.deleteAvatarStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing deleteAvatarStmt: %w", cerr)
+		}
+	}
 	if q.deletePermissionStmt != nil {
 		if cerr := q.deletePermissionStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing deletePermissionStmt: %w", cerr)
@@ -130,6 +176,16 @@ func (q *Queries) Close() error {
 	if q.deleteUserStmt != nil {
 		if cerr := q.deleteUserStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing deleteUserStmt: %w", cerr)
+		}
+	}
+	if q.getAvatarStmt != nil {
+		if cerr := q.getAvatarStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getAvatarStmt: %w", cerr)
+		}
+	}
+	if q.getAvatarsStmt != nil {
+		if cerr := q.getAvatarsStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getAvatarsStmt: %w", cerr)
 		}
 	}
 	if q.getPermissionStmt != nil {
@@ -157,9 +213,14 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing getRoleByInternalNameStmt: %w", cerr)
 		}
 	}
-	if q.getRolePermissionsStmt != nil {
-		if cerr := q.getRolePermissionsStmt.Close(); cerr != nil {
-			err = fmt.Errorf("error closing getRolePermissionsStmt: %w", cerr)
+	if q.getRolePermissionStmt != nil {
+		if cerr := q.getRolePermissionStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getRolePermissionStmt: %w", cerr)
+		}
+	}
+	if q.getRolePermissionsByRoleStmt != nil {
+		if cerr := q.getRolePermissionsByRoleStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getRolePermissionsByRoleStmt: %w", cerr)
 		}
 	}
 	if q.getRolesStmt != nil {
@@ -177,9 +238,44 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing getUserByEmailStmt: %w", cerr)
 		}
 	}
+	if q.getUserWithAvatarStmt != nil {
+		if cerr := q.getUserWithAvatarStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getUserWithAvatarStmt: %w", cerr)
+		}
+	}
+	if q.getUserWithRoleStmt != nil {
+		if cerr := q.getUserWithRoleStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getUserWithRoleStmt: %w", cerr)
+		}
+	}
+	if q.getUserWithRoleAndAvatarStmt != nil {
+		if cerr := q.getUserWithRoleAndAvatarStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getUserWithRoleAndAvatarStmt: %w", cerr)
+		}
+	}
 	if q.getUsersStmt != nil {
 		if cerr := q.getUsersStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing getUsersStmt: %w", cerr)
+		}
+	}
+	if q.getUsersWithAvatarStmt != nil {
+		if cerr := q.getUsersWithAvatarStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getUsersWithAvatarStmt: %w", cerr)
+		}
+	}
+	if q.getUsersWithRoleStmt != nil {
+		if cerr := q.getUsersWithRoleStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getUsersWithRoleStmt: %w", cerr)
+		}
+	}
+	if q.getUsersWithRoleAndAvatarStmt != nil {
+		if cerr := q.getUsersWithRoleAndAvatarStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getUsersWithRoleAndAvatarStmt: %w", cerr)
+		}
+	}
+	if q.updateAvatarStmt != nil {
+		if cerr := q.updateAvatarStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing updateAvatarStmt: %w", cerr)
 		}
 	}
 	if q.updatePermissionStmt != nil {
@@ -236,24 +332,36 @@ func (q *Queries) queryRow(ctx context.Context, stmt *sql.Stmt, query string, ar
 type Queries struct {
 	db                              DBTX
 	tx                              *sql.Tx
+	createAvatarStmt                *sql.Stmt
 	createPermissionStmt            *sql.Stmt
 	createRoleStmt                  *sql.Stmt
 	createRolePermissionStmt        *sql.Stmt
 	createUserStmt                  *sql.Stmt
+	deleteAvatarStmt                *sql.Stmt
 	deletePermissionStmt            *sql.Stmt
 	deleteRoleStmt                  *sql.Stmt
 	deleteRolePermissionStmt        *sql.Stmt
 	deleteUserStmt                  *sql.Stmt
+	getAvatarStmt                   *sql.Stmt
+	getAvatarsStmt                  *sql.Stmt
 	getPermissionStmt               *sql.Stmt
 	getPermissionByInternalNameStmt *sql.Stmt
 	getPermissionsStmt              *sql.Stmt
 	getRoleStmt                     *sql.Stmt
 	getRoleByInternalNameStmt       *sql.Stmt
-	getRolePermissionsStmt          *sql.Stmt
+	getRolePermissionStmt           *sql.Stmt
+	getRolePermissionsByRoleStmt    *sql.Stmt
 	getRolesStmt                    *sql.Stmt
 	getUserStmt                     *sql.Stmt
 	getUserByEmailStmt              *sql.Stmt
+	getUserWithAvatarStmt           *sql.Stmt
+	getUserWithRoleStmt             *sql.Stmt
+	getUserWithRoleAndAvatarStmt    *sql.Stmt
 	getUsersStmt                    *sql.Stmt
+	getUsersWithAvatarStmt          *sql.Stmt
+	getUsersWithRoleStmt            *sql.Stmt
+	getUsersWithRoleAndAvatarStmt   *sql.Stmt
+	updateAvatarStmt                *sql.Stmt
 	updatePermissionStmt            *sql.Stmt
 	updateRoleStmt                  *sql.Stmt
 	updateUserStmt                  *sql.Stmt
@@ -263,24 +371,36 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 	return &Queries{
 		db:                              tx,
 		tx:                              tx,
+		createAvatarStmt:                q.createAvatarStmt,
 		createPermissionStmt:            q.createPermissionStmt,
 		createRoleStmt:                  q.createRoleStmt,
 		createRolePermissionStmt:        q.createRolePermissionStmt,
 		createUserStmt:                  q.createUserStmt,
+		deleteAvatarStmt:                q.deleteAvatarStmt,
 		deletePermissionStmt:            q.deletePermissionStmt,
 		deleteRoleStmt:                  q.deleteRoleStmt,
 		deleteRolePermissionStmt:        q.deleteRolePermissionStmt,
 		deleteUserStmt:                  q.deleteUserStmt,
+		getAvatarStmt:                   q.getAvatarStmt,
+		getAvatarsStmt:                  q.getAvatarsStmt,
 		getPermissionStmt:               q.getPermissionStmt,
 		getPermissionByInternalNameStmt: q.getPermissionByInternalNameStmt,
 		getPermissionsStmt:              q.getPermissionsStmt,
 		getRoleStmt:                     q.getRoleStmt,
 		getRoleByInternalNameStmt:       q.getRoleByInternalNameStmt,
-		getRolePermissionsStmt:          q.getRolePermissionsStmt,
+		getRolePermissionStmt:           q.getRolePermissionStmt,
+		getRolePermissionsByRoleStmt:    q.getRolePermissionsByRoleStmt,
 		getRolesStmt:                    q.getRolesStmt,
 		getUserStmt:                     q.getUserStmt,
 		getUserByEmailStmt:              q.getUserByEmailStmt,
+		getUserWithAvatarStmt:           q.getUserWithAvatarStmt,
+		getUserWithRoleStmt:             q.getUserWithRoleStmt,
+		getUserWithRoleAndAvatarStmt:    q.getUserWithRoleAndAvatarStmt,
 		getUsersStmt:                    q.getUsersStmt,
+		getUsersWithAvatarStmt:          q.getUsersWithAvatarStmt,
+		getUsersWithRoleStmt:            q.getUsersWithRoleStmt,
+		getUsersWithRoleAndAvatarStmt:   q.getUsersWithRoleAndAvatarStmt,
+		updateAvatarStmt:                q.updateAvatarStmt,
 		updatePermissionStmt:            q.updatePermissionStmt,
 		updateRoleStmt:                  q.updateRoleStmt,
 		updateUserStmt:                  q.updateUserStmt,

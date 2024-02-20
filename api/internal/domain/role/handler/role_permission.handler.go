@@ -55,7 +55,6 @@ func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *htt
 	}
 	slog.Info("Role permissions get", "role permissions", rolePermissions)
 	h.HandlerTools.ResponseJSON(w, rolePermissions)
-
 }
 
 // CreateRolePermission godoc
