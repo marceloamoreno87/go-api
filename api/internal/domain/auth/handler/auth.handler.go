@@ -11,14 +11,17 @@ import (
 )
 
 type AuthHandler struct {
-	HandlerTools   api.HandlerToolsInterface
-	UserRepository repository.UserRepositoryInterface
+	handlerTools api.HandlerToolsInterface
+	repo         repository.UserRepositoryInterface
 }
 
-func NewAuthHandler(UserRepository repository.UserRepositoryInterface, handlerTools api.HandlerToolsInterface) *AuthHandler {
+func NewAuthHandler(
+	repo repository.UserRepositoryInterface,
+	handlerTools api.HandlerToolsInterface,
+) *AuthHandler {
 	return &AuthHandler{
-		HandlerTools:   handlerTools,
-		UserRepository: UserRepository,
+		handlerTools: handlerTools,
+		repo:         repo,
 	}
 }
 
@@ -38,19 +41,18 @@ func (h *AuthHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-
-	uc := usecase.NewGetJWTUseCase(h.UserRepository)
+	uc := usecase.NewGetJWTUseCase(h.repo)
 	u, err := uc.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NOT_AUTHORIZED)
+		h.handlerTools.ResponseErrorJSON(w, api.NOT_AUTHORIZED)
 		return
 	}
 	slog.Info("Token generated", "token", u)
-	h.HandlerTools.ResponseJSON(w, u)
+	h.handlerTools.ResponseJSON(w, u)
 
 }
 
@@ -70,18 +72,18 @@ func (h *AuthHandler) GetRefreshJWT(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 
-	uc := usecase.NewGetRefreshJWTUseCase(h.UserRepository)
+	uc := usecase.NewGetRefreshJWTUseCase(h.repo)
 	u, err := uc.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NOT_AUTHORIZED)
+		h.handlerTools.ResponseErrorJSON(w, api.NOT_AUTHORIZED)
 		return
 	}
 	slog.Info("Token refreshed", "token", u)
-	h.HandlerTools.ResponseJSON(w, u)
+	h.handlerTools.ResponseJSON(w, u)
 
 }

@@ -11,6 +11,13 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+type HandlerToolsInterface interface {
+	GetLimitOffsetFromURL(r *http.Request) (int32, int32, error)
+	GetIDFromURL(r *http.Request) (int32, error)
+	ResponseJSON(w http.ResponseWriter, data interface{})
+	ResponseErrorJSON(w http.ResponseWriter, responseError ResponseError)
+}
+
 type HandlerTools struct {
 	dbConn *sql.DB
 }
@@ -21,14 +28,15 @@ func NewHandlerTools(dbConn *sql.DB) *HandlerTools {
 	}
 }
 
-func (h *HandlerTools) GetLimitOffsetFromURL(r *http.Request) (int32, int32, error) {
+func (h *HandlerTools) GetLimitOffsetFromURL(r *http.Request) (limitInt int32, offsetInt int32, err error) {
 
-	limitInt := 10
-	offsetInt := 0
+	limitInt = int32(10)
+	offsetInt = int32(0)
 
 	limit := r.URL.Query().Get("limit")
 	if limit != "" {
-		limitInt, _ = strconv.Atoi(limit)
+		limitIntTemp, _ := strconv.Atoi(limit)
+		limitInt = int32(limitIntTemp)
 	}
 
 	if limitInt < 0 {
@@ -37,14 +45,17 @@ func (h *HandlerTools) GetLimitOffsetFromURL(r *http.Request) (int32, int32, err
 
 	offset := r.URL.Query().Get("offset")
 	if offset != "" {
-		offsetInt, _ = strconv.Atoi(offset)
+		offsetIntTemp, _ := strconv.Atoi(offset)
+		offsetInt = int32(offsetIntTemp)
 	}
 
 	if offsetInt < 0 {
 		return 0, 0, errors.New("offset must be greater than 0")
 	}
 
-	return int32(limitInt), int32(offsetInt), nil
+	limitInt = int32(limitInt)
+	offsetInt = int32(offsetInt)
+	return
 }
 
 func (h *HandlerTools) GetIDFromURL(r *http.Request) (idInt int32, err error) {
@@ -54,7 +65,8 @@ func (h *HandlerTools) GetIDFromURL(r *http.Request) (idInt int32, err error) {
 	if err != nil {
 		panic(err)
 	}
-	return int32(i), err
+	idInt = int32(i)
+	return
 }
 
 func (h *HandlerTools) ResponseJSON(w http.ResponseWriter, data interface{}) {

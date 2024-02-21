@@ -5,57 +5,33 @@ import (
 	"database/sql"
 
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
+	"github.com/marceloamoreno/goapi/internal/infra/database"
 	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
 )
 
 type UserRepository struct {
-	dbConn    *sql.DB
-	dbQueries *db.Queries
-	tx        *sql.Tx
+	database.Repository
 }
 
 func NewUserRepository(dbConn *sql.DB) *UserRepository {
 	return &UserRepository{
-		dbConn:    dbConn,
-		dbQueries: db.New(dbConn),
-		tx:        nil,
+		Repository: *database.NewRepository(dbConn),
 	}
 }
 
-func (ur *UserRepository) SetTx(tx *sql.Tx) {
-	ur.tx = tx
-}
-
-func (ur *UserRepository) CreateUser(user *entity.User) (err error) {
-	err = ur.dbQueries.WithTx(ur.tx).CreateUser(context.Background(), db.CreateUserParams{
+func (repo *UserRepository) CreateUser(user *entity.User) (err error) {
+	err = repo.Repository.GetDbQueries().WithTx(repo.Repository.GetTx()).CreateUser(context.Background(), db.CreateUserParams{
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
 		RoleID:   user.RoleID,
 		AvatarID: user.AvatarID,
 	})
-
-	if err != nil {
-		return
-	}
-
-	err = ur.dbQueries.WithTx(ur.tx).CreateUser(context.Background(), db.CreateUserParams{
-		Name:     "user.Name",
-		Email:    "user.Email",
-		Password: "user.Password",
-		RoleID:   66666,
-		AvatarID: 1,
-	})
-
-	if err != nil {
-		return
-	}
-
 	return
 }
 
-func (ur *UserRepository) GetUser(id int32) (user *entity.User, err error) {
-	u, err := ur.dbQueries.GetUser(context.Background(), id)
+func (repo *UserRepository) GetUser(id int32) (user *entity.User, err error) {
+	u, err := repo.Repository.GetDbQueries().GetUser(context.Background(), id)
 	if err != nil {
 		return
 	}
@@ -72,8 +48,8 @@ func (ur *UserRepository) GetUser(id int32) (user *entity.User, err error) {
 	}, nil
 }
 
-func (ur *UserRepository) GetUserByEmail(email string) (user *entity.User, err error) {
-	u, err := ur.dbQueries.GetUserByEmail(context.Background(), email)
+func (repo *UserRepository) GetUserByEmail(email string) (user *entity.User, err error) {
+	u, err := repo.Repository.GetDbQueries().GetUserByEmail(context.Background(), email)
 	if err != nil {
 		return
 	}
@@ -89,8 +65,8 @@ func (ur *UserRepository) GetUserByEmail(email string) (user *entity.User, err e
 	}, nil
 }
 
-func (ur *UserRepository) GetUsers(limit int32, offset int32) (users []*entity.User, err error) {
-	us, err := ur.dbQueries.GetUsers(context.Background(), db.GetUsersParams{
+func (repo *UserRepository) GetUsers(limit int32, offset int32) (users []*entity.User, err error) {
+	us, err := repo.Repository.GetDbQueries().GetUsers(context.Background(), db.GetUsersParams{
 		Limit:  limit,
 		Offset: offset,
 	})
@@ -112,8 +88,8 @@ func (ur *UserRepository) GetUsers(limit int32, offset int32) (users []*entity.U
 	return
 }
 
-func (ur *UserRepository) UpdateUser(user *entity.User, id int32) (err error) {
-	err = ur.dbQueries.UpdateUser(context.Background(), db.UpdateUserParams{
+func (repo *UserRepository) UpdateUser(user *entity.User, id int32) (err error) {
+	err = repo.Repository.GetDbQueries().WithTx(repo.Repository.GetTx()).UpdateUser(context.Background(), db.UpdateUserParams{
 		ID:       id,
 		Name:     user.Name,
 		Email:    user.Email,
@@ -124,7 +100,7 @@ func (ur *UserRepository) UpdateUser(user *entity.User, id int32) (err error) {
 	return
 }
 
-func (ur *UserRepository) DeleteUser(id int32) (err error) {
-	err = ur.dbQueries.DeleteUser(context.Background(), id)
+func (repo *UserRepository) DeleteUser(id int32) (err error) {
+	err = repo.Repository.GetDbQueries().WithTx(repo.Repository.GetTx()).DeleteUser(context.Background(), id)
 	return
 }

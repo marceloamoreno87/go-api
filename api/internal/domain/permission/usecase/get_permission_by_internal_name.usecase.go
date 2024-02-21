@@ -20,17 +20,17 @@ type GetPermissionByInternalNameOutputDTO struct {
 }
 
 type GetPermissionByInternalNameUseCase struct {
-	PermissionRepository repository.PermissionRepositoryInterface
+	repo repository.PermissionRepositoryInterface
 }
 
-func NewGetPermissionByInternalNameUseCase(permissionRepository repository.PermissionRepositoryInterface) *GetPermissionByInternalNameUseCase {
+func NewGetPermissionByInternalNameUseCase(repo repository.PermissionRepositoryInterface) *GetPermissionByInternalNameUseCase {
 	return &GetPermissionByInternalNameUseCase{
-		PermissionRepository: permissionRepository,
+		repo: repo,
 	}
 }
 
 func (uc *GetPermissionByInternalNameUseCase) Execute(input GetPermissionByInternalNameInputDTO) (output GetPermissionByInternalNameOutputDTO, err error) {
-	permission, err := uc.PermissionRepository.GetPermissionByInternalName(input.InternalName)
+	permission, err := uc.repo.GetPermissionByInternalName(input.InternalName)
 	if err != nil {
 		return
 	}

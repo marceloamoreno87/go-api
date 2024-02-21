@@ -5,12 +5,14 @@ import (
 	"database/sql"
 
 	"github.com/marceloamoreno/goapi/internal/domain/permission/entity"
+	"github.com/marceloamoreno/goapi/pkg/api"
 	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
 )
 
 type PermissionRepository struct {
+	api.DefaultRepository
 	DBConn    *sql.DB
-	DBQueries db.Querier // Fix: Renamed package name from "db" to "repository"
+	DBQueries *db.Queries // Fix: Renamed package name from "db" to "repository"
 }
 
 func NewPermissionRepository(DBConn *sql.DB) *PermissionRepository {
@@ -21,7 +23,7 @@ func NewPermissionRepository(DBConn *sql.DB) *PermissionRepository {
 }
 
 func (repo *PermissionRepository) CreatePermission(permission *entity.Permission) (err error) {
-	err = repo.DBQueries.CreatePermission(context.Background(), db.CreatePermissionParams{
+	err = repo.DBQueries.WithTx(repo.GetTx()).CreatePermission(context.Background(), db.CreatePermissionParams{
 		Name:         permission.Name,
 		InternalName: permission.InternalName,
 		Description:  permission.Description,
@@ -69,7 +71,7 @@ func (repo *PermissionRepository) GetPermissions(limit int32, offset int32) (per
 }
 
 func (repo *PermissionRepository) UpdatePermission(permission *entity.Permission, id int32) (err error) {
-	err = repo.DBQueries.UpdatePermission(context.Background(), db.UpdatePermissionParams{
+	err = repo.DBQueries.WithTx(repo.GetTx()).UpdatePermission(context.Background(), db.UpdatePermissionParams{
 		ID:           permission.ID,
 		Name:         permission.Name,
 		InternalName: permission.InternalName,
@@ -82,7 +84,7 @@ func (repo *PermissionRepository) UpdatePermission(permission *entity.Permission
 }
 
 func (repo *PermissionRepository) DeletePermission(id int32) (err error) {
-	err = repo.DBQueries.DeletePermission(context.Background(), id)
+	err = repo.DBQueries.WithTx(repo.GetTx()).DeletePermission(context.Background(), id)
 	if err != nil {
 		return
 	}

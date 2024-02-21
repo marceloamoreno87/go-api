@@ -4,6 +4,14 @@ import (
 	"net/http"
 )
 
+type ResponseInterface interface {
+	ResponseJSON(w http.ResponseWriter, data interface{})
+}
+
+type ResponseErrorInterface interface {
+	ResponseErrorJSON(w http.ResponseWriter, responseError ResponseError)
+}
+
 type Response struct {
 	Data       interface{} `json:"data"`
 	StatusCode int         `json:"status_code"`

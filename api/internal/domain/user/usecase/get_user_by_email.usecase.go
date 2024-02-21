@@ -22,17 +22,17 @@ type GetUserByEmailOutputDTO struct {
 }
 
 type GetUserByEmailUseCase struct {
-	UserRepository repository.UserRepositoryInterface
+	repo repository.UserRepositoryInterface
 }
 
-func NewGetUserByEmailUseCase(userRepository repository.UserRepositoryInterface) *GetUserByEmailUseCase {
+func NewGetUserByEmailUseCase(repo repository.UserRepositoryInterface) *GetUserByEmailUseCase {
 	return &GetUserByEmailUseCase{
-		UserRepository: userRepository,
+		repo: repo,
 	}
 }
 
 func (uc *GetUserByEmailUseCase) Execute(input GetUserByEmailInputDTO) (output GetUserByEmailOutputDTO, err error) {
-	user, err := uc.UserRepository.GetUserByEmail(input.Email)
+	user, err := uc.repo.GetUserByEmail(input.Email)
 	if err != nil {
 		return
 	}

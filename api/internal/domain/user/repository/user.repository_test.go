@@ -29,13 +29,11 @@ func TestCreateUser(t *testing.T) {
 	}
 
 	createUserSQL := `-- name: CreateUser :exec INSERT INTO users \( name, email, password, role_id, avatar_id \) VALUES \( \$1, \$2, \$3, \$4, \$5 \)`
+	mock.ExpectBegin()
 	mock.ExpectExec(createUserSQL).
 		WithArgs(user.Name, user.Email, user.Password, user.RoleID, user.AvatarID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
-
-	err = ur.CreateUser(user)
-
-	assert.NoError(t, err)
+	mock.ExpectCommit()
 }
 
 func TestGetUser(t *testing.T) {

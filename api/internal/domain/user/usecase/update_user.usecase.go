@@ -14,14 +14,14 @@ type UpdateUserInputDTO struct {
 }
 
 type UpdateUserUseCase struct {
-	UserRepository repository.UserRepositoryInterface
-	ID             int32
+	repo repository.UserRepositoryInterface
+	ID   int32
 }
 
-func NewUpdateUserUseCase(userRepository repository.UserRepositoryInterface, id int32) *UpdateUserUseCase {
+func NewUpdateUserUseCase(repo repository.UserRepositoryInterface, id int32) *UpdateUserUseCase {
 	return &UpdateUserUseCase{
-		UserRepository: userRepository,
-		ID:             id,
+		repo: repo,
+		ID:   id,
 	}
 }
 
@@ -31,7 +31,7 @@ func (uc *UpdateUserUseCase) Execute(input UpdateUserInputDTO) (err error) {
 		return
 	}
 
-	err = uc.UserRepository.UpdateUser(user, uc.ID)
+	err = uc.repo.UpdateUser(user, uc.ID)
 	if err != nil {
 		return
 	}

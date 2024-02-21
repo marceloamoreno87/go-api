@@ -5,12 +5,14 @@ import (
 	"database/sql"
 
 	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
+	"github.com/marceloamoreno/goapi/pkg/api"
 	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
 )
 
 type RoleRepository struct {
+	api.DefaultRepository
 	DBConn    *sql.DB
-	DBQueries db.Querier
+	DBQueries *db.Queries
 }
 
 func NewRoleRepository(DBConn *sql.DB) *RoleRepository {
@@ -21,14 +23,11 @@ func NewRoleRepository(DBConn *sql.DB) *RoleRepository {
 }
 
 func (repo *RoleRepository) CreateRole(role *entity.Role) (err error) {
-	err = repo.DBQueries.CreateRole(context.Background(), db.CreateRoleParams{
+	err = repo.DBQueries.WithTx(repo.GetTx()).CreateRole(context.Background(), db.CreateRoleParams{
 		Name:         role.Name,
 		InternalName: role.InternalName,
 		Description:  role.Description,
 	})
-	if err != nil {
-		return
-	}
 	return
 }
 
@@ -84,22 +83,16 @@ func (repo *RoleRepository) GetRoles(limit int32, offset int32) (roles []*entity
 }
 
 func (repo *RoleRepository) UpdateRole(role *entity.Role, id int32) (err error) {
-	err = repo.DBQueries.UpdateRole(context.Background(), db.UpdateRoleParams{
+	err = repo.DBQueries.WithTx(repo.GetTx()).UpdateRole(context.Background(), db.UpdateRoleParams{
 		ID:           role.ID,
 		Name:         role.Name,
 		InternalName: role.InternalName,
 		Description:  role.Description,
 	})
-	if err != nil {
-		return
-	}
 	return
 }
 
 func (repo *RoleRepository) DeleteRole(id int32) (err error) {
-	err = repo.DBQueries.DeleteRole(context.Background(), id)
-	if err != nil {
-		return err
-	}
+	err = repo.DBQueries.WithTx(repo.GetTx()).DeleteRole(context.Background(), id)
 	return
 }

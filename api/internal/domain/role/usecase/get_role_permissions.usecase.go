@@ -3,7 +3,7 @@ package usecase
 import (
 	PermissionEntity "github.com/marceloamoreno/goapi/internal/domain/permission/entity"
 	RoleEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
-	RoleRepository "github.com/marceloamoreno/goapi/internal/domain/role/repository"
+	"github.com/marceloamoreno/goapi/internal/domain/role/repository"
 )
 
 type GetRolePermissionsInputDTO struct {
@@ -16,14 +16,14 @@ type GetRolePermissionsOutputDTO struct {
 }
 
 type GetRolePermissionsUseCase struct {
-	RolePermissionRepository RoleRepository.RolePermissionRepositoryInterface
+	repo repository.RolePermissionRepositoryInterface
 }
 
 func NewGetRolePermissionsUseCase(
-	RolePermissionRepository RoleRepository.RolePermissionRepositoryInterface,
+	repo repository.RolePermissionRepositoryInterface,
 ) *GetRolePermissionsUseCase {
 	return &GetRolePermissionsUseCase{
-		RolePermissionRepository: RolePermissionRepository,
+		repo: repo,
 	}
 }
 
@@ -31,7 +31,7 @@ func (uc *GetRolePermissionsUseCase) Execute(input GetRolePermissionsInputDTO) (
 	rolePermission := &RoleEntity.RolePermission{
 		RoleID: input.RoleID,
 	}
-	rolePermission, err = uc.RolePermissionRepository.GetRolePermissionsByRole(input.RoleID)
+	rolePermission, err = uc.repo.GetRolePermissionsByRole(input.RoleID)
 	if err != nil {
 		return
 	}

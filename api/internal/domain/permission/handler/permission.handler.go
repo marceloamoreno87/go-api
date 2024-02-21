@@ -11,14 +11,14 @@ import (
 )
 
 type PermissionHandler struct {
-	HandlerTools         api.HandlerToolsInterface
-	PermissionRepository repository.PermissionRepositoryInterface
+	HandlerTools api.HandlerToolsInterface
+	Repo         repository.PermissionRepositoryInterface
 }
 
-func NewPermissionHandler(permissionRepository repository.PermissionRepositoryInterface, handlerTools api.HandlerToolsInterface) *PermissionHandler {
+func NewPermissionHandler(Repo repository.PermissionRepositoryInterface, handlerTools api.HandlerToolsInterface) *PermissionHandler {
 	return &PermissionHandler{
-		PermissionRepository: permissionRepository,
-		HandlerTools:         handlerTools,
+		Repo:         Repo,
+		HandlerTools: handlerTools,
 	}
 }
 
@@ -42,7 +42,7 @@ func (h *PermissionHandler) GetPermission(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	uc := usecase.NewGetPermissionUseCase(h.PermissionRepository)
+	uc := usecase.NewGetPermissionUseCase(h.Repo)
 	permission, err := uc.Execute(usecase.GetPermissionInputDTO{
 		ID: id,
 	})
@@ -80,7 +80,7 @@ func (h *PermissionHandler) GetPermissions(w http.ResponseWriter, r *http.Reques
 		Offset: offset,
 	}
 
-	uc := usecase.NewGetPermissionsUseCase(h.PermissionRepository)
+	uc := usecase.NewGetPermissionsUseCase(h.Repo)
 	permission, err := uc.Execute(dto)
 	if err != nil {
 		slog.Info("err", err)
@@ -112,7 +112,7 @@ func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	uc := usecase.NewCreatePermissionUseCase(h.PermissionRepository)
+	uc := usecase.NewCreatePermissionUseCase(h.Repo)
 	err = uc.Execute(dto)
 	if err != nil {
 		slog.Info("err", err)
@@ -152,7 +152,7 @@ func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	uc := usecase.NewUpdatePermissionUseCase(h.PermissionRepository, id)
+	uc := usecase.NewUpdatePermissionUseCase(h.Repo, id)
 	err = uc.Execute(dto)
 	if err != nil {
 		slog.Info("err", err)
@@ -183,7 +183,7 @@ func (h *PermissionHandler) DeletePermission(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	uc := usecase.NewDeletePermissionUseCase(h.PermissionRepository)
+	uc := usecase.NewDeletePermissionUseCase(h.Repo)
 	err = uc.Execute(usecase.DeletePermissionInputDTO{
 		ID: id,
 	})

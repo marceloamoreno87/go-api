@@ -20,18 +20,18 @@ type GetRoleByInternalNameOutputDTO struct {
 }
 
 type GetRoleByInternalNameUseCase struct {
-	RoleRepository repository.RoleRepositoryInterface
+	repo repository.RoleRepositoryInterface
 }
 
-func NewGetRoleByInternalNameUseCase(roleRepository repository.RoleRepositoryInterface) *GetRoleByInternalNameUseCase {
+func NewGetRoleByInternalNameUseCase(repo repository.RoleRepositoryInterface) *GetRoleByInternalNameUseCase {
 	return &GetRoleByInternalNameUseCase{
-		RoleRepository: roleRepository,
+		repo: repo,
 	}
 }
 
 func (uc *GetRoleByInternalNameUseCase) Execute(input GetRoleByInternalNameInputDTO) (output GetRoleByInternalNameOutputDTO, err error) {
 
-	role, err := uc.RoleRepository.GetRoleByInternalName(input.InternalName)
+	role, err := uc.repo.GetRoleByInternalName(input.InternalName)
 	if err != nil {
 		return
 	}

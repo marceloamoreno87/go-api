@@ -20,6 +20,7 @@ services:
       - db
     ports:
       - ${PORT}:3000
+      - 4000:4000
     volumes:
       - ./api/:/api
     networks:

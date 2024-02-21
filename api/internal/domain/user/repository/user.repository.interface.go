@@ -1,9 +1,8 @@
 package repository
 
 import (
-	"database/sql"
-
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
+	"github.com/marceloamoreno/goapi/internal/infra/database"
 )
 
 type UserRepositoryInterface interface {
@@ -13,5 +12,5 @@ type UserRepositoryInterface interface {
 	GetUsers(limit int32, offset int32) ([]*entity.User, error)
 	UpdateUser(user *entity.User, id int32) (err error)
 	DeleteUser(id int32) (err error)
-	SetTx(tx *sql.Tx)
+	database.RepositoryInterface
 }

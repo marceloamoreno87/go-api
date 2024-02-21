@@ -8,18 +8,17 @@ import (
 	"golang.org/x/exp/slog"
 
 	"github.com/marceloamoreno/goapi/config"
-	AuthMiddleware "github.com/marceloamoreno/goapi/internal/domain/auth/middleware"
+	authMiddleware "github.com/marceloamoreno/goapi/internal/domain/auth/middleware"
 	"github.com/marceloamoreno/goapi/internal/infra/database"
-	CorsMiddleware "github.com/marceloamoreno/goapi/internal/infra/webserver/middleware"
-	LogMiddleware "github.com/marceloamoreno/goapi/internal/infra/webserver/middleware"
+	infraMiddleware "github.com/marceloamoreno/goapi/internal/infra/webserver/middleware"
 	"github.com/marceloamoreno/goapi/pkg/api"
 )
 
 func StartServer() {
 	r := chi.NewRouter()
 
-	LogMiddleware.NewLogMiddleware(r).LogMiddleware()
-	CorsMiddleware.NewCorsMiddleware(r).CorsMiddleware()
+	infraMiddleware.NewLogMiddleware(r).LogMiddleware()
+	infraMiddleware.NewCorsMiddleware(r).CorsMiddleware()
 
 	dbConn, err := database.GetDBConn()
 	if err != nil {
@@ -40,22 +39,25 @@ func StartServer() {
 	}
 }
 
-func loadRoutes(r *chi.Mux, dbConn *sql.DB) {
+func loadRoutes(
+	r *chi.Mux,
+	dbConn *sql.DB,
+) {
 	handlerTools := api.NewHandlerTools(dbConn)
 	route := NewRoute(r, handlerTools, dbConn)
-	route.Mux.Route("/api/v1", func(r chi.Router) {
+	route.mux.Route("/api/v1", func(r chi.Router) {
 		r.Group(func(r chi.Router) {
 			route.GetAuthRoutes(r)
-			route.GetRoute(r)
-			route.GetSwaggerRoutes(r)
-			route.GetHealthRoutes(r)
+			// route.GetRoute(r)
+			// route.GetSwaggerRoutes(r)
+			// route.GetHealthRoutes(r)
 		})
 
 		r.Group(func(r chi.Router) {
-			AuthMiddleware.NewMiddleware(r).AuthMiddleware()
+			authMiddleware.NewMiddleware(r).AuthMiddleware()
 			route.GetUserRoutes(r)
-			route.GetRoleRoutes(r)
-			route.GetPermissionRoutes(r)
+			// route.GetRoleRoutes(r)
+			// route.GetPermissionRoutes(r)
 		})
 	})
 	slog.Info("Routes OK")

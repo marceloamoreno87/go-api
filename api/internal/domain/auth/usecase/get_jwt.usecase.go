@@ -19,12 +19,12 @@ type GetJWTOutputDTO struct {
 
 type GetJWTUseCase struct {
 	GetUserByEmailUseCase usecase.GetUserByEmailUseCaseInterface
-	UserRepository        repository.UserRepositoryInterface
 }
 
-func NewGetJWTUseCase(UserRepository repository.UserRepositoryInterface) *GetJWTUseCase {
+// TODO: REFACTOR
+func NewGetJWTUseCase(repo repository.UserRepositoryInterface) *GetJWTUseCase {
 	return &GetJWTUseCase{
-		GetUserByEmailUseCase: usecase.NewGetUserByEmailUseCase(UserRepository),
+		GetUserByEmailUseCase: usecase.NewGetUserByEmailUseCase(repo),
 	}
 }
 

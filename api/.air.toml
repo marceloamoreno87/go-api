@@ -1,6 +1,6 @@
 root = "./"
 testdata_dir = "testdata"
-tmp_dir = ""
+tmp_dir = "./build"
 
 [build]
   args_bin = []
@@ -12,6 +12,7 @@ tmp_dir = ""
   exclude_regex = ["_test.go"]
   exclude_unchanged = false
   follow_symlink = false
+  # full_bin = "dlv exec --listen=:4000 --headless=true --log=true --log-output=debugger,debuglineerr,gdbwire,lldbout,rpc --accept-multiclient --api-version=2 ./build/main"
   full_bin = ""
   include_dir = []
   include_ext = ["go", "tpl", "tmpl", "html"]

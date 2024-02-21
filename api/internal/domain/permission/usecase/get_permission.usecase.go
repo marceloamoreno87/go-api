@@ -20,17 +20,17 @@ type GetPermissionOutputDTO struct {
 }
 
 type GetPermissionUseCase struct {
-	PermissionRepository repository.PermissionRepositoryInterface
+	repo repository.PermissionRepositoryInterface
 }
 
-func NewGetPermissionUseCase(permissionRepository repository.PermissionRepositoryInterface) *GetPermissionUseCase {
+func NewGetPermissionUseCase(repo repository.PermissionRepositoryInterface) *GetPermissionUseCase {
 	return &GetPermissionUseCase{
-		PermissionRepository: permissionRepository,
+		repo: repo,
 	}
 }
 
 func (uc *GetPermissionUseCase) Execute(input GetPermissionInputDTO) (output GetPermissionOutputDTO, err error) {
-	permission, err := uc.PermissionRepository.GetPermission(input.ID)
+	permission, err := uc.repo.GetPermission(input.ID)
 	if err != nil {
 		return
 	}

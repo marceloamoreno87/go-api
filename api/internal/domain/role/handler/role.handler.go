@@ -11,14 +11,17 @@ import (
 )
 
 type RoleHandler struct {
-	HandlerTools   api.HandlerToolsInterface
-	RoleRepository repository.RoleRepositoryInterface
+	HandlerTools api.HandlerToolsInterface
+	repo         repository.RoleRepositoryInterface
 }
 
-func NewRoleHandler(roleRepository repository.RoleRepositoryInterface, handlerTools api.HandlerToolsInterface) *RoleHandler {
+func NewRoleHandler(
+	repo repository.RoleRepositoryInterface,
+	handlerTools api.HandlerToolsInterface,
+) *RoleHandler {
 	return &RoleHandler{
-		RoleRepository: roleRepository,
-		HandlerTools:   handlerTools,
+		repo:         repo,
+		HandlerTools: handlerTools,
 	}
 }
 
@@ -42,7 +45,7 @@ func (h *RoleHandler) GetRole(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uc := usecase.NewGetRoleUseCase(h.RoleRepository)
+	uc := usecase.NewGetRoleUseCase(h.repo)
 	role, err := uc.Execute(usecase.GetRoleInputDTO{
 		ID: id,
 	})
@@ -80,7 +83,7 @@ func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
 		Offset: offset,
 	}
 
-	uc := usecase.NewGetRolesUseCase(h.RoleRepository)
+	uc := usecase.NewGetRolesUseCase(h.repo)
 	role, err := uc.Execute(dto)
 	if err != nil {
 		slog.Info("err", err)
@@ -112,7 +115,7 @@ func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uc := usecase.NewCreateRoleUseCase(h.RoleRepository)
+	uc := usecase.NewCreateRoleUseCase(h.repo)
 	err = uc.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
@@ -152,7 +155,7 @@ func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uc := usecase.NewUpdateRoleUseCase(h.RoleRepository, id)
+	uc := usecase.NewUpdateRoleUseCase(h.repo, id)
 	err = uc.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
@@ -183,7 +186,7 @@ func (h *RoleHandler) DeleteRole(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uc := usecase.NewDeleteRoleUseCase(h.RoleRepository)
+	uc := usecase.NewDeleteRoleUseCase(h.repo)
 	err = uc.Execute(usecase.DeleteRoleInputDTO{
 		ID: id,
 	})

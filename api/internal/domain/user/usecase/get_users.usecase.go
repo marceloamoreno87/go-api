@@ -23,17 +23,17 @@ type GetUsersOutputDTO struct {
 }
 
 type GetUsersUseCase struct {
-	UserRepository repository.UserRepositoryInterface
+	repo repository.UserRepositoryInterface
 }
 
-func NewGetUsersUseCase(userRepository repository.UserRepositoryInterface) *GetUsersUseCase {
+func NewGetUsersUseCase(repo repository.UserRepositoryInterface) *GetUsersUseCase {
 	return &GetUsersUseCase{
-		UserRepository: userRepository,
+		repo: repo,
 	}
 }
 
 func (uc *GetUsersUseCase) Execute(input GetUsersInputDTO) (output []GetUsersOutputDTO, err error) {
-	users, err := uc.UserRepository.GetUsers(input.Limit, input.Offset)
+	users, err := uc.repo.GetUsers(input.Limit, input.Offset)
 	if err != nil {
 		return
 	}

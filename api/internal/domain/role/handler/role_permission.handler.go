@@ -11,17 +11,17 @@ import (
 )
 
 type RolePermissionHandler struct {
-	HandlerTools             api.HandlerToolsInterface
-	RolePermissionRepository repository.RolePermissionRepositoryInterface
+	HandlerTools api.HandlerToolsInterface
+	repo         repository.RolePermissionRepositoryInterface
 }
 
 func NewRolePermissionHandler(
-	RolePermissionRepository repository.RolePermissionRepositoryInterface,
+	repo repository.RolePermissionRepositoryInterface,
 	handlerTools api.HandlerToolsInterface,
 ) *RolePermissionHandler {
 	return &RolePermissionHandler{
-		RolePermissionRepository: RolePermissionRepository,
-		HandlerTools:             handlerTools,
+		repo:         repo,
+		HandlerTools: handlerTools,
 	}
 }
 
@@ -44,7 +44,7 @@ func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *htt
 		return
 	}
 
-	uc := usecase.NewGetRolePermissionsUseCase(h.RolePermissionRepository)
+	uc := usecase.NewGetRolePermissionsUseCase(h.repo)
 	rolePermissions, err := uc.Execute(usecase.GetRolePermissionsInputDTO{
 		RoleID: id,
 	})
@@ -76,7 +76,7 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-	uc := usecase.NewCreateRolePermissionUseCase(h.RolePermissionRepository)
+	uc := usecase.NewCreateRolePermissionUseCase(h.repo)
 	err = uc.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
@@ -106,7 +106,7 @@ func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *h
 		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-	uc := usecase.NewUpdateRolePermissionUseCase(h.RolePermissionRepository)
+	uc := usecase.NewUpdateRolePermissionUseCase(h.repo)
 	err = uc.Execute(input)
 	if err != nil {
 		slog.Info("err", err)

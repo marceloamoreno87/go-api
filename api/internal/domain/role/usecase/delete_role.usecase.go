@@ -1,31 +1,29 @@
 package usecase
 
-import (
-	"github.com/marceloamoreno/goapi/internal/domain/role/repository"
-)
+import "github.com/marceloamoreno/goapi/internal/domain/role/repository"
 
 type DeleteRoleInputDTO struct {
 	ID int32 `json:"id"`
 }
 
 type DeleteRoleUseCase struct {
-	RoleRepository repository.RoleRepositoryInterface
+	repo repository.RoleRepositoryInterface
 }
 
-func NewDeleteRoleUseCase(roleRepository repository.RoleRepositoryInterface) *DeleteRoleUseCase {
+func NewDeleteRoleUseCase(repo repository.RoleRepositoryInterface) *DeleteRoleUseCase {
 	return &DeleteRoleUseCase{
-		RoleRepository: roleRepository,
+		repo: repo,
 	}
 }
 
 func (uc *DeleteRoleUseCase) Execute(input DeleteRoleInputDTO) (err error) {
 
-	role, err := uc.RoleRepository.GetRole(input.ID)
+	role, err := uc.repo.GetRole(input.ID)
 	if err != nil {
 		return
 	}
 
-	err = uc.RoleRepository.DeleteRole(role.GetID())
+	err = uc.repo.DeleteRole(role.GetID())
 	if err != nil {
 		return
 	}

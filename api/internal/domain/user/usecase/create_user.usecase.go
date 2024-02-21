@@ -14,12 +14,12 @@ type CreateUserInputDTO struct {
 }
 
 type CreateUserUseCase struct {
-	UserRepository repository.UserRepositoryInterface
+	repo repository.UserRepositoryInterface
 }
 
-func NewCreateUserUseCase(userRepository repository.UserRepositoryInterface) *CreateUserUseCase {
+func NewCreateUserUseCase(repo repository.UserRepositoryInterface) *CreateUserUseCase {
 	return &CreateUserUseCase{
-		UserRepository: userRepository,
+		repo: repo,
 	}
 }
 
@@ -29,7 +29,7 @@ func (uc *CreateUserUseCase) Execute(input CreateUserInputDTO) (err error) {
 		return
 	}
 
-	err = uc.UserRepository.CreateUser(user)
+	err = uc.repo.CreateUser(user)
 	if err != nil {
 		return
 	}

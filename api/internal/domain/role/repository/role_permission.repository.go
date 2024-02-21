@@ -8,12 +8,14 @@ import (
 	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	RoleEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	RolePermissionEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
+	"github.com/marceloamoreno/goapi/pkg/api"
 	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
 )
 
 type RolePermissionRepository struct {
+	api.DefaultRepository
 	DBConn    *sql.DB
-	DBQueries db.Querier
+	DBQueries *db.Queries
 }
 
 func NewRolePermissionRepository(DBConn *sql.DB) *RolePermissionRepository {
@@ -54,7 +56,7 @@ func (repo *RolePermissionRepository) GetRolePermissionsByRole(id int32) (rolePe
 
 func (repo *RolePermissionRepository) CreateRolePermission(rolePermission *RolePermissionEntity.RolePermission) (err error) {
 	for _, id := range rolePermission.PermissionIDs {
-		err = repo.DBQueries.CreateRolePermission(context.Background(), db.CreateRolePermissionParams{
+		err = repo.DBQueries.WithTx(repo.GetTx()).CreateRolePermission(context.Background(), db.CreateRolePermissionParams{
 			RoleID:       rolePermission.RoleID,
 			PermissionID: id,
 		})
@@ -71,7 +73,7 @@ func (repo *RolePermissionRepository) UpdateRolePermission(rolePermission *entit
 		return
 	}
 	for _, permissionId := range rolePermission.PermissionIDs {
-		err = repo.DBQueries.CreateRolePermission(context.Background(), db.CreateRolePermissionParams{
+		err = repo.DBQueries.WithTx(repo.GetTx()).CreateRolePermission(context.Background(), db.CreateRolePermissionParams{
 			RoleID:       rolePermission.RoleID,
 			PermissionID: permissionId,
 		})
