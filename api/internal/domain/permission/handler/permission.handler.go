@@ -11,14 +11,17 @@ import (
 )
 
 type PermissionHandler struct {
-	HandlerTools api.HandlerToolsInterface
-	Repo         repository.PermissionRepositoryInterface
+	handlerTools api.HandlerToolsInterface
+	repo         repository.PermissionRepositoryInterface
 }
 
-func NewPermissionHandler(Repo repository.PermissionRepositoryInterface, handlerTools api.HandlerToolsInterface) *PermissionHandler {
+func NewPermissionHandler(
+	repo repository.PermissionRepositoryInterface,
+	handlerTools api.HandlerToolsInterface,
+) *PermissionHandler {
 	return &PermissionHandler{
-		Repo:         Repo,
-		HandlerTools: handlerTools,
+		repo:         repo,
+		handlerTools: handlerTools,
 	}
 }
 
@@ -35,24 +38,24 @@ func NewPermissionHandler(Repo repository.PermissionRepositoryInterface, handler
 // @Security     JWT
 func (h *PermissionHandler) GetPermission(w http.ResponseWriter, r *http.Request) {
 
-	id, err := h.HandlerTools.GetIDFromURL(r)
+	id, err := h.handlerTools.GetIDFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 
-	uc := usecase.NewGetPermissionUseCase(h.Repo)
+	uc := usecase.NewGetPermissionUseCase(h.repo)
 	permission, err := uc.Execute(usecase.GetPermissionInputDTO{
 		ID: id,
 	})
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 	slog.Info("Permission get", "permissions", permission)
-	h.HandlerTools.ResponseJSON(w, permission)
+	h.handlerTools.ResponseJSON(w, permission)
 
 }
 
@@ -69,10 +72,10 @@ func (h *PermissionHandler) GetPermission(w http.ResponseWriter, r *http.Request
 // @Router /permission [get]
 // @Security     JWT
 func (h *PermissionHandler) GetPermissions(w http.ResponseWriter, r *http.Request) {
-	limit, offset, err := h.HandlerTools.GetLimitOffsetFromURL(r)
+	limit, offset, err := h.handlerTools.GetLimitOffsetFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 	dto := usecase.GetPermissionsInputDTO{
@@ -80,15 +83,15 @@ func (h *PermissionHandler) GetPermissions(w http.ResponseWriter, r *http.Reques
 		Offset: offset,
 	}
 
-	uc := usecase.NewGetPermissionsUseCase(h.Repo)
+	uc := usecase.NewGetPermissionsUseCase(h.repo)
 	permission, err := uc.Execute(dto)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 	slog.Info("Permissions getting", "permissions", permission)
-	h.HandlerTools.ResponseJSON(w, permission)
+	h.handlerTools.ResponseJSON(w, permission)
 }
 
 // CreateRole godoc
@@ -108,19 +111,37 @@ func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Requ
 	err := json.NewDecoder(r.Body).Decode(&dto)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+	err = h.repo.Begin()
+	if err != nil {
+		slog.Info("err", err)
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 
-	uc := usecase.NewCreatePermissionUseCase(h.Repo)
+	uc := usecase.NewCreatePermissionUseCase(h.repo)
 	err = uc.Execute(dto)
 	if err != nil {
+		err2 := h.repo.Rollback()
+		if err2 != nil {
+			slog.Info("err", err2)
+			h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err2.Error()))
+		}
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+
+	err = h.repo.Commit()
+	if err != nil {
+		slog.Info("err", err)
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 	slog.Info("Permission created")
-	h.HandlerTools.ResponseJSON(w, nil)
+	h.handlerTools.ResponseJSON(w, nil)
 
 }
 
@@ -137,10 +158,10 @@ func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Requ
 // @Router /permission/{id} [put]
 // @Security     JWT
 func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Request) {
-	id, err := h.HandlerTools.GetIDFromURL(r)
+	id, err := h.handlerTools.GetIDFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 
@@ -148,19 +169,36 @@ func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Requ
 	err = json.NewDecoder(r.Body).Decode(&dto)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+	err = h.repo.Begin()
+	if err != nil {
+		slog.Info("err", err)
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+	uc := usecase.NewUpdatePermissionUseCase(h.repo, id)
+	err = uc.Execute(dto)
+	if err != nil {
+		err2 := h.repo.Rollback()
+		if err2 != nil {
+			slog.Info("err", err2)
+			h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err2.Error()))
+		}
+		slog.Info("err", err)
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 
-	uc := usecase.NewUpdatePermissionUseCase(h.Repo, id)
-	err = uc.Execute(dto)
+	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 	slog.Info("Permission updated")
-	h.HandlerTools.ResponseJSON(w, nil)
+	h.handlerTools.ResponseJSON(w, nil)
 }
 
 // DeletePermission godoc
@@ -176,22 +214,39 @@ func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Requ
 // @Router /permission/{id} [delete]
 // @Security     JWT
 func (h *PermissionHandler) DeletePermission(w http.ResponseWriter, r *http.Request) {
-	id, err := h.HandlerTools.GetIDFromURL(r)
+	id, err := h.handlerTools.GetIDFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-
-	uc := usecase.NewDeletePermissionUseCase(h.Repo)
+	err = h.repo.Begin()
+	if err != nil {
+		slog.Info("err", err)
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+	uc := usecase.NewDeletePermissionUseCase(h.repo)
 	err = uc.Execute(usecase.DeletePermissionInputDTO{
 		ID: id,
 	})
 	if err != nil {
+		err2 := h.repo.Rollback()
+		if err2 != nil {
+			slog.Info("err", err2)
+			h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err2.Error()))
+		}
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+
+	err = h.repo.Commit()
+	if err != nil {
+		slog.Info("err", err)
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 	slog.Info("Permission deleted")
-	h.HandlerTools.ResponseJSON(w, nil)
+	h.handlerTools.ResponseJSON(w, nil)
 }

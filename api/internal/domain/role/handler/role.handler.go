@@ -11,7 +11,7 @@ import (
 )
 
 type RoleHandler struct {
-	HandlerTools api.HandlerToolsInterface
+	handlerTools api.HandlerToolsInterface
 	repo         repository.RoleRepositoryInterface
 }
 
@@ -21,7 +21,7 @@ func NewRoleHandler(
 ) *RoleHandler {
 	return &RoleHandler{
 		repo:         repo,
-		HandlerTools: handlerTools,
+		handlerTools: handlerTools,
 	}
 }
 
@@ -38,10 +38,10 @@ func NewRoleHandler(
 // @Security     JWT
 func (h *RoleHandler) GetRole(w http.ResponseWriter, r *http.Request) {
 
-	id, err := h.HandlerTools.GetIDFromURL(r)
+	id, err := h.handlerTools.GetIDFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 
@@ -51,11 +51,11 @@ func (h *RoleHandler) GetRole(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 	slog.Info("Role get", "roles", role)
-	h.HandlerTools.ResponseJSON(w, role)
+	h.handlerTools.ResponseJSON(w, role)
 
 }
 
@@ -72,10 +72,10 @@ func (h *RoleHandler) GetRole(w http.ResponseWriter, r *http.Request) {
 // @Router /role [get]
 // @Security     JWT
 func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
-	limit, offset, err := h.HandlerTools.GetLimitOffsetFromURL(r)
+	limit, offset, err := h.handlerTools.GetLimitOffsetFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 	dto := usecase.GetRolesInputDTO{
@@ -87,11 +87,11 @@ func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
 	role, err := uc.Execute(dto)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 	slog.Info("Roles getting", "roles", role)
-	h.HandlerTools.ResponseJSON(w, role)
+	h.handlerTools.ResponseJSON(w, role)
 }
 
 // CreateRole godoc
@@ -111,19 +111,38 @@ func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+	err = h.repo.Begin()
+	if err != nil {
+		slog.Info("err", err)
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 
 	uc := usecase.NewCreateRoleUseCase(h.repo)
 	err = uc.Execute(input)
 	if err != nil {
+		err2 := h.repo.Rollback()
+		if err2 != nil {
+			slog.Info("err", err2)
+			h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err2.Error()))
+		}
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
+
+	err = h.repo.Commit()
+	if err != nil {
+		slog.Info("err", err)
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+
 	slog.Info("Role created")
-	h.HandlerTools.ResponseJSON(w, nil)
+	h.handlerTools.ResponseJSON(w, nil)
 
 }
 
@@ -140,10 +159,10 @@ func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
 // @Router /role/{id} [put]
 // @Security     JWT
 func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
-	id, err := h.HandlerTools.GetIDFromURL(r)
+	id, err := h.handlerTools.GetIDFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 
@@ -151,19 +170,37 @@ func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
 	err = json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+	err = h.repo.Begin()
+	if err != nil {
+		slog.Info("err", err)
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 
 	uc := usecase.NewUpdateRoleUseCase(h.repo, id)
 	err = uc.Execute(input)
 	if err != nil {
+		err2 := h.repo.Rollback()
+		if err2 != nil {
+			slog.Info("err", err2)
+			h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err2.Error()))
+		}
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+
+	err = h.repo.Commit()
+	if err != nil {
+		slog.Info("err", err)
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 	slog.Info("Role updated")
-	h.HandlerTools.ResponseJSON(w, nil)
+	h.handlerTools.ResponseJSON(w, nil)
 }
 
 // DeleteRole godoc
@@ -179,10 +216,17 @@ func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
 // @Router /role/{id} [delete]
 // @Security     JWT
 func (h *RoleHandler) DeleteRole(w http.ResponseWriter, r *http.Request) {
-	id, err := h.HandlerTools.GetIDFromURL(r)
+	id, err := h.handlerTools.GetIDFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+
+	err = h.repo.Begin()
+	if err != nil {
+		slog.Info("err", err)
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 
@@ -191,10 +235,22 @@ func (h *RoleHandler) DeleteRole(w http.ResponseWriter, r *http.Request) {
 		ID: id,
 	})
 	if err != nil {
+		err2 := h.repo.Rollback()
+		if err2 != nil {
+			slog.Info("err", err2)
+			h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err2.Error()))
+		}
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+
+	err = h.repo.Commit()
+	if err != nil {
+		slog.Info("err", err)
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 	slog.Info("Role deleted")
-	h.HandlerTools.ResponseJSON(w, nil)
+	h.handlerTools.ResponseJSON(w, nil)
 }

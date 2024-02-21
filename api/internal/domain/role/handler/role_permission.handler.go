@@ -11,7 +11,7 @@ import (
 )
 
 type RolePermissionHandler struct {
-	HandlerTools api.HandlerToolsInterface
+	handlerTools api.HandlerToolsInterface
 	repo         repository.RolePermissionRepositoryInterface
 }
 
@@ -21,7 +21,7 @@ func NewRolePermissionHandler(
 ) *RolePermissionHandler {
 	return &RolePermissionHandler{
 		repo:         repo,
-		HandlerTools: handlerTools,
+		handlerTools: handlerTools,
 	}
 }
 
@@ -37,10 +37,10 @@ func NewRolePermissionHandler(
 // @Router /role/{id}/permission [get]
 // @Security     JWT
 func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *http.Request) {
-	id, err := h.HandlerTools.GetIDFromURL(r)
+	id, err := h.handlerTools.GetIDFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 
@@ -50,11 +50,11 @@ func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *htt
 	})
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 	slog.Info("Role permissions get", "role permissions", rolePermissions)
-	h.HandlerTools.ResponseJSON(w, rolePermissions)
+	h.handlerTools.ResponseJSON(w, rolePermissions)
 }
 
 // CreateRolePermission godoc
@@ -73,17 +73,35 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+	err = h.repo.Begin()
+	if err != nil {
+		slog.Info("err", err)
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 	uc := usecase.NewCreateRolePermissionUseCase(h.repo)
 	err = uc.Execute(input)
 	if err != nil {
+		err2 := h.repo.Rollback()
+		if err2 != nil {
+			slog.Info("err", err2)
+			h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err2.Error()))
+		}
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-	h.HandlerTools.ResponseJSON(w, nil)
+
+	err = h.repo.Commit()
+	if err != nil {
+		slog.Info("err", err)
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+	h.handlerTools.ResponseJSON(w, nil)
 }
 
 // UpdateRolePermission godoc
@@ -103,15 +121,33 @@ func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *h
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+	err = h.repo.Begin()
+	if err != nil {
+		slog.Info("err", err)
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
 	uc := usecase.NewUpdateRolePermissionUseCase(h.repo)
 	err = uc.Execute(input)
 	if err != nil {
+		err2 := h.repo.Rollback()
+		if err2 != nil {
+			slog.Info("err", err2)
+			h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err2.Error()))
+		}
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
 		return
 	}
-	h.HandlerTools.ResponseJSON(w, nil)
+
+	err = h.repo.Commit()
+	if err != nil {
+		slog.Info("err", err)
+		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		return
+	}
+	h.handlerTools.ResponseJSON(w, nil)
 }

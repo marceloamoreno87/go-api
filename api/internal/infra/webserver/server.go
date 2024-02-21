@@ -48,16 +48,16 @@ func loadRoutes(
 	route.mux.Route("/api/v1", func(r chi.Router) {
 		r.Group(func(r chi.Router) {
 			route.GetAuthRoutes(r)
-			// route.GetRoute(r)
-			// route.GetSwaggerRoutes(r)
-			// route.GetHealthRoutes(r)
+			route.GetRoute(r)
+			route.GetSwaggerRoutes(r)
+			route.GetHealthRoutes(r)
 		})
 
 		r.Group(func(r chi.Router) {
 			authMiddleware.NewMiddleware(r).AuthMiddleware()
 			route.GetUserRoutes(r)
-			// route.GetRoleRoutes(r)
-			// route.GetPermissionRoutes(r)
+			route.GetRoleRoutes(r)
+			route.GetPermissionRoutes(r)
 		})
 	})
 	slog.Info("Routes OK")
