@@ -3,6 +3,7 @@ createmigration:
 	chown -R 1000:1000 internal/sql/migrations
 
 migrate:
+	rm -rf pkg/sqlc/db
 	migrate -path internal/sql/migrations -database "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable" up
 	sqlc generate
 
