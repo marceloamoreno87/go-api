@@ -1,7 +1,6 @@
-package api
+package tools
 
 import (
-	"database/sql"
 	"encoding/json"
 	"errors"
 	"log/slog"
@@ -16,16 +15,59 @@ type HandlerToolsInterface interface {
 	GetIDFromURL(r *http.Request) (int32, error)
 	ResponseJSON(w http.ResponseWriter, data interface{})
 	ResponseErrorJSON(w http.ResponseWriter, responseError ResponseError)
+	MountError(err error, statusCode int, codeError string) ResponseError
+	ResponseInterface
+	ResponseErrorInterface
+}
+
+type ResponseInterface interface {
+	ResponseJSON(w http.ResponseWriter, data interface{})
+}
+
+type ResponseErrorInterface interface {
+	ResponseErrorJSON(w http.ResponseWriter, responseError ResponseError)
 }
 
 type HandlerTools struct {
-	dbConn *sql.DB
+	Response
+	ResponseError
 }
 
-func NewHandlerTools(dbConn *sql.DB) *HandlerTools {
-	return &HandlerTools{
-		dbConn: dbConn,
+type Response struct {
+	data       interface{}
+	statusCode int
+}
+
+type ResponseError struct {
+	msg        string
+	statusCode int
+	codeError  string
+}
+
+func NewResponse(
+	data interface{},
+	statusCode int,
+) Response {
+	return Response{
+		data:       data,
+		statusCode: statusCode,
 	}
+}
+
+func NewResponseError(
+	msg string,
+	statusCode int,
+	codeError string,
+) ResponseError {
+	return ResponseError{
+		msg:        msg,
+		statusCode: statusCode,
+		codeError:  codeError,
+	}
+}
+
+func NewHandlerTools() *HandlerTools {
+	return &HandlerTools{}
 }
 
 func (h *HandlerTools) GetLimitOffsetFromURL(r *http.Request) (limitInt int32, offsetInt int32, err error) {
@@ -72,13 +114,26 @@ func (h *HandlerTools) GetIDFromURL(r *http.Request) (idInt int32, err error) {
 func (h *HandlerTools) ResponseJSON(w http.ResponseWriter, data interface{}) {
 	response := NewResponse(data, http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(response.StatusCode)
-	json.NewEncoder(w).Encode(response)
+	w.WriteHeader(response.statusCode)
+	json.NewEncoder(w).Encode(h.ToJson(response))
 }
 
 func (h *HandlerTools) ResponseErrorJSON(w http.ResponseWriter, responseError ResponseError) {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(responseError.StatusCode)
-	slog.Error(responseError.Msg, "code_error", responseError.CodeError)
-	json.NewEncoder(w).Encode(responseError)
+	w.WriteHeader(responseError.statusCode)
+	slog.Error(responseError.msg, "code_error", responseError.codeError)
+	json.NewEncoder(w).Encode(h.ToJson(responseError))
+}
+
+func (h *HandlerTools) MountError(err error, statusCode int, codeError string) ResponseError {
+	return NewResponseError(err.Error(), statusCode, codeError)
+
+}
+
+func (h *HandlerTools) ToJson(data interface{}) string {
+	b, err := json.Marshal(data)
+	if err != nil {
+		return ""
+	}
+	return string(b)
 }

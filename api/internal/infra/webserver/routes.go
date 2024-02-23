@@ -14,31 +14,27 @@ import (
 	roleRepository "github.com/marceloamoreno/goapi/internal/domain/role/repository"
 	userHandler "github.com/marceloamoreno/goapi/internal/domain/user/handler"
 	userRepository "github.com/marceloamoreno/goapi/internal/domain/user/repository"
-	"github.com/marceloamoreno/goapi/pkg/api"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type Route struct {
-	handlerTools *api.HandlerTools
-	mux          *chi.Mux
-	dbConn       *sql.DB
+	mux    *chi.Mux
+	dbConn *sql.DB
 }
 
 func NewRoute(
 	r *chi.Mux,
-	handlerTools *api.HandlerTools,
 	db *sql.DB,
 ) *Route {
 	return &Route{
-		mux:          r,
-		handlerTools: handlerTools,
-		dbConn:       db,
+		mux:    r,
+		dbConn: db,
 	}
 }
 
 func (r *Route) GetAuthRoutes(router chi.Router) {
 	repo := userRepository.NewUserRepository(r.dbConn)
-	handler := authHandler.NewAuthHandler(repo, r.handlerTools)
+	handler := authHandler.NewAuthHandler(repo)
 	router.Route("/auth", func(r chi.Router) {
 		r.Post("/token", handler.GetJWT)
 		r.Post("/token/refresh", handler.GetRefreshJWT)
@@ -47,7 +43,7 @@ func (r *Route) GetAuthRoutes(router chi.Router) {
 
 func (r *Route) GetUserRoutes(router chi.Router) {
 	repo := userRepository.NewUserRepository(r.dbConn)
-	handler := userHandler.NewUserHandler(repo, r.handlerTools)
+	handler := userHandler.NewUserHandler(repo)
 	router.Route("/user", func(r chi.Router) {
 		r.Get("/", handler.GetUsers)
 		r.Get("/{id}", handler.GetUser)
@@ -60,8 +56,8 @@ func (r *Route) GetUserRoutes(router chi.Router) {
 func (r *Route) GetRoleRoutes(router chi.Router) {
 	repo := roleRepository.NewRoleRepository(r.dbConn)
 	repo2 := roleRepository.NewRolePermissionRepository(r.dbConn)
-	handler := roleHandler.NewRoleHandler(repo, r.handlerTools)
-	handler2 := roleHandler.NewRolePermissionHandler(repo2, r.handlerTools)
+	handler := roleHandler.NewRoleHandler(repo)
+	handler2 := roleHandler.NewRolePermissionHandler(repo2)
 	router.Route("/role", func(r chi.Router) {
 		r.Get("/", handler.GetRoles)
 		r.Get("/{id}", handler.GetRole)
@@ -80,7 +76,7 @@ func (r *Route) GetRoleRoutes(router chi.Router) {
 
 func (r *Route) GetPermissionRoutes(router chi.Router) {
 	repo := permissionRepository.NewPermissionRepository(r.dbConn)
-	handler := permissionHandler.NewPermissionHandler(repo, r.handlerTools)
+	handler := permissionHandler.NewPermissionHandler(repo)
 	router.Route("/permission", func(r chi.Router) {
 		r.Get("/", handler.GetPermissions)
 		r.Get("/{id}", handler.GetPermission)

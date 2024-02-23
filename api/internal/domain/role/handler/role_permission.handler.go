@@ -7,21 +7,20 @@ import (
 
 	"github.com/marceloamoreno/goapi/internal/domain/role/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/role/usecase"
-	"github.com/marceloamoreno/goapi/pkg/api"
+	"github.com/marceloamoreno/goapi/pkg/tools"
 )
 
 type RolePermissionHandler struct {
-	handlerTools api.HandlerToolsInterface
-	repo         repository.RolePermissionRepositoryInterface
+	tools tools.HandlerToolsInterface
+	repo  repository.RolePermissionRepositoryInterface
 }
 
 func NewRolePermissionHandler(
 	repo repository.RolePermissionRepositoryInterface,
-	handlerTools api.HandlerToolsInterface,
 ) *RolePermissionHandler {
 	return &RolePermissionHandler{
-		repo:         repo,
-		handlerTools: handlerTools,
+		repo:  repo,
+		tools: tools.NewHandlerTools(),
 	}
 }
 
@@ -32,15 +31,15 @@ func NewRolePermissionHandler(
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Role ID"
-// @Success 200 {object} api.Response{data=usecase.GetRolePermissionsOutputDTO}
-// @Failure 400 {object} api.ResponseError{err=string}
+// @Success 200 {object} tools.Response{data=usecase.GetRolePermissionsOutputDTO}
+// @Failure 400 {object} tools.ResponseError{err=string}
 // @Router /role/{id}/permission [get]
 // @Security     JWT
 func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *http.Request) {
-	id, err := h.handlerTools.GetIDFromURL(r)
+	id, err := h.tools.GetIDFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 
@@ -50,11 +49,11 @@ func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *htt
 	})
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 	slog.Info("Role permissions get", "role permissions", rolePermissions)
-	h.handlerTools.ResponseJSON(w, rolePermissions)
+	h.tools.ResponseJSON(w, rolePermissions)
 }
 
 // CreateRolePermission godoc
@@ -64,8 +63,8 @@ func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *htt
 // @Accept  json
 // @Produce  json
 // @Param user body usecase.CreateRolePermissionInputDTO true "RolePermission"
-// @Success 200 {object} api.Response{data=nil}
-// @Failure 400 {object} api.ResponseError{err=string}
+// @Success 200 {object} tools.Response{data=nil}
+// @Failure 400 {object} tools.ResponseError{err=string}
 // @Router /role/{id}/permission [post]
 // @Security     JWT
 func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *http.Request) {
@@ -73,13 +72,13 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 	err = h.repo.Begin()
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 	uc := usecase.NewCreateRolePermissionUseCase(h.repo)
@@ -88,20 +87,20 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 		err2 := h.repo.Rollback()
 		if err2 != nil {
 			slog.Info("err", err2)
-			h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err2.Error()))
+			h.tools.ResponseErrorJSON(w, h.tools.MountError(err2, http.StatusBadRequest, "BAR_REQUEST"))
 		}
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 
 	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
-	h.handlerTools.ResponseJSON(w, nil)
+	h.tools.ResponseJSON(w, nil)
 }
 
 // UpdateRolePermission godoc
@@ -112,8 +111,8 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 // @Produce  json
 // @Param id path string true "RolePermission ID"
 // @Param user body usecase.UpdateRolePermissionInputDTO true "RolePermission"
-// @Success 200 {object} api.Response{data=nil}
-// @Failure 400 {object} api.ResponseError{err=string}
+// @Success 200 {object} tools.Response{data=nil}
+// @Failure 400 {object} tools.ResponseError{err=string}
 // @Router /role/{id}/permission [put]
 // @Security     JWT
 func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *http.Request) {
@@ -121,13 +120,13 @@ func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *h
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 	err = h.repo.Begin()
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 	uc := usecase.NewUpdateRolePermissionUseCase(h.repo)
@@ -136,18 +135,18 @@ func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *h
 		err2 := h.repo.Rollback()
 		if err2 != nil {
 			slog.Info("err", err2)
-			h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err2.Error()))
+			h.tools.ResponseErrorJSON(w, h.tools.MountError(err2, http.StatusBadRequest, "BAR_REQUEST"))
 		}
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 
 	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
-	h.handlerTools.ResponseJSON(w, nil)
+	h.tools.ResponseJSON(w, nil)
 }

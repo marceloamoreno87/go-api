@@ -45,7 +45,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -61,7 +61,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/api.ResponseError"
+                            "$ref": "#/definitions/tools.ResponseError"
                         }
                     }
                 }
@@ -97,7 +97,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -113,7 +113,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/api.ResponseError"
+                            "$ref": "#/definitions/tools.ResponseError"
                         }
                     }
                 }
@@ -157,7 +157,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -178,7 +178,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -227,7 +227,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -245,7 +245,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -301,7 +301,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -319,7 +319,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -369,7 +369,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -387,7 +387,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -441,7 +441,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -462,7 +462,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -511,7 +511,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -529,7 +529,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -578,7 +578,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -596,7 +596,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -652,7 +652,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -670,7 +670,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -720,7 +720,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -738,7 +738,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -787,7 +787,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -805,7 +805,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -861,7 +861,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -879,7 +879,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -928,7 +928,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -946,7 +946,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -1000,7 +1000,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -1021,7 +1021,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -1070,7 +1070,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -1088,7 +1088,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -1137,7 +1137,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -1155,7 +1155,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -1211,7 +1211,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -1229,7 +1229,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -1279,7 +1279,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -1297,7 +1297,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -1315,7 +1315,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "api.Response": {
+        "tools.Response": {
             "type": "object",
             "properties": {
                 "data": {},
@@ -1324,7 +1324,7 @@ const docTemplate = `{
                 }
             }
         },
-        "api.ResponseError": {
+        "tools.ResponseError": {
             "type": "object",
             "properties": {
                 "code_error": {
@@ -1670,7 +1670,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/api/v1",
 	Schemes:          []string{"http"},
 	Title:            "GO API",
-	Description:      "This is a sample server for GO API.",
+	Description:      "This is a sample server for GO tools.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

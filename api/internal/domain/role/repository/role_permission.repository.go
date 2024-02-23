@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"sync"
 
 	PermissionEntity "github.com/marceloamoreno/goapi/internal/domain/permission/entity"
 	RoleEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
@@ -51,14 +52,28 @@ func (repo *RolePermissionRepository) GetRolePermissionsByRole(id int32) (rolePe
 }
 
 func (repo *RolePermissionRepository) CreateRolePermission(rolePermission *RolePermissionEntity.RolePermission) (err error) {
+
+	errCh := make(chan error, len(rolePermission.PermissionIDs))
+	var wg sync.WaitGroup
+	wg.Add(len(rolePermission.PermissionIDs))
+
 	for _, id := range rolePermission.PermissionIDs {
-		err = repo.Repository.GetDbQueries().WithTx(repo.Repository.GetTx()).CreateRolePermission(context.Background(), db.CreateRolePermissionParams{
-			RoleID:       rolePermission.RoleID,
-			PermissionID: id,
-		})
-		if err != nil {
-			return
-		}
+		go func(permissionID int32) {
+			defer wg.Done()
+			err := repo.Repository.GetDbQueries().WithTx(repo.Repository.GetTx()).CreateRolePermission(context.Background(), db.CreateRolePermissionParams{
+				RoleID:       rolePermission.RoleID,
+				PermissionID: permissionID,
+			})
+
+			if err != nil {
+				errCh <- err
+			}
+		}(id)
+	}
+	wg.Wait()
+	close(errCh)
+	if len(errCh) > 0 {
+		return <-errCh
 	}
 	return
 }
@@ -68,14 +83,5 @@ func (repo *RolePermissionRepository) UpdateRolePermission(rolePermission *RoleP
 	if err != nil {
 		return
 	}
-	for _, permissionId := range rolePermission.PermissionIDs {
-		err = repo.Repository.GetDbQueries().WithTx(repo.Repository.GetTx()).CreateRolePermission(context.Background(), db.CreateRolePermissionParams{
-			RoleID:       rolePermission.RoleID,
-			PermissionID: permissionId,
-		})
-		if err != nil {
-			return
-		}
-	}
-	return
+	return repo.CreateRolePermission(rolePermission)
 }

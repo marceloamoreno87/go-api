@@ -11,7 +11,6 @@ import (
 	authMiddleware "github.com/marceloamoreno/goapi/internal/domain/auth/middleware"
 	"github.com/marceloamoreno/goapi/internal/infra/database"
 	infraMiddleware "github.com/marceloamoreno/goapi/internal/infra/webserver/middleware"
-	"github.com/marceloamoreno/goapi/pkg/api"
 )
 
 func StartServer() {
@@ -43,8 +42,7 @@ func loadRoutes(
 	r *chi.Mux,
 	dbConn *sql.DB,
 ) {
-	handlerTools := api.NewHandlerTools(dbConn)
-	route := NewRoute(r, handlerTools, dbConn)
+	route := NewRoute(r, dbConn)
 	route.mux.Route("/api/v1", func(r chi.Router) {
 		r.Group(func(r chi.Router) {
 			route.GetAuthRoutes(r)

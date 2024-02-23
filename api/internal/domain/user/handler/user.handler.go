@@ -7,21 +7,20 @@ import (
 
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
-	"github.com/marceloamoreno/goapi/pkg/api"
+	"github.com/marceloamoreno/goapi/pkg/tools"
 )
 
 type UserHandler struct {
-	handlerTools api.HandlerToolsInterface
-	repo         repository.UserRepositoryInterface
+	repo  repository.UserRepositoryInterface
+	tools tools.HandlerToolsInterface
 }
 
 func NewUserHandler(
 	repo repository.UserRepositoryInterface,
-	handlerTools api.HandlerToolsInterface,
 ) *UserHandler {
 	return &UserHandler{
-		repo:         repo,
-		handlerTools: handlerTools,
+		repo:  repo,
+		tools: tools.NewHandlerTools(),
 	}
 }
 
@@ -32,8 +31,8 @@ func NewUserHandler(
 // @Accept  json
 // @Produce  json
 // @Param user body usecase.CreateUserInputDTO true "User"
-// @Success 200 {object} api.Response{data=nil}
-// @Failure 400 {object} api.ResponseError{err=string}
+// @Success 200 {object} tools.Response{data=nil}
+// @Failure 400 {object} tools.ResponseError{err=string}
 // @Router /user [post]
 // @Security     JWT
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -42,13 +41,13 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 	err = h.repo.Begin()
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 
@@ -58,22 +57,22 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		err2 := h.repo.Rollback()
 		if err2 != nil {
 			slog.Info("err", err2)
-			h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err2.Error()))
+			h.tools.ResponseErrorJSON(w, h.tools.MountError(err2, http.StatusBadRequest, "BAR_REQUEST"))
 		}
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 
 	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 
 	slog.Info("User created")
-	h.handlerTools.ResponseJSON(w, nil)
+	h.tools.ResponseJSON(w, nil)
 }
 
 // GetUser godoc
@@ -83,16 +82,16 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "User ID"
-// @Success 200 {object} api.Response{data=usecase.GetUserOutputDTO}
-// @Failure 400 {object} api.ResponseError{err=string}
+// @Success 200 {object} tools.Response{data=usecase.GetUserOutputDTO}
+// @Failure 400 {object} tools.ResponseError{err=string}
 // @Router /user/{id} [get]
 // @Security     JWT
 func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 
-	id, err := h.handlerTools.GetIDFromURL(r)
+	id, err := h.tools.GetIDFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 
@@ -102,11 +101,11 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 	slog.Info("User get", "users", u)
-	h.handlerTools.ResponseJSON(w, u)
+	h.tools.ResponseJSON(w, u)
 
 }
 
@@ -118,15 +117,15 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param limit query int false "Limit"
 // @Param offset query int false "Offset"
-// @Success 200 {object} api.Response{data=[]usecase.GetUsersOutputDTO}
-// @Failure 400 {object} api.ResponseError{err=string}
+// @Success 200 {object} tools.Response{data=[]usecase.GetUsersOutputDTO}
+// @Failure 400 {object} tools.ResponseError{err=string}
 // @Router /user [get]
 // @Security     JWT
 func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
-	limit, offset, err := h.handlerTools.GetLimitOffsetFromURL(r)
+	limit, offset, err := h.tools.GetLimitOffsetFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 	input := usecase.GetUsersInputDTO{
@@ -138,11 +137,11 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	u, err := uc.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 	slog.Info("Users getting", "users", u)
-	h.handlerTools.ResponseJSON(w, u)
+	h.tools.ResponseJSON(w, u)
 }
 
 // UpdateUser godoc
@@ -153,15 +152,15 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param id path string true "User ID"
 // @Param user body usecase.UpdateUserInputDTO true "User"
-// @Success 200 {object} api.Response{data=nil}
-// @Failure 400 {object} api.ResponseError{err=string}
+// @Success 200 {object} tools.Response{data=nil}
+// @Failure 400 {object} tools.ResponseError{err=string}
 // @Router /user/{id} [put]
 // @Security     JWT
 func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	id, err := h.handlerTools.GetIDFromURL(r)
+	id, err := h.tools.GetIDFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 
@@ -169,14 +168,14 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	err = json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 
 	err = h.repo.Begin()
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 
@@ -186,21 +185,21 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		err2 := h.repo.Rollback()
 		if err2 != nil {
 			slog.Info("err", err2)
-			h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err2.Error()))
+			h.tools.ResponseErrorJSON(w, h.tools.MountError(err2, http.StatusBadRequest, "BAR_REQUEST"))
 		}
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 
 	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 	slog.Info("User updated")
-	h.handlerTools.ResponseJSON(w, nil)
+	h.tools.ResponseJSON(w, nil)
 }
 
 // DeleteUser godoc
@@ -210,23 +209,23 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "User ID"
-// @Success 200 {object} api.Response{data=nil}
-// @Failure 400 {object} api.ResponseError{err=string}
+// @Success 200 {object} tools.Response{data=nil}
+// @Failure 400 {object} tools.ResponseError{err=string}
 // @Security ApiKeyAuth
 // @Router /user/{id} [delete]
 // @Security     JWT
 func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	id, err := h.handlerTools.GetIDFromURL(r)
+	id, err := h.tools.GetIDFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 
 	err = h.repo.Begin()
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 	uc := usecase.NewDeleteUserUseCase(h.repo)
@@ -237,19 +236,19 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		err2 := h.repo.Rollback()
 		if err2 != nil {
 			slog.Info("err", err2)
-			h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err2.Error()))
+			h.tools.ResponseErrorJSON(w, h.tools.MountError(err2, http.StatusBadRequest, "BAR_REQUEST"))
 		}
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 
 	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.handlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
 		return
 	}
 	slog.Info("User deleted")
-	h.handlerTools.ResponseJSON(w, nil)
+	h.tools.ResponseJSON(w, nil)
 }
