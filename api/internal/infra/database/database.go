@@ -8,12 +8,44 @@ import (
 	"github.com/marceloamoreno/goapi/config"
 )
 
-func GetDBConn() (db *sql.DB, err error) {
-	databaseConfig := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", config.Environment.DBHost, config.Environment.DBPort, config.Environment.DBUser, config.Environment.DBPassword, config.Environment.DBName)
-	db, err = sql.Open("postgres", databaseConfig)
-	if err != nil {
-		panic(err)
+type DatabaseInterface interface {
+	SetDbConn() (err error)
+	GetDbConn() (db *sql.DB)
+}
+
+type Database struct {
+	dbConn   *sql.DB
+	driver   string
+	host     string
+	port     string
+	user     string
+	password string
+	dbname   string
+	sslmode  string
+}
+
+func NewDatabase() *Database {
+	return &Database{
+		driver:   "postgres",
+		host:     config.NewEnv().GetDBHost(),
+		port:     config.NewEnv().GetDBPort(),
+		user:     config.NewEnv().GetDBUser(),
+		password: config.NewEnv().GetDBPassword(),
+		dbname:   config.NewEnv().GetDBName(),
+		sslmode:  "disable",
 	}
-	err = db.Ping()
-	return db, err
+}
+
+func (d *Database) SetDbConn() (err error) {
+	databaseConfig := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", d.host, d.port, d.user, d.password, d.dbname, d.sslmode)
+	d.dbConn, err = sql.Open(d.driver, databaseConfig)
+	if err != nil {
+		return
+	}
+	err = d.dbConn.Ping()
+	return
+}
+
+func (d *Database) GetDbConn() (db *sql.DB) {
+	return d.dbConn
 }

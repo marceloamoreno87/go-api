@@ -1,17 +1,8 @@
 package main
 
 import (
-	"log/slog"
-
-	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/infra/webserver"
 )
-
-func init() {
-	config.NewEnv()
-	config.NewTokenAuth()
-	slog.Info("Environment OK")
-}
 
 // @title GO API
 // @description This is a sample server for GO tools.

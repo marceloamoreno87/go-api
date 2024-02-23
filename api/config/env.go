@@ -4,32 +4,83 @@ import (
 	"os"
 )
 
-var Environment *Env
-
-type Env struct {
-	NameProject  string
-	Host         string
-	Port         string
-	DBHost       string
-	DBPort       string
-	DBUser       string
-	DBPassword   string
-	DBName       string
-	JWTSecretKey string
-	JWTExpiresIn string
+type EnvironmentInterface interface {
+	GetNameProject() string
+	GetHost() string
+	GetPort() string
+	GetDBHost() string
+	GetDBPort() string
+	GetDBUser() string
+	GetDBPassword() string
+	GetDBName() string
+	GetJWTSecretKey() string
+	GetJWTExpiresIn() string
 }
 
-func NewEnv() {
-	Environment = &Env{
-		NameProject:  os.Getenv("NAME_PROJECT"),
-		Host:         os.Getenv("HOST"),
-		Port:         os.Getenv("PORT"),
-		DBHost:       os.Getenv("DB_HOST"),
-		DBPort:       os.Getenv("DB_PORT"),
-		DBUser:       os.Getenv("DB_USER"),
-		DBPassword:   os.Getenv("DB_PASSWORD"),
-		DBName:       os.Getenv("DB_NAME"),
-		JWTSecretKey: os.Getenv("JWT_SECRET_KEY"),
-		JWTExpiresIn: os.Getenv("JWT_EXPIRES_IN"),
+type Env struct {
+	nameProject  string
+	host         string
+	port         string
+	dbHost       string
+	dbPort       string
+	dbUser       string
+	dbPassword   string
+	dbName       string
+	jwtSecretKey string
+	jwtExpiresIn string
+}
+
+func NewEnv() *Env {
+	return &Env{
+		nameProject:  os.Getenv("NAME_PROJECT"),
+		host:         os.Getenv("HOST"),
+		port:         os.Getenv("PORT"),
+		dbHost:       os.Getenv("DB_HOST"),
+		dbPort:       os.Getenv("DB_PORT"),
+		dbUser:       os.Getenv("DB_USER"),
+		dbPassword:   os.Getenv("DB_PASSWORD"),
+		dbName:       os.Getenv("DB_NAME"),
+		jwtSecretKey: os.Getenv("JWT_SECRET_KEY"),
+		jwtExpiresIn: os.Getenv("JWT_EXPIRES_IN"),
 	}
+}
+
+func (e *Env) GetNameProject() string {
+	return e.nameProject
+}
+
+func (e *Env) GetHost() string {
+	return e.host
+}
+
+func (e *Env) GetPort() string {
+	return e.port
+}
+
+func (e *Env) GetDBHost() string {
+	return e.dbHost
+}
+
+func (e *Env) GetDBPort() string {
+	return e.dbPort
+}
+
+func (e *Env) GetDBUser() string {
+	return e.dbUser
+}
+
+func (e *Env) GetDBPassword() string {
+	return e.dbPassword
+}
+
+func (e *Env) GetDBName() string {
+	return e.dbName
+}
+
+func (e *Env) GetJWTSecretKey() string {
+	return e.jwtSecretKey
+}
+
+func (e *Env) GetJWTExpiresIn() string {
+	return e.jwtExpiresIn
 }

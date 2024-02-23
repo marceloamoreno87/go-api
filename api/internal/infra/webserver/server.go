@@ -19,20 +19,23 @@ func StartServer() {
 	infraMiddleware.NewLogMiddleware(r).LogMiddleware()
 	infraMiddleware.NewCorsMiddleware(r).CorsMiddleware()
 
-	dbConn, err := database.GetDBConn()
+	db := database.NewDatabase()
+	err := db.SetDbConn()
 	if err != nil {
 		panic(err)
 	}
+	dbConn := db.GetDbConn()
 
 	slog.Info("Database OK")
 
 	loadRoutes(r, dbConn)
 
-	slog.Info("Server started on port http://localhost:" + config.Environment.Port + "/api/v1")
-	slog.Info("Swagger started on port http://localhost:" + config.Environment.Port + "/api/v1/swagger/index.html")
-	slog.Info("Health started on port http://localhost:" + config.Environment.Port + "/api/v1/health")
+	port := config.NewEnv().GetPort()
+	slog.Info("Server started on port http://localhost:" + port + "/api/v1")
+	slog.Info("Swagger started on port http://localhost:" + port + "/api/v1/swagger/index.html")
+	slog.Info("Health started on port http://localhost:" + port + "/api/v1/health")
 
-	err = http.ListenAndServe(":"+config.Environment.Port, r)
+	err = http.ListenAndServe(":"+port, r)
 	if err != nil {
 		panic(err)
 	}

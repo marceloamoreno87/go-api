@@ -53,6 +53,7 @@ func (repo *UserRepository) GetUserByEmail(email string) (user *entity.User, err
 	if err != nil {
 		return
 	}
+
 	return &entity.User{
 		ID:        u.ID,
 		Name:      u.Name,
