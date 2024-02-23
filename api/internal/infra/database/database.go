@@ -25,14 +25,15 @@ type Database struct {
 }
 
 func NewDatabase() *Database {
+	cfg := config.NewEnv()
 	return &Database{
-		driver:   config.NewEnv().GetDBDriver(),
-		host:     config.NewEnv().GetDBHost(),
-		port:     config.NewEnv().GetDBPort(),
-		user:     config.NewEnv().GetDBUser(),
-		password: config.NewEnv().GetDBPassword(),
-		dbname:   config.NewEnv().GetDBName(),
-		sslmode:  config.NewEnv().GetDBSslMode(),
+		driver:   cfg.GetDBDriver(),
+		host:     cfg.GetDBHost(),
+		port:     cfg.GetDBPort(),
+		user:     cfg.GetDBUser(),
+		password: cfg.GetDBPassword(),
+		dbname:   cfg.GetDBName(),
+		sslmode:  cfg.GetDBSslMode(),
 	}
 }
 
