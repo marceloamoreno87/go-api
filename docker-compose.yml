@@ -39,6 +39,15 @@ services:
     - ${DB_PORT}:5432
     networks:
       - net
+  
+  mailhog:
+    container_name: mailhog
+    image: mailhog/mailhog
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      - net
 
   # keycloak:
   #   container_name: keycloak
