@@ -5,21 +5,22 @@ import (
 	"net/mail"
 	"time"
 
-	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
+	AvatarEntity "github.com/marceloamoreno/goapi/internal/domain/avatar/entity"
+	RoleEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
-	ID        int32        `json:"id"`
-	Name      string       `json:"name"`
-	Email     string       `json:"email"`
-	Password  string       `json:"password"`
-	RoleID    int32        `json:"role_id"`
-	AvatarID  int32        `json:"avatar_id"`
-	CreatedAt time.Time    `json:"created_at"`
-	UpdatedAt time.Time    `json:"updated_at"`
-	Role      *entity.Role `json:"role"`
-	Avatar    *Avatar      `json:"avatar"`
+	ID        int32                `json:"id"`
+	Name      string               `json:"name"`
+	Email     string               `json:"email"`
+	Password  string               `json:"password"`
+	RoleID    int32                `json:"role_id"`
+	AvatarID  int32                `json:"avatar_id"`
+	CreatedAt time.Time            `json:"created_at"`
+	UpdatedAt time.Time            `json:"updated_at"`
+	Role      *RoleEntity.Role     `json:"role"`
+	Avatar    *AvatarEntity.Avatar `json:"avatar"`
 }
 
 func NewUser(name string, email string, password string, roleID int32, avatarID int32) (user *User, err error) {
@@ -46,23 +47,22 @@ func NewUser(name string, email string, password string, roleID int32, avatarID 
 
 func (u *User) Validate() (err error) {
 	if u.Name == "" {
-		return errors.New("Name is required")
+		return errors.New("name is required")
 	}
 	if u.Email == "" {
-		return errors.New("Email is required")
+		return errors.New("email is required")
+	}
+	if _, err := mail.ParseAddress(u.Email); err != nil {
+		return errors.New("email is invalid")
 	}
 	if u.Password == "" {
-		return errors.New("Password is required")
+		return errors.New("password is required")
 	}
 	if u.RoleID == 0 {
-		return errors.New("Role is required")
+		return errors.New("role is required")
 	}
 	if u.AvatarID == 0 {
-		return errors.New("Avatar is required")
-	}
-	_, err = mail.ParseAddress(u.Email)
-	if err != nil {
-		return errors.New("Email is invalid")
+		return errors.New("avatar is required")
 	}
 	return
 }
@@ -104,11 +104,11 @@ func (u *User) GetUpdatedAt() time.Time {
 	return u.UpdatedAt
 }
 
-func (u *User) GetRole() *entity.Role {
+func (u *User) GetRole() *RoleEntity.Role {
 	return u.Role
 }
 
-func (u *User) GetAvatar() *Avatar {
+func (u *User) GetAvatar() *AvatarEntity.Avatar {
 	return u.Avatar
 }
 
@@ -144,10 +144,10 @@ func (u *User) SetUpdatedAt(updatedAt time.Time) {
 	u.UpdatedAt = updatedAt
 }
 
-func (u *User) SetRole(role *entity.Role) {
+func (u *User) SetRole(role *RoleEntity.Role) {
 	u.Role = role
 }
 
-func (u *User) SetAvatar(avatar *Avatar) {
+func (u *User) SetAvatar(avatar *AvatarEntity.Avatar) {
 	u.Avatar = avatar
 }

@@ -31,11 +31,11 @@ func NewRolePermission(roleId int32, permissionIds []int32) (rolePermission *Rol
 func (r *RolePermission) Validate() (err error) {
 
 	if r.RoleID == 0 {
-		return errors.New("RoleId is required")
+		return errors.New("roleId is required")
 	}
 
 	if len(r.PermissionIDs) == 0 {
-		return errors.New("PermissionId is required")
+		return errors.New("permissionId is required")
 	}
 
 	return
