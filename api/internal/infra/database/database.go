@@ -26,13 +26,13 @@ type Database struct {
 
 func NewDatabase() *Database {
 	return &Database{
-		driver:   "postgres",
+		driver:   config.NewEnv().GetDBDriver(),
 		host:     config.NewEnv().GetDBHost(),
 		port:     config.NewEnv().GetDBPort(),
 		user:     config.NewEnv().GetDBUser(),
 		password: config.NewEnv().GetDBPassword(),
 		dbname:   config.NewEnv().GetDBName(),
-		sslmode:  "disable",
+		sslmode:  config.NewEnv().GetDBSslMode(),
 	}
 }
 

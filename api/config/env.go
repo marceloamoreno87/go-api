@@ -19,8 +19,9 @@ type EnvironmentInterface interface {
 
 type Env struct {
 	nameProject  string
-	host         string
 	port         string
+	dbDriver     string
+	dbSslMode    string
 	dbHost       string
 	dbPort       string
 	dbUser       string
@@ -33,7 +34,8 @@ type Env struct {
 func NewEnv() *Env {
 	return &Env{
 		nameProject:  os.Getenv("NAME_PROJECT"),
-		host:         os.Getenv("HOST"),
+		dbDriver:     os.Getenv("DB_DRIVER"),
+		dbSslMode:    os.Getenv("DB_SSL_MODE"),
 		port:         os.Getenv("PORT"),
 		dbHost:       os.Getenv("DB_HOST"),
 		dbPort:       os.Getenv("DB_PORT"),
@@ -49,16 +51,20 @@ func (e *Env) GetNameProject() string {
 	return e.nameProject
 }
 
-func (e *Env) GetHost() string {
-	return e.host
-}
-
 func (e *Env) GetPort() string {
 	return e.port
 }
 
 func (e *Env) GetDBHost() string {
 	return e.dbHost
+}
+
+func (e *Env) GetDBDriver() string {
+	return e.dbDriver
+}
+
+func (e *Env) GetDBSslMode() string {
+	return e.dbSslMode
 }
 
 func (e *Env) GetDBPort() string {
