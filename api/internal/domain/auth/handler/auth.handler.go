@@ -40,18 +40,18 @@ func (h *AuthHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusUnauthorized, "NOT_AUTHORIZED"))
 		return
 	}
 	uc := usecase.NewGetJWTUseCase(h.repo)
 	u, err := uc.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusUnauthorized, "NOT_AUTHORIZED"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusUnauthorized, "NOT_AUTHORIZED"))
 		return
 	}
 	slog.Info("Token generated", "token", u)
-	h.tools.ResponseJSON(w, u)
+	h.tools.ResponseJSON(w, h.tools.NewResponse(u, http.StatusOK))
 
 }
 
@@ -71,7 +71,7 @@ func (h *AuthHandler) GetRefreshJWT(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusUnauthorized, "NOT_AUTHORIZED"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusUnauthorized, "NOT_AUTHORIZED"))
 		return
 	}
 
@@ -79,10 +79,10 @@ func (h *AuthHandler) GetRefreshJWT(w http.ResponseWriter, r *http.Request) {
 	u, err := uc.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusUnauthorized, "NOT_AUTHORIZED"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusUnauthorized, "NOT_AUTHORIZED"))
 		return
 	}
 	slog.Info("Token refreshed", "token", u)
-	h.tools.ResponseJSON(w, u)
+	h.tools.ResponseJSON(w, h.tools.NewResponse(u, http.StatusOK))
 
 }

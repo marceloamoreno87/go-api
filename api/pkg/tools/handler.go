@@ -1,9 +1,7 @@
 package tools
 
 import (
-	"encoding/json"
 	"errors"
-	"log/slog"
 	"net/http"
 	"strconv"
 
@@ -13,64 +11,20 @@ import (
 type HandlerToolsInterface interface {
 	GetLimitOffsetFromURL(r *http.Request) (int32, int32, error)
 	GetIDFromURL(r *http.Request) (int32, error)
-	ResponseJSON(w http.ResponseWriter, data interface{})
-	ResponseErrorJSON(w http.ResponseWriter, responseError ResponseError)
-	MountError(err error, statusCode int, codeError string) ResponseError
-	ResponseInterface
-	ResponseErrorInterface
-}
-
-type ResponseInterface interface {
-	ResponseJSON(w http.ResponseWriter, data interface{})
-}
-
-type ResponseErrorInterface interface {
-	ResponseErrorJSON(w http.ResponseWriter, responseError ResponseError)
+	ResponseToolsInterface
 }
 
 type HandlerTools struct {
-	Response
-	ResponseError
-}
-
-type Response struct {
-	data       interface{}
-	statusCode int
-}
-
-type ResponseError struct {
-	msg        string
-	statusCode int
-	codeError  string
-}
-
-func NewResponse(
-	data interface{},
-	statusCode int,
-) Response {
-	return Response{
-		data:       data,
-		statusCode: statusCode,
-	}
-}
-
-func NewResponseError(
-	msg string,
-	statusCode int,
-	codeError string,
-) ResponseError {
-	return ResponseError{
-		msg:        msg,
-		statusCode: statusCode,
-		codeError:  codeError,
-	}
+	*ResponseTools
 }
 
 func NewHandlerTools() *HandlerTools {
-	return &HandlerTools{}
+	return &HandlerTools{
+		ResponseTools: &ResponseTools{},
+	}
 }
 
-func (h *HandlerTools) GetLimitOffsetFromURL(r *http.Request) (limitInt int32, offsetInt int32, err error) {
+func (ht *HandlerTools) GetLimitOffsetFromURL(r *http.Request) (limitInt int32, offsetInt int32, err error) {
 
 	limitInt = int32(10)
 	offsetInt = int32(0)
@@ -100,7 +54,7 @@ func (h *HandlerTools) GetLimitOffsetFromURL(r *http.Request) (limitInt int32, o
 	return
 }
 
-func (h *HandlerTools) GetIDFromURL(r *http.Request) (idInt int32, err error) {
+func (ht *HandlerTools) GetIDFromURL(r *http.Request) (idInt int32, err error) {
 	id := chi.URLParam(r, "id")
 
 	i, err := strconv.ParseInt(id, 10, 32)
@@ -109,31 +63,4 @@ func (h *HandlerTools) GetIDFromURL(r *http.Request) (idInt int32, err error) {
 	}
 	idInt = int32(i)
 	return
-}
-
-func (h *HandlerTools) ResponseJSON(w http.ResponseWriter, data interface{}) {
-	response := NewResponse(data, http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(response.statusCode)
-	json.NewEncoder(w).Encode(h.ToJson(response))
-}
-
-func (h *HandlerTools) ResponseErrorJSON(w http.ResponseWriter, responseError ResponseError) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(responseError.statusCode)
-	slog.Error(responseError.msg, "code_error", responseError.codeError)
-	json.NewEncoder(w).Encode(h.ToJson(responseError))
-}
-
-func (h *HandlerTools) MountError(err error, statusCode int, codeError string) ResponseError {
-	return NewResponseError(err.Error(), statusCode, codeError)
-
-}
-
-func (h *HandlerTools) ToJson(data interface{}) string {
-	b, err := json.Marshal(data)
-	if err != nil {
-		return ""
-	}
-	return string(b)
 }

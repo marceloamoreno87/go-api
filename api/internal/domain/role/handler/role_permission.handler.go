@@ -39,7 +39,7 @@ func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *htt
 	id, err := h.tools.GetIDFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 
@@ -49,11 +49,11 @@ func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *htt
 	})
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 	slog.Info("Role permissions get", "role permissions", rolePermissions)
-	h.tools.ResponseJSON(w, rolePermissions)
+	h.tools.ResponseJSON(w, h.tools.NewResponse(rolePermissions, http.StatusOK))
 }
 
 // CreateRolePermission godoc
@@ -72,13 +72,13 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 	err = h.repo.Begin()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 	uc := usecase.NewCreateRolePermissionUseCase(h.repo)
@@ -87,20 +87,20 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 		err2 := h.repo.Rollback()
 		if err2 != nil {
 			slog.Info("err", err2)
-			h.tools.ResponseErrorJSON(w, h.tools.MountError(err2, http.StatusBadRequest, "BAR_REQUEST"))
+			h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err2.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		}
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 
 	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
-	h.tools.ResponseJSON(w, nil)
+	h.tools.ResponseJSON(w, h.tools.NewResponse(nil, http.StatusOK))
 }
 
 // UpdateRolePermission godoc
@@ -120,13 +120,13 @@ func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *h
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 	err = h.repo.Begin()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 	uc := usecase.NewUpdateRolePermissionUseCase(h.repo)
@@ -135,18 +135,18 @@ func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *h
 		err2 := h.repo.Rollback()
 		if err2 != nil {
 			slog.Info("err", err2)
-			h.tools.ResponseErrorJSON(w, h.tools.MountError(err2, http.StatusBadRequest, "BAR_REQUEST"))
+			h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err2.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		}
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 
 	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
-	h.tools.ResponseJSON(w, nil)
+	h.tools.ResponseJSON(w, h.tools.NewResponse(nil, http.StatusOK))
 }

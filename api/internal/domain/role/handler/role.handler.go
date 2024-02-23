@@ -40,7 +40,7 @@ func (h *RoleHandler) GetRole(w http.ResponseWriter, r *http.Request) {
 	id, err := h.tools.GetIDFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 
@@ -50,11 +50,11 @@ func (h *RoleHandler) GetRole(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 	slog.Info("Role get", "roles", role)
-	h.tools.ResponseJSON(w, role)
+	h.tools.ResponseJSON(w, h.tools.NewResponse(role, http.StatusOK))
 
 }
 
@@ -74,7 +74,7 @@ func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
 	limit, offset, err := h.tools.GetLimitOffsetFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 	dto := usecase.GetRolesInputDTO{
@@ -86,11 +86,11 @@ func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
 	role, err := uc.Execute(dto)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 	slog.Info("Roles getting", "roles", role)
-	h.tools.ResponseJSON(w, role)
+	h.tools.ResponseJSON(w, h.tools.NewResponse(role, http.StatusOK))
 }
 
 // CreateRole godoc
@@ -110,13 +110,13 @@ func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 	err = h.repo.Begin()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 
@@ -126,22 +126,22 @@ func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
 		err2 := h.repo.Rollback()
 		if err2 != nil {
 			slog.Info("err", err2)
-			h.tools.ResponseErrorJSON(w, h.tools.MountError(err2, http.StatusBadRequest, "BAR_REQUEST"))
+			h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err2.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		}
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 
 	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 
 	slog.Info("Role created")
-	h.tools.ResponseJSON(w, nil)
+	h.tools.ResponseJSON(w, h.tools.NewResponse(nil, http.StatusOK))
 
 }
 
@@ -161,7 +161,7 @@ func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
 	id, err := h.tools.GetIDFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 
@@ -169,13 +169,13 @@ func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
 	err = json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 	err = h.repo.Begin()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 
@@ -185,21 +185,21 @@ func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
 		err2 := h.repo.Rollback()
 		if err2 != nil {
 			slog.Info("err", err2)
-			h.tools.ResponseErrorJSON(w, h.tools.MountError(err2, http.StatusBadRequest, "BAR_REQUEST"))
+			h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err2.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		}
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 
 	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 	slog.Info("Role updated")
-	h.tools.ResponseJSON(w, nil)
+	h.tools.ResponseJSON(w, h.tools.NewResponse(nil, http.StatusOK))
 }
 
 // DeleteRole godoc
@@ -218,14 +218,14 @@ func (h *RoleHandler) DeleteRole(w http.ResponseWriter, r *http.Request) {
 	id, err := h.tools.GetIDFromURL(r)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 
 	err = h.repo.Begin()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 
@@ -237,19 +237,19 @@ func (h *RoleHandler) DeleteRole(w http.ResponseWriter, r *http.Request) {
 		err2 := h.repo.Rollback()
 		if err2 != nil {
 			slog.Info("err", err2)
-			h.tools.ResponseErrorJSON(w, h.tools.MountError(err2, http.StatusBadRequest, "BAR_REQUEST"))
+			h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err2.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		}
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 
 	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.MountError(err, http.StatusBadRequest, "BAR_REQUEST"))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
 		return
 	}
 	slog.Info("Role deleted")
-	h.tools.ResponseJSON(w, nil)
+	h.tools.ResponseJSON(w, h.tools.NewResponse(nil, http.StatusOK))
 }
