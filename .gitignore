@@ -3,6 +3,7 @@
 #
 
 /api/build
+/api/cmd/build
 /api/tmp
 
 # Binaries for programs and plugins
