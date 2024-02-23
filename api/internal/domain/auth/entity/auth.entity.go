@@ -16,13 +16,13 @@ func NewAuth() *Auth {
 	return &Auth{}
 }
 
-func (a *Auth) NewToken(tokenAuth *config.TokenAuth, jwtExpiresIn string, id int32) (err error) {
+func (a *Auth) NewToken(token config.TokenInterface, jwtExpiresIn string, id int32) (err error) {
 	jwtExpiresInInt, err := strconv.Atoi(jwtExpiresIn)
 	if err != nil {
 		return
 	}
 
-	_, tokenString, err := tokenAuth.Auth.Encode(map[string]interface{}{
+	_, tokenString, err := token.GetAuth().Encode(map[string]interface{}{
 		"id":  id,
 		"exp": time.Now().Add(time.Second * time.Duration(jwtExpiresInInt)).Unix(),
 	})
@@ -35,8 +35,8 @@ func (a *Auth) NewToken(tokenAuth *config.TokenAuth, jwtExpiresIn string, id int
 	return
 }
 
-func (a *Auth) RefreshToken(tokenAuth *config.TokenAuth, token string) (err error) {
-	tokenString, err := tokenAuth.Auth.Decode(token)
+func (a *Auth) RefreshToken(token config.TokenInterface, lastToken string) (err error) {
+	tokenString, err := token.GetAuth().Decode(lastToken)
 	if err != nil {
 		return
 	}

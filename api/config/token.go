@@ -4,20 +4,25 @@ import (
 	"github.com/go-chi/jwtauth/v5"
 )
 
-type TokenAuth struct {
-	Auth *jwtauth.JWTAuth
+type TokenInterface interface {
+	GetAuth() *jwtauth.JWTAuth
+	GetJWTExpiresIn() string
 }
 
-func NewTokenAuth() *TokenAuth {
-	return &TokenAuth{
-		Auth: jwtauth.New("HS256", []byte(NewEnv().GetJWTSecretKey()), nil),
+type Token struct {
+	auth *jwtauth.JWTAuth
+}
+
+func NewToken() *Token {
+	return &Token{
+		auth: jwtauth.New("HS256", []byte(NewEnv().GetJWTSecretKey()), nil),
 	}
 }
 
-func (t *TokenAuth) GetAuth() *jwtauth.JWTAuth {
-	return t.Auth
+func (t *Token) GetAuth() *jwtauth.JWTAuth {
+	return t.auth
 }
 
-func (t *TokenAuth) GetJWTExpiresIn() string {
+func (t *Token) GetJWTExpiresIn() string {
 	return NewEnv().GetJWTExpiresIn()
 }

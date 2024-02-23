@@ -54,7 +54,7 @@ func (uc *GetJWTUseCase) Execute(input GetJWTInputDTO) (output GetJWTOutputDTO, 
 		return
 	}
 
-	err = auth.NewToken(config.NewTokenAuth(), config.NewTokenAuth().GetJWTExpiresIn(), newUser.GetID())
+	err = auth.NewToken(config.NewToken(), config.NewToken().GetJWTExpiresIn(), newUser.GetID())
 	if err != nil {
 		return
 	}

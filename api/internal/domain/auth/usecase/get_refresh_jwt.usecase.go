@@ -30,7 +30,7 @@ func (uc *GetRefreshJWTUseCase) Execute(input GetRefreshJWTInputDTO) (output Get
 		return
 	}
 
-	err = auth.RefreshToken(config.NewTokenAuth(), input.Token)
+	err = auth.RefreshToken(config.NewToken(), input.Token)
 	if err != nil {
 		return
 	}
@@ -40,7 +40,7 @@ func (uc *GetRefreshJWTUseCase) Execute(input GetRefreshJWTInputDTO) (output Get
 		return
 	}
 
-	err = auth.NewToken(config.NewTokenAuth(), config.NewTokenAuth().GetJWTExpiresIn(), user.GetID())
+	err = auth.NewToken(config.NewToken(), config.NewToken().GetJWTExpiresIn(), user.GetID())
 	if err != nil {
 		return
 	}
