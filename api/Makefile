@@ -4,7 +4,7 @@ createmigration:
 
 sqlcgen:
 	sqlc generate
-	chown -R 1000:1000 internal/sqlc
+	chown -R 1000:1000 pkg/sqlc
 
 migrate:
 	rm -rf pkg/sqlc/db
