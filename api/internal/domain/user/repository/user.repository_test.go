@@ -34,6 +34,13 @@ func TestCreateUser(t *testing.T) {
 		WithArgs(user.Name, user.Email, user.Password, user.RoleID, user.AvatarID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
+	err = ur.Begin()
+	assert.NoError(t, err)
+	newuser := ur.CreateUser(user)
+	assert.NoError(t, newuser)
+	err = ur.Commit()
+	assert.NoError(t, err)
+
 }
 
 func TestGetUser(t *testing.T) {
@@ -125,15 +132,18 @@ func TestDeleteUser(t *testing.T) {
 		RoleID:   1,
 	}
 	deleteUserSQL := `-- name: DeleteUser :exec DELETE FROM users WHERE id = \$1`
+	mock.ExpectBegin()
 
 	mock.ExpectExec(deleteUserSQL).
 		WithArgs(user.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
-
-	err = ur.DeleteUser(user.ID)
-
+	mock.ExpectCommit()
+	err = ur.Begin()
 	assert.NoError(t, err)
-
+	deletedUser := ur.DeleteUser(user.ID)
+	assert.NoError(t, deletedUser)
+	err = ur.Commit()
+	assert.NoError(t, err)
 }
 
 func TestUpdateUser(t *testing.T) {
@@ -154,12 +164,16 @@ func TestUpdateUser(t *testing.T) {
 	}
 
 	updateUserSQL := `-- name: UpdateUser :exec UPDATE users SET name = \$1, email = \$2, password = \$3, role_id = \$4, avatar_id = \$5 WHERE id = \$6`
+	mock.ExpectBegin()
 	mock.ExpectExec(updateUserSQL).
 		WithArgs(user.Name, user.Email, user.Password, user.RoleID, 1, 1).
 		WillReturnResult(sqlmock.NewResult(1, 1))
-
-	err = ur.UpdateUser(user, 1)
-
+	mock.ExpectCommit()
+	err = ur.Begin()
+	assert.NoError(t, err)
+	updateduser := ur.UpdateUser(user, 1)
+	assert.NoError(t, updateduser)
+	err = ur.Commit()
 	assert.NoError(t, err)
 
 }
