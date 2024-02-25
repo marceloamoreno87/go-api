@@ -30,13 +30,13 @@ func NewRole(name string, internal_name string, description string) (role *Role,
 
 func (r *Role) Validate() (err error) {
 	if r.Name == "" {
-		return errors.New("Name is required")
+		return errors.New("name is required")
 	}
 	if r.InternalName == "" {
-		return errors.New("Internal Name is required")
+		return errors.New("internal Name is required")
 	}
 	if r.Description == "" {
-		return errors.New("Description is required")
+		return errors.New("description is required")
 	}
 	return
 }

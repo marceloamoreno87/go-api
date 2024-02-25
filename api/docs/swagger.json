@@ -4,7 +4,7 @@
     ],
     "swagger": "2.0",
     "info": {
-        "description": "This is a sample server for GO API.",
+        "description": "This is a sample server for GO tools.",
         "title": "GO API",
         "contact": {},
         "version": "v1"
@@ -42,7 +42,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -58,7 +58,7 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/api.ResponseError"
+                            "$ref": "#/definitions/tools.ResponseError"
                         }
                     }
                 }
@@ -94,7 +94,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -110,7 +110,7 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/api.ResponseError"
+                            "$ref": "#/definitions/tools.ResponseError"
                         }
                     }
                 }
@@ -154,7 +154,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -175,7 +175,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -224,7 +224,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -242,7 +242,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -298,7 +298,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -316,7 +316,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -366,7 +366,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -384,7 +384,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -438,7 +438,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -459,7 +459,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -508,7 +508,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -526,7 +526,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -575,7 +575,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -593,7 +593,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -649,7 +649,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -667,7 +667,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -717,7 +717,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -735,7 +735,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -784,7 +784,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -802,7 +802,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -858,7 +858,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -876,7 +876,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -925,7 +925,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -943,7 +943,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -997,7 +997,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -1018,7 +1018,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -1067,7 +1067,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -1085,7 +1085,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -1134,7 +1134,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -1152,7 +1152,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -1208,7 +1208,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -1226,7 +1226,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -1276,7 +1276,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.Response"
+                                    "$ref": "#/definitions/tools.Response"
                                 },
                                 {
                                     "type": "object",
@@ -1294,7 +1294,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/api.ResponseError"
+                                    "$ref": "#/definitions/tools.ResponseError"
                                 },
                                 {
                                     "type": "object",
@@ -1312,7 +1312,7 @@
         }
     },
     "definitions": {
-        "api.Response": {
+        "tools.Response": {
             "type": "object",
             "properties": {
                 "data": {},
@@ -1321,7 +1321,7 @@
                 }
             }
         },
-        "api.ResponseError": {
+        "tools.ResponseError": {
             "type": "object",
             "properties": {
                 "code_error": {

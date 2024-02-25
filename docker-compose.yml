@@ -7,19 +7,13 @@ services:
     build:
       context: .
       dockerfile: ./api/.docker/dockerfile
-    environment:
-      PORT: ${PORT}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+    env_file:
+      - ./api/.env
     depends_on:
       - db
     ports:
-      - ${PORT}:3000
+      - 3000:3000
+      - 4000:4000
     volumes:
       - ./api/:/api
     networks:
@@ -31,11 +25,20 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DOCKER_DB_PASSWORD}
+      POSTGRES_DB: ${DOCKER_DB_NAME}
+      POSTGRES_USER: ${DOCKER_DB_USER}
     ports:
-    - ${DB_PORT}:5432
+    - ${DOCKER_DB_PORT}:5432
+    networks:
+      - net
+  
+  mailhog:
+    container_name: mailhog
+    image: mailhog/mailhog
+    ports:
+      - 1025:1025
+      - 8025:8025
     networks:
       - net
 

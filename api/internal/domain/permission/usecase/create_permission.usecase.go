@@ -12,12 +12,12 @@ type CreatePermissionInputDTO struct {
 }
 
 type CreatePermissionUseCase struct {
-	PermissionRepository repository.PermissionRepositoryInterface
+	repo repository.PermissionRepositoryInterface
 }
 
-func NewCreatePermissionUseCase(permissionRepository repository.PermissionRepositoryInterface) *CreatePermissionUseCase {
+func NewCreatePermissionUseCase(repo repository.PermissionRepositoryInterface) *CreatePermissionUseCase {
 	return &CreatePermissionUseCase{
-		PermissionRepository: permissionRepository,
+		repo: repo,
 	}
 }
 
@@ -27,7 +27,7 @@ func (uc *CreatePermissionUseCase) Execute(input CreatePermissionInputDTO) (err 
 		return
 	}
 
-	err = uc.PermissionRepository.CreatePermission(permission)
+	err = uc.repo.CreatePermission(permission)
 	if err != nil {
 		return
 	}

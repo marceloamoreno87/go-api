@@ -1,30 +1,28 @@
 package usecase
 
-import (
-	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
-)
+import "github.com/marceloamoreno/goapi/internal/domain/user/repository"
 
 type DeleteUserInputDTO struct {
 	ID int32 `json:"id"`
 }
 
 type DeleteUserUseCase struct {
-	UserRepository repository.UserRepositoryInterface
+	repo repository.UserRepositoryInterface
 }
 
-func NewDeleteUserUseCase(userRepository repository.UserRepositoryInterface) *DeleteUserUseCase {
+func NewDeleteUserUseCase(repo repository.UserRepositoryInterface) *DeleteUserUseCase {
 	return &DeleteUserUseCase{
-		UserRepository: userRepository,
+		repo: repo,
 	}
 }
 
 func (uc *DeleteUserUseCase) Execute(input DeleteUserInputDTO) (err error) {
-	user, err := uc.UserRepository.GetUser(input.ID)
+	user, err := uc.repo.GetUser(input.ID)
 	if err != nil {
 		return
 	}
 
-	err = uc.UserRepository.DeleteUser(user.GetID())
+	err = uc.repo.DeleteUser(user.GetID())
 	if err != nil {
 		return
 	}

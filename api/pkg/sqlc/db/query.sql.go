@@ -10,6 +10,19 @@ import (
 	"time"
 )
 
+const createAvatar = `-- name: CreateAvatar :exec
+INSERT INTO avatars (
+  svg
+) VALUES (
+  $1
+)
+`
+
+func (q *Queries) CreateAvatar(ctx context.Context, svg string) error {
+	_, err := q.exec(ctx, q.createAvatarStmt, createAvatar, svg)
+	return err
+}
+
 const createPermission = `-- name: CreatePermission :exec
 INSERT INTO permissions (
   name,
@@ -27,7 +40,7 @@ type CreatePermissionParams struct {
 }
 
 func (q *Queries) CreatePermission(ctx context.Context, arg CreatePermissionParams) error {
-	_, err := q.db.ExecContext(ctx, createPermission, arg.Name, arg.InternalName, arg.Description)
+	_, err := q.exec(ctx, q.createPermissionStmt, createPermission, arg.Name, arg.InternalName, arg.Description)
 	return err
 }
 
@@ -48,7 +61,7 @@ type CreateRoleParams struct {
 }
 
 func (q *Queries) CreateRole(ctx context.Context, arg CreateRoleParams) error {
-	_, err := q.db.ExecContext(ctx, createRole, arg.Name, arg.InternalName, arg.Description)
+	_, err := q.exec(ctx, q.createRoleStmt, createRole, arg.Name, arg.InternalName, arg.Description)
 	return err
 }
 
@@ -67,7 +80,7 @@ type CreateRolePermissionParams struct {
 }
 
 func (q *Queries) CreateRolePermission(ctx context.Context, arg CreateRolePermissionParams) error {
-	_, err := q.db.ExecContext(ctx, createRolePermission, arg.RoleID, arg.PermissionID)
+	_, err := q.exec(ctx, q.createRolePermissionStmt, createRolePermission, arg.RoleID, arg.PermissionID)
 	return err
 }
 
@@ -76,9 +89,10 @@ INSERT INTO users (
   name,
   email,
   password,
-  role_id
+  role_id,
+  avatar_id
 ) VALUES (
-  $1, $2, $3, $4
+  $1, $2, $3, $4, $5
 )
 `
 
@@ -87,15 +101,27 @@ type CreateUserParams struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	RoleID   int32  `json:"role_id"`
+	AvatarID int32  `json:"avatar_id"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
-	_, err := q.db.ExecContext(ctx, createUser,
+	_, err := q.exec(ctx, q.createUserStmt, createUser,
 		arg.Name,
 		arg.Email,
 		arg.Password,
 		arg.RoleID,
+		arg.AvatarID,
 	)
+	return err
+}
+
+const deleteAvatar = `-- name: DeleteAvatar :exec
+DELETE FROM avatars
+WHERE id = $1
+`
+
+func (q *Queries) DeleteAvatar(ctx context.Context, id int32) error {
+	_, err := q.exec(ctx, q.deleteAvatarStmt, deleteAvatar, id)
 	return err
 }
 
@@ -105,7 +131,7 @@ WHERE id = $1
 `
 
 func (q *Queries) DeletePermission(ctx context.Context, id int32) error {
-	_, err := q.db.ExecContext(ctx, deletePermission, id)
+	_, err := q.exec(ctx, q.deletePermissionStmt, deletePermission, id)
 	return err
 }
 
@@ -115,7 +141,7 @@ WHERE id = $1
 `
 
 func (q *Queries) DeleteRole(ctx context.Context, id int32) error {
-	_, err := q.db.ExecContext(ctx, deleteRole, id)
+	_, err := q.exec(ctx, q.deleteRoleStmt, deleteRole, id)
 	return err
 }
 
@@ -125,7 +151,7 @@ WHERE role_id = $1
 `
 
 func (q *Queries) DeleteRolePermission(ctx context.Context, roleID int32) error {
-	_, err := q.db.ExecContext(ctx, deleteRolePermission, roleID)
+	_, err := q.exec(ctx, q.deleteRolePermissionStmt, deleteRolePermission, roleID)
 	return err
 }
 
@@ -135,8 +161,64 @@ WHERE id = $1
 `
 
 func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
-	_, err := q.db.ExecContext(ctx, deleteUser, id)
+	_, err := q.exec(ctx, q.deleteUserStmt, deleteUser, id)
 	return err
+}
+
+const getAvatar = `-- name: GetAvatar :one
+SELECT id, svg, created_at, updated_at FROM avatars
+WHERE id = $1 LIMIT 1
+`
+
+func (q *Queries) GetAvatar(ctx context.Context, id int32) (Avatar, error) {
+	row := q.queryRow(ctx, q.getAvatarStmt, getAvatar, id)
+	var i Avatar
+	err := row.Scan(
+		&i.ID,
+		&i.Svg,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getAvatars = `-- name: GetAvatars :many
+SELECT id, svg, created_at, updated_at FROM avatars
+ORDER BY id ASC
+LIMIT $1 OFFSET $2
+`
+
+type GetAvatarsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetAvatars(ctx context.Context, arg GetAvatarsParams) ([]Avatar, error) {
+	rows, err := q.query(ctx, q.getAvatarsStmt, getAvatars, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Avatar
+	for rows.Next() {
+		var i Avatar
+		if err := rows.Scan(
+			&i.ID,
+			&i.Svg,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getPermission = `-- name: GetPermission :one
@@ -145,7 +227,7 @@ WHERE id = $1 LIMIT 1
 `
 
 func (q *Queries) GetPermission(ctx context.Context, id int32) (Permission, error) {
-	row := q.db.QueryRowContext(ctx, getPermission, id)
+	row := q.queryRow(ctx, q.getPermissionStmt, getPermission, id)
 	var i Permission
 	err := row.Scan(
 		&i.ID,
@@ -164,7 +246,7 @@ WHERE internal_name = $1 LIMIT 1
 `
 
 func (q *Queries) GetPermissionByInternalName(ctx context.Context, internalName string) (Permission, error) {
-	row := q.db.QueryRowContext(ctx, getPermissionByInternalName, internalName)
+	row := q.queryRow(ctx, q.getPermissionByInternalNameStmt, getPermissionByInternalName, internalName)
 	var i Permission
 	err := row.Scan(
 		&i.ID,
@@ -189,12 +271,12 @@ type GetPermissionsParams struct {
 }
 
 func (q *Queries) GetPermissions(ctx context.Context, arg GetPermissionsParams) ([]Permission, error) {
-	rows, err := q.db.QueryContext(ctx, getPermissions, arg.Limit, arg.Offset)
+	rows, err := q.query(ctx, q.getPermissionsStmt, getPermissions, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Permission{}
+	var items []Permission
 	for rows.Next() {
 		var i Permission
 		if err := rows.Scan(
@@ -224,7 +306,7 @@ WHERE id = $1 LIMIT 1
 `
 
 func (q *Queries) GetRole(ctx context.Context, id int32) (Role, error) {
-	row := q.db.QueryRowContext(ctx, getRole, id)
+	row := q.queryRow(ctx, q.getRoleStmt, getRole, id)
 	var i Role
 	err := row.Scan(
 		&i.ID,
@@ -243,7 +325,7 @@ WHERE internal_name = $1 LIMIT 1
 `
 
 func (q *Queries) GetRoleByInternalName(ctx context.Context, internalName string) (Role, error) {
-	row := q.db.QueryRowContext(ctx, getRoleByInternalName, internalName)
+	row := q.queryRow(ctx, q.getRoleByInternalNameStmt, getRoleByInternalName, internalName)
 	var i Role
 	err := row.Scan(
 		&i.ID,
@@ -256,7 +338,35 @@ func (q *Queries) GetRoleByInternalName(ctx context.Context, internalName string
 	return i, err
 }
 
-const getRolePermissions = `-- name: GetRolePermissions :many
+const getRolePermission = `-- name: GetRolePermission :many
+SELECT id, role_id, permission_id FROM role_permissions
+WHERE id = $1 LIMIT 1
+`
+
+func (q *Queries) GetRolePermission(ctx context.Context, id int32) ([]RolePermission, error) {
+	rows, err := q.query(ctx, q.getRolePermissionStmt, getRolePermission, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []RolePermission
+	for rows.Next() {
+		var i RolePermission
+		if err := rows.Scan(&i.ID, &i.RoleID, &i.PermissionID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getRolePermissionsByRole = `-- name: GetRolePermissionsByRole :many
 SELECT role_permissions.id, role_id, permission_id, permissions.id, permissions.name, permissions.internal_name, permissions.description, permissions.created_at, permissions.updated_at, roles.id, roles.name, roles.internal_name, roles.description, roles.created_at, roles.updated_at FROM role_permissions
 INNER JOIN permissions ON role_permissions.permission_id = permissions.id
 INNER JOIN roles ON role_permissions.role_id = roles.id
@@ -264,7 +374,7 @@ WHERE role_id = $1
 ORDER BY permission_id ASC
 `
 
-type GetRolePermissionsRow struct {
+type GetRolePermissionsByRoleRow struct {
 	ID             int32     `json:"id"`
 	RoleID         int32     `json:"role_id"`
 	PermissionID   int32     `json:"permission_id"`
@@ -282,15 +392,15 @@ type GetRolePermissionsRow struct {
 	UpdatedAt_2    time.Time `json:"updated_at_2"`
 }
 
-func (q *Queries) GetRolePermissions(ctx context.Context, roleID int32) ([]GetRolePermissionsRow, error) {
-	rows, err := q.db.QueryContext(ctx, getRolePermissions, roleID)
+func (q *Queries) GetRolePermissionsByRole(ctx context.Context, roleID int32) ([]GetRolePermissionsByRoleRow, error) {
+	rows, err := q.query(ctx, q.getRolePermissionsByRoleStmt, getRolePermissionsByRole, roleID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []GetRolePermissionsRow{}
+	var items []GetRolePermissionsByRoleRow
 	for rows.Next() {
-		var i GetRolePermissionsRow
+		var i GetRolePermissionsByRoleRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.RoleID,
@@ -333,12 +443,12 @@ type GetRolesParams struct {
 }
 
 func (q *Queries) GetRoles(ctx context.Context, arg GetRolesParams) ([]Role, error) {
-	rows, err := q.db.QueryContext(ctx, getRoles, arg.Limit, arg.Offset)
+	rows, err := q.query(ctx, q.getRolesStmt, getRoles, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Role{}
+	var items []Role
 	for rows.Next() {
 		var i Role
 		if err := rows.Scan(
@@ -363,12 +473,12 @@ func (q *Queries) GetRoles(ctx context.Context, arg GetRolesParams) ([]Role, err
 }
 
 const getUser = `-- name: GetUser :one
-SELECT id, name, email, password, role_id, created_at, updated_at FROM users
+SELECT id, name, email, password, role_id, avatar_id, created_at, updated_at FROM users
 WHERE id = $1 LIMIT 1
 `
 
 func (q *Queries) GetUser(ctx context.Context, id int32) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUser, id)
+	row := q.queryRow(ctx, q.getUserStmt, getUser, id)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -376,6 +486,7 @@ func (q *Queries) GetUser(ctx context.Context, id int32) (User, error) {
 		&i.Email,
 		&i.Password,
 		&i.RoleID,
+		&i.AvatarID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -383,12 +494,12 @@ func (q *Queries) GetUser(ctx context.Context, id int32) (User, error) {
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, name, email, password, role_id, created_at, updated_at FROM users
+SELECT id, name, email, password, role_id, avatar_id, created_at, updated_at FROM users
 WHERE email = $1 LIMIT 1
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByEmail, email)
+	row := q.queryRow(ctx, q.getUserByEmailStmt, getUserByEmail, email)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -396,14 +507,155 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.Email,
 		&i.Password,
 		&i.RoleID,
+		&i.AvatarID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
 	return i, err
 }
 
+const getUserWithAvatar = `-- name: GetUserWithAvatar :one
+SELECT users.id, name, email, password, role_id, avatar_id, users.created_at, users.updated_at, avatars.id, svg, avatars.created_at, avatars.updated_at FROM users
+INNER JOIN avatars ON users.id = avatars.user_id
+WHERE users.id = $1 LIMIT 1
+`
+
+type GetUserWithAvatarRow struct {
+	ID          int32     `json:"id"`
+	Name        string    `json:"name"`
+	Email       string    `json:"email"`
+	Password    string    `json:"password"`
+	RoleID      int32     `json:"role_id"`
+	AvatarID    int32     `json:"avatar_id"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	ID_2        int32     `json:"id_2"`
+	Svg         string    `json:"svg"`
+	CreatedAt_2 time.Time `json:"created_at_2"`
+	UpdatedAt_2 time.Time `json:"updated_at_2"`
+}
+
+func (q *Queries) GetUserWithAvatar(ctx context.Context, id int32) (GetUserWithAvatarRow, error) {
+	row := q.queryRow(ctx, q.getUserWithAvatarStmt, getUserWithAvatar, id)
+	var i GetUserWithAvatarRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+		&i.RoleID,
+		&i.AvatarID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.ID_2,
+		&i.Svg,
+		&i.CreatedAt_2,
+		&i.UpdatedAt_2,
+	)
+	return i, err
+}
+
+const getUserWithRole = `-- name: GetUserWithRole :one
+SELECT users.id, users.name, email, password, role_id, avatar_id, users.created_at, users.updated_at, roles.id, roles.name, internal_name, description, roles.created_at, roles.updated_at FROM users
+INNER JOIN roles ON users.role_id = roles.id
+WHERE users.id = $1 LIMIT 1
+`
+
+type GetUserWithRoleRow struct {
+	ID           int32     `json:"id"`
+	Name         string    `json:"name"`
+	Email        string    `json:"email"`
+	Password     string    `json:"password"`
+	RoleID       int32     `json:"role_id"`
+	AvatarID     int32     `json:"avatar_id"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+	ID_2         int32     `json:"id_2"`
+	Name_2       string    `json:"name_2"`
+	InternalName string    `json:"internal_name"`
+	Description  string    `json:"description"`
+	CreatedAt_2  time.Time `json:"created_at_2"`
+	UpdatedAt_2  time.Time `json:"updated_at_2"`
+}
+
+func (q *Queries) GetUserWithRole(ctx context.Context, id int32) (GetUserWithRoleRow, error) {
+	row := q.queryRow(ctx, q.getUserWithRoleStmt, getUserWithRole, id)
+	var i GetUserWithRoleRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+		&i.RoleID,
+		&i.AvatarID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.ID_2,
+		&i.Name_2,
+		&i.InternalName,
+		&i.Description,
+		&i.CreatedAt_2,
+		&i.UpdatedAt_2,
+	)
+	return i, err
+}
+
+const getUserWithRoleAndAvatar = `-- name: GetUserWithRoleAndAvatar :one
+SELECT users.id, users.name, email, password, role_id, avatar_id, users.created_at, users.updated_at, roles.id, roles.name, internal_name, description, roles.created_at, roles.updated_at, avatars.id, svg, avatars.created_at, avatars.updated_at FROM users
+INNER JOIN roles ON users.role_id = roles.id
+INNER JOIN avatars ON users.id = avatars.user_id
+WHERE users.id = $1 LIMIT 1
+`
+
+type GetUserWithRoleAndAvatarRow struct {
+	ID           int32     `json:"id"`
+	Name         string    `json:"name"`
+	Email        string    `json:"email"`
+	Password     string    `json:"password"`
+	RoleID       int32     `json:"role_id"`
+	AvatarID     int32     `json:"avatar_id"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+	ID_2         int32     `json:"id_2"`
+	Name_2       string    `json:"name_2"`
+	InternalName string    `json:"internal_name"`
+	Description  string    `json:"description"`
+	CreatedAt_2  time.Time `json:"created_at_2"`
+	UpdatedAt_2  time.Time `json:"updated_at_2"`
+	ID_3         int32     `json:"id_3"`
+	Svg          string    `json:"svg"`
+	CreatedAt_3  time.Time `json:"created_at_3"`
+	UpdatedAt_3  time.Time `json:"updated_at_3"`
+}
+
+func (q *Queries) GetUserWithRoleAndAvatar(ctx context.Context, id int32) (GetUserWithRoleAndAvatarRow, error) {
+	row := q.queryRow(ctx, q.getUserWithRoleAndAvatarStmt, getUserWithRoleAndAvatar, id)
+	var i GetUserWithRoleAndAvatarRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+		&i.RoleID,
+		&i.AvatarID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.ID_2,
+		&i.Name_2,
+		&i.InternalName,
+		&i.Description,
+		&i.CreatedAt_2,
+		&i.UpdatedAt_2,
+		&i.ID_3,
+		&i.Svg,
+		&i.CreatedAt_3,
+		&i.UpdatedAt_3,
+	)
+	return i, err
+}
+
 const getUsers = `-- name: GetUsers :many
-SELECT id, name, email, password, role_id, created_at, updated_at FROM users
+SELECT id, name, email, password, role_id, avatar_id, created_at, updated_at FROM users
 ORDER BY id ASC
 LIMIT $1 OFFSET $2
 `
@@ -414,12 +666,12 @@ type GetUsersParams struct {
 }
 
 func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]User, error) {
-	rows, err := q.db.QueryContext(ctx, getUsers, arg.Limit, arg.Offset)
+	rows, err := q.query(ctx, q.getUsersStmt, getUsers, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []User{}
+	var items []User
 	for rows.Next() {
 		var i User
 		if err := rows.Scan(
@@ -428,6 +680,7 @@ func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]User, err
 			&i.Email,
 			&i.Password,
 			&i.RoleID,
+			&i.AvatarID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -442,6 +695,228 @@ func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]User, err
 		return nil, err
 	}
 	return items, nil
+}
+
+const getUsersWithAvatar = `-- name: GetUsersWithAvatar :many
+SELECT users.id, name, email, password, role_id, avatar_id, users.created_at, users.updated_at, avatars.id, svg, avatars.created_at, avatars.updated_at FROM users
+INNER JOIN avatars ON users.id = avatars.user_id
+ORDER BY users.id ASC
+LIMIT $1 OFFSET $2
+`
+
+type GetUsersWithAvatarParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+type GetUsersWithAvatarRow struct {
+	ID          int32     `json:"id"`
+	Name        string    `json:"name"`
+	Email       string    `json:"email"`
+	Password    string    `json:"password"`
+	RoleID      int32     `json:"role_id"`
+	AvatarID    int32     `json:"avatar_id"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	ID_2        int32     `json:"id_2"`
+	Svg         string    `json:"svg"`
+	CreatedAt_2 time.Time `json:"created_at_2"`
+	UpdatedAt_2 time.Time `json:"updated_at_2"`
+}
+
+func (q *Queries) GetUsersWithAvatar(ctx context.Context, arg GetUsersWithAvatarParams) ([]GetUsersWithAvatarRow, error) {
+	rows, err := q.query(ctx, q.getUsersWithAvatarStmt, getUsersWithAvatar, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetUsersWithAvatarRow
+	for rows.Next() {
+		var i GetUsersWithAvatarRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Email,
+			&i.Password,
+			&i.RoleID,
+			&i.AvatarID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.ID_2,
+			&i.Svg,
+			&i.CreatedAt_2,
+			&i.UpdatedAt_2,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getUsersWithRole = `-- name: GetUsersWithRole :many
+SELECT users.id, users.name, email, password, role_id, avatar_id, users.created_at, users.updated_at, roles.id, roles.name, internal_name, description, roles.created_at, roles.updated_at FROM users
+INNER JOIN roles ON users.role_id = roles.id
+ORDER BY users.id ASC
+LIMIT $1 OFFSET $2
+`
+
+type GetUsersWithRoleParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+type GetUsersWithRoleRow struct {
+	ID           int32     `json:"id"`
+	Name         string    `json:"name"`
+	Email        string    `json:"email"`
+	Password     string    `json:"password"`
+	RoleID       int32     `json:"role_id"`
+	AvatarID     int32     `json:"avatar_id"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+	ID_2         int32     `json:"id_2"`
+	Name_2       string    `json:"name_2"`
+	InternalName string    `json:"internal_name"`
+	Description  string    `json:"description"`
+	CreatedAt_2  time.Time `json:"created_at_2"`
+	UpdatedAt_2  time.Time `json:"updated_at_2"`
+}
+
+func (q *Queries) GetUsersWithRole(ctx context.Context, arg GetUsersWithRoleParams) ([]GetUsersWithRoleRow, error) {
+	rows, err := q.query(ctx, q.getUsersWithRoleStmt, getUsersWithRole, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetUsersWithRoleRow
+	for rows.Next() {
+		var i GetUsersWithRoleRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Email,
+			&i.Password,
+			&i.RoleID,
+			&i.AvatarID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.ID_2,
+			&i.Name_2,
+			&i.InternalName,
+			&i.Description,
+			&i.CreatedAt_2,
+			&i.UpdatedAt_2,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getUsersWithRoleAndAvatar = `-- name: GetUsersWithRoleAndAvatar :many
+SELECT users.id, users.name, email, password, role_id, avatar_id, users.created_at, users.updated_at, roles.id, roles.name, internal_name, description, roles.created_at, roles.updated_at, avatars.id, svg, avatars.created_at, avatars.updated_at FROM users
+INNER JOIN roles ON users.role_id = roles.id
+INNER JOIN avatars ON users.id = avatars.user_id
+ORDER BY users.id ASC
+LIMIT $1 OFFSET $2
+`
+
+type GetUsersWithRoleAndAvatarParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+type GetUsersWithRoleAndAvatarRow struct {
+	ID           int32     `json:"id"`
+	Name         string    `json:"name"`
+	Email        string    `json:"email"`
+	Password     string    `json:"password"`
+	RoleID       int32     `json:"role_id"`
+	AvatarID     int32     `json:"avatar_id"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+	ID_2         int32     `json:"id_2"`
+	Name_2       string    `json:"name_2"`
+	InternalName string    `json:"internal_name"`
+	Description  string    `json:"description"`
+	CreatedAt_2  time.Time `json:"created_at_2"`
+	UpdatedAt_2  time.Time `json:"updated_at_2"`
+	ID_3         int32     `json:"id_3"`
+	Svg          string    `json:"svg"`
+	CreatedAt_3  time.Time `json:"created_at_3"`
+	UpdatedAt_3  time.Time `json:"updated_at_3"`
+}
+
+func (q *Queries) GetUsersWithRoleAndAvatar(ctx context.Context, arg GetUsersWithRoleAndAvatarParams) ([]GetUsersWithRoleAndAvatarRow, error) {
+	rows, err := q.query(ctx, q.getUsersWithRoleAndAvatarStmt, getUsersWithRoleAndAvatar, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetUsersWithRoleAndAvatarRow
+	for rows.Next() {
+		var i GetUsersWithRoleAndAvatarRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Email,
+			&i.Password,
+			&i.RoleID,
+			&i.AvatarID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.ID_2,
+			&i.Name_2,
+			&i.InternalName,
+			&i.Description,
+			&i.CreatedAt_2,
+			&i.UpdatedAt_2,
+			&i.ID_3,
+			&i.Svg,
+			&i.CreatedAt_3,
+			&i.UpdatedAt_3,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const updateAvatar = `-- name: UpdateAvatar :exec
+UPDATE avatars SET
+  svg = $1
+WHERE id = $2
+`
+
+type UpdateAvatarParams struct {
+	Svg string `json:"svg"`
+	ID  int32  `json:"id"`
+}
+
+func (q *Queries) UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) error {
+	_, err := q.exec(ctx, q.updateAvatarStmt, updateAvatar, arg.Svg, arg.ID)
+	return err
 }
 
 const updatePermission = `-- name: UpdatePermission :exec
@@ -460,7 +935,7 @@ type UpdatePermissionParams struct {
 }
 
 func (q *Queries) UpdatePermission(ctx context.Context, arg UpdatePermissionParams) error {
-	_, err := q.db.ExecContext(ctx, updatePermission,
+	_, err := q.exec(ctx, q.updatePermissionStmt, updatePermission,
 		arg.Name,
 		arg.InternalName,
 		arg.Description,
@@ -485,7 +960,7 @@ type UpdateRoleParams struct {
 }
 
 func (q *Queries) UpdateRole(ctx context.Context, arg UpdateRoleParams) error {
-	_, err := q.db.ExecContext(ctx, updateRole,
+	_, err := q.exec(ctx, q.updateRoleStmt, updateRole,
 		arg.Name,
 		arg.InternalName,
 		arg.Description,
@@ -499,8 +974,9 @@ UPDATE users SET
   name = $1,
   email = $2,
   password = $3,
-  role_id = $4
-WHERE id = $5
+  role_id = $4,
+  avatar_id = $5
+WHERE id = $6
 `
 
 type UpdateUserParams struct {
@@ -508,15 +984,17 @@ type UpdateUserParams struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	RoleID   int32  `json:"role_id"`
+	AvatarID int32  `json:"avatar_id"`
 	ID       int32  `json:"id"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
-	_, err := q.db.ExecContext(ctx, updateUser,
+	_, err := q.exec(ctx, q.updateUserStmt, updateUser,
 		arg.Name,
 		arg.Email,
 		arg.Password,
 		arg.RoleID,
+		arg.AvatarID,
 		arg.ID,
 	)
 	return err

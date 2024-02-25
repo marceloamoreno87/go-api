@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/go-chi/jwtauth/v5"
+	"github.com/marceloamoreno/goapi/config"
 )
 
 type Auth struct {
@@ -16,13 +16,13 @@ func NewAuth() *Auth {
 	return &Auth{}
 }
 
-func (a *Auth) NewToken(tokenAuth *jwtauth.JWTAuth, jwtExpiresIn string, id int32) (err error) {
+func (a *Auth) NewToken(token config.TokenInterface, jwtExpiresIn string, id int32) (err error) {
 	jwtExpiresInInt, err := strconv.Atoi(jwtExpiresIn)
 	if err != nil {
 		return
 	}
 
-	_, tokenString, err := tokenAuth.Encode(map[string]interface{}{
+	_, tokenString, err := token.GetAuth().Encode(map[string]interface{}{
 		"id":  id,
 		"exp": time.Now().Add(time.Second * time.Duration(jwtExpiresInInt)).Unix(),
 	})
@@ -35,8 +35,8 @@ func (a *Auth) NewToken(tokenAuth *jwtauth.JWTAuth, jwtExpiresIn string, id int3
 	return
 }
 
-func (a *Auth) RefreshToken(tokenAuth *jwtauth.JWTAuth, token string) (err error) {
-	tokenString, err := tokenAuth.Decode(token)
+func (a *Auth) RefreshToken(token config.TokenInterface, lastToken string) (err error) {
+	tokenString, err := token.GetAuth().Decode(lastToken)
 	if err != nil {
 		return
 	}

@@ -10,27 +10,28 @@ type UpdateUserInputDTO struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	RoleID   int32  `json:"role_id"`
+	AvatarID int32  `json:"avatar_id"`
 }
 
 type UpdateUserUseCase struct {
-	UserRepository repository.UserRepositoryInterface
-	ID             int32
+	repo repository.UserRepositoryInterface
+	ID   int32
 }
 
-func NewUpdateUserUseCase(userRepository repository.UserRepositoryInterface, id int32) *UpdateUserUseCase {
+func NewUpdateUserUseCase(repo repository.UserRepositoryInterface, id int32) *UpdateUserUseCase {
 	return &UpdateUserUseCase{
-		UserRepository: userRepository,
-		ID:             id,
+		repo: repo,
+		ID:   id,
 	}
 }
 
 func (uc *UpdateUserUseCase) Execute(input UpdateUserInputDTO) (err error) {
-	user, err := entity.NewUser(input.Name, input.Email, input.Password, input.RoleID)
+	user, err := entity.NewUser(input.Name, input.Email, input.Password, input.RoleID, input.AvatarID)
 	if err != nil {
 		return
 	}
 
-	err = uc.UserRepository.UpdateUser(user, uc.ID)
+	err = uc.repo.UpdateUser(user, uc.ID)
 	if err != nil {
 		return
 	}

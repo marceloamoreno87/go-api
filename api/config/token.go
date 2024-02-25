@@ -1,9 +1,28 @@
 package config
 
-import "github.com/go-chi/jwtauth/v5"
+import (
+	"github.com/go-chi/jwtauth/v5"
+)
 
-var TokenAuth *jwtauth.JWTAuth
+type TokenInterface interface {
+	GetAuth() *jwtauth.JWTAuth
+	GetJWTExpiresIn() string
+}
 
-func NewTokenAuth() {
-	TokenAuth = jwtauth.New("HS256", []byte(Environment.JWTSecretKey), nil)
+type Token struct {
+	auth *jwtauth.JWTAuth
+}
+
+func NewToken() *Token {
+	return &Token{
+		auth: jwtauth.New("HS256", []byte(NewEnv().GetJWTSecretKey()), nil),
+	}
+}
+
+func (t *Token) GetAuth() *jwtauth.JWTAuth {
+	return t.auth
+}
+
+func (t *Token) GetJWTExpiresIn() string {
+	return NewEnv().GetJWTExpiresIn()
 }

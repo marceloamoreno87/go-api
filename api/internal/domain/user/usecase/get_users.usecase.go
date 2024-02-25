@@ -17,22 +17,23 @@ type GetUsersOutputDTO struct {
 	Name      string    `json:"name"`
 	Password  string    `json:"password"`
 	RoleID    int32     `json:"role_id"`
+	AvatarID  int32     `json:"avatar_id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type GetUsersUseCase struct {
-	UserRepository repository.UserRepositoryInterface
+	repo repository.UserRepositoryInterface
 }
 
-func NewGetUsersUseCase(userRepository repository.UserRepositoryInterface) *GetUsersUseCase {
+func NewGetUsersUseCase(repo repository.UserRepositoryInterface) *GetUsersUseCase {
 	return &GetUsersUseCase{
-		UserRepository: userRepository,
+		repo: repo,
 	}
 }
 
 func (uc *GetUsersUseCase) Execute(input GetUsersInputDTO) (output []GetUsersOutputDTO, err error) {
-	users, err := uc.UserRepository.GetUsers(input.Limit, input.Offset)
+	users, err := uc.repo.GetUsers(input.Limit, input.Offset)
 	if err != nil {
 		return
 	}
@@ -44,6 +45,7 @@ func (uc *GetUsersUseCase) Execute(input GetUsersInputDTO) (output []GetUsersOut
 			Name:      user.Name,
 			Password:  user.Password,
 			RoleID:    user.RoleID,
+			AvatarID:  user.AvatarID,
 			CreatedAt: user.CreatedAt,
 			UpdatedAt: user.UpdatedAt,
 		})

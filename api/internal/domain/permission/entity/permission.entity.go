@@ -31,13 +31,13 @@ func NewPermission(name string, internalName string, description string) (permis
 
 func (p *Permission) Validate() (err error) {
 	if p.Name == "" {
-		return errors.New("Name is required")
+		return errors.New("name is required")
 	}
 	if p.InternalName == "" {
-		return errors.New("Internal Name is required")
+		return errors.New("internal name is required")
 	}
 	if p.Description == "" {
-		return errors.New("Description is required")
+		return errors.New("description is required")
 	}
 	return
 }

@@ -8,7 +8,7 @@ import (
 )
 
 func TestNewUser(t *testing.T) {
-	user, err := entity.NewUser("Test User", "test@example.com", "password", 1)
+	user, err := entity.NewUser("Test User", "test@example.com", "password", 1, 1)
 	assert.NoError(t, err)
 	assert.NotNil(t, user)
 	assert.Equal(t, "Test User", user.GetName())
@@ -23,6 +23,7 @@ func TestValidate(t *testing.T) {
 		Email:    "test@example.com",
 		Password: "password",
 		RoleID:   1,
+		AvatarID: 1,
 	}
 	err := user.Validate()
 	assert.NoError(t, err)
@@ -34,13 +35,14 @@ func TestValidateInvalidEmail(t *testing.T) {
 		Email:    "test",
 		Password: "password",
 		RoleID:   1,
+		AvatarID: 1,
 	}
 	err := user.Validate()
 	assert.Error(t, err)
 }
 
 func TestComparePassword(t *testing.T) {
-	user, _ := entity.NewUser("Test User", "test@example.com", "password", 1)
+	user, _ := entity.NewUser("Test User", "test@example.com", "password", 1, 1)
 	assert.True(t, user.ComparePassword("password"))
 	assert.False(t, user.ComparePassword("wrongpassword"))
 }

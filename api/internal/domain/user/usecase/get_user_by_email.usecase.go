@@ -16,22 +16,23 @@ type GetUserByEmailOutputDTO struct {
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`
 	RoleID    int32     `json:"role_id"`
+	AvatarID  int32     `json:"avatar_id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type GetUserByEmailUseCase struct {
-	UserRepository repository.UserRepositoryInterface
+	repo repository.UserRepositoryInterface
 }
 
-func NewGetUserByEmailUseCase(userRepository repository.UserRepositoryInterface) *GetUserByEmailUseCase {
+func NewGetUserByEmailUseCase(repo repository.UserRepositoryInterface) *GetUserByEmailUseCase {
 	return &GetUserByEmailUseCase{
-		UserRepository: userRepository,
+		repo: repo,
 	}
 }
 
 func (uc *GetUserByEmailUseCase) Execute(input GetUserByEmailInputDTO) (output GetUserByEmailOutputDTO, err error) {
-	user, err := uc.UserRepository.GetUserByEmail(input.Email)
+	user, err := uc.repo.GetUserByEmail(input.Email)
 	if err != nil {
 		return
 	}
@@ -42,6 +43,7 @@ func (uc *GetUserByEmailUseCase) Execute(input GetUserByEmailInputDTO) (output G
 		Email:     user.Email,
 		Password:  user.Password,
 		RoleID:    user.RoleID,
+		AvatarID:  user.AvatarID,
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 	}

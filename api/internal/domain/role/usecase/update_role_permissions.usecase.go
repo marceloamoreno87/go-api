@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
-	RoleRepository "github.com/marceloamoreno/goapi/internal/domain/role/repository"
+	"github.com/marceloamoreno/goapi/internal/domain/role/repository"
 )
 
 type UpdateRolePermissionInputDTO struct {
@@ -11,14 +11,14 @@ type UpdateRolePermissionInputDTO struct {
 }
 
 type UpdateRolePermissionUseCase struct {
-	RolePermissionRepository RoleRepository.RolePermissionRepositoryInterface
+	repo repository.RolePermissionRepositoryInterface
 }
 
 func NewUpdateRolePermissionUseCase(
-	rolePermissionRepository RoleRepository.RolePermissionRepositoryInterface,
+	repo repository.RolePermissionRepositoryInterface,
 ) *UpdateRolePermissionUseCase {
 	return &UpdateRolePermissionUseCase{
-		RolePermissionRepository: rolePermissionRepository,
+		repo: repo,
 	}
 }
 
@@ -28,7 +28,7 @@ func (uc *UpdateRolePermissionUseCase) Execute(input UpdateRolePermissionInputDT
 		return
 	}
 
-	err = uc.RolePermissionRepository.UpdateRolePermission(rolePermission, input.RoleID)
+	err = uc.repo.UpdateRolePermission(rolePermission, input.RoleID)
 	if err != nil {
 		return
 	}
