@@ -15,12 +15,12 @@ type GetRefreshJWTOutputDTO struct {
 }
 
 type GetRefreshJWTUseCase struct {
-	UserRepository repository.UserRepositoryInterface
+	repo repository.UserRepositoryInterface
 }
 
-func NewGetRefreshJWTUseCase(userRepository repository.UserRepositoryInterface) *GetRefreshJWTUseCase {
+func NewGetRefreshJWTUseCase(repo repository.UserRepositoryInterface) *GetRefreshJWTUseCase {
 	return &GetRefreshJWTUseCase{
-		UserRepository: userRepository,
+		repo: repo,
 	}
 }
 
@@ -30,17 +30,17 @@ func (uc *GetRefreshJWTUseCase) Execute(input GetRefreshJWTInputDTO) (output Get
 		return
 	}
 
-	err = auth.RefreshToken(config.TokenAuth, input.Token)
+	err = auth.RefreshToken(config.NewToken(), input.Token)
 	if err != nil {
 		return
 	}
 
-	user, err := uc.UserRepository.GetUser(auth.GetID())
+	user, err := uc.repo.GetUser(auth.GetID())
 	if err != nil {
 		return
 	}
 
-	err = auth.NewToken(config.TokenAuth, config.Environment.JWTExpiresIn, user.GetID())
+	err = auth.NewToken(config.NewToken(), config.NewToken().GetJWTExpiresIn(), user.GetID())
 	if err != nil {
 		return
 	}

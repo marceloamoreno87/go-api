@@ -3,28 +3,27 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"sync"
 
 	PermissionEntity "github.com/marceloamoreno/goapi/internal/domain/permission/entity"
-	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	RoleEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	RolePermissionEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
+	"github.com/marceloamoreno/goapi/internal/infra/database"
 	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
 )
 
 type RolePermissionRepository struct {
-	DBConn    *sql.DB
-	DBQueries db.Querier
+	database.Repository
 }
 
-func NewRolePermissionRepository(DBConn *sql.DB) *RolePermissionRepository {
+func NewRolePermissionRepository(dbConn *sql.DB) *RolePermissionRepository {
 	return &RolePermissionRepository{
-		DBConn:    DBConn,
-		DBQueries: db.New(DBConn),
+		Repository: *database.NewRepository(dbConn),
 	}
 }
 
-func (repo *RolePermissionRepository) GetRolePermissions(id int32) (rolePermissions *RolePermissionEntity.RolePermission, err error) {
-	rps, err := repo.DBQueries.GetRolePermissions(context.Background(), id)
+func (repo *RolePermissionRepository) GetRolePermissionsByRole(id int32) (rolePermissions *RolePermissionEntity.RolePermission, err error) {
+	rps, err := repo.Repository.GetDbQueries().GetRolePermissionsByRole(context.Background(), id)
 	if err != nil {
 		return
 	}
@@ -53,32 +52,36 @@ func (repo *RolePermissionRepository) GetRolePermissions(id int32) (rolePermissi
 }
 
 func (repo *RolePermissionRepository) CreateRolePermission(rolePermission *RolePermissionEntity.RolePermission) (err error) {
+
+	errCh := make(chan error, len(rolePermission.PermissionIDs))
+	var wg sync.WaitGroup
+	wg.Add(len(rolePermission.PermissionIDs))
+
 	for _, id := range rolePermission.PermissionIDs {
-		err = repo.DBQueries.CreateRolePermission(context.Background(), db.CreateRolePermissionParams{
-			RoleID:       rolePermission.RoleID,
-			PermissionID: id,
-		})
-		if err != nil {
-			return
-		}
+		go func(permissionID int32) {
+			defer wg.Done()
+			err := repo.Repository.GetDbQueries().WithTx(repo.Repository.GetTx()).CreateRolePermission(context.Background(), db.CreateRolePermissionParams{
+				RoleID:       rolePermission.RoleID,
+				PermissionID: permissionID,
+			})
+
+			if err != nil {
+				errCh <- err
+			}
+		}(id)
+	}
+	wg.Wait()
+	close(errCh)
+	if len(errCh) > 0 {
+		return <-errCh
 	}
 	return
 }
 
-func (repo *RolePermissionRepository) UpdateRolePermission(rolePermission *entity.RolePermission, id int32) (err error) {
-	err = repo.DBQueries.DeleteRolePermission(context.Background(), id)
+func (repo *RolePermissionRepository) UpdateRolePermission(rolePermission *RolePermissionEntity.RolePermission, id int32) (err error) {
+	err = repo.Repository.GetDbQueries().WithTx(repo.Repository.GetTx()).DeleteRolePermission(context.Background(), id)
 	if err != nil {
 		return
 	}
-	for _, permissionId := range rolePermission.PermissionIDs {
-		err = repo.DBQueries.CreateRolePermission(context.Background(), db.CreateRolePermissionParams{
-			RoleID:       rolePermission.RoleID,
-			PermissionID: permissionId,
-		})
-		if err != nil {
-			return
-		}
-	}
-	return
-
+	return repo.CreateRolePermission(rolePermission)
 }

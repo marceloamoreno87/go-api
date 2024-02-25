@@ -19,7 +19,7 @@ func NewMiddleware(router chi.Router) *AuthMiddleware {
 }
 
 func (m *AuthMiddleware) AuthMiddleware() {
-	m.router.Use(jwtauth.Verifier(config.TokenAuth))
-	m.router.Use(jwtauth.Authenticator(config.TokenAuth))
+	m.router.Use(jwtauth.Verifier(config.NewToken().GetAuth()))
+	m.router.Use(jwtauth.Authenticator(config.NewToken().GetAuth()))
 	slog.Info("Auth OK")
 }

@@ -20,22 +20,22 @@ type DeletePermissionOutputDTO struct {
 }
 
 type DeletePermissionUseCase struct {
-	PermissionRepository repository.PermissionRepositoryInterface
+	repo repository.PermissionRepositoryInterface
 }
 
-func NewDeletePermissionUseCase(permissionRepository repository.PermissionRepositoryInterface) *DeletePermissionUseCase {
+func NewDeletePermissionUseCase(repo repository.PermissionRepositoryInterface) *DeletePermissionUseCase {
 	return &DeletePermissionUseCase{
-		PermissionRepository: permissionRepository,
+		repo: repo,
 	}
 }
 
 func (uc *DeletePermissionUseCase) Execute(input DeletePermissionInputDTO) (err error) {
-	permission, err := uc.PermissionRepository.GetPermission(input.ID)
+	permission, err := uc.repo.GetPermission(input.ID)
 	if err != nil {
 		return
 	}
 
-	err = uc.PermissionRepository.DeletePermission(permission.GetID())
+	err = uc.repo.DeletePermission(permission.GetID())
 	if err != nil {
 		return
 	}

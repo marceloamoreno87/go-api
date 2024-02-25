@@ -7,18 +7,20 @@ import (
 
 	"github.com/marceloamoreno/goapi/internal/domain/auth/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
-	"github.com/marceloamoreno/goapi/pkg/api"
+	"github.com/marceloamoreno/goapi/pkg/tools"
 )
 
 type AuthHandler struct {
-	HandlerTools   api.HandlerToolsInterface
-	UserRepository repository.UserRepositoryInterface
+	tools tools.HandlerToolsInterface
+	repo  repository.UserRepositoryInterface
 }
 
-func NewAuthHandler(UserRepository repository.UserRepositoryInterface, handlerTools api.HandlerToolsInterface) *AuthHandler {
+func NewAuthHandler(
+	repo repository.UserRepositoryInterface,
+) *AuthHandler {
 	return &AuthHandler{
-		HandlerTools:   handlerTools,
-		UserRepository: UserRepository,
+		repo:  repo,
+		tools: tools.NewHandlerTools(),
 	}
 }
 
@@ -29,8 +31,8 @@ func NewAuthHandler(UserRepository repository.UserRepositoryInterface, handlerTo
 // @Accept  json
 // @Produce  json
 // @Param credentials body usecase.GetJWTInputDTO true "Credentials"
-// @Success 200 {object} api.Response{data=usecase.GetJWTOutputDTO}
-// @Failure 400 {object} api.ResponseError
+// @Success 200 {object} tools.Response{data=usecase.GetJWTOutputDTO}
+// @Failure 400 {object} tools.ResponseError
 // @Router /auth/token [post]
 func (h *AuthHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 
@@ -38,19 +40,18 @@ func (h *AuthHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusUnauthorized, "NOT_AUTHORIZED"))
 		return
 	}
-
-	uc := usecase.NewGetJWTUseCase(h.UserRepository)
+	uc := usecase.NewGetJWTUseCase(h.repo)
 	u, err := uc.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NOT_AUTHORIZED)
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusUnauthorized, "NOT_AUTHORIZED"))
 		return
 	}
 	slog.Info("Token generated", "token", u)
-	h.HandlerTools.ResponseJSON(w, u)
+	h.tools.ResponseJSON(w, h.tools.NewResponse(u, http.StatusOK))
 
 }
 
@@ -61,8 +62,8 @@ func (h *AuthHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param token body usecase.GetRefreshJWTInputDTO true "Token"
-// @Success 200 {object} api.Response{data=usecase.GetRefreshJWTOutputDTO}
-// @Failure 400 {object} api.ResponseError
+// @Success 200 {object} tools.Response{data=usecase.GetRefreshJWTOutputDTO}
+// @Failure 400 {object} tools.ResponseError
 // @Router /auth/token/refresh [post]
 func (h *AuthHandler) GetRefreshJWT(w http.ResponseWriter, r *http.Request) {
 
@@ -70,18 +71,18 @@ func (h *AuthHandler) GetRefreshJWT(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NewResponseErrorDefault(err.Error()))
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusUnauthorized, "NOT_AUTHORIZED"))
 		return
 	}
 
-	uc := usecase.NewGetRefreshJWTUseCase(h.UserRepository)
+	uc := usecase.NewGetRefreshJWTUseCase(h.repo)
 	u, err := uc.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
-		h.HandlerTools.ResponseErrorJSON(w, api.NOT_AUTHORIZED)
+		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusUnauthorized, "NOT_AUTHORIZED"))
 		return
 	}
 	slog.Info("Token refreshed", "token", u)
-	h.HandlerTools.ResponseJSON(w, u)
+	h.tools.ResponseJSON(w, h.tools.NewResponse(u, http.StatusOK))
 
 }

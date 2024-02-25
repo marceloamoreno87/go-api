@@ -13,14 +13,14 @@ type UpdatePermissionInputDTO struct {
 }
 
 type UpdatePermissionUseCase struct {
-	PermissionRepository repository.PermissionRepositoryInterface
-	ID                   int32
+	repo repository.PermissionRepositoryInterface
+	ID   int32
 }
 
-func NewUpdatePermissionUseCase(permissionRepository repository.PermissionRepositoryInterface, id int32) *UpdatePermissionUseCase {
+func NewUpdatePermissionUseCase(repo repository.PermissionRepositoryInterface, id int32) *UpdatePermissionUseCase {
 	return &UpdatePermissionUseCase{
-		PermissionRepository: permissionRepository,
-		ID:                   id,
+		repo: repo,
+		ID:   id,
 	}
 }
 
@@ -30,7 +30,7 @@ func (uc *UpdatePermissionUseCase) Execute(input UpdatePermissionInputDTO) (err 
 		return
 	}
 
-	err = uc.PermissionRepository.UpdatePermission(permission, uc.ID)
+	err = uc.repo.UpdatePermission(permission, uc.ID)
 	if err != nil {
 		return
 	}

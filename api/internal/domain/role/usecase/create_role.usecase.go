@@ -23,12 +23,12 @@ type CreateRoleOutputDTO struct {
 }
 
 type CreateRoleUseCase struct {
-	RoleRepository repository.RoleRepositoryInterface
+	repo repository.RoleRepositoryInterface
 }
 
-func NewCreateRoleUseCase(roleRepository repository.RoleRepositoryInterface) *CreateRoleUseCase {
+func NewCreateRoleUseCase(repo repository.RoleRepositoryInterface) *CreateRoleUseCase {
 	return &CreateRoleUseCase{
-		RoleRepository: roleRepository,
+		repo: repo,
 	}
 }
 
@@ -38,7 +38,7 @@ func (uc *CreateRoleUseCase) Execute(input CreateRoleInputDTO) (err error) {
 		return
 	}
 
-	err = uc.RoleRepository.CreateRole(role)
+	err = uc.repo.CreateRole(role)
 	if err != nil {
 		return
 	}

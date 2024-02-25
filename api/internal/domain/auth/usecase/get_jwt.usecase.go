@@ -19,12 +19,12 @@ type GetJWTOutputDTO struct {
 
 type GetJWTUseCase struct {
 	GetUserByEmailUseCase usecase.GetUserByEmailUseCaseInterface
-	UserRepository        repository.UserRepositoryInterface
 }
 
-func NewGetJWTUseCase(UserRepository repository.UserRepositoryInterface) *GetJWTUseCase {
+// TODO: REFACTOR
+func NewGetJWTUseCase(repo repository.UserRepositoryInterface) *GetJWTUseCase {
 	return &GetJWTUseCase{
-		GetUserByEmailUseCase: usecase.NewGetUserByEmailUseCase(UserRepository),
+		GetUserByEmailUseCase: usecase.NewGetUserByEmailUseCase(repo),
 	}
 }
 
@@ -54,7 +54,7 @@ func (uc *GetJWTUseCase) Execute(input GetJWTInputDTO) (output GetJWTOutputDTO, 
 		return
 	}
 
-	err = auth.NewToken(config.TokenAuth, config.Environment.JWTExpiresIn, newUser.GetID())
+	err = auth.NewToken(config.NewToken(), config.NewToken().GetJWTExpiresIn(), newUser.GetID())
 	if err != nil {
 		return
 	}

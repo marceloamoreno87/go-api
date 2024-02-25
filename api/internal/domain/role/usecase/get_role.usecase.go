@@ -20,18 +20,18 @@ type GetRoleOutputDTO struct {
 }
 
 type GetRoleUseCase struct {
-	RoleRepository repository.RoleRepositoryInterface
+	repo repository.RoleRepositoryInterface
 }
 
-func NewGetRoleUseCase(roleRepository repository.RoleRepositoryInterface) *GetRoleUseCase {
+func NewGetRoleUseCase(repo repository.RoleRepositoryInterface) *GetRoleUseCase {
 	return &GetRoleUseCase{
-		RoleRepository: roleRepository,
+		repo: repo,
 	}
 }
 
 func (uc *GetRoleUseCase) Execute(input GetRoleInputDTO) (output GetRoleOutputDTO, err error) {
 
-	role, err := uc.RoleRepository.GetRole(input.ID)
+	role, err := uc.repo.GetRole(input.ID)
 	if err != nil {
 		return
 	}

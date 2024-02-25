@@ -10,25 +10,26 @@ type CreateUserInputDTO struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	RoleID   int32  `json:"role_id"`
+	AvatarID int32  `json:"avatar_id"`
 }
 
 type CreateUserUseCase struct {
-	UserRepository repository.UserRepositoryInterface
+	repo repository.UserRepositoryInterface
 }
 
-func NewCreateUserUseCase(userRepository repository.UserRepositoryInterface) *CreateUserUseCase {
+func NewCreateUserUseCase(repo repository.UserRepositoryInterface) *CreateUserUseCase {
 	return &CreateUserUseCase{
-		UserRepository: userRepository,
+		repo: repo,
 	}
 }
 
 func (uc *CreateUserUseCase) Execute(input CreateUserInputDTO) (err error) {
-	user, err := entity.NewUser(input.Name, input.Email, input.Password, input.RoleID)
+	user, err := entity.NewUser(input.Name, input.Email, input.Password, input.RoleID, input.AvatarID)
 	if err != nil {
 		return
 	}
 
-	err = uc.UserRepository.CreateUser(user)
+	err = uc.repo.CreateUser(user)
 	if err != nil {
 		return
 	}

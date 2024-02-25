@@ -7,96 +7,89 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/marceloamoreno/goapi/config"
 	_ "github.com/marceloamoreno/goapi/docs"
-	AuthHandler "github.com/marceloamoreno/goapi/internal/domain/auth/handler"
-	PermissionHandler "github.com/marceloamoreno/goapi/internal/domain/permission/handler"
-	PermissionRepository "github.com/marceloamoreno/goapi/internal/domain/permission/repository"
-	RoleHandler "github.com/marceloamoreno/goapi/internal/domain/role/handler"
-	RolePermissionHandler "github.com/marceloamoreno/goapi/internal/domain/role/handler"
-	RolePermissionRepository "github.com/marceloamoreno/goapi/internal/domain/role/repository"
-	RoleRepository "github.com/marceloamoreno/goapi/internal/domain/role/repository"
-	UserHandler "github.com/marceloamoreno/goapi/internal/domain/user/handler"
-	UserRepository "github.com/marceloamoreno/goapi/internal/domain/user/repository"
-	"github.com/marceloamoreno/goapi/internal/infra/database"
-	"github.com/marceloamoreno/goapi/pkg/api"
-	HttpSwagger "github.com/swaggo/http-swagger"
+	authHandler "github.com/marceloamoreno/goapi/internal/domain/auth/handler"
+	permissionHandler "github.com/marceloamoreno/goapi/internal/domain/permission/handler"
+	permissionRepository "github.com/marceloamoreno/goapi/internal/domain/permission/repository"
+	roleHandler "github.com/marceloamoreno/goapi/internal/domain/role/handler"
+	roleRepository "github.com/marceloamoreno/goapi/internal/domain/role/repository"
+	userHandler "github.com/marceloamoreno/goapi/internal/domain/user/handler"
+	userRepository "github.com/marceloamoreno/goapi/internal/domain/user/repository"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type Route struct {
-	HandlerTools *api.HandlerTools
-	Mux          *chi.Mux
-	DBConn       *sql.DB
+	mux    *chi.Mux
+	dbConn *sql.DB
 }
 
-func NewRoute(r *chi.Mux, handlerTools *api.HandlerTools) *Route {
-	DBConn, err := database.GetDBConn()
-	if err != nil {
-		panic(err)
-	}
+func NewRoute(
+	r *chi.Mux,
+	db *sql.DB,
+) *Route {
 	return &Route{
-		Mux:          r,
-		HandlerTools: handlerTools,
-		DBConn:       DBConn,
+		mux:    r,
+		dbConn: db,
 	}
 }
 
 func (r *Route) GetAuthRoutes(router chi.Router) {
-	AuthRepository := UserRepository.NewUserRepository(r.DBConn)
-	AuthHandler := AuthHandler.NewAuthHandler(AuthRepository, r.HandlerTools)
+	repo := userRepository.NewUserRepository(r.dbConn)
+	handler := authHandler.NewAuthHandler(repo)
 	router.Route("/auth", func(r chi.Router) {
-		r.Post("/token", AuthHandler.GetJWT)
-		r.Post("/token/refresh", AuthHandler.GetRefreshJWT)
+		r.Post("/token", handler.GetJWT)
+		r.Post("/token/refresh", handler.GetRefreshJWT)
 	})
 }
 
 func (r *Route) GetUserRoutes(router chi.Router) {
-	UserRepository := UserRepository.NewUserRepository(r.DBConn)
-	UserHandler := UserHandler.NewUserHandler(UserRepository, r.HandlerTools)
+	repo := userRepository.NewUserRepository(r.dbConn)
+	handler := userHandler.NewUserHandler(repo)
 	router.Route("/user", func(r chi.Router) {
-		r.Get("/", UserHandler.GetUsers)
-		r.Get("/{id}", UserHandler.GetUser)
-		r.Post("/", UserHandler.CreateUser)
-		r.Put("/{id}", UserHandler.UpdateUser)
-		r.Delete("/{id}", UserHandler.DeleteUser)
+		r.Get("/", handler.GetUsers)
+		r.Get("/{id}", handler.GetUser)
+		r.Post("/", handler.CreateUser)
+		r.Put("/{id}", handler.UpdateUser)
+		r.Delete("/{id}", handler.DeleteUser)
 	})
 }
 
 func (r *Route) GetRoleRoutes(router chi.Router) {
-	RoleRepository := RoleRepository.NewRoleRepository(r.DBConn)
-	RoleHandler := RoleHandler.NewRoleHandler(RoleRepository, r.HandlerTools)
-	RolePermissionRepository := RolePermissionRepository.NewRolePermissionRepository(r.DBConn)
-	RolePermissionHandler := RolePermissionHandler.NewRolePermissionHandler(RolePermissionRepository, r.HandlerTools)
+	repo := roleRepository.NewRoleRepository(r.dbConn)
+	repo2 := roleRepository.NewRolePermissionRepository(r.dbConn)
+	handler := roleHandler.NewRoleHandler(repo)
+	handler2 := roleHandler.NewRolePermissionHandler(repo2)
 	router.Route("/role", func(r chi.Router) {
-		r.Get("/", RoleHandler.GetRoles)
-		r.Get("/{id}", RoleHandler.GetRole)
-		r.Post("/", RoleHandler.CreateRole)
-		r.Put("/{id}", RoleHandler.UpdateRole)
-		r.Delete("/{id}", RoleHandler.DeleteRole)
+		r.Get("/", handler.GetRoles)
+		r.Get("/{id}", handler.GetRole)
+		r.Post("/", handler.CreateRole)
+		r.Put("/{id}", handler.UpdateRole)
+		r.Delete("/{id}", handler.DeleteRole)
 
 		r.Route("/{id}/permission", func(r chi.Router) {
-			r.Get("/", RolePermissionHandler.GetRolePermissions)
-			r.Post("/", RolePermissionHandler.CreateRolePermission)
-			r.Put("/", RolePermissionHandler.UpdateRolePermission)
+			r.Get("/", handler2.GetRolePermissions)
+			r.Post("/", handler2.CreateRolePermission)
+			r.Put("/", handler2.UpdateRolePermission)
 		})
 
 	})
 }
 
 func (r *Route) GetPermissionRoutes(router chi.Router) {
-	PermissionRepository := PermissionRepository.NewPermissionRepository(r.DBConn)
-	PermissionHandler := PermissionHandler.NewPermissionHandler(PermissionRepository, r.HandlerTools)
+	repo := permissionRepository.NewPermissionRepository(r.dbConn)
+	handler := permissionHandler.NewPermissionHandler(repo)
 	router.Route("/permission", func(r chi.Router) {
-		r.Get("/", PermissionHandler.GetPermissions)
-		r.Get("/{id}", PermissionHandler.GetPermission)
-		r.Post("/", PermissionHandler.CreatePermission)
-		r.Put("/{id}", PermissionHandler.UpdatePermission)
-		r.Delete("/{id}", PermissionHandler.DeletePermission)
+		r.Get("/", handler.GetPermissions)
+		r.Get("/{id}", handler.GetPermission)
+		r.Post("/", handler.CreatePermission)
+		r.Put("/{id}", handler.UpdatePermission)
+		r.Delete("/{id}", handler.DeletePermission)
 
 	})
 }
 
 func (r *Route) GetSwaggerRoutes(router chi.Router) {
-	router.Get("/swagger/*", HttpSwagger.Handler(
-		HttpSwagger.URL("http://localhost:"+config.Environment.Port+"/api/v1/swagger/doc.json"),
+	router.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:"+config.NewEnv().GetPort()+"/api/v1/swagger/doc.json"),
 	))
 }
 

@@ -12,6 +12,7 @@ type UserInterface interface {
 	GetEmail() string
 	GetPassword() string
 	GetRoleID() int32
+	GetAvatarID() int32
 	GetCreatedAt() time.Time
 	GetUpdatedAt() time.Time
 	GetRole() *entity.Role
@@ -19,10 +20,11 @@ type UserInterface interface {
 	SetName(name string)
 	SetEmail(email string)
 	SetPassword(password string)
-	SetRoleID(roleId int32)
+	SetRoleID(roleID int32)
 	SetCreatedAt(createdAt time.Time)
 	SetUpdatedAt(updatedAt time.Time)
 	SetRole(role *entity.Role)
+	SetAvatarID(avatarID int32)
 	Validate() (err error)
 	ComparePassword(password string) (b bool)
 }
