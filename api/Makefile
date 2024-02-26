@@ -4,10 +4,10 @@ createmigration:
 
 sqlcgen:
 	sqlc generate
-	chown -R 1000:1000 pkg/sqlc
+	chown -R 1000:1000 internal/shared/db/
 
 migrate:
-	rm -rf pkg/sqlc/db
+	rm -rf internal/shared/db/
 	migrate -path internal/sql/migrations -database "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable" up
 	sqlcgen
 

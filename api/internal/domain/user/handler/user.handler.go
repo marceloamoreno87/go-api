@@ -1,26 +1,23 @@
 package handler
 
 import (
-	"encoding/json"
 	"log/slog"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
-	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
-	"github.com/marceloamoreno/goapi/pkg/tools"
+	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 )
 
 type UserHandler struct {
-	repo  repository.UserRepositoryInterface
-	tools tools.HandlerToolsInterface
+	repo repository.UserRepositoryInterface
 }
 
 func NewUserHandler(
 	repo repository.UserRepositoryInterface,
 ) *UserHandler {
 	return &UserHandler{
-		repo:  repo,
-		tools: tools.NewHandlerTools(),
+		repo: repo,
 	}
 }
 
@@ -37,42 +34,36 @@ func NewUserHandler(
 // @Security     JWT
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 
-	var input usecase.CreateUserInputDTO
-	err := json.NewDecoder(r.Body).Decode(&input)
+	err := h.repo.Begin()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
-		return
-	}
-	err = h.repo.Begin()
-	if err != nil {
-		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
 
-	uc := usecase.NewCreateUserUseCase(h.repo)
-	err = uc.Execute(input)
+	err = service.NewUserService(h.repo).CreateUser(r.Body)
 	if err != nil {
 		err2 := h.repo.Rollback()
 		if err2 != nil {
 			slog.Info("err", err2)
-			h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err2.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+			// TODO: Response error
+			return
 		}
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
 
 	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
 
 	slog.Info("User created")
-	h.tools.ResponseJSON(w, h.tools.NewResponse(nil, http.StatusOK))
+	// TODO: Response
+
 }
 
 // GetUser godoc
@@ -88,24 +79,17 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 // @Security     JWT
 func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 
-	id, err := h.tools.GetIDFromURL(r)
+	id := chi.URLParam(r, "id")
+
+	output, err := service.NewUserService(h.repo).GetUser(id)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
 
-	uc := usecase.NewGetUserUseCase(h.repo)
-	u, err := uc.Execute(usecase.GetUserInputDTO{
-		ID: id,
-	})
-	if err != nil {
-		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
-		return
-	}
-	slog.Info("User get", "users", u)
-	h.tools.ResponseJSON(w, h.tools.NewResponse(u, http.StatusOK))
+	slog.Info("User found")
+	// TODO: Response
 
 }
 
@@ -122,26 +106,18 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 // @Router /user [get]
 // @Security     JWT
 func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
-	limit, offset, err := h.tools.GetLimitOffsetFromURL(r)
+	limit := chi.URLParam(r, "limit")
+	offset := chi.URLParam(r, "offset")
+
+	output, err := service.NewUserService(h.repo).GetUsers(limit, offset)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
-	}
-	input := usecase.GetUsersInputDTO{
-		Limit:  limit,
-		Offset: offset,
 	}
 
-	uc := usecase.NewGetUsersUseCase(h.repo)
-	u, err := uc.Execute(input)
-	if err != nil {
-		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
-		return
-	}
-	slog.Info("Users getting", "users", u)
-	h.tools.ResponseJSON(w, h.tools.NewResponse(u, http.StatusOK))
+	slog.Info("Users found")
+	// TODO: Response
 }
 
 // UpdateUser godoc
@@ -157,49 +133,37 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 // @Router /user/{id} [put]
 // @Security     JWT
 func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	id, err := h.tools.GetIDFromURL(r)
+	id := chi.URLParam(r, "id")
+
+	err := h.repo.Begin()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
 
-	var input usecase.UpdateUserInputDTO
-	err = json.NewDecoder(r.Body).Decode(&input)
-	if err != nil {
-		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
-		return
-	}
+	err = service.NewUserService(h.repo).UpdateUser(id, r.Body)
 
-	err = h.repo.Begin()
-	if err != nil {
-		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
-		return
-	}
-
-	uc := usecase.NewUpdateUserUseCase(h.repo, id)
-	err = uc.Execute(input)
 	if err != nil {
 		err2 := h.repo.Rollback()
 		if err2 != nil {
 			slog.Info("err", err2)
-			h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err2.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+			// TODO: Response error
+			return
 		}
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
-
 	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
+
 	slog.Info("User updated")
-	h.tools.ResponseJSON(w, h.tools.NewResponse(nil, http.StatusOK))
+	// TODO: Response
 }
 
 // DeleteUser godoc
@@ -215,40 +179,34 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 // @Router /user/{id} [delete]
 // @Security     JWT
 func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	id, err := h.tools.GetIDFromURL(r)
+	id := chi.URLParam(r, "id")
+
+	err := h.repo.Begin()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
 
-	err = h.repo.Begin()
-	if err != nil {
-		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
-		return
-	}
-	uc := usecase.NewDeleteUserUseCase(h.repo)
-	err = uc.Execute(usecase.DeleteUserInputDTO{
-		ID: id,
-	})
+	err = service.NewUserService(h.repo).DeleteUser(id)
 	if err != nil {
 		err2 := h.repo.Rollback()
 		if err2 != nil {
 			slog.Info("err", err2)
-			h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err2.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+			// TODO: Response error
 		}
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
 
 	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
+
 	slog.Info("User deleted")
-	h.tools.ResponseJSON(w, h.tools.NewResponse(nil, http.StatusOK))
+	// TODO: Response
 }

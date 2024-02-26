@@ -5,17 +5,17 @@ import (
 	"database/sql"
 
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
-	"github.com/marceloamoreno/goapi/internal/infra/database"
+	"github.com/marceloamoreno/goapi/internal/shared/repository"
 	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
 )
 
 type UserRepository struct {
-	database.Repository
+	repository.Repository
 }
 
 func NewUserRepository(dbConn *sql.DB) *UserRepository {
 	return &UserRepository{
-		Repository: *database.NewRepository(dbConn),
+		Repository: *repository.NewRepository(dbConn),
 	}
 }
 

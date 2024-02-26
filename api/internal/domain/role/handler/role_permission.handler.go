@@ -1,26 +1,23 @@
 package handler
 
 import (
-	"encoding/json"
 	"log/slog"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/marceloamoreno/goapi/internal/domain/role/repository"
-	"github.com/marceloamoreno/goapi/internal/domain/role/usecase"
-	"github.com/marceloamoreno/goapi/pkg/tools"
+	"github.com/marceloamoreno/goapi/internal/domain/role/service"
 )
 
 type RolePermissionHandler struct {
-	tools tools.HandlerToolsInterface
-	repo  repository.RolePermissionRepositoryInterface
+	repo repository.RolePermissionRepositoryInterface
 }
 
 func NewRolePermissionHandler(
 	repo repository.RolePermissionRepositoryInterface,
 ) *RolePermissionHandler {
 	return &RolePermissionHandler{
-		repo:  repo,
-		tools: tools.NewHandlerTools(),
+		repo: repo,
 	}
 }
 
@@ -36,24 +33,17 @@ func NewRolePermissionHandler(
 // @Router /role/{id}/permission [get]
 // @Security     JWT
 func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *http.Request) {
-	id, err := h.tools.GetIDFromURL(r)
+	id := chi.URLParam(r, "id")
+
+	output, err := service.NewRolePermissionService(h.repo).GetRolePermissions(id)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
 
-	uc := usecase.NewGetRolePermissionsUseCase(h.repo)
-	rolePermissions, err := uc.Execute(usecase.GetRolePermissionsInputDTO{
-		RoleID: id,
-	})
-	if err != nil {
-		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
-		return
-	}
-	slog.Info("Role permissions get", "role permissions", rolePermissions)
-	h.tools.ResponseJSON(w, h.tools.NewResponse(rolePermissions, http.StatusOK))
+	slog.Info("Role permissions found")
+	// TODO: Response
 }
 
 // CreateRolePermission godoc
@@ -68,39 +58,27 @@ func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *htt
 // @Router /role/{id}/permission [post]
 // @Security     JWT
 func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *http.Request) {
-	var input usecase.CreateRolePermissionInputDTO
-	err := json.NewDecoder(r.Body).Decode(&input)
+	err := h.repo.Begin()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
-	err = h.repo.Begin()
+	err = service.NewRolePermissionService(h.repo).CreateRolePermission(r.Body)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
-	uc := usecase.NewCreateRolePermissionUseCase(h.repo)
-	err = uc.Execute(input)
-	if err != nil {
-		err2 := h.repo.Rollback()
-		if err2 != nil {
-			slog.Info("err", err2)
-			h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err2.Error(), http.StatusBadRequest, "BAD_REQUEST"))
-		}
-		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
-		return
-	}
-
 	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
-	h.tools.ResponseJSON(w, h.tools.NewResponse(nil, http.StatusOK))
+
+	slog.Info("Role created")
+	// TODO: Response
 }
 
 // UpdateRolePermission godoc
@@ -116,37 +94,28 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 // @Router /role/{id}/permission [put]
 // @Security     JWT
 func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *http.Request) {
-	var input usecase.UpdateRolePermissionInputDTO
-	err := json.NewDecoder(r.Body).Decode(&input)
+	id := chi.URLParam(r, "id")
+
+	err := h.repo.Begin()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
-	err = h.repo.Begin()
+	err = service.NewRolePermissionService(h.repo).UpdateRolePermission(id, r.Body)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
-		return
-	}
-	uc := usecase.NewUpdateRolePermissionUseCase(h.repo)
-	err = uc.Execute(input)
-	if err != nil {
-		err2 := h.repo.Rollback()
-		if err2 != nil {
-			slog.Info("err", err2)
-			h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err2.Error(), http.StatusBadRequest, "BAD_REQUEST"))
-		}
-		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
 
 	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
-	h.tools.ResponseJSON(w, h.tools.NewResponse(nil, http.StatusOK))
+
+	slog.Info("Role updated")
+	// TODO: Response
 }

@@ -1,26 +1,23 @@
 package handler
 
 import (
-	"encoding/json"
 	"log/slog"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/marceloamoreno/goapi/internal/domain/permission/repository"
-	"github.com/marceloamoreno/goapi/internal/domain/permission/usecase"
-	"github.com/marceloamoreno/goapi/pkg/tools"
+	"github.com/marceloamoreno/goapi/internal/domain/permission/service"
 )
 
 type PermissionHandler struct {
-	tools tools.HandlerToolsInterface
-	repo  repository.PermissionRepositoryInterface
+	repo repository.PermissionRepositoryInterface
 }
 
 func NewPermissionHandler(
 	repo repository.PermissionRepositoryInterface,
 ) *PermissionHandler {
 	return &PermissionHandler{
-		repo:  repo,
-		tools: tools.NewHandlerTools(),
+		repo: repo,
 	}
 }
 
@@ -37,24 +34,17 @@ func NewPermissionHandler(
 // @Security     JWT
 func (h *PermissionHandler) GetPermission(w http.ResponseWriter, r *http.Request) {
 
-	id, err := h.tools.GetIDFromURL(r)
+	id := chi.URLParam(r, "id")
+
+	output, err := service.NewPermissionService(h.repo).GetPermission(id)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
 
-	uc := usecase.NewGetPermissionUseCase(h.repo)
-	permission, err := uc.Execute(usecase.GetPermissionInputDTO{
-		ID: id,
-	})
-	if err != nil {
-		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
-		return
-	}
-	slog.Info("Permission get", "permissions", permission)
-	h.tools.ResponseJSON(w, h.tools.NewResponse(permission, http.StatusOK))
+	slog.Info("Permission found")
+	// TODO: Response
 
 }
 
@@ -71,26 +61,20 @@ func (h *PermissionHandler) GetPermission(w http.ResponseWriter, r *http.Request
 // @Router /permission [get]
 // @Security     JWT
 func (h *PermissionHandler) GetPermissions(w http.ResponseWriter, r *http.Request) {
-	limit, offset, err := h.tools.GetLimitOffsetFromURL(r)
+
+	limit := chi.URLParam(r, "limit")
+	offset := chi.URLParam(r, "offset")
+
+	output, err := service.NewPermissionService(h.repo).GetPermissions(limit, offset)
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
-	}
-	dto := usecase.GetPermissionsInputDTO{
-		Limit:  limit,
-		Offset: offset,
 	}
 
-	uc := usecase.NewGetPermissionsUseCase(h.repo)
-	permission, err := uc.Execute(dto)
-	if err != nil {
-		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
-		return
-	}
-	slog.Info("Permissions getting", "permissions", permission)
-	h.tools.ResponseJSON(w, h.tools.NewResponse(permission, http.StatusOK))
+	slog.Info("Users found")
+	// TODO: Response
+
 }
 
 // CreateRole godoc
@@ -106,41 +90,35 @@ func (h *PermissionHandler) GetPermissions(w http.ResponseWriter, r *http.Reques
 // @Security     JWT
 func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Request) {
 
-	var dto usecase.CreatePermissionInputDTO
-	err := json.NewDecoder(r.Body).Decode(&dto)
+	err := h.repo.Begin()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
-		return
-	}
-	err = h.repo.Begin()
-	if err != nil {
-		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
 
-	uc := usecase.NewCreatePermissionUseCase(h.repo)
-	err = uc.Execute(dto)
+	err = service.NewPermissionService(h.repo).CreatePermission(r.Body)
 	if err != nil {
 		err2 := h.repo.Rollback()
 		if err2 != nil {
 			slog.Info("err", err2)
-			h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err2.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+			// TODO: Response error
+			return
 		}
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
 
 	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
-	slog.Info("Permission created")
-	h.tools.ResponseJSON(w, h.tools.NewResponse(nil, http.StatusOK))
+
+	slog.Info("User created")
+	// TODO: Response
 
 }
 
@@ -157,47 +135,37 @@ func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Requ
 // @Router /permission/{id} [put]
 // @Security     JWT
 func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Request) {
-	id, err := h.tools.GetIDFromURL(r)
+	id := chi.URLParam(r, "id")
+
+	err := h.repo.Begin()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
 
-	var dto usecase.UpdatePermissionInputDTO
-	err = json.NewDecoder(r.Body).Decode(&dto)
-	if err != nil {
-		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
-		return
-	}
-	err = h.repo.Begin()
-	if err != nil {
-		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
-		return
-	}
-	uc := usecase.NewUpdatePermissionUseCase(h.repo, id)
-	err = uc.Execute(dto)
+	err = service.NewPermissionService(h.repo).UpdatePermission(id, r.Body)
+
 	if err != nil {
 		err2 := h.repo.Rollback()
 		if err2 != nil {
 			slog.Info("err", err2)
-			h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err2.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+			// TODO: Response error
+			return
 		}
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
-
 	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
-	slog.Info("Permission updated")
-	h.tools.ResponseJSON(w, h.tools.NewResponse(nil, http.StatusOK))
+
+	slog.Info("User updated")
+	// TODO: Response
 }
 
 // DeletePermission godoc
@@ -213,39 +181,36 @@ func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Requ
 // @Router /permission/{id} [delete]
 // @Security     JWT
 func (h *PermissionHandler) DeletePermission(w http.ResponseWriter, r *http.Request) {
-	id, err := h.tools.GetIDFromURL(r)
+
+	id := chi.URLParam(r, "id")
+
+	err := h.repo.Begin()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
-	err = h.repo.Begin()
-	if err != nil {
-		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
-		return
-	}
-	uc := usecase.NewDeletePermissionUseCase(h.repo)
-	err = uc.Execute(usecase.DeletePermissionInputDTO{
-		ID: id,
-	})
+
+	err = service.NewPermissionService(h.repo).DeletePermission(id)
 	if err != nil {
 		err2 := h.repo.Rollback()
 		if err2 != nil {
 			slog.Info("err", err2)
-			h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err2.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+			// TODO: Response error
 		}
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
 
 	err = h.repo.Commit()
 	if err != nil {
 		slog.Info("err", err)
-		h.tools.ResponseErrorJSON(w, h.tools.NewResponseError(err.Error(), http.StatusBadRequest, "BAD_REQUEST"))
+		// TODO: Response error
 		return
 	}
-	slog.Info("Permission deleted")
-	h.tools.ResponseJSON(w, h.tools.NewResponse(nil, http.StatusOK))
+
+	slog.Info("User deleted")
+	// TODO: Response
+
 }

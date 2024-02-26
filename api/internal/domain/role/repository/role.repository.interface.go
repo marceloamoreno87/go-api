@@ -2,7 +2,7 @@ package repository
 
 import (
 	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
-	"github.com/marceloamoreno/goapi/internal/infra/database"
+	"github.com/marceloamoreno/goapi/internal/shared/repository"
 )
 
 type RoleRepositoryInterface interface {
@@ -12,5 +12,5 @@ type RoleRepositoryInterface interface {
 	GetRoles(limit int32, offset int32) ([]*entity.Role, error)
 	UpdateRole(role *entity.Role, id int32) (err error)
 	DeleteRole(id int32) (err error)
-	database.RepositoryInterface
+	repository.RepositoryInterface
 }

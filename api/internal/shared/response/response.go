@@ -1,4 +1,4 @@
-package tools
+package response
 
 import (
 	"encoding/json"
@@ -63,12 +63,4 @@ func (rt *ResponseTools) ResponseErrorJSON(w http.ResponseWriter, responseError 
 	w.WriteHeader(responseError.StatusCode)
 	slog.Error(responseError.Msg, "code_error", responseError.CodeError)
 	json.NewEncoder(w).Encode(responseError)
-}
-
-func (rt *ResponseTools) ToJson(data interface{}) string {
-	json, err := json.Marshal(data)
-	if err != nil {
-		slog.Error("err", err)
-	}
-	return string(json)
 }

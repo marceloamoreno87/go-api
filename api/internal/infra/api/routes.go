@@ -1,13 +1,15 @@
-package webserver
+package api
 
 import (
 	"database/sql"
+	"log/slog"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	_ "github.com/marceloamoreno/goapi/api/docs"
 	"github.com/marceloamoreno/goapi/config"
-	_ "github.com/marceloamoreno/goapi/docs"
 	authHandler "github.com/marceloamoreno/goapi/internal/domain/auth/handler"
+	authMiddleware "github.com/marceloamoreno/goapi/internal/domain/auth/middleware"
 	permissionHandler "github.com/marceloamoreno/goapi/internal/domain/permission/handler"
 	permissionRepository "github.com/marceloamoreno/goapi/internal/domain/permission/repository"
 	roleHandler "github.com/marceloamoreno/goapi/internal/domain/role/handler"
@@ -22,26 +24,44 @@ type Route struct {
 	dbConn *sql.DB
 }
 
-func NewRoute(
+func NewRoutes(
 	r *chi.Mux,
-	db *sql.DB,
-) *Route {
-	return &Route{
-		mux:    r,
-		dbConn: db,
-	}
-}
+	dbConn *sql.DB,
+) {
 
-func (r *Route) GetAuthRoutes(router chi.Router) {
-	repo := userRepository.NewUserRepository(r.dbConn)
-	handler := authHandler.NewAuthHandler(repo)
-	router.Route("/auth", func(r chi.Router) {
-		r.Post("/token", handler.GetJWT)
-		r.Post("/token/refresh", handler.GetRefreshJWT)
+	route := &Route{
+		mux:    r,
+		dbConn: dbConn,
+	}
+	route.mux.Route("/api/v1", func(r chi.Router) {
+		r.Group(func(r chi.Router) {
+			route.getAuthRoutes(r)
+			route.getRoute(r)
+			route.getSwaggerRoutes(r)
+			route.getHealthRoutes(r)
+		})
+
+		r.Group(func(r chi.Router) {
+			authMiddleware.NewMiddleware(r).AuthMiddleware()
+			slog.Info("Auth OK")
+
+			route.getUserRoutes(r)
+			route.getRoleRoutes(r)
+			route.getPermissionRoutes(r)
+		})
 	})
 }
 
-func (r *Route) GetUserRoutes(router chi.Router) {
+func (r *Route) getAuthRoutes(router chi.Router) {
+	repo := userRepository.NewUserRepository(r.dbConn)
+	handler := authHandler.NewAuthHandler(repo)
+	router.Route("/auth", func(r chi.Router) {
+		r.Post("/login", handler.Login)
+		r.Post("/refresh", handler.Refresh)
+	})
+}
+
+func (r *Route) getUserRoutes(router chi.Router) {
 	repo := userRepository.NewUserRepository(r.dbConn)
 	handler := userHandler.NewUserHandler(repo)
 	router.Route("/user", func(r chi.Router) {
@@ -53,7 +73,7 @@ func (r *Route) GetUserRoutes(router chi.Router) {
 	})
 }
 
-func (r *Route) GetRoleRoutes(router chi.Router) {
+func (r *Route) getRoleRoutes(router chi.Router) {
 	repo := roleRepository.NewRoleRepository(r.dbConn)
 	repo2 := roleRepository.NewRolePermissionRepository(r.dbConn)
 	handler := roleHandler.NewRoleHandler(repo)
@@ -74,7 +94,7 @@ func (r *Route) GetRoleRoutes(router chi.Router) {
 	})
 }
 
-func (r *Route) GetPermissionRoutes(router chi.Router) {
+func (r *Route) getPermissionRoutes(router chi.Router) {
 	repo := permissionRepository.NewPermissionRepository(r.dbConn)
 	handler := permissionHandler.NewPermissionHandler(repo)
 	router.Route("/permission", func(r chi.Router) {
@@ -87,13 +107,13 @@ func (r *Route) GetPermissionRoutes(router chi.Router) {
 	})
 }
 
-func (r *Route) GetSwaggerRoutes(router chi.Router) {
+func (r *Route) getSwaggerRoutes(router chi.Router) {
 	router.Get("/swagger/*", httpSwagger.Handler(
 		httpSwagger.URL("http://localhost:"+config.NewEnv().GetPort()+"/api/v1/swagger/doc.json"),
 	))
 }
 
-func (r *Route) GetRoute(router chi.Router) {
+func (r *Route) getRoute(router chi.Router) {
 	router.Route("/", func(r chi.Router) {
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("UP"))
@@ -101,7 +121,7 @@ func (r *Route) GetRoute(router chi.Router) {
 	})
 }
 
-func (r *Route) GetHealthRoutes(router chi.Router) {
+func (r *Route) getHealthRoutes(router chi.Router) {
 	router.Route("/health", func(r chi.Router) {
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("OK"))

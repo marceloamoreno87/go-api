@@ -5,17 +5,17 @@ import (
 	"database/sql"
 
 	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
-	"github.com/marceloamoreno/goapi/internal/infra/database"
+	"github.com/marceloamoreno/goapi/internal/shared/repository"
 	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
 )
 
 type RoleRepository struct {
-	database.Repository
+	repository.Repository
 }
 
 func NewRoleRepository(dbConn *sql.DB) *RoleRepository {
 	return &RoleRepository{
-		Repository: *database.NewRepository(dbConn),
+		Repository: *repository.NewRepository(dbConn),
 	}
 }
 

@@ -1,8 +1,6 @@
 package middleware
 
 import (
-	"log/slog"
-
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -19,5 +17,4 @@ func NewLogMiddleware(router chi.Router) *LogMiddleware {
 
 func (m *LogMiddleware) LogMiddleware() {
 	m.router.Use(middleware.Logger)
-	slog.Info("Logger OK")
 }

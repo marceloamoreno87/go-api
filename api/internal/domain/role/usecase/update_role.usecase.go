@@ -14,13 +14,11 @@ type UpdateRoleInputDTO struct {
 
 type UpdateRoleUseCase struct {
 	repo repository.RoleRepositoryInterface
-	ID   int32
 }
 
-func NewUpdateRoleUseCase(repo repository.RoleRepositoryInterface, id int32) *UpdateRoleUseCase {
+func NewUpdateRoleUseCase(repo repository.RoleRepositoryInterface) *UpdateRoleUseCase {
 	return &UpdateRoleUseCase{
 		repo: repo,
-		ID:   id,
 	}
 }
 
@@ -29,7 +27,7 @@ func (uc *UpdateRoleUseCase) Execute(input UpdateRoleInputDTO) (err error) {
 	if err != nil {
 		return
 	}
-	err = uc.repo.UpdateRole(role, uc.ID)
+	err = uc.repo.UpdateRole(role, role.ID)
 	if err != nil {
 		return
 	}
