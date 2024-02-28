@@ -8,8 +8,8 @@ import (
 	PermissionEntity "github.com/marceloamoreno/goapi/internal/domain/permission/entity"
 	RoleEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	RolePermissionEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
+	"github.com/marceloamoreno/goapi/internal/shared/db"
 	"github.com/marceloamoreno/goapi/internal/shared/repository"
-	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
 )
 
 type RolePermissionRepository struct {

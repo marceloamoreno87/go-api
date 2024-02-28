@@ -14,5 +14,5 @@ import (
 // @in                          header
 // @name                        Authorization
 func main() {
-	webserver.StartServer()
+	webserver.Bootstrap()
 }

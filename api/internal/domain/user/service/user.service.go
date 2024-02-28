@@ -10,6 +10,14 @@ import (
 	"github.com/marceloamoreno/goapi/internal/shared/helper"
 )
 
+type UserServiceInterface interface {
+	CreateUser(body io.ReadCloser) (err error)
+	GetUser(id string) (output usecase.GetUserOutputDTO, err error)
+	GetUsers(limit string, offset string) (output []usecase.GetUsersOutputDTO, err error)
+	UpdateUser(id string, body io.ReadCloser) (err error)
+	DeleteUser(id string) (err error)
+}
+
 type UserService struct {
 	repo repository.UserRepositoryInterface
 }
@@ -21,6 +29,7 @@ func NewUserService(repo repository.UserRepositoryInterface) *UserService {
 }
 
 func (s *UserService) CreateUser(body io.ReadCloser) (err error) {
+	s.repo.Begin()
 
 	input := usecase.CreateUserInputDTO{}
 	err = json.NewDecoder(body).Decode(&input)
@@ -31,10 +40,11 @@ func (s *UserService) CreateUser(body io.ReadCloser) (err error) {
 
 	err = usecase.NewCreateUserUseCase(s.repo).Execute(input)
 	if err != nil {
+		s.repo.Rollback()
 		slog.Info("err", err)
 		return
 	}
-
+	s.repo.Commit()
 	return
 }
 
@@ -66,7 +76,7 @@ func (s *UserService) GetUsers(limit string, offset string) (output []usecase.Ge
 }
 
 func (s *UserService) UpdateUser(id string, body io.ReadCloser) (err error) {
-
+	s.repo.Begin()
 	input := usecase.UpdateUserInputDTO{}
 	err = json.NewDecoder(body).Decode(&input)
 	if err != nil {
@@ -76,24 +86,27 @@ func (s *UserService) UpdateUser(id string, body io.ReadCloser) (err error) {
 
 	err = usecase.NewUpdateUserUseCase(s.repo).Execute(input)
 	if err != nil {
+		s.repo.Rollback()
 		slog.Info("err", err)
 		return
 	}
+	s.repo.Commit()
 
 	return
 }
 
 func (s *UserService) DeleteUser(id string) (err error) {
-
+	s.repo.Begin()
 	input := usecase.DeleteUserInputDTO{
 		ID: helper.StrToInt32(id),
 	}
 
 	err = usecase.NewDeleteUserUseCase(s.repo).Execute(input)
 	if err != nil {
+		s.repo.Rollback()
 		slog.Info("err", err)
 		return
 	}
-
+	s.repo.Commit()
 	return
 }

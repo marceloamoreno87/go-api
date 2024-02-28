@@ -8,14 +8,27 @@ import (
 	"github.com/go-chi/chi/v5"
 	_ "github.com/marceloamoreno/goapi/api/docs"
 	"github.com/marceloamoreno/goapi/config"
+
 	authHandler "github.com/marceloamoreno/goapi/internal/domain/auth/handler"
 	authMiddleware "github.com/marceloamoreno/goapi/internal/domain/auth/middleware"
-	permissionHandler "github.com/marceloamoreno/goapi/internal/domain/permission/handler"
-	permissionRepository "github.com/marceloamoreno/goapi/internal/domain/permission/repository"
+	authService "github.com/marceloamoreno/goapi/internal/domain/auth/service"
+
 	roleHandler "github.com/marceloamoreno/goapi/internal/domain/role/handler"
 	roleRepository "github.com/marceloamoreno/goapi/internal/domain/role/repository"
+	roleService "github.com/marceloamoreno/goapi/internal/domain/role/service"
+
+	permissionHandler "github.com/marceloamoreno/goapi/internal/domain/permission/handler"
+	permissionRepository "github.com/marceloamoreno/goapi/internal/domain/permission/repository"
+	permissionService "github.com/marceloamoreno/goapi/internal/domain/permission/service"
+
+	rolePermissionHandler "github.com/marceloamoreno/goapi/internal/domain/role/handler"
+	rolePermissionRepository "github.com/marceloamoreno/goapi/internal/domain/role/repository"
+	rolePermissionService "github.com/marceloamoreno/goapi/internal/domain/role/service"
+
 	userHandler "github.com/marceloamoreno/goapi/internal/domain/user/handler"
 	userRepository "github.com/marceloamoreno/goapi/internal/domain/user/repository"
+	userService "github.com/marceloamoreno/goapi/internal/domain/user/service"
+
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
@@ -36,25 +49,25 @@ func NewRoutes(
 	route.mux.Route("/api/v1", func(r chi.Router) {
 		r.Group(func(r chi.Router) {
 			route.getAuthRoutes(r)
-			route.getRoute(r)
-			route.getSwaggerRoutes(r)
-			route.getHealthRoutes(r)
+			// route.getRoute(r)
+			// route.getSwaggerRoutes(r)
+			// route.getHealthRoutes(r)
 		})
 
 		r.Group(func(r chi.Router) {
 			authMiddleware.NewMiddleware(r).AuthMiddleware()
 			slog.Info("Auth OK")
-
-			route.getUserRoutes(r)
-			route.getRoleRoutes(r)
-			route.getPermissionRoutes(r)
+			// route.getUserRoutes(r)
+			// route.getRoleRoutes(r)
+			// route.getPermissionRoutes(r)
 		})
 	})
 }
 
 func (r *Route) getAuthRoutes(router chi.Router) {
 	repo := userRepository.NewUserRepository(r.dbConn)
-	handler := authHandler.NewAuthHandler(repo)
+	service := authService.NewAuthService(repo)
+	handler := authHandler.NewAuthHandler(service)
 	router.Route("/auth", func(r chi.Router) {
 		r.Post("/login", handler.Login)
 		r.Post("/refresh", handler.Refresh)
@@ -63,7 +76,8 @@ func (r *Route) getAuthRoutes(router chi.Router) {
 
 func (r *Route) getUserRoutes(router chi.Router) {
 	repo := userRepository.NewUserRepository(r.dbConn)
-	handler := userHandler.NewUserHandler(repo)
+	service := userService.NewUserService(repo)
+	handler := userHandler.NewUserHandler(service)
 	router.Route("/user", func(r chi.Router) {
 		r.Get("/", handler.GetUsers)
 		r.Get("/{id}", handler.GetUser)
@@ -75,9 +89,13 @@ func (r *Route) getUserRoutes(router chi.Router) {
 
 func (r *Route) getRoleRoutes(router chi.Router) {
 	repo := roleRepository.NewRoleRepository(r.dbConn)
-	repo2 := roleRepository.NewRolePermissionRepository(r.dbConn)
-	handler := roleHandler.NewRoleHandler(repo)
-	handler2 := roleHandler.NewRolePermissionHandler(repo2)
+	service := roleService.NewRoleService(repo)
+	handler := roleHandler.NewRoleHandler(service)
+
+	repo2 := rolePermissionRepository.NewRolePermissionRepository(r.dbConn)
+	service2 := rolePermissionService.NewRolePermissionService(repo2)
+	handler2 := rolePermissionHandler.NewRolePermissionHandler(service2)
+
 	router.Route("/role", func(r chi.Router) {
 		r.Get("/", handler.GetRoles)
 		r.Get("/{id}", handler.GetRole)
@@ -96,7 +114,9 @@ func (r *Route) getRoleRoutes(router chi.Router) {
 
 func (r *Route) getPermissionRoutes(router chi.Router) {
 	repo := permissionRepository.NewPermissionRepository(r.dbConn)
-	handler := permissionHandler.NewPermissionHandler(repo)
+	service := permissionService.NewPermissionService(repo)
+	handler := permissionHandler.NewPermissionHandler(service)
+
 	router.Route("/permission", func(r chi.Router) {
 		r.Get("/", handler.GetPermissions)
 		r.Get("/{id}", handler.GetPermission)

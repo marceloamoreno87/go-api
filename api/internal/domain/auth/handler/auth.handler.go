@@ -5,18 +5,17 @@ import (
 	"net/http"
 
 	"github.com/marceloamoreno/goapi/internal/domain/auth/service"
-	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
+	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
 type AuthHandler struct {
-	repo repository.UserRepositoryInterface
+	response.Responses
+	service service.AuthServiceInterface
 }
 
-func NewAuthHandler(
-	repo repository.UserRepositoryInterface,
-) *AuthHandler {
+func NewAuthHandler(service service.AuthServiceInterface) *AuthHandler {
 	return &AuthHandler{
-		repo: repo,
+		service: service,
 	}
 }
 
@@ -26,21 +25,20 @@ func NewAuthHandler(
 // @Tags Auth
 // @Accept  json
 // @Produce  json
-// @Param credentials body usecase.GetJWTInputDTO true "Credentials"
-// @Success 200 {object} tools.Response{data=usecase.GetJWTOutputDTO}
-// @Failure 400 {object} tools.ResponseError
+// @Param token body usecase.GetJWTInputDTO true "Token"
+// @Success 200 {object} response.Response{data=usecase.GetJWTOutputDTO}
+// @Failure 400 {object} response.ResponseError{}
 // @Router /auth/login [post]
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 
-	token, err := service.NewAuthService(h.repo).Login(r.Body)
+	token, err := h.service.Login(r.Body)
 	if err != nil {
 		slog.Info("err", err)
-		// TODO: Response error
+		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
 		return
 	}
 	slog.Info("Login success")
-	// TODO: Response
-
+	h.SendResponse(w, h.NewResponse(token, http.StatusOK))
 }
 
 // GetRefreshJWT godoc
@@ -50,18 +48,18 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param token body usecase.GetRefreshJWTInputDTO true "Token"
-// @Success 200 {object} tools.Response{data=usecase.GetRefreshJWTOutputDTO}
-// @Failure 400 {object} tools.ResponseError
+// @Success 200 {object} response.Response{data=usecase.GetRefreshJWTOutputDTO}
+// @Failure 400 {object} response.ResponseError{}
 // @Router /auth/refresh [post]
 func (h *AuthHandler) Refresh(w http.ResponseWriter, r *http.Request) {
 
-	token, err := service.NewAuthService(h.repo).Refresh(r.Body)
+	token, err := h.service.Refresh(r.Body)
 	if err != nil {
 		slog.Info("err", err)
-		// TODO: Response error
+		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
 		return
 	}
 
 	slog.Info("Login refreshed")
-	// TODO: Response
+	h.SendResponse(w, h.NewResponse(token, http.StatusOK))
 }

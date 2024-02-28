@@ -9,6 +9,11 @@ import (
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
+type AuthServiceInterface interface {
+	Login(body io.ReadCloser) (output usecase.GetJWTOutputDTO, err error)
+	Refresh(body io.ReadCloser) (output usecase.GetRefreshJWTOutputDTO, err error)
+}
+
 type AuthService struct {
 	repo repository.UserRepositoryInterface
 }

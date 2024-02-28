@@ -5,19 +5,20 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/marceloamoreno/goapi/internal/domain/role/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/role/service"
+	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
 type RoleHandler struct {
-	repo repository.RoleRepositoryInterface
+	response.Responses
+	service service.RoleServiceInterface
 }
 
 func NewRoleHandler(
-	repo repository.RoleRepositoryInterface,
+	service service.RoleServiceInterface,
 ) *RoleHandler {
 	return &RoleHandler{
-		repo: repo,
+		service: service,
 	}
 }
 
@@ -28,23 +29,23 @@ func NewRoleHandler(
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Role ID"
-// @Success 200 {object} tools.Response{data=usecase.GetRoleOutputDTO}
-// @Failure 400 {object} tools.ResponseError{err=string}
+// @Success 200 {object} response.Response{data=usecase.GetRoleOutputDTO}
+// @Failure 400 {object} response.ResponseError{err=string}
 // @Router /role/{id} [get]
 // @Security     JWT
 func (h *RoleHandler) GetRole(w http.ResponseWriter, r *http.Request) {
 
 	id := chi.URLParam(r, "id")
 
-	output, err := service.NewRoleService(h.repo).GetRole(id)
+	output, err := h.service.GetRole(id)
 	if err != nil {
 		slog.Info("err", err)
-		// TODO: Response error
+		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
 		return
 	}
 
 	slog.Info("Role found")
-	// TODO: Response
+	h.SendResponse(w, h.NewResponse(output, http.StatusOK))
 }
 
 // GetRoles godoc
@@ -55,8 +56,8 @@ func (h *RoleHandler) GetRole(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param limit query int false "Limit"
 // @Param offset query int false "Offset"
-// @Success 200 {object} tools.Response{data=[]usecase.GetRolesOutputDTO}
-// @Failure 400 {object} tools.ResponseError{err=string}
+// @Success 200 {object} response.Response{data=[]usecase.GetRolesOutputDTO}
+// @Failure 400 {object} response.ResponseError{err=string}
 // @Router /role [get]
 // @Security     JWT
 func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
@@ -64,15 +65,15 @@ func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
 	limit := chi.URLParam(r, "limit")
 	offset := chi.URLParam(r, "offset")
 
-	output, err := service.NewRoleService(h.repo).GetRoles(limit, offset)
+	output, err := h.service.GetRoles(limit, offset)
 	if err != nil {
 		slog.Info("err", err)
-		// TODO: Response error
+		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
 		return
 	}
 
 	slog.Info("Roles found")
-	// TODO: Response
+	h.SendResponse(w, h.NewResponse(output, http.StatusOK))
 
 }
 
@@ -83,33 +84,21 @@ func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param role body usecase.CreateRoleInputDTO true "Role"
-// @Success 200 {object} tools.Response{data=nil}
-// @Failure 400 {object} tools.ResponseError{err=string}
+// @Success 200 {object} response.Response{data=nil}
+// @Failure 400 {object} response.ResponseError{err=string}
 // @Router /role [post]
 // @Security     JWT
 func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
 
-	err := h.repo.Begin()
+	err := h.service.CreateRole(r.Body)
 	if err != nil {
 		slog.Info("err", err)
-		// TODO: Response error
-		return
-	}
-	err = service.NewRoleService(h.repo).CreateRole(r.Body)
-	if err != nil {
-		slog.Info("err", err)
-		// TODO: Response error
-		return
-	}
-	err = h.repo.Commit()
-	if err != nil {
-		slog.Info("err", err)
-		// TODO: Response error
+		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
 		return
 	}
 
 	slog.Info("Role created")
-	// TODO: Response
+	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
 }
 
 // UpdateRole godoc
@@ -120,36 +109,23 @@ func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param id path string true "Role ID"
 // @Param role body usecase.UpdateUserInputDTO true "Role"
-// @Success 200 {object} tools.Response{data=nil}
-// @Failure 400 {object} tools.ResponseError{err=string}
+// @Success 200 {object} response.Response{data=nil}
+// @Failure 400 {object} response.ResponseError{err=string}
 // @Router /role/{id} [put]
 // @Security     JWT
 func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
 
 	id := chi.URLParam(r, "id")
 
-	err := h.repo.Begin()
+	err := h.service.UpdateRole(id, r.Body)
 	if err != nil {
 		slog.Info("err", err)
-		// TODO: Response error
-		return
-	}
-	err = service.NewRoleService(h.repo).UpdateRole(id, r.Body)
-	if err != nil {
-		slog.Info("err", err)
-		// TODO: Response error
-		return
-	}
-
-	err = h.repo.Commit()
-	if err != nil {
-		slog.Info("err", err)
-		// TODO: Response error
+		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
 		return
 	}
 
 	slog.Info("Role updated")
-	// TODO: Response
+	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
 
 }
 
@@ -160,8 +136,8 @@ func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "User ID"
-// @Success 200 {object} tools.Response{data=nil}
-// @Failure 400 {object} tools.ResponseError{err=string}
+// @Success 200 {object} response.Response{data=nil}
+// @Failure 400 {object} response.ResponseError{err=string}
 // @Security ApiKeyAuth
 // @Router /role/{id} [delete]
 // @Security     JWT
@@ -169,28 +145,13 @@ func (h *RoleHandler) DeleteRole(w http.ResponseWriter, r *http.Request) {
 
 	id := chi.URLParam(r, "id")
 
-	err := h.repo.Begin()
+	err := h.service.DeleteRole(id)
 	if err != nil {
 		slog.Info("err", err)
-		// TODO: Response error
-		return
-	}
-
-	err = service.NewRoleService(h.repo).DeleteRole(id)
-	if err != nil {
-		slog.Info("err", err)
-		// TODO: Response error
-		return
-	}
-
-	err = h.repo.Commit()
-	if err != nil {
-		slog.Info("err", err)
-		// TODO: Response error
+		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
 		return
 	}
 
 	slog.Info("Role deleted")
-	// TODO: Response
-
+	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
 }

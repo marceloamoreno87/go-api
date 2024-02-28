@@ -10,6 +10,14 @@ import (
 	"github.com/marceloamoreno/goapi/internal/shared/helper"
 )
 
+type PermissionServiceInterface interface {
+	CreatePermission(body io.ReadCloser) (err error)
+	GetPermission(id string) (output usecase.GetPermissionOutputDTO, err error)
+	GetPermissions(limit string, offset string) (output []usecase.GetPermissionsOutputDTO, err error)
+	UpdatePermission(id string, body io.ReadCloser) (err error)
+	DeletePermission(id string) (err error)
+}
+
 type PermissionService struct {
 	repo repository.PermissionRepositoryInterface
 }
@@ -52,25 +60,28 @@ func (s *PermissionService) GetPermissions(limit string, offset string) (output 
 }
 
 func (s *PermissionService) CreatePermission(body io.ReadCloser) (err error) {
-
+	s.repo.Begin()
 	input := usecase.CreatePermissionInputDTO{}
 	err = json.NewDecoder(body).Decode(&input)
 	if err != nil {
+
 		slog.Info("err", err)
 		return
 	}
 
 	err = usecase.NewCreatePermissionUseCase(s.repo).Execute(input)
 	if err != nil {
+		s.repo.Rollback()
 		slog.Info("err", err)
 		return
 	}
+	s.repo.Commit()
 
 	return
 }
 
 func (s *PermissionService) UpdatePermission(id string, body io.ReadCloser) (err error) {
-
+	s.repo.Begin()
 	input := usecase.UpdatePermissionInputDTO{}
 	err = json.NewDecoder(body).Decode(&input)
 	if err != nil {
@@ -80,14 +91,17 @@ func (s *PermissionService) UpdatePermission(id string, body io.ReadCloser) (err
 
 	err = usecase.NewUpdatePermissionUseCase(s.repo).Execute(input)
 	if err != nil {
+		s.repo.Rollback()
 		slog.Info("err", err)
 		return
 	}
+	s.repo.Commit()
 
 	return
 }
 
 func (s *PermissionService) DeletePermission(id string) (err error) {
+	s.repo.Begin()
 
 	input := usecase.DeletePermissionInputDTO{
 		ID: helper.StrToInt32(id),
@@ -95,9 +109,11 @@ func (s *PermissionService) DeletePermission(id string) (err error) {
 
 	err = usecase.NewDeletePermissionUseCase(s.repo).Execute(input)
 	if err != nil {
+		s.repo.Rollback()
 		slog.Info("err", err)
 		return
 	}
+	s.repo.Commit()
 
 	return
 }

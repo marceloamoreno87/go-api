@@ -2,19 +2,17 @@ package response
 
 import (
 	"encoding/json"
-	"log/slog"
 	"net/http"
 )
 
-type ResponseToolsInterface interface {
-	ResponseJSON(w http.ResponseWriter, response Response)
-	ResponseErrorJSON(w http.ResponseWriter, responseError ResponseError)
-	ToJson(data interface{}) string
+type ResponsesInterface interface {
 	NewResponse(data interface{}, statusCode int) Response
 	NewResponseError(msg string, statusCode int, codeError string) ResponseError
+	SendResponse(w http.ResponseWriter, response Response)
+	SendResponseError(w http.ResponseWriter, responseError ResponseError)
 }
 
-type ResponseTools struct {
+type Responses struct {
 	Response
 	ResponseError
 }
@@ -25,12 +23,11 @@ type Response struct {
 }
 
 type ResponseError struct {
-	Msg        string `json:"msg"`
-	StatusCode int    `json:"status_code"`
-	CodeError  string `json:"code_error"`
+	Msg       string `json:"msg"`
+	CodeError string `json:"code_error"`
 }
 
-func (rt *ResponseTools) NewResponse(
+func (rt *Responses) NewResponse(
 	data interface{},
 	statusCode int,
 ) Response {
@@ -40,27 +37,31 @@ func (rt *ResponseTools) NewResponse(
 	}
 }
 
-func (rt *ResponseTools) NewResponseError(
+func (rt *Responses) NewResponseError(
 	msg string,
 	statusCode int,
 	codeError string,
 ) ResponseError {
 	return ResponseError{
-		Msg:        msg,
-		StatusCode: statusCode,
-		CodeError:  codeError,
+		Msg:       msg,
+		CodeError: codeError,
 	}
 }
 
-func (rt *ResponseTools) ResponseJSON(w http.ResponseWriter, response Response) {
+func (rt *Responses) SendResponse(
+	w http.ResponseWriter,
+	response Response,
+) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(response.StatusCode)
 	json.NewEncoder(w).Encode(response)
 }
 
-func (rt *ResponseTools) ResponseErrorJSON(w http.ResponseWriter, responseError ResponseError) {
+func (rt *Responses) SendResponseError(
+	w http.ResponseWriter,
+	responseError ResponseError,
+) {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(responseError.StatusCode)
-	slog.Error(responseError.Msg, "code_error", responseError.CodeError)
+	w.WriteHeader(http.StatusBadRequest)
 	json.NewEncoder(w).Encode(responseError)
 }

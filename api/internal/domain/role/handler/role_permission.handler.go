@@ -5,19 +5,20 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/marceloamoreno/goapi/internal/domain/role/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/role/service"
+	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
 type RolePermissionHandler struct {
-	repo repository.RolePermissionRepositoryInterface
+	response.Responses
+	service service.RolePermissionServiceInterface
 }
 
 func NewRolePermissionHandler(
-	repo repository.RolePermissionRepositoryInterface,
+	service service.RolePermissionServiceInterface,
 ) *RolePermissionHandler {
 	return &RolePermissionHandler{
-		repo: repo,
+		service: service,
 	}
 }
 
@@ -28,22 +29,22 @@ func NewRolePermissionHandler(
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Role ID"
-// @Success 200 {object} tools.Response{data=usecase.GetRolePermissionsOutputDTO}
-// @Failure 400 {object} tools.ResponseError{err=string}
+// @Success 200 {object} response.Response{data=usecase.GetRolePermissionsOutputDTO}
+// @Failure 400 {object} response.ResponseError{err=string}
 // @Router /role/{id}/permission [get]
 // @Security     JWT
 func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
-	output, err := service.NewRolePermissionService(h.repo).GetRolePermissions(id)
+	output, err := h.service.GetRolePermissions(id)
 	if err != nil {
 		slog.Info("err", err)
-		// TODO: Response error
+		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
 		return
 	}
 
 	slog.Info("Role permissions found")
-	// TODO: Response
+	h.SendResponse(w, h.NewResponse(output, http.StatusOK))
 }
 
 // CreateRolePermission godoc
@@ -53,32 +54,22 @@ func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *htt
 // @Accept  json
 // @Produce  json
 // @Param user body usecase.CreateRolePermissionInputDTO true "RolePermission"
-// @Success 200 {object} tools.Response{data=nil}
-// @Failure 400 {object} tools.ResponseError{err=string}
+// @Success 200 {object} response.Response{data=nil}
+// @Failure 400 {object} response.ResponseError{err=string}
 // @Router /role/{id}/permission [post]
 // @Security     JWT
 func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *http.Request) {
-	err := h.repo.Begin()
+
+	err := h.service.CreateRolePermission(r.Body)
 	if err != nil {
 		slog.Info("err", err)
-		// TODO: Response error
-		return
-	}
-	err = service.NewRolePermissionService(h.repo).CreateRolePermission(r.Body)
-	if err != nil {
-		slog.Info("err", err)
-		// TODO: Response error
-		return
-	}
-	err = h.repo.Commit()
-	if err != nil {
-		slog.Info("err", err)
-		// TODO: Response error
+		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
 		return
 	}
 
-	slog.Info("Role created")
-	// TODO: Response
+	slog.Info("Role permission created")
+	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
+
 }
 
 // UpdateRolePermission godoc
@@ -89,33 +80,19 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 // @Produce  json
 // @Param id path string true "RolePermission ID"
 // @Param user body usecase.UpdateRolePermissionInputDTO true "RolePermission"
-// @Success 200 {object} tools.Response{data=nil}
-// @Failure 400 {object} tools.ResponseError{err=string}
+// @Success 200 {object} response.Response{data=nil}
+// @Failure 400 {object} response.ResponseError{err=string}
 // @Router /role/{id}/permission [put]
 // @Security     JWT
 func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
-
-	err := h.repo.Begin()
+	err := h.service.UpdateRolePermission(id, r.Body)
 	if err != nil {
 		slog.Info("err", err)
-		// TODO: Response error
-		return
-	}
-	err = service.NewRolePermissionService(h.repo).UpdateRolePermission(id, r.Body)
-	if err != nil {
-		slog.Info("err", err)
-		// TODO: Response error
+		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
 		return
 	}
 
-	err = h.repo.Commit()
-	if err != nil {
-		slog.Info("err", err)
-		// TODO: Response error
-		return
-	}
-
-	slog.Info("Role updated")
-	// TODO: Response
+	slog.Info("Role permission updated")
+	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
 }

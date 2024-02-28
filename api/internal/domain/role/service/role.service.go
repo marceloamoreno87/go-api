@@ -10,6 +10,14 @@ import (
 	"github.com/marceloamoreno/goapi/internal/shared/helper"
 )
 
+type RoleServiceInterface interface {
+	CreateRole(body io.ReadCloser) (err error)
+	GetRole(id string) (output usecase.GetRoleOutputDTO, err error)
+	GetRoles(limit string, offset string) (output []usecase.GetRolesOutputDTO, err error)
+	UpdateRole(id string, body io.ReadCloser) (err error)
+	DeleteRole(id string) (err error)
+}
+
 type RoleService struct {
 	repo repository.RoleRepositoryInterface
 }
@@ -52,7 +60,7 @@ func (s *RoleService) GetRoles(limit string, offset string) (output []usecase.Ge
 }
 
 func (s *RoleService) CreateRole(body io.ReadCloser) (err error) {
-
+	s.repo.Begin()
 	input := usecase.CreateRoleInputDTO{}
 	err = json.NewDecoder(body).Decode(&input)
 	if err != nil {
@@ -62,15 +70,16 @@ func (s *RoleService) CreateRole(body io.ReadCloser) (err error) {
 
 	err = usecase.NewCreateRoleUseCase(s.repo).Execute(input)
 	if err != nil {
+		s.repo.Rollback()
 		slog.Info("err", err)
 		return
 	}
-
+	s.repo.Commit()
 	return
 }
 
 func (s *RoleService) UpdateRole(id string, body io.ReadCloser) (err error) {
-
+	s.repo.Begin()
 	input := usecase.UpdateRoleInputDTO{}
 	err = json.NewDecoder(body).Decode(&input)
 	if err != nil {
@@ -80,24 +89,26 @@ func (s *RoleService) UpdateRole(id string, body io.ReadCloser) (err error) {
 
 	err = usecase.NewUpdateRoleUseCase(s.repo).Execute(input)
 	if err != nil {
+		s.repo.Rollback()
 		slog.Info("err", err)
 		return
 	}
-
+	s.repo.Commit()
 	return
 }
 
 func (s *RoleService) DeleteRole(id string) (err error) {
-
+	s.repo.Begin()
 	input := usecase.DeleteRoleInputDTO{
 		ID: helper.StrToInt32(id),
 	}
 
 	err = usecase.NewDeleteRoleUseCase(s.repo).Execute(input)
 	if err != nil {
+		s.repo.Rollback()
 		slog.Info("err", err)
 		return
 	}
-
+	s.repo.Commit()
 	return
 }
