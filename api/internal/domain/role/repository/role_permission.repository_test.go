@@ -25,12 +25,18 @@ func TestCreateRolePermission(t *testing.T) {
 	}
 
 	createRolePermissionSQL := `-- name: CreateRolePermission :exec INSERT INTO role_permissions \( role_id, permission_id \) VALUES \( \$1, \$2 \)`
+	mock.ExpectBegin()
+
 	mock.ExpectExec(createRolePermissionSQL).
 		WithArgs(rolePermission.RoleID, rolePermission.PermissionIDs[0]).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	err = rr.CreateRolePermission(rolePermission)
-
+	mock.ExpectCommit()
+	err = rr.Begin()
+	assert.NoError(t, err)
+	newRolePermission := rr.CreateRolePermission(rolePermission)
+	assert.NoError(t, newRolePermission)
+	err = rr.Commit()
 	assert.NoError(t, err)
 }
 
@@ -79,18 +85,22 @@ func TestUpdateRolePermission(t *testing.T) {
 	}
 
 	deleteRolePermissionSQL := `-- name: DeleteRolePermission :exec DELETE FROM role_permissions WHERE role_id = \$1`
+	mock.ExpectBegin()
 	mock.ExpectExec(deleteRolePermissionSQL).
 		WithArgs(rolePermission.RoleID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
-
-	err = rr.UpdateRolePermission(rolePermission, rolePermission.RoleID)
-
 	createRolePermissionSQL := `-- name: CreateRolePermission :exec INSERT INTO role_permissions \( role_id, permission_id \) VALUES \( \$1, \$2 \)`
 	mock.ExpectExec(createRolePermissionSQL).
 		WithArgs(rolePermission.RoleID, rolePermission.PermissionIDs[0]).
 		WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectCommit()
 
-	err = rr.CreateRolePermission(rolePermission)
+	err = rr.Begin()
+	assert.NoError(t, err)
 
+	updatedRolePermission := rr.UpdateRolePermission(rolePermission, rolePermission.RoleID)
+	assert.NoError(t, updatedRolePermission)
+
+	err = rr.Commit()
 	assert.NoError(t, err)
 }

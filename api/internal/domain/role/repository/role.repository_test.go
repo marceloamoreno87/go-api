@@ -27,12 +27,17 @@ func TestCreateRole(t *testing.T) {
 	}
 
 	createRoleSQL := `-- name: CreateRole :exec INSERT INTO roles \( name, internal_name, description \) VALUES \( \$1, \$2, \$3 \)`
+	mock.ExpectBegin()
 	mock.ExpectExec(createRoleSQL).
 		WithArgs(role.Name, role.InternalName, role.Description).
 		WillReturnResult(sqlmock.NewResult(1, 1))
-
-	err = rr.CreateRole(role)
-
+	mock.ExpectCommit()
+	
+	err = rr.Begin()
+	assert.NoError(t, err)
+	newRole := rr.CreateRole(role)
+	assert.NoError(t, newRole)
+	err = rr.Commit()
 	assert.NoError(t, err)
 }
 
@@ -118,12 +123,18 @@ func TestDeleteRole(t *testing.T) {
 		Description:  "testing",
 	}
 	deleteRoleSQL := `-- name: DeleteRole :exec DELETE FROM roles WHERE id = \$1`
+	mock.ExpectBegin()
+
 	mock.ExpectExec(deleteRoleSQL).
 		WithArgs(role.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	err = rr.DeleteRole(role.ID)
-
+	mock.ExpectCommit()
+	err = rr.Begin()
+	assert.NoError(t, err)
+	deletedRole := rr.DeleteRole(role.ID)
+	assert.NoError(t, deletedRole)
+	err = rr.Commit()
 	assert.NoError(t, err)
 }
 
@@ -144,12 +155,17 @@ func TestUpdateRole(t *testing.T) {
 	}
 
 	updateRoleSQL := `-- name: UpdateRole :exec UPDATE roles SET name = \$1, internal_name = \$2, description = \$3 WHERE id = \$4`
+	mock.ExpectBegin()
 	mock.ExpectExec(updateRoleSQL).
 		WithArgs(role.Name, role.InternalName, role.Description, 1).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	err = rr.UpdateRole(role, role.ID)
-
+	mock.ExpectCommit()
+	err = rr.Begin()
+	assert.NoError(t, err)
+	updatedRole := rr.UpdateRole(role, role.ID)
+	assert.NoError(t, updatedRole)
+	err = rr.Commit()
 	assert.NoError(t, err)
 
 }

@@ -9,7 +9,8 @@ sqlcgen:
 migrate:
 	rm -rf internal/shared/db/
 	migrate -path internal/sql/migrations -database "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable" up
-	sqlcgen
+	sqlc generate
+	chown -R 1000:1000 pkg/sqlc
 
 migratedown:
 	migrate -path internal/sql/migrations -database "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable" down
