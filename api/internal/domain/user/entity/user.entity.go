@@ -31,9 +31,8 @@ func NewUser(name string, email string, password string, roleID int32, avatarID 
 		RoleID:   roleID,
 		AvatarID: avatarID,
 	}
-	valid := user.Validate()
-	if valid != nil {
-		return nil, valid
+	if err = user.Validate(); err != nil {
+		return nil, err
 	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
