@@ -6,6 +6,7 @@ import (
 )
 
 type UpdateUserInputDTO struct {
+	ID       int32  `json:"id"`
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -15,13 +16,11 @@ type UpdateUserInputDTO struct {
 
 type UpdateUserUseCase struct {
 	repo repository.UserRepositoryInterface
-	ID   int32
 }
 
-func NewUpdateUserUseCase(repo repository.UserRepositoryInterface, id int32) *UpdateUserUseCase {
+func NewUpdateUserUseCase(repo repository.UserRepositoryInterface) *UpdateUserUseCase {
 	return &UpdateUserUseCase{
 		repo: repo,
-		ID:   id,
 	}
 }
 
@@ -31,7 +30,7 @@ func (uc *UpdateUserUseCase) Execute(input UpdateUserInputDTO) (err error) {
 		return
 	}
 
-	err = uc.repo.UpdateUser(user, uc.ID)
+	err = uc.repo.UpdateUser(user, input.ID)
 	if err != nil {
 		return
 	}

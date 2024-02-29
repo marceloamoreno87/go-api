@@ -2,7 +2,7 @@ package repository
 
 import (
 	"github.com/marceloamoreno/goapi/internal/domain/permission/entity"
-	"github.com/marceloamoreno/goapi/internal/infra/database"
+	"github.com/marceloamoreno/goapi/internal/shared/repository"
 )
 
 type PermissionRepositoryInterface interface {
@@ -12,5 +12,5 @@ type PermissionRepositoryInterface interface {
 	UpdatePermission(permission *entity.Permission, id int32) (err error)
 	DeletePermission(id int32) (err error)
 	GetPermissionByInternalName(internal_name string) (permission *entity.Permission, err error)
-	database.RepositoryInterface
+	repository.RepositoryInterface
 }

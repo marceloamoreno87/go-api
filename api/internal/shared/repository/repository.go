@@ -1,9 +1,9 @@
-package database
+package repository
 
 import (
 	"database/sql"
 
-	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
+	"github.com/marceloamoreno/goapi/internal/shared/db"
 )
 
 type RepositoryInterface interface {

@@ -8,17 +8,17 @@ import (
 	PermissionEntity "github.com/marceloamoreno/goapi/internal/domain/permission/entity"
 	RoleEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	RolePermissionEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
-	"github.com/marceloamoreno/goapi/internal/infra/database"
-	"github.com/marceloamoreno/goapi/pkg/sqlc/db"
+	"github.com/marceloamoreno/goapi/internal/shared/db"
+	"github.com/marceloamoreno/goapi/internal/shared/repository"
 )
 
 type RolePermissionRepository struct {
-	database.Repository
+	repository.Repository
 }
 
 func NewRolePermissionRepository(dbConn *sql.DB) *RolePermissionRepository {
 	return &RolePermissionRepository{
-		Repository: *database.NewRepository(dbConn),
+		Repository: *repository.NewRepository(dbConn),
 	}
 }
 
