@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/marceloamoreno/goapi/internal/domain/permission/service"
+	_ "github.com/marceloamoreno/goapi/internal/domain/permission/usecase"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
@@ -30,7 +31,7 @@ func NewPermissionHandler(
 // @Produce  json
 // @Param id path string true "Permission ID"
 // @Success 200 {object} response.Response{data=usecase.GetPermissionOutputDTO}
-// @Failure 400 {object} response.ResponseError{err=string}
+// @Failure 400 {object} response.ResponseError{}
 // @Router /permission/{id} [get]
 // @Security     JWT
 func (h *PermissionHandler) GetPermission(w http.ResponseWriter, r *http.Request) {
@@ -57,7 +58,7 @@ func (h *PermissionHandler) GetPermission(w http.ResponseWriter, r *http.Request
 // @Param limit query int false "Limit"
 // @Param offset query int false "Offset"
 // @Success 200 {object} response.Response{data=[]usecase.GetPermissionsOutputDTO}
-// @Failure 400 {object} response.ResponseError{err=string}
+// @Failure 400 {object} response.ResponseError{}
 // @Router /permission [get]
 // @Security     JWT
 func (h *PermissionHandler) GetPermissions(w http.ResponseWriter, r *http.Request) {
@@ -83,9 +84,9 @@ func (h *PermissionHandler) GetPermissions(w http.ResponseWriter, r *http.Reques
 // @Tags Permission
 // @Accept  json
 // @Produce  json
-// @Param role body usecase.CreateRoleInputDTO true "Permission"
+// @Param role body usecase.CreatePermissionInputDTO true "Permission"
 // @Success 200 {object} response.Response{data=nil}
-// @Failure 400 {object} response.ResponseError{err=string}
+// @Failure 400 {object} response.ResponseError{}
 // @Router /role [post]
 // @Security     JWT
 func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Request) {
@@ -108,9 +109,9 @@ func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Requ
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Permission ID"
-// @Param role body usecase.UpdateUserInputDTO true "Permission"
+// @Param role body usecase.UpdatePermissionInputDTO true "Permission"
 // @Success 200 {object} response.Response{data=nil}
-// @Failure 400 {object} response.ResponseError{err=string}
+// @Failure 400 {object} response.ResponseError{}
 // @Router /permission/{id} [put]
 // @Security     JWT
 func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Request) {
@@ -135,7 +136,7 @@ func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Requ
 // @Produce  json
 // @Param id path string true "Permission ID"
 // @Success 200 {object} response.Response{data=nil}
-// @Failure 400 {object} response.ResponseError{err=string}
+// @Failure 400 {object} response.ResponseError{}
 // @Security ApiKeyAuth
 // @Router /permission/{id} [delete]
 // @Security     JWT

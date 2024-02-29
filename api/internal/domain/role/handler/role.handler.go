@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/marceloamoreno/goapi/internal/domain/role/service"
+	_ "github.com/marceloamoreno/goapi/internal/domain/role/usecase"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
@@ -30,7 +31,7 @@ func NewRoleHandler(
 // @Produce  json
 // @Param id path string true "Role ID"
 // @Success 200 {object} response.Response{data=usecase.GetRoleOutputDTO}
-// @Failure 400 {object} response.ResponseError{err=string}
+// @Failure 400 {object} response.ResponseError{}
 // @Router /role/{id} [get]
 // @Security     JWT
 func (h *RoleHandler) GetRole(w http.ResponseWriter, r *http.Request) {
@@ -57,7 +58,7 @@ func (h *RoleHandler) GetRole(w http.ResponseWriter, r *http.Request) {
 // @Param limit query int false "Limit"
 // @Param offset query int false "Offset"
 // @Success 200 {object} response.Response{data=[]usecase.GetRolesOutputDTO}
-// @Failure 400 {object} response.ResponseError{err=string}
+// @Failure 400 {object} response.ResponseError{}
 // @Router /role [get]
 // @Security     JWT
 func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
@@ -85,7 +86,7 @@ func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param role body usecase.CreateRoleInputDTO true "Role"
 // @Success 200 {object} response.Response{data=nil}
-// @Failure 400 {object} response.ResponseError{err=string}
+// @Failure 400 {object} response.ResponseError{}
 // @Router /role [post]
 // @Security     JWT
 func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
@@ -108,9 +109,9 @@ func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Role ID"
-// @Param role body usecase.UpdateUserInputDTO true "Role"
+// @Param role body usecase.UpdateRoleInputDTO true "Role"
 // @Success 200 {object} response.Response{data=nil}
-// @Failure 400 {object} response.ResponseError{err=string}
+// @Failure 400 {object} response.ResponseError{}
 // @Router /role/{id} [put]
 // @Security     JWT
 func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
@@ -137,7 +138,7 @@ func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param id path string true "User ID"
 // @Success 200 {object} response.Response{data=nil}
-// @Failure 400 {object} response.ResponseError{err=string}
+// @Failure 400 {object} response.ResponseError{}
 // @Security ApiKeyAuth
 // @Router /role/{id} [delete]
 // @Security     JWT

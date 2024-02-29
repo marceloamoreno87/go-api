@@ -17,8 +17,8 @@ migratedown:
 	rm -rf internal/shared/db/
 
 swaggen:
-	swag init --parseDependency -g cmd/main.go -o api/docs
-	chown -R 1000:1000 docs
+	swag init --parseDependency --parseInternal  --parseDepth 1 -g cmd/main.go -o api/docs
+	chown -R 1000:1000 api/docs
 
 testgo:
 	go test -v ./...

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/marceloamoreno/goapi/internal/domain/auth/service"
+	_ "github.com/marceloamoreno/goapi/internal/domain/auth/usecase"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 

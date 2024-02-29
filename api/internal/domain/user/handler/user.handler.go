@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
+	_ "github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
@@ -30,7 +31,7 @@ func NewUserHandler(
 // @Produce  json
 // @Param user body usecase.CreateUserInputDTO true "User"
 // @Success 200 {object} response.Response{data=nil}
-// @Failure 400 {object} response.ResponseError{err=string}
+// @Failure 400 {object} response.ResponseError{}
 // @Router /user [post]
 // @Security     JWT
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -55,7 +56,7 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param id path string true "User ID"
 // @Success 200 {object} response.Response{data=usecase.GetUserOutputDTO}
-// @Failure 400 {object} response.ResponseError{err=string}
+// @Failure 400 {object} response.ResponseError{}
 // @Router /user/{id} [get]
 // @Security     JWT
 func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
@@ -83,7 +84,7 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 // @Param limit query int false "Limit"
 // @Param offset query int false "Offset"
 // @Success 200 {object} response.Response{data=[]usecase.GetUsersOutputDTO}
-// @Failure 400 {object} response.ResponseError{err=string}
+// @Failure 400 {object} response.ResponseError{}
 // @Router /user [get]
 // @Security     JWT
 func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
@@ -111,7 +112,7 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 // @Param id path string true "User ID"
 // @Param user body usecase.UpdateUserInputDTO true "User"
 // @Success 200 {object} response.Response{data=nil}
-// @Failure 400 {object} response.ResponseError{err=string}
+// @Failure 400 {object} response.ResponseError{}
 // @Router /user/{id} [put]
 // @Security     JWT
 func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
@@ -136,7 +137,7 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param id path string true "User ID"
 // @Success 200 {object} response.Response{data=nil}
-// @Failure 400 {object} response.ResponseError{err=string}
+// @Failure 400 {object} response.ResponseError{}
 // @Security ApiKeyAuth
 // @Router /user/{id} [delete]
 // @Security     JWT

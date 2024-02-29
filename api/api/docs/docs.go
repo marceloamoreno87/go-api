@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/auth/token": {
+        "/auth/login": {
             "post": {
                 "description": "Get JWT",
                 "consumes": [
@@ -30,12 +30,12 @@ const docTemplate = `{
                 "summary": "Get JWT",
                 "parameters": [
                     {
-                        "description": "Credentials",
-                        "name": "credentials",
+                        "description": "Token",
+                        "name": "token",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/usecase.GetJWTInputDTO"
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetJWTInputDTO"
                         }
                     }
                 ],
@@ -45,13 +45,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/usecase.GetJWTOutputDTO"
+                                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetJWTOutputDTO"
                                         }
                                     }
                                 }
@@ -61,13 +61,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/tools.ResponseError"
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
             }
         },
-        "/auth/token/refresh": {
+        "/auth/refresh": {
             "post": {
                 "description": "Get Refresh JWT",
                 "consumes": [
@@ -87,7 +87,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/usecase.GetRefreshJWTInputDTO"
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetRefreshJWTInputDTO"
                         }
                     }
                 ],
@@ -97,13 +97,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/usecase.GetRefreshJWTOutputDTO"
+                                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetRefreshJWTOutputDTO"
                                         }
                                     }
                                 }
@@ -113,7 +113,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/tools.ResponseError"
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
@@ -157,7 +157,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
@@ -165,7 +165,7 @@ const docTemplate = `{
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/usecase.GetPermissionsOutputDTO"
+                                                "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_permission_usecase.GetPermissionsOutputDTO"
                                             }
                                         }
                                     }
@@ -176,19 +176,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/tools.ResponseError"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "err": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
@@ -227,13 +215,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/usecase.GetPermissionOutputDTO"
+                                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_permission_usecase.GetPermissionOutputDTO"
                                         }
                                     }
                                 }
@@ -243,19 +231,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/tools.ResponseError"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "err": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
@@ -291,7 +267,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/usecase.UpdateUserInputDTO"
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_permission_usecase.UpdatePermissionInputDTO"
                         }
                     }
                 ],
@@ -301,7 +277,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
@@ -317,19 +293,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/tools.ResponseError"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "err": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
@@ -369,7 +333,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
@@ -385,19 +349,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/tools.ResponseError"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "err": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
@@ -441,7 +393,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
@@ -449,7 +401,7 @@ const docTemplate = `{
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/usecase.GetRolesOutputDTO"
+                                                "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_role_usecase.GetRolesOutputDTO"
                                             }
                                         }
                                     }
@@ -460,19 +412,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/tools.ResponseError"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "err": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
@@ -501,7 +441,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/usecase.CreateRoleInputDTO"
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_role_usecase.CreateRoleInputDTO"
                         }
                     }
                 ],
@@ -511,7 +451,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
@@ -527,19 +467,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/tools.ResponseError"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "err": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
@@ -578,13 +506,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/usecase.GetRoleOutputDTO"
+                                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_role_usecase.GetRoleOutputDTO"
                                         }
                                     }
                                 }
@@ -594,19 +522,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/tools.ResponseError"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "err": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
@@ -642,7 +558,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/usecase.UpdateUserInputDTO"
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_role_usecase.UpdateRoleInputDTO"
                         }
                     }
                 ],
@@ -652,7 +568,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
@@ -668,19 +584,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/tools.ResponseError"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "err": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
@@ -720,7 +624,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
@@ -736,19 +640,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/tools.ResponseError"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "err": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
@@ -787,13 +679,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/usecase.GetRolePermissionsOutputDTO"
+                                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_role_usecase.GetRolePermissionsOutputDTO"
                                         }
                                     }
                                 }
@@ -803,19 +695,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/tools.ResponseError"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "err": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
@@ -851,7 +731,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/usecase.UpdateRolePermissionInputDTO"
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_role_usecase.UpdateRolePermissionInputDTO"
                         }
                     }
                 ],
@@ -861,7 +741,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
@@ -877,19 +757,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/tools.ResponseError"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "err": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
@@ -918,7 +786,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/usecase.CreateRolePermissionInputDTO"
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_role_usecase.CreateRolePermissionInputDTO"
                         }
                     }
                 ],
@@ -928,7 +796,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
@@ -944,19 +812,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/tools.ResponseError"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "err": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
@@ -1000,7 +856,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
@@ -1008,7 +864,7 @@ const docTemplate = `{
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/usecase.GetUsersOutputDTO"
+                                                "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetUsersOutputDTO"
                                             }
                                         }
                                     }
@@ -1019,19 +875,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/tools.ResponseError"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "err": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
@@ -1060,7 +904,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/usecase.CreateUserInputDTO"
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateUserInputDTO"
                         }
                     }
                 ],
@@ -1070,7 +914,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
@@ -1086,19 +930,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/tools.ResponseError"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "err": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
@@ -1137,13 +969,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/usecase.GetUserOutputDTO"
+                                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetUserOutputDTO"
                                         }
                                     }
                                 }
@@ -1153,19 +985,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/tools.ResponseError"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "err": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
@@ -1201,7 +1021,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/usecase.UpdateUserInputDTO"
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdateUserInputDTO"
                         }
                     }
                 ],
@@ -1211,7 +1031,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
@@ -1227,19 +1047,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/tools.ResponseError"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "err": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
@@ -1279,7 +1087,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/tools.Response"
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
                                 },
                                 {
                                     "type": "object",
@@ -1295,19 +1103,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/tools.ResponseError"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "err": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
                         }
                     }
                 }
@@ -1315,7 +1111,385 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "tools.Response": {
+        "github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetJWTInputDTO": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetJWTOutputDTO": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetRefreshJWTInputDTO": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetRefreshJWTOutputDTO": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_permission_entity.Permission": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_permission_usecase.CreatePermissionInputDTO": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_permission_usecase.GetPermissionOutputDTO": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_permission_usecase.GetPermissionsOutputDTO": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_permission_usecase.UpdatePermissionInputDTO": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_role_entity.Role": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_role_usecase.CreateRoleInputDTO": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_role_usecase.CreateRolePermissionInputDTO": {
+            "type": "object",
+            "properties": {
+                "permission_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_role_usecase.GetRoleOutputDTO": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_role_usecase.GetRolePermissionsOutputDTO": {
+            "type": "object",
+            "properties": {
+                "permissions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_permission_entity.Permission"
+                    }
+                },
+                "role": {
+                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_role_entity.Role"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_role_usecase.GetRolesOutputDTO": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_role_usecase.UpdateRoleInputDTO": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_role_usecase.UpdateRolePermissionInputDTO": {
+            "type": "object",
+            "properties": {
+                "permission_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateUserInputDTO": {
+            "type": "object",
+            "properties": {
+                "avatar_id": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetUserOutputDTO": {
+            "type": "object",
+            "properties": {
+                "avatar_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role_id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetUsersOutputDTO": {
+            "type": "object",
+            "properties": {
+                "avatar_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role_id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdateUserInputDTO": {
+            "type": "object",
+            "properties": {
+                "avatar_id": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_shared_response.Response": {
             "type": "object",
             "properties": {
                 "data": {},
@@ -1324,7 +1498,7 @@ const docTemplate = `{
                 }
             }
         },
-        "tools.ResponseError": {
+        "github_com_marceloamoreno_goapi_internal_shared_response.ResponseError": {
             "type": "object",
             "properties": {
                 "code_error": {
@@ -1332,324 +1506,6 @@ const docTemplate = `{
                 },
                 "msg": {
                     "type": "string"
-                },
-                "status_code": {
-                    "type": "integer"
-                }
-            }
-        },
-        "entity.Permission": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "internal_name": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.Role": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "internal_name": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "usecase.CreateRoleInputDTO": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "internal_name": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "usecase.CreateRolePermissionInputDTO": {
-            "type": "object",
-            "properties": {
-                "permission_ids": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "role_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "usecase.CreateUserInputDTO": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "role_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "usecase.GetJWTInputDTO": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "usecase.GetJWTOutputDTO": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string"
-                }
-            }
-        },
-        "usecase.GetPermissionOutputDTO": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "internal_name": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "usecase.GetPermissionsOutputDTO": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "internal_name": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "usecase.GetRefreshJWTInputDTO": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string"
-                }
-            }
-        },
-        "usecase.GetRefreshJWTOutputDTO": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string"
-                }
-            }
-        },
-        "usecase.GetRoleOutputDTO": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "internal_name": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "usecase.GetRolePermissionsOutputDTO": {
-            "type": "object",
-            "properties": {
-                "permissions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Permission"
-                    }
-                },
-                "role": {
-                    "$ref": "#/definitions/entity.Role"
-                }
-            }
-        },
-        "usecase.GetRolesOutputDTO": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "internal_name": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "usecase.GetUserOutputDTO": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "role_id": {
-                    "type": "integer"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "usecase.GetUsersOutputDTO": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "role_id": {
-                    "type": "integer"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "usecase.UpdateRolePermissionInputDTO": {
-            "type": "object",
-            "properties": {
-                "permission_ids": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "role_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "usecase.UpdateUserInputDTO": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "role_id": {
-                    "type": "integer"
                 }
             }
         }
