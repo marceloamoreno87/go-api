@@ -14,60 +14,46 @@ import (
 )
 
 func Bootstrap() {
-
-	r := startRouter()
+	mux := startRouter()
 	dbConn := startDbConn()
-	startInfraMiddleware(r)
-	startRoutes(r, dbConn)
-	startServer(r)
-
+	startInfraMiddleware(mux)
+	startRoutes(mux, dbConn)
+	startServer(mux)
 }
 
 func startServer(r *chi.Mux) {
-
 	port := config.NewEnv().GetPort()
 	slog.Info("Server started on port http://localhost:" + port + "/api/v1")
 	slog.Info("Swagger started on port http://localhost:" + port + "/api/v1/swagger/index.html")
 	slog.Info("Health started on port http://localhost:" + port + "/api/v1/health")
-
-	err := http.ListenAndServe(":"+port, r)
-	if err != nil {
+	if err := http.ListenAndServe(":"+port, r); err != nil {
 		panic(err)
 	}
-
 }
 
-func startRoutes(r *chi.Mux, dbConn *sql.DB) {
-
-	routes.NewRoutes(r, dbConn)
+func startRoutes(mux *chi.Mux, dbConn *sql.DB) {
+	routes.NewRoutes(mux, dbConn)
 	slog.Info("Routes OK")
-
 }
 
-func startInfraMiddleware(r *chi.Mux) {
-	infraMiddleware.NewLogMiddleware(r).LogMiddleware()
+func startInfraMiddleware(mux *chi.Mux) {
+	infraMiddleware.NewLogMiddleware(mux).LogMiddleware()
 	slog.Info("Logger OK")
-
-	infraMiddleware.NewCorsMiddleware(r).CorsMiddleware()
+	infraMiddleware.NewCorsMiddleware(mux).CorsMiddleware()
 	slog.Info("Cors OK")
 }
 
-func startRouter() (r *chi.Mux) {
-	r = chi.NewRouter()
+func startRouter() (mux *chi.Mux) {
+	mux = chi.NewRouter()
 	return
 }
 
 func startDbConn() (dbConn *sql.DB) {
-
 	db := database.NewDatabase()
-
-	err := db.SetDbConn()
-	if err != nil {
+	if err := db.SetDbConn(); err != nil {
 		panic(err)
 	}
-
 	dbConn = db.GetDbConn()
 	slog.Info("Database OK")
-
 	return
 }
