@@ -27,12 +27,17 @@ func TestCreatePermission(t *testing.T) {
 		Description:  "testing",
 	}
 	createPermissionSQL := `-- name: CreatePermission :exec INSERT INTO permissions \( name, internal_name, description \) VALUES \( \$1, \$2, \$3 \)`
+	mock.ExpectBegin()
 	mock.ExpectExec(createPermissionSQL).
 		WithArgs(permission.Name, permission.InternalName, permission.Description).
 		WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectCommit()
 
-	err = rr.CreatePermission(permission)
-
+	err = rr.Begin()
+	assert.NoError(t, err)
+	newPermission := rr.CreatePermission(permission)
+	assert.NoError(t, newPermission)
+	err = rr.Commit()
 	assert.NoError(t, err)
 
 }
@@ -120,12 +125,17 @@ func TestDeletePermission(t *testing.T) {
 	}
 
 	deletePermissionSQL := `-- name: DeletePermission :exec DELETE FROM permissions WHERE id = \$1`
+	mock.ExpectBegin()
 	mock.ExpectExec(deletePermissionSQL).
 		WithArgs(permission.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectCommit()
 
-	err = rr.DeletePermission(permission.ID)
-
+	err = rr.Begin()
+	assert.NoError(t, err)
+	deletedPermission := rr.DeletePermission(permission.ID)
+	assert.NoError(t, deletedPermission)
+	err = rr.Commit()
 	assert.NoError(t, err)
 
 }
@@ -147,13 +157,17 @@ func TestUpdatePermission(t *testing.T) {
 	}
 
 	updatePermissionSQL := `-- name: UpdatePermission :exec UPDATE permissions SET name = \$1, internal_name = \$2, description = \$3 WHERE id = \$4`
-
+	mock.ExpectBegin()
 	mock.ExpectExec(updatePermissionSQL).
 		WithArgs(permission.Name, permission.InternalName, permission.Description, permission.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectCommit()
 
-	err = rr.UpdatePermission(permission, permission.ID)
-
+	err = rr.Begin()
+	assert.NoError(t, err)
+	updatedPermission := rr.UpdatePermission(permission, permission.ID)
+	assert.NoError(t, updatedPermission)
+	err = rr.Commit()
 	assert.NoError(t, err)
 
 }
