@@ -35,8 +35,7 @@ func (uc *DeletePermissionUseCase) Execute(input DeletePermissionInputDTO) (err 
 		return
 	}
 
-	err = uc.repo.DeletePermission(permission.GetID())
-	if err != nil {
+	if err = uc.repo.DeletePermission(permission.GetID()); err != nil {
 		return
 	}
 

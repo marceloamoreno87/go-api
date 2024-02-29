@@ -38,8 +38,7 @@ func (uc *CreateRoleUseCase) Execute(input CreateRoleInputDTO) (err error) {
 		return
 	}
 
-	err = uc.repo.CreateRole(role)
-	if err != nil {
+	if err = uc.repo.CreateRole(role); err != nil {
 		return
 	}
 

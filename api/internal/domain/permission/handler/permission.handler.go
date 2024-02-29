@@ -91,8 +91,7 @@ func (h *PermissionHandler) GetPermissions(w http.ResponseWriter, r *http.Reques
 // @Security     JWT
 func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Request) {
 
-	err := h.service.CreatePermission(r.Body)
-	if err != nil {
+	if err := h.service.CreatePermission(r.Body); err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
 		return
@@ -117,8 +116,7 @@ func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Requ
 func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
-	err := h.service.UpdatePermission(id, r.Body)
-	if err != nil {
+	if err := h.service.UpdatePermission(id, r.Body); err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
 		return
@@ -144,8 +142,7 @@ func (h *PermissionHandler) DeletePermission(w http.ResponseWriter, r *http.Requ
 
 	id := chi.URLParam(r, "id")
 
-	err := h.service.DeletePermission(id)
-	if err != nil {
+	if err := h.service.DeletePermission(id); err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
 		return

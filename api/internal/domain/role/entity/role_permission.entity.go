@@ -20,8 +20,7 @@ func NewRolePermission(roleId int32, permissionIds []int32) (rolePermission *Rol
 		PermissionIDs: permissionIds,
 	}
 
-	err = rolePermission.Validate()
-	if err != nil {
+	if err = rolePermission.Validate(); err != nil {
 		return
 	}
 

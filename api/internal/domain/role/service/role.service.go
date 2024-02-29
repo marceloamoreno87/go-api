@@ -62,14 +62,12 @@ func (s *RoleService) GetRoles(limit string, offset string) (output []usecase.Ge
 func (s *RoleService) CreateRole(body io.ReadCloser) (err error) {
 	s.repo.Begin()
 	input := usecase.CreateRoleInputDTO{}
-	err = json.NewDecoder(body).Decode(&input)
-	if err != nil {
+	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
 	}
 
-	err = usecase.NewCreateRoleUseCase(s.repo).Execute(input)
-	if err != nil {
+	if err = usecase.NewCreateRoleUseCase(s.repo).Execute(input); err != nil {
 		s.repo.Rollback()
 		slog.Info("err", err)
 		return
@@ -81,14 +79,12 @@ func (s *RoleService) CreateRole(body io.ReadCloser) (err error) {
 func (s *RoleService) UpdateRole(id string, body io.ReadCloser) (err error) {
 	s.repo.Begin()
 	input := usecase.UpdateRoleInputDTO{}
-	err = json.NewDecoder(body).Decode(&input)
-	if err != nil {
+	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
 	}
 
-	err = usecase.NewUpdateRoleUseCase(s.repo).Execute(input)
-	if err != nil {
+	if err = usecase.NewUpdateRoleUseCase(s.repo).Execute(input); err != nil {
 		s.repo.Rollback()
 		slog.Info("err", err)
 		return
@@ -103,8 +99,7 @@ func (s *RoleService) DeleteRole(id string) (err error) {
 		ID: helper.StrToInt32(id),
 	}
 
-	err = usecase.NewDeleteRoleUseCase(s.repo).Execute(input)
-	if err != nil {
+	if err = usecase.NewDeleteRoleUseCase(s.repo).Execute(input); err != nil {
 		s.repo.Rollback()
 		slog.Info("err", err)
 		return

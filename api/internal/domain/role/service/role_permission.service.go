@@ -44,14 +44,12 @@ func (s *RolePermissionService) GetRolePermissions(id string) (output usecase.Ge
 func (s *RolePermissionService) CreateRolePermission(body io.ReadCloser) (err error) {
 	s.repo.Begin()
 	input := usecase.CreateRolePermissionInputDTO{}
-	err = json.NewDecoder(body).Decode(&input)
-	if err != nil {
+	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
 	}
 
-	err = usecase.NewCreateRolePermissionUseCase(s.repo).Execute(input)
-	if err != nil {
+	if err = usecase.NewCreateRolePermissionUseCase(s.repo).Execute(input); err != nil {
 		s.repo.Rollback()
 		slog.Info("err", err)
 		return
@@ -64,14 +62,12 @@ func (s *RolePermissionService) CreateRolePermission(body io.ReadCloser) (err er
 func (s *RolePermissionService) UpdateRolePermission(id string, body io.ReadCloser) (err error) {
 	s.repo.Begin()
 	input := usecase.UpdateRolePermissionInputDTO{}
-	err = json.NewDecoder(body).Decode(&input)
-	if err != nil {
+	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
 	}
 
-	err = usecase.NewUpdateRolePermissionUseCase(s.repo).Execute(input)
-	if err != nil {
+	if err = usecase.NewUpdateRolePermissionUseCase(s.repo).Execute(input); err != nil {
 		s.repo.Rollback()
 		slog.Info("err", err)
 		return

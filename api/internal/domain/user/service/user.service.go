@@ -32,14 +32,12 @@ func (s *UserService) CreateUser(body io.ReadCloser) (err error) {
 	s.repo.Begin()
 
 	input := usecase.CreateUserInputDTO{}
-	err = json.NewDecoder(body).Decode(&input)
-	if err != nil {
+	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
 	}
 
-	err = usecase.NewCreateUserUseCase(s.repo).Execute(input)
-	if err != nil {
+	if err = usecase.NewCreateUserUseCase(s.repo).Execute(input); err != nil {
 		s.repo.Rollback()
 		slog.Info("err", err)
 		return
@@ -78,14 +76,12 @@ func (s *UserService) GetUsers(limit string, offset string) (output []usecase.Ge
 func (s *UserService) UpdateUser(id string, body io.ReadCloser) (err error) {
 	s.repo.Begin()
 	input := usecase.UpdateUserInputDTO{}
-	err = json.NewDecoder(body).Decode(&input)
-	if err != nil {
+	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
 	}
 
-	err = usecase.NewUpdateUserUseCase(s.repo).Execute(input)
-	if err != nil {
+	if err = usecase.NewUpdateUserUseCase(s.repo).Execute(input); err != nil {
 		s.repo.Rollback()
 		slog.Info("err", err)
 		return
@@ -101,8 +97,7 @@ func (s *UserService) DeleteUser(id string) (err error) {
 		ID: helper.StrToInt32(id),
 	}
 
-	err = usecase.NewDeleteUserUseCase(s.repo).Execute(input)
-	if err != nil {
+	if err = usecase.NewDeleteUserUseCase(s.repo).Execute(input); err != nil {
 		s.repo.Rollback()
 		slog.Info("err", err)
 		return

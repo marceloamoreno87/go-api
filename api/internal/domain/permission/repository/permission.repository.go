@@ -25,9 +25,6 @@ func (repo *PermissionRepository) CreatePermission(permission *entity.Permission
 		InternalName: permission.InternalName,
 		Description:  permission.Description,
 	})
-	if err != nil {
-		return
-	}
 	return
 }
 
@@ -74,17 +71,11 @@ func (repo *PermissionRepository) UpdatePermission(permission *entity.Permission
 		InternalName: permission.InternalName,
 		Description:  permission.Description,
 	})
-	if err != nil {
-		return
-	}
 	return
 }
 
 func (repo *PermissionRepository) DeletePermission(id int32) (err error) {
 	err = repo.Repository.GetDbQueries().WithTx(repo.Repository.GetTx()).DeletePermission(context.Background(), id)
-	if err != nil {
-		return
-	}
 	return
 }
 

@@ -62,15 +62,13 @@ func (s *PermissionService) GetPermissions(limit string, offset string) (output 
 func (s *PermissionService) CreatePermission(body io.ReadCloser) (err error) {
 	s.repo.Begin()
 	input := usecase.CreatePermissionInputDTO{}
-	err = json.NewDecoder(body).Decode(&input)
-	if err != nil {
+	if err = json.NewDecoder(body).Decode(&input); err != nil {
 
 		slog.Info("err", err)
 		return
 	}
 
-	err = usecase.NewCreatePermissionUseCase(s.repo).Execute(input)
-	if err != nil {
+	if err = usecase.NewCreatePermissionUseCase(s.repo).Execute(input); err != nil {
 		s.repo.Rollback()
 		slog.Info("err", err)
 		return
@@ -83,14 +81,12 @@ func (s *PermissionService) CreatePermission(body io.ReadCloser) (err error) {
 func (s *PermissionService) UpdatePermission(id string, body io.ReadCloser) (err error) {
 	s.repo.Begin()
 	input := usecase.UpdatePermissionInputDTO{}
-	err = json.NewDecoder(body).Decode(&input)
-	if err != nil {
+	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
 	}
 
-	err = usecase.NewUpdatePermissionUseCase(s.repo).Execute(input)
-	if err != nil {
+	if err = usecase.NewUpdatePermissionUseCase(s.repo).Execute(input); err != nil {
 		s.repo.Rollback()
 		slog.Info("err", err)
 		return
@@ -107,8 +103,7 @@ func (s *PermissionService) DeletePermission(id string) (err error) {
 		ID: helper.StrToInt32(id),
 	}
 
-	err = usecase.NewDeletePermissionUseCase(s.repo).Execute(input)
-	if err != nil {
+	if err = usecase.NewDeletePermissionUseCase(s.repo).Execute(input); err != nil {
 		s.repo.Rollback()
 		slog.Info("err", err)
 		return

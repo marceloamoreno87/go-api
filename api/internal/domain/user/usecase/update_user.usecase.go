@@ -30,8 +30,7 @@ func (uc *UpdateUserUseCase) Execute(input UpdateUserInputDTO) (err error) {
 		return
 	}
 
-	err = uc.repo.UpdateUser(user, input.ID)
-	if err != nil {
+	if err = uc.repo.UpdateUser(user, input.ID); err != nil {
 		return
 	}
 

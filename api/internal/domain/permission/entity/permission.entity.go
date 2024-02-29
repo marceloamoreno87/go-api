@@ -21,8 +21,7 @@ func NewPermission(name string, internalName string, description string) (permis
 		Description:  description,
 	}
 
-	err = permission.Validate()
-	if err != nil {
+	if err = permission.Validate(); err != nil {
 		return
 	}
 

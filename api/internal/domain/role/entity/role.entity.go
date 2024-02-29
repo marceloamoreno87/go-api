@@ -20,9 +20,8 @@ func NewRole(name string, internal_name string, description string) (role *Role,
 		InternalName: internal_name,
 		Description:  description,
 	}
-	valid := role.Validate()
-	if valid != nil {
-		return nil, valid
+	if err = role.Validate(); err != nil {
+		return nil, err
 	}
 
 	return

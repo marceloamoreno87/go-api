@@ -29,8 +29,7 @@ func (uc *CreateRolePermissionUseCase) Execute(input CreateRolePermissionInputDT
 		return
 	}
 
-	err = uc.repo.CreateRolePermission(rolePermission)
-	if err != nil {
+	if err = uc.repo.CreateRolePermission(rolePermission); err != nil {
 		return
 	}
 	return

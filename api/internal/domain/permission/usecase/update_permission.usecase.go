@@ -28,8 +28,7 @@ func (uc *UpdatePermissionUseCase) Execute(input UpdatePermissionInputDTO) (err 
 		return
 	}
 
-	err = uc.repo.UpdatePermission(permission, permission.ID)
-	if err != nil {
+	if err = uc.repo.UpdatePermission(permission, permission.ID); err != nil {
 		return
 	}
 

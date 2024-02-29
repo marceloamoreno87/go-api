@@ -27,8 +27,7 @@ func NewAuthService(repo repository.UserRepositoryInterface) *AuthService {
 func (s *AuthService) Login(body io.ReadCloser) (output usecase.GetJWTOutputDTO, err error) {
 
 	input := usecase.GetJWTInputDTO{}
-	err = json.NewDecoder(body).Decode(&input)
-	if err != nil {
+	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
 	}
@@ -45,8 +44,7 @@ func (s *AuthService) Login(body io.ReadCloser) (output usecase.GetJWTOutputDTO,
 func (s *AuthService) Refresh(body io.ReadCloser) (output usecase.GetRefreshJWTOutputDTO, err error) {
 
 	input := usecase.GetRefreshJWTInputDTO{}
-	err = json.NewDecoder(body).Decode(&input)
-	if err != nil {
+	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
 	}

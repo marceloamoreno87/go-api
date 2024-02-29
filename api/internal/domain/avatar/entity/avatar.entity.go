@@ -16,9 +16,8 @@ func NewAvatar(SVG string) (avatar *Avatar, err error) {
 	avatar = &Avatar{
 		SVG: SVG,
 	}
-	valid := avatar.Validate()
-	if valid != nil {
-		return nil, valid
+	if err = avatar.Validate(); err != nil {
+		return nil, err
 	}
 
 	return

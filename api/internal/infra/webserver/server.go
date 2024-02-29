@@ -8,8 +8,8 @@ import (
 	"golang.org/x/exp/slog"
 
 	"github.com/marceloamoreno/goapi/config"
-	"github.com/marceloamoreno/goapi/internal/infra/api"
 	infraMiddleware "github.com/marceloamoreno/goapi/internal/infra/api/middleware"
+	"github.com/marceloamoreno/goapi/internal/infra/api/routes"
 	"github.com/marceloamoreno/goapi/internal/infra/database"
 )
 
@@ -39,7 +39,7 @@ func startServer(r *chi.Mux) {
 
 func startRoutes(r *chi.Mux, dbConn *sql.DB) {
 
-	api.NewRoutes(r, dbConn)
+	routes.NewRoutes(r, dbConn)
 	slog.Info("Routes OK")
 
 }

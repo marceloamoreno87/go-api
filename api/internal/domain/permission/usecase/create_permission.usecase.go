@@ -27,8 +27,7 @@ func (uc *CreatePermissionUseCase) Execute(input CreatePermissionInputDTO) (err 
 		return
 	}
 
-	err = uc.repo.CreatePermission(permission)
-	if err != nil {
+	if err = uc.repo.CreatePermission(permission); err != nil {
 		return
 	}
 

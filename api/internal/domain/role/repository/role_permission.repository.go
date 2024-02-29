@@ -79,8 +79,7 @@ func (repo *RolePermissionRepository) CreateRolePermission(rolePermission *RoleP
 }
 
 func (repo *RolePermissionRepository) UpdateRolePermission(rolePermission *RolePermissionEntity.RolePermission, id int32) (err error) {
-	err = repo.Repository.GetDbQueries().WithTx(repo.Repository.GetTx()).DeleteRolePermission(context.Background(), id)
-	if err != nil {
+	if err = repo.Repository.GetDbQueries().WithTx(repo.Repository.GetTx()).DeleteRolePermission(context.Background(), id); err != nil {
 		return
 	}
 	return repo.CreateRolePermission(rolePermission)

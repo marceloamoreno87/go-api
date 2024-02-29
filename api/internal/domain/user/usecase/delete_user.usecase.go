@@ -22,8 +22,7 @@ func (uc *DeleteUserUseCase) Execute(input DeleteUserInputDTO) (err error) {
 		return
 	}
 
-	err = uc.repo.DeleteUser(user.GetID())
-	if err != nil {
+	if err = uc.repo.DeleteUser(user.GetID()); err != nil {
 		return
 	}
 

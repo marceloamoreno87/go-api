@@ -23,8 +23,7 @@ func (uc *DeleteRoleUseCase) Execute(input DeleteRoleInputDTO) (err error) {
 		return
 	}
 
-	err = uc.repo.DeleteRole(role.GetID())
-	if err != nil {
+	if err = uc.repo.DeleteRole(role.GetID()); err != nil {
 		return
 	}
 

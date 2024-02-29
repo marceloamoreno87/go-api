@@ -28,8 +28,7 @@ func (uc *UpdateRolePermissionUseCase) Execute(input UpdateRolePermissionInputDT
 		return
 	}
 
-	err = uc.repo.UpdateRolePermission(rolePermission, input.RoleID)
-	if err != nil {
+	if err = uc.repo.UpdateRolePermission(rolePermission, input.RoleID); err != nil {
 		return
 	}
 	return
