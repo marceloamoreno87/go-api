@@ -38,12 +38,12 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	if err := h.service.CreateUser(r.Body); err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 
 	slog.Info("User created")
-	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(nil))
 
 }
 
@@ -65,12 +65,12 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 	output, err := h.service.GetUser(id)
 	if err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 
 	slog.Info("User found")
-	h.SendResponse(w, h.NewResponse(output, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(output))
 
 }
 
@@ -93,12 +93,12 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	output, err := h.service.GetUsers(limit, offset)
 	if err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 
 	slog.Info("Users found")
-	h.SendResponse(w, h.NewResponse(output, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(output))
 
 }
 
@@ -119,12 +119,12 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	if err := h.service.UpdateUser(id, r.Body); err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 
 	slog.Info("User updated")
-	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(nil))
 }
 
 // DeleteUser godoc
@@ -144,10 +144,10 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	if err := h.service.DeleteUser(id); err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 
 	slog.Info("User deleted")
-	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(nil))
 }

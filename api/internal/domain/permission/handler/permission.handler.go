@@ -41,12 +41,12 @@ func (h *PermissionHandler) GetPermission(w http.ResponseWriter, r *http.Request
 	output, err := h.service.GetPermission(id)
 	if err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 
 	slog.Info("Permission found")
-	h.SendResponse(w, h.NewResponse(output, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(output))
 }
 
 // GetPermissions godoc
@@ -69,12 +69,12 @@ func (h *PermissionHandler) GetPermissions(w http.ResponseWriter, r *http.Reques
 	output, err := h.service.GetPermissions(limit, offset)
 	if err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 
 	slog.Info("Permissions found")
-	h.SendResponse(w, h.NewResponse(output, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(output))
 
 }
 
@@ -93,11 +93,11 @@ func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Requ
 
 	if err := h.service.CreatePermission(r.Body); err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 	slog.Info("Permission created")
-	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(nil))
 
 }
 
@@ -118,12 +118,12 @@ func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Requ
 
 	if err := h.service.UpdatePermission(id, r.Body); err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 
 	slog.Info("Permission updated")
-	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(nil))
 }
 
 // DeletePermission godoc
@@ -144,11 +144,11 @@ func (h *PermissionHandler) DeletePermission(w http.ResponseWriter, r *http.Requ
 
 	if err := h.service.DeletePermission(id); err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 
 	slog.Info("Permission deleted")
-	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(nil))
 
 }

@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	PermissionEntity "github.com/marceloamoreno/goapi/internal/domain/permission/entity"
+	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
 type RolePermission struct {
@@ -20,21 +21,24 @@ func NewRolePermission(roleId int32, permissionIds []int32) (rolePermission *Rol
 		PermissionIDs: permissionIds,
 	}
 
-	if err = rolePermission.Validate(); err != nil {
-		return
+	notify := rolePermission.Validate()
+	if notify.HasErrors() {
+		return nil, errors.New(notify.Messages())
 	}
 
 	return
 }
 
-func (r *RolePermission) Validate() (err error) {
+func (r *RolePermission) Validate() (notify *notification.Errors) {
+
+	notify = notification.New()
 
 	if r.RoleID == 0 {
-		return errors.New("roleId is required")
+		notify.AddError("RoleID is required", "role_permission.entity.role_id")
 	}
 
 	if len(r.PermissionIDs) == 0 {
-		return errors.New("permissionId is required")
+		notify.AddError("PermissionIDs is required", "role_permission.entity.permission_ids")
 	}
 
 	return

@@ -35,11 +35,11 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	token, err := h.service.Login(r.Body)
 	if err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 	slog.Info("Login success")
-	h.SendResponse(w, h.NewResponse(token, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(token))
 }
 
 // GetRefreshJWT godoc
@@ -57,10 +57,10 @@ func (h *AuthHandler) Refresh(w http.ResponseWriter, r *http.Request) {
 	token, err := h.service.Refresh(r.Body)
 	if err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 
 	slog.Info("Login refreshed")
-	h.SendResponse(w, h.NewResponse(token, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(token))
 }

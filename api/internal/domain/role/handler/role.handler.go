@@ -41,12 +41,12 @@ func (h *RoleHandler) GetRole(w http.ResponseWriter, r *http.Request) {
 	output, err := h.service.GetRole(id)
 	if err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 
 	slog.Info("Role found")
-	h.SendResponse(w, h.NewResponse(output, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(output))
 }
 
 // GetRoles godoc
@@ -69,12 +69,12 @@ func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
 	output, err := h.service.GetRoles(limit, offset)
 	if err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 
 	slog.Info("Roles found")
-	h.SendResponse(w, h.NewResponse(output, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(output))
 
 }
 
@@ -93,12 +93,12 @@ func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
 
 	if err := h.service.CreateRole(r.Body); err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 
 	slog.Info("Role created")
-	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(nil))
 }
 
 // UpdateRole godoc
@@ -119,12 +119,12 @@ func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
 
 	if err := h.service.UpdateRole(id, r.Body); err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 
 	slog.Info("Role updated")
-	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(nil))
 
 }
 
@@ -146,10 +146,10 @@ func (h *RoleHandler) DeleteRole(w http.ResponseWriter, r *http.Request) {
 
 	if err := h.service.DeleteRole(id); err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 
 	slog.Info("Role deleted")
-	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(nil))
 }

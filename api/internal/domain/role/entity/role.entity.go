@@ -3,6 +3,8 @@ package entity
 import (
 	"errors"
 	"time"
+
+	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
 type Role struct {
@@ -20,22 +22,25 @@ func NewRole(name string, internal_name string, description string) (role *Role,
 		InternalName: internal_name,
 		Description:  description,
 	}
-	if err = role.Validate(); err != nil {
-		return nil, err
+	notify := role.Validate()
+	if notify.HasErrors() {
+		return nil, errors.New(notify.Messages())
 	}
-
 	return
 }
 
-func (r *Role) Validate() (err error) {
+func (r *Role) Validate() (notify *notification.Errors) {
+
+	notify = notification.New()
+
 	if r.Name == "" {
-		return errors.New("name is required")
+		notify.AddError("Name is required", "role.entity.name")
 	}
 	if r.InternalName == "" {
-		return errors.New("internal Name is required")
+		notify.AddError("Internal name is required", "role.entity.internal_name")
 	}
 	if r.Description == "" {
-		return errors.New("description is required")
+		notify.AddError("Description is required", "role.entity.description")
 	}
 	return
 }

@@ -40,12 +40,12 @@ func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *htt
 	output, err := h.service.GetRolePermissions(id)
 	if err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 
 	slog.Info("Role permissions found")
-	h.SendResponse(w, h.NewResponse(output, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(output))
 }
 
 // CreateRolePermission godoc
@@ -63,12 +63,12 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 
 	if err := h.service.CreateRolePermission(r.Body); err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 
 	slog.Info("Role permission created")
-	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(nil))
 
 }
 
@@ -88,10 +88,10 @@ func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *h
 	id := chi.URLParam(r, "id")
 	if err := h.service.UpdateRolePermission(id, r.Body); err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 
 	slog.Info("Role permission updated")
-	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(nil))
 }

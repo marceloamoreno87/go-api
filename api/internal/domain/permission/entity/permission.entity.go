@@ -3,6 +3,8 @@ package entity
 import (
 	"errors"
 	"time"
+
+	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
 type Permission struct {
@@ -21,22 +23,26 @@ func NewPermission(name string, internalName string, description string) (permis
 		Description:  description,
 	}
 
-	if err = permission.Validate(); err != nil {
-		return
+	notify := permission.Validate()
+	if notify.HasErrors() {
+		return nil, errors.New(notify.Messages())
 	}
 
 	return
 }
 
-func (p *Permission) Validate() (err error) {
+func (p *Permission) Validate() (notify *notification.Errors) {
+
+	notify = notification.New()
+
 	if p.Name == "" {
-		return errors.New("name is required")
+		notify.AddError("Name is required", "permission.entity.name")
 	}
 	if p.InternalName == "" {
-		return errors.New("internal name is required")
+		notify.AddError("Internal name is required", "permission.entity.internal_name")
 	}
 	if p.Description == "" {
-		return errors.New("description is required")
+		notify.AddError("Description is required", "permission.entity.description")
 	}
 	return
 }
