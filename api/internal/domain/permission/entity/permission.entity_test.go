@@ -10,25 +10,39 @@ import (
 
 func TestNewPermission(t *testing.T) {
 	permission, err := entity.NewPermission("name", "test_permission", "description")
-
 	assert.Nil(t, err)
 	assert.NotNil(t, permission)
-
 	assert.Equal(t, "name", permission.Name)
 	assert.Equal(t, "test_permission", permission.InternalName)
 	assert.Equal(t, "description", permission.Description)
-
 }
 
-func TestNewPermissionError(t *testing.T) {
-	_, err := entity.NewPermission("", "", "")
+func TestNewPermissionEmpty(t *testing.T) {
+	permission, err := entity.NewPermission("", "", "")
 	assert.NotNil(t, err)
+	assert.Nil(t, permission)
+	assert.Equal(t, "[permission.entity.name]: Name is required, [permission.entity.internal_name]: Internal name is required, [permission.entity.description]: Description is required", err.Error())
 }
 
-func TestValidate(t *testing.T) {
-	permission := &entity.Permission{Name: "name", InternalName: "test_permission", Description: "description"}
-	err := permission.Validate()
-	assert.Nil(t, err)
+func TestValidateName(t *testing.T) {
+	permission, err := entity.NewPermission("", "test_permission", "description")
+	assert.NotNil(t, err)
+	assert.Nil(t, permission)
+	assert.Equal(t, "[permission.entity.name]: Name is required", err.Error())
+}
+
+func TestValidateInternalName(t *testing.T) {
+	permission, err := entity.NewPermission("name", "", "description")
+	assert.NotNil(t, err)
+	assert.Nil(t, permission)
+	assert.Equal(t, "[permission.entity.internal_name]: Internal name is required", err.Error())
+}
+
+func TestValidateDescription(t *testing.T) {
+	permission, err := entity.NewPermission("name", "test_permission", "")
+	assert.NotNil(t, err)
+	assert.Nil(t, permission)
+	assert.Equal(t, "[permission.entity.description]: Description is required", err.Error())
 }
 
 func TestGetID(t *testing.T) {

@@ -22,6 +22,33 @@ func TestNewRolePermissionError(t *testing.T) {
 	assert.Error(t, err)
 }
 
+func TestRolePermissionValidateEmpty(t *testing.T) {
+	rolePermission, err := RolePermissionEntity.NewRolePermission(0, []int32{})
+	assert.Error(t, err)
+	assert.Nil(t, rolePermission)
+	assert.Equal(t, "[role_permission.entity.role_id]: RoleID is required, [role_permission.entity.permission_ids]: PermissionIDs is required", err.Error())
+}
+
+func TestRolePermissionValidate(t *testing.T) {
+	rolePermission, err := RolePermissionEntity.NewRolePermission(1, []int32{1, 2, 3, 4})
+	assert.NoError(t, err)
+	assert.NotNil(t, rolePermission)
+}
+
+func TestRolePermissionValidateRoleID(t *testing.T) {
+	rolePermission, err := RolePermissionEntity.NewRolePermission(0, []int32{1, 2, 3, 4})
+	assert.Error(t, err)
+	assert.Nil(t, rolePermission)
+	assert.Equal(t, "[role_permission.entity.role_id]: RoleID is required", err.Error())
+}
+
+func TestRolePermissionValidatePermissionIDs(t *testing.T) {
+	rolePermission, err := RolePermissionEntity.NewRolePermission(1, []int32{})
+	assert.Error(t, err)
+	assert.Nil(t, rolePermission)
+	assert.Equal(t, "[role_permission.entity.permission_ids]: PermissionIDs is required", err.Error())
+}
+
 func TestGetRoleID(t *testing.T) {
 	rolePermission := &RolePermissionEntity.RolePermission{RoleID: 1}
 	assert.Equal(t, int32(1), rolePermission.GetRoleID())

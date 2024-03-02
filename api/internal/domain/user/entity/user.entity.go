@@ -20,10 +20,10 @@ type User struct {
 	Token     string               `json:"token"`
 	RoleID    int32                `json:"role_id"`
 	AvatarID  int32                `json:"avatar_id"`
-	CreatedAt time.Time            `json:"created_at"`
-	UpdatedAt time.Time            `json:"updated_at"`
 	Role      *RoleEntity.Role     `json:"role"`
 	Avatar    *AvatarEntity.Avatar `json:"avatar"`
+	CreatedAt time.Time            `json:"created_at"`
+	UpdatedAt time.Time            `json:"updated_at"`
 }
 
 func NewUser(name string, email string, password string, roleID int32, avatarID int32) (user *User, err error) {
@@ -34,6 +34,7 @@ func NewUser(name string, email string, password string, roleID int32, avatarID 
 		RoleID:   roleID,
 		AvatarID: avatarID,
 	}
+
 	notify := user.Validate()
 	if notify.HasErrors() {
 		return nil, errors.New(notify.Messages())

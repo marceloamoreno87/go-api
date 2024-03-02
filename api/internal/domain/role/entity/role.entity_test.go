@@ -25,10 +25,25 @@ func TestNewInvalid(t *testing.T) {
 	assert.Nil(t, role)
 }
 
-func TestValidate(t *testing.T) {
-	role := &entity.Role{Name: "name", InternalName: "test_role", Description: "description"}
-	err := role.Validate()
-	assert.Nil(t, err)
+func TestValidateName(t *testing.T) {
+	role, err := entity.NewRole("", "test_role", "description")
+	assert.NotNil(t, err)
+	assert.Nil(t, role)
+	assert.Equal(t, "[role.entity.name]: Name is required", err.Error())
+}
+
+func TestValidateInternalName(t *testing.T) {
+	role, err := entity.NewRole("name", "", "description")
+	assert.NotNil(t, err)
+	assert.Nil(t, role)
+	assert.Equal(t, "[role.entity.internal_name]: Internal name is required", err.Error())
+}
+
+func TestValidateDescription(t *testing.T) {
+	role, err := entity.NewRole("name", "test_role", "")
+	assert.NotNil(t, err)
+	assert.Nil(t, role)
+	assert.Equal(t, "[role.entity.description]: Description is required", err.Error())
 }
 
 func TestGetID(t *testing.T) {

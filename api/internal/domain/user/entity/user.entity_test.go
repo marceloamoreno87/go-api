@@ -17,28 +17,53 @@ func TestNewUser(t *testing.T) {
 	assert.Equal(t, int32(1), user.GetRoleID())
 }
 
-func TestValidate(t *testing.T) {
-	user := &entity.User{
-		Name:     "Test User",
-		Email:    "test@example.com",
-		Password: "password",
-		RoleID:   1,
-		AvatarID: 1,
-	}
-	err := user.Validate()
-	assert.NoError(t, err)
+func TestNewUserEmpty(t *testing.T) {
+	user, err := entity.NewUser("", "", "", 0, 0)
+	assert.Error(t, err)
+	assert.Nil(t, user)
+	assert.Equal(t, "[user.entity.name]: Name is required, [user.entity.email]: Email is required, [user.entity.email]: Email is invalid, [user.entity.password]: Password is required, [user.entity.role_id]: Role is required, [user.entity.avatar_id]: Avatar is required", err.Error())
+}
+
+func TestValidateName(t *testing.T) {
+	user, err := entity.NewUser("", "test@example.com", "password", 1, 1)
+	assert.Error(t, err)
+	assert.Nil(t, user)
+	assert.Equal(t, "[user.entity.name]: Name is required", err.Error())
+}
+
+func TestValidateEmail(t *testing.T) {
+	user, err := entity.NewUser("Test User", "", "password", 1, 1)
+	assert.Error(t, err)
+	assert.Nil(t, user)
+	assert.Equal(t, "[user.entity.email]: Email is required, [user.entity.email]: Email is invalid", err.Error())
+}
+
+func TestValidatePassword(t *testing.T) {
+	user, err := entity.NewUser("Test User", "test@example.com", "", 1, 1)
+	assert.Error(t, err)
+	assert.Nil(t, user)
+	assert.Equal(t, "[user.entity.password]: Password is required", err.Error())
+}
+
+func TestValidateRoleID(t *testing.T) {
+	user, err := entity.NewUser("Test User", "test@example.com", "password", 0, 1)
+	assert.Error(t, err)
+	assert.Nil(t, user)
+	assert.Equal(t, "[user.entity.role_id]: Role is required", err.Error())
+}
+
+func TestValidateAvatarID(t *testing.T) {
+	user, err := entity.NewUser("Test User", "test@example.com", "password", 1, 0)
+	assert.Error(t, err)
+	assert.Nil(t, user)
+	assert.Equal(t, "[user.entity.avatar_id]: Avatar is required", err.Error())
 }
 
 func TestValidateInvalidEmail(t *testing.T) {
-	user := &entity.User{
-		Name:     "Test User",
-		Email:    "test",
-		Password: "password",
-		RoleID:   1,
-		AvatarID: 1,
-	}
-	err := user.Validate()
+	user, err := entity.NewUser("Test User", "test", "password", 1, 1)
 	assert.Error(t, err)
+	assert.Nil(t, user)
+	assert.Equal(t, "[user.entity.email]: Email is invalid", err.Error())
 }
 
 func TestComparePassword(t *testing.T) {
