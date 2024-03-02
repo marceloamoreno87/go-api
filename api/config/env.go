@@ -33,8 +33,10 @@ type Env struct {
 	jwtExpiresIn string
 }
 
-func NewEnv() *Env {
-	env := &Env{
+var Environment *Env
+
+func NewEnv() {
+	newEnv := &Env{
 		nameProject:  os.Getenv("NAME_PROJECT"),
 		dbDriver:     os.Getenv("DB_DRIVER"),
 		dbSslMode:    os.Getenv("DB_SSL_MODE"),
@@ -47,11 +49,12 @@ func NewEnv() *Env {
 		jwtSecretKey: os.Getenv("JWT_SECRET_KEY"),
 		jwtExpiresIn: os.Getenv("JWT_EXPIRES_IN"),
 	}
-	notify := env.Validate()
+	notify := newEnv.Validate()
 	if notify.HasErrors() {
 		panic(notify.Messages())
 	}
-	return env
+
+	Environment = newEnv
 }
 
 func (e *Env) Validate() (notify *notification.Errors) {

@@ -22,7 +22,7 @@ func Bootstrap() {
 }
 
 func startServer(mux *chi.Mux) {
-	port := config.NewEnv().GetPort()
+	port := config.Environment.GetPort()
 	slog.Info("Server started on port http://localhost:" + port + "/api/v1")
 	slog.Info("Swagger started on port http://localhost:" + port + "/api/v1/swagger/index.html")
 	slog.Info("Health started on port http://localhost:" + port + "/api/v1/health")

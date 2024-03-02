@@ -13,8 +13,8 @@ type JWTAuth struct {
 }
 
 func New(claims map[string]interface{}) *JWTAuth {
-	claims["exp"] = helper.StrToInt32(config.NewEnv().GetJWTExpiresIn())
-	_, token, err := jwtauth.New("HS256", []byte(config.NewEnv().GetJWTSecretKey()), nil).Encode(claims)
+	claims["exp"] = helper.StrToInt32(config.Environment.GetJWTExpiresIn())
+	_, token, err := jwtauth.New("HS256", []byte(config.Environment.GetJWTSecretKey()), nil).Encode(claims)
 	if err != nil {
 		slog.Info("err", err)
 	}

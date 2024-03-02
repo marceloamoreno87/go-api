@@ -10,7 +10,7 @@ import (
 
 func (r *Route) getSwaggerRoutes(router chi.Router) {
 	router.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:"+config.NewEnv().GetPort()+"/api/v1/swagger/doc.json"),
+		httpSwagger.URL("http://localhost:"+config.Environment.GetPort()+"/api/v1/swagger/doc.json"),
 	))
 }
 

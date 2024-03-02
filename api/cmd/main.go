@@ -1,8 +1,13 @@
 package main
 
 import (
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/infra/webserver"
 )
+
+func init() {
+	config.NewEnv()
+}
 
 // @title GO API
 // @description This is a sample server for GO tools.
