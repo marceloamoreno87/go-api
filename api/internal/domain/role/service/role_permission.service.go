@@ -7,13 +7,12 @@ import (
 
 	"github.com/marceloamoreno/goapi/internal/domain/role/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/role/usecase"
-	"github.com/marceloamoreno/goapi/internal/shared/helper"
 )
 
 type RolePermissionServiceInterface interface {
-	GetRolePermissions(id string) (output usecase.GetRolePermissionsOutputDTO, err error)
+	GetRolePermissions(id int32) (output usecase.GetRolePermissionsOutputDTO, err error)
 	CreateRolePermission(body io.ReadCloser) (err error)
-	UpdateRolePermission(id string, body io.ReadCloser) (err error)
+	UpdateRolePermission(id int32, body io.ReadCloser) (err error)
 }
 
 type RolePermissionService struct {
@@ -26,10 +25,10 @@ func NewRolePermissionService(repo repository.RolePermissionRepositoryInterface)
 	}
 }
 
-func (s *RolePermissionService) GetRolePermissions(id string) (output usecase.GetRolePermissionsOutputDTO, err error) {
+func (s *RolePermissionService) GetRolePermissions(id int32) (output usecase.GetRolePermissionsOutputDTO, err error) {
 
 	input := usecase.GetRolePermissionsInputDTO{
-		RoleID: helper.StrToInt32(id),
+		RoleID: id,
 	}
 
 	output, err = usecase.NewGetRolePermissionsUseCase(s.repo).Execute(input)
@@ -59,9 +58,11 @@ func (s *RolePermissionService) CreateRolePermission(body io.ReadCloser) (err er
 
 }
 
-func (s *RolePermissionService) UpdateRolePermission(id string, body io.ReadCloser) (err error) {
+func (s *RolePermissionService) UpdateRolePermission(id int32, body io.ReadCloser) (err error) {
 	s.repo.Begin()
-	input := usecase.UpdateRolePermissionInputDTO{}
+	input := usecase.UpdateRolePermissionInputDTO{
+		RoleID: id,
+	}
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
@@ -73,5 +74,6 @@ func (s *RolePermissionService) UpdateRolePermission(id string, body io.ReadClos
 		return
 	}
 	s.repo.Commit()
+	slog.Info("Role permission updated")
 	return
 }

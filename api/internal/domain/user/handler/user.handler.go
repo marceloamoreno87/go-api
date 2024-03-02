@@ -4,9 +4,9 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	_ "github.com/marceloamoreno/goapi/internal/domain/user/usecase"
+	"github.com/marceloamoreno/goapi/internal/shared/helper"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
@@ -35,16 +35,12 @@ func NewUserHandler(
 // @Router /user [post]
 // @Security     JWT
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
-
 	if err := h.service.CreateUser(r.Body); err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-
-	slog.Info("User created")
-	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
-
+	h.SendResponse(w, h.NewResponse(nil))
 }
 
 // GetUser godoc
@@ -59,19 +55,13 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 // @Router /user/{id} [get]
 // @Security     JWT
 func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
-
-	id := chi.URLParam(r, "id")
-
-	output, err := h.service.GetUser(id)
+	output, err := h.service.GetUser(helper.GetID(r))
 	if err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-
-	slog.Info("User found")
-	h.SendResponse(w, h.NewResponse(output, http.StatusOK))
-
+	h.SendResponse(w, h.NewResponse(output))
 }
 
 // GetUsers godoc
@@ -87,19 +77,14 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 // @Router /user [get]
 // @Security     JWT
 func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
-	limit := chi.URLParam(r, "limit")
-	offset := chi.URLParam(r, "offset")
-
+	limit, offset := helper.GetLimitAndOffset(r)
 	output, err := h.service.GetUsers(limit, offset)
 	if err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-
-	slog.Info("Users found")
-	h.SendResponse(w, h.NewResponse(output, http.StatusOK))
-
+	h.SendResponse(w, h.NewResponse(output))
 }
 
 // UpdateUser godoc
@@ -115,16 +100,12 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 // @Router /user/{id} [put]
 // @Security     JWT
 func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
-
-	if err := h.service.UpdateUser(id, r.Body); err != nil {
+	if err := h.service.UpdateUser(helper.GetID(r), r.Body); err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-
-	slog.Info("User updated")
-	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(nil))
 }
 
 // DeleteUser godoc
@@ -140,14 +121,10 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 // @Router /user/{id} [delete]
 // @Security     JWT
 func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
-
-	if err := h.service.DeleteUser(id); err != nil {
+	if err := h.service.DeleteUser(helper.GetID(r)); err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-
-	slog.Info("User deleted")
-	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(nil))
 }

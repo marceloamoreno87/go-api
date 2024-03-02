@@ -7,6 +7,8 @@ import (
 
 	AvatarEntity "github.com/marceloamoreno/goapi/internal/domain/avatar/entity"
 	RoleEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
+	"github.com/marceloamoreno/goapi/internal/shared/notification"
+	"github.com/marceloamoreno/goapi/pkg/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -15,6 +17,7 @@ type User struct {
 	Name      string               `json:"name"`
 	Email     string               `json:"email"`
 	Password  string               `json:"password"`
+	Token     string               `json:"token"`
 	RoleID    int32                `json:"role_id"`
 	AvatarID  int32                `json:"avatar_id"`
 	CreatedAt time.Time            `json:"created_at"`
@@ -31,8 +34,9 @@ func NewUser(name string, email string, password string, roleID int32, avatarID 
 		RoleID:   roleID,
 		AvatarID: avatarID,
 	}
-	if err = user.Validate(); err != nil {
-		return nil, err
+	notify := user.Validate()
+	if notify.HasErrors() {
+		return nil, errors.New(notify.Messages())
 	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -40,29 +44,43 @@ func NewUser(name string, email string, password string, roleID int32, avatarID 
 		return nil, err
 	}
 	user.SetPassword(string(hash))
-
 	return
 }
 
-func (u *User) Validate() (err error) {
+func (u *User) Validate() (notify *notification.Errors) {
+
+	notify = notification.New()
 	if u.Name == "" {
-		return errors.New("name is required")
+		notify.AddError("Name is required", "user.entity.name")
 	}
 	if u.Email == "" {
-		return errors.New("email is required")
+		notify.AddError("Email is required", "user.entity.email")
 	}
 	if _, err := mail.ParseAddress(u.Email); err != nil {
-		return errors.New("email is invalid")
+		notify.AddError("Email is invalid", "user.entity.email")
 	}
 	if u.Password == "" {
-		return errors.New("password is required")
+		notify.AddError("Password is required", "user.entity.password")
 	}
 	if u.RoleID == 0 {
-		return errors.New("role is required")
+		notify.AddError("Role is required", "user.entity.role_id")
 	}
 	if u.AvatarID == 0 {
-		return errors.New("avatar is required")
+		notify.AddError("Avatar is required", "user.entity.avatar_id")
 	}
+	return
+}
+
+func (u *User) GenerateToken() (err error) {
+	claims := map[string]interface{}{
+		"id":        u.ID,
+		"name":      u.Name,
+		"email":     u.Email,
+		"role_id":   u.RoleID,
+		"avatar_id": u.AvatarID,
+	}
+	jwtauth := jwt.New(claims)
+	u.Token = jwtauth.Token
 	return
 }
 

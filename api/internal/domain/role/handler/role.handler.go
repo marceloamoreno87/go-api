@@ -4,9 +4,9 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/marceloamoreno/goapi/internal/domain/role/service"
 	_ "github.com/marceloamoreno/goapi/internal/domain/role/usecase"
+	"github.com/marceloamoreno/goapi/internal/shared/helper"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
@@ -35,18 +35,13 @@ func NewRoleHandler(
 // @Router /role/{id} [get]
 // @Security     JWT
 func (h *RoleHandler) GetRole(w http.ResponseWriter, r *http.Request) {
-
-	id := chi.URLParam(r, "id")
-
-	output, err := h.service.GetRole(id)
+	output, err := h.service.GetRole(helper.GetID(r))
 	if err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-
-	slog.Info("Role found")
-	h.SendResponse(w, h.NewResponse(output, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(output))
 }
 
 // GetRoles godoc
@@ -62,20 +57,14 @@ func (h *RoleHandler) GetRole(w http.ResponseWriter, r *http.Request) {
 // @Router /role [get]
 // @Security     JWT
 func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
-
-	limit := chi.URLParam(r, "limit")
-	offset := chi.URLParam(r, "offset")
-
+	limit, offset := helper.GetLimitAndOffset(r)
 	output, err := h.service.GetRoles(limit, offset)
 	if err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-
-	slog.Info("Roles found")
-	h.SendResponse(w, h.NewResponse(output, http.StatusOK))
-
+	h.SendResponse(w, h.NewResponse(output))
 }
 
 // CreateRole godoc
@@ -90,15 +79,12 @@ func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
 // @Router /role [post]
 // @Security     JWT
 func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
-
 	if err := h.service.CreateRole(r.Body); err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-
-	slog.Info("Role created")
-	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(nil))
 }
 
 // UpdateRole godoc
@@ -114,18 +100,12 @@ func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
 // @Router /role/{id} [put]
 // @Security     JWT
 func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
-
-	id := chi.URLParam(r, "id")
-
-	if err := h.service.UpdateRole(id, r.Body); err != nil {
+	if err := h.service.UpdateRole(helper.GetID(r), r.Body); err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-
-	slog.Info("Role updated")
-	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
-
+	h.SendResponse(w, h.NewResponse(nil))
 }
 
 // DeleteRole godoc
@@ -141,15 +121,10 @@ func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
 // @Router /role/{id} [delete]
 // @Security     JWT
 func (h *RoleHandler) DeleteRole(w http.ResponseWriter, r *http.Request) {
-
-	id := chi.URLParam(r, "id")
-
-	if err := h.service.DeleteRole(id); err != nil {
+	if err := h.service.DeleteRole(helper.GetID(r)); err != nil {
 		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error(), http.StatusBadRequest, "error"))
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-
-	slog.Info("Role deleted")
-	h.SendResponse(w, h.NewResponse(nil, http.StatusOK))
+	h.SendResponse(w, h.NewResponse(nil))
 }

@@ -3,6 +3,8 @@ package entity
 import (
 	"errors"
 	"time"
+
+	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
 type Avatar struct {
@@ -16,16 +18,20 @@ func NewAvatar(SVG string) (avatar *Avatar, err error) {
 	avatar = &Avatar{
 		SVG: SVG,
 	}
-	if err = avatar.Validate(); err != nil {
-		return nil, err
+	notify := avatar.Validate()
+	if notify.HasErrors() {
+		return nil, errors.New(notify.Messages())
 	}
 
 	return
 }
 
-func (u *Avatar) Validate() (err error) {
+func (u *Avatar) Validate() (notify *notification.Errors) {
+
+	notify = notification.New()
+
 	if u.SVG == "" {
-		return errors.New("SVG is required")
+		notify.AddError("SVG is required", "avatar.entity.svg")
 	}
 	return
 }

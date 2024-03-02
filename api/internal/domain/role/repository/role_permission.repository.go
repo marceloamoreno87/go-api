@@ -6,11 +6,19 @@ import (
 	"sync"
 
 	PermissionEntity "github.com/marceloamoreno/goapi/internal/domain/permission/entity"
+	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	RoleEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	RolePermissionEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/db"
 	"github.com/marceloamoreno/goapi/internal/shared/repository"
 )
+
+type RolePermissionRepositoryInterface interface {
+	GetRolePermissionsByRole(id int32) (rolePermissions *entity.RolePermission, err error)
+	CreateRolePermission(rolePermission *entity.RolePermission) (err error)
+	UpdateRolePermission(rolePermission *entity.RolePermission, id int32) (err error)
+	repository.RepositoryInterface
+}
 
 type RolePermissionRepository struct {
 	repository.Repository

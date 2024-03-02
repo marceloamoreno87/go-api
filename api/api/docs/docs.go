@@ -30,12 +30,12 @@ const docTemplate = `{
                 "summary": "Get JWT",
                 "parameters": [
                     {
-                        "description": "Token",
-                        "name": "token",
+                        "description": "User",
+                        "name": "user",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetJWTInputDTO"
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.LoginInputDTO"
                         }
                     }
                 ],
@@ -51,7 +51,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetJWTOutputDTO"
+                                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.LoginOutputDTO"
                                         }
                                     }
                                 }
@@ -80,43 +80,7 @@ const docTemplate = `{
                     "Auth"
                 ],
                 "summary": "Get Refresh JWT",
-                "parameters": [
-                    {
-                        "description": "Token",
-                        "name": "token",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetRefreshJWTInputDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetRefreshJWTOutputDTO"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
-                        }
-                    }
-                }
+                "responses": {}
             }
         },
         "/permission": {
@@ -1111,41 +1075,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetJWTInputDTO": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetJWTOutputDTO": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetRefreshJWTInputDTO": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetRefreshJWTOutputDTO": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string"
-                }
-            }
-        },
         "github_com_marceloamoreno_goapi_internal_domain_permission_entity.Permission": {
             "type": "object",
             "properties": {
@@ -1466,6 +1395,25 @@ const docTemplate = `{
                 }
             }
         },
+        "github_com_marceloamoreno_goapi_internal_domain_user_usecase.LoginInputDTO": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_user_usecase.LoginOutputDTO": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
         "github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdateUserInputDTO": {
             "type": "object",
             "properties": {
@@ -1492,19 +1440,13 @@ const docTemplate = `{
         "github_com_marceloamoreno_goapi_internal_shared_response.Response": {
             "type": "object",
             "properties": {
-                "data": {},
-                "status_code": {
-                    "type": "integer"
-                }
+                "data": {}
             }
         },
         "github_com_marceloamoreno_goapi_internal_shared_response.ResponseError": {
             "type": "object",
             "properties": {
-                "code_error": {
-                    "type": "string"
-                },
-                "msg": {
+                "err": {
                     "type": "string"
                 }
             }

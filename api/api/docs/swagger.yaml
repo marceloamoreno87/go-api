@@ -1,27 +1,5 @@
 basePath: /api/v1
 definitions:
-  github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetJWTInputDTO:
-    properties:
-      email:
-        type: string
-      password:
-        type: string
-    type: object
-  github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetJWTOutputDTO:
-    properties:
-      token:
-        type: string
-    type: object
-  github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetRefreshJWTInputDTO:
-    properties:
-      token:
-        type: string
-    type: object
-  github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetRefreshJWTOutputDTO:
-    properties:
-      token:
-        type: string
-    type: object
   github_com_marceloamoreno_goapi_internal_domain_permission_entity.Permission:
     properties:
       created_at:
@@ -230,6 +208,18 @@ definitions:
       updated_at:
         type: string
     type: object
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.LoginInputDTO:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.LoginOutputDTO:
+    properties:
+      token:
+        type: string
+    type: object
   github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdateUserInputDTO:
     properties:
       avatar_id:
@@ -248,14 +238,10 @@ definitions:
   github_com_marceloamoreno_goapi_internal_shared_response.Response:
     properties:
       data: {}
-      status_code:
-        type: integer
     type: object
   github_com_marceloamoreno_goapi_internal_shared_response.ResponseError:
     properties:
-      code_error:
-        type: string
-      msg:
+      err:
         type: string
     type: object
 host: localhost:3000
@@ -271,12 +257,12 @@ paths:
       - application/json
       description: Get JWT
       parameters:
-      - description: Token
+      - description: User
         in: body
-        name: token
+        name: user
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetJWTInputDTO'
+          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.LoginInputDTO'
       produces:
       - application/json
       responses:
@@ -287,7 +273,7 @@ paths:
             - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetJWTOutputDTO'
+                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.LoginOutputDTO'
               type: object
         "400":
           description: Bad Request
@@ -301,29 +287,9 @@ paths:
       consumes:
       - application/json
       description: Get Refresh JWT
-      parameters:
-      - description: Token
-        in: body
-        name: token
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetRefreshJWTInputDTO'
       produces:
       - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_auth_usecase.GetRefreshJWTOutputDTO'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+      responses: {}
       summary: Get Refresh JWT
       tags:
       - Auth

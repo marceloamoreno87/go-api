@@ -18,33 +18,26 @@ type Responses struct {
 }
 
 type Response struct {
-	Data       interface{} `json:"data"`
-	StatusCode int         `json:"status_code"`
+	Data any `json:"data"`
 }
 
 type ResponseError struct {
-	Msg       string `json:"msg"`
-	CodeError string `json:"code_error"`
+	Err string `json:"err"`
 }
 
 func (rt *Responses) NewResponse(
-	data interface{},
-	statusCode int,
+	data any,
 ) Response {
 	return Response{
-		Data:       data,
-		StatusCode: statusCode,
+		Data: data,
 	}
 }
 
 func (rt *Responses) NewResponseError(
-	msg string,
-	statusCode int,
-	codeError string,
+	err string,
 ) ResponseError {
 	return ResponseError{
-		Msg:       msg,
-		CodeError: codeError,
+		Err: err,
 	}
 }
 
@@ -53,7 +46,7 @@ func (rt *Responses) SendResponse(
 	response Response,
 ) {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(response.StatusCode)
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
 

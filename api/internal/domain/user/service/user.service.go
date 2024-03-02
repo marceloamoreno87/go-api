@@ -2,20 +2,21 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"log/slog"
 
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
-	"github.com/marceloamoreno/goapi/internal/shared/helper"
 )
 
 type UserServiceInterface interface {
 	CreateUser(body io.ReadCloser) (err error)
-	GetUser(id string) (output usecase.GetUserOutputDTO, err error)
-	GetUsers(limit string, offset string) (output []usecase.GetUsersOutputDTO, err error)
-	UpdateUser(id string, body io.ReadCloser) (err error)
-	DeleteUser(id string) (err error)
+	GetUser(id int32) (output usecase.GetUserOutputDTO, err error)
+	GetUsers(limit int32, offset int32) (output []usecase.GetUsersOutputDTO, err error)
+	UpdateUser(id int32, body io.ReadCloser) (err error)
+	DeleteUser(id int32) (err error)
+	Login(body io.ReadCloser) (output usecase.LoginOutputDTO, err error)
 }
 
 type UserService struct {
@@ -37,19 +38,26 @@ func (s *UserService) CreateUser(body io.ReadCloser) (err error) {
 		return
 	}
 
+	output, _ := usecase.NewGetUserByEmailUseCase(s.repo).Execute(usecase.GetUserByEmailInputDTO{Email: input.Email})
+	if output.ID != 0 {
+		slog.Info("email already exists")
+		return errors.New("email already exists")
+	}
+
 	if err = usecase.NewCreateUserUseCase(s.repo).Execute(input); err != nil {
 		s.repo.Rollback()
 		slog.Info("err", err)
 		return
 	}
 	s.repo.Commit()
+	slog.Info("User created")
 	return
 }
 
-func (s *UserService) GetUser(id string) (output usecase.GetUserOutputDTO, err error) {
+func (s *UserService) GetUser(id int32) (output usecase.GetUserOutputDTO, err error) {
 
 	input := usecase.GetUserInputDTO{
-		ID: helper.StrToInt32(id),
+		ID: id,
 	}
 
 	output, err = usecase.NewGetUserUseCase(s.repo).Execute(input)
@@ -57,44 +65,49 @@ func (s *UserService) GetUser(id string) (output usecase.GetUserOutputDTO, err e
 		slog.Info("err", err)
 		return
 	}
-
+	slog.Info("User found")
 	return
 }
 
-func (s *UserService) GetUsers(limit string, offset string) (output []usecase.GetUsersOutputDTO, err error) {
+func (s *UserService) GetUsers(limit int32, offset int32) (output []usecase.GetUsersOutputDTO, err error) {
 
 	input := usecase.GetUsersInputDTO{
-		Limit:  helper.StrToInt32(limit),
-		Offset: helper.StrToInt32(offset),
+		Limit:  limit,
+		Offset: offset,
 	}
 
 	output, err = usecase.NewGetUsersUseCase(s.repo).Execute(input)
-
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+	slog.Info("Users found")
 	return
 }
 
-func (s *UserService) UpdateUser(id string, body io.ReadCloser) (err error) {
+func (s *UserService) UpdateUser(id int32, body io.ReadCloser) (err error) {
 	s.repo.Begin()
-	input := usecase.UpdateUserInputDTO{}
+	input := usecase.UpdateUserInputDTO{
+		ID: id,
+	}
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
 	}
-
 	if err = usecase.NewUpdateUserUseCase(s.repo).Execute(input); err != nil {
 		s.repo.Rollback()
 		slog.Info("err", err)
 		return
 	}
 	s.repo.Commit()
-
+	slog.Info("User updated")
 	return
 }
 
-func (s *UserService) DeleteUser(id string) (err error) {
+func (s *UserService) DeleteUser(id int32) (err error) {
 	s.repo.Begin()
 	input := usecase.DeleteUserInputDTO{
-		ID: helper.StrToInt32(id),
+		ID: id,
 	}
 
 	if err = usecase.NewDeleteUserUseCase(s.repo).Execute(input); err != nil {
@@ -103,5 +116,21 @@ func (s *UserService) DeleteUser(id string) (err error) {
 		return
 	}
 	s.repo.Commit()
+	slog.Info("User deleted")
+	return
+}
+
+func (s *UserService) Login(body io.ReadCloser) (output usecase.LoginOutputDTO, err error) {
+	input := usecase.LoginInputDTO{}
+	if err = json.NewDecoder(body).Decode(&input); err != nil {
+		slog.Info("err", err)
+		return
+	}
+	output, err = usecase.NewLoginUseCase(s.repo).Execute(input)
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+	slog.Info("User logged in")
 	return
 }
