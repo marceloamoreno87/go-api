@@ -7,11 +7,11 @@ import (
 	userService "github.com/marceloamoreno/goapi/internal/domain/user/service"
 )
 
-func (r *Route) getUserRoutes() {
+func (r *Route) getUserRoutes(router chi.Router) {
 	repo := userRepository.NewUserRepository(r.dbConn)
 	service := userService.NewUserService(repo)
 	handler := userHandler.NewUserHandler(service)
-	r.mux.Route("/user", func(r chi.Router) {
+	router.Route("/user", func(r chi.Router) {
 		r.Get("/", handler.GetUsers)
 		r.Get("/{id}", handler.GetUser)
 		r.Post("/", handler.CreateUser)

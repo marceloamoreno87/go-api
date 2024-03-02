@@ -21,12 +21,12 @@ func Bootstrap() {
 	startServer(mux)
 }
 
-func startServer(r *chi.Mux) {
+func startServer(mux *chi.Mux) {
 	port := config.NewEnv().GetPort()
 	slog.Info("Server started on port http://localhost:" + port + "/api/v1")
 	slog.Info("Swagger started on port http://localhost:" + port + "/api/v1/swagger/index.html")
 	slog.Info("Health started on port http://localhost:" + port + "/api/v1/health")
-	if err := http.ListenAndServe(":"+port, r); err != nil {
+	if err := http.ListenAndServe(":"+port, mux); err != nil {
 		panic(err)
 	}
 }

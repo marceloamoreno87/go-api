@@ -4,9 +4,9 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/marceloamoreno/goapi/internal/domain/role/service"
 	_ "github.com/marceloamoreno/goapi/internal/domain/role/usecase"
+	"github.com/marceloamoreno/goapi/internal/shared/helper"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
@@ -35,15 +35,12 @@ func NewRolePermissionHandler(
 // @Router /role/{id}/permission [get]
 // @Security     JWT
 func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
-
-	output, err := h.service.GetRolePermissions(id)
+	output, err := h.service.GetRolePermissions(helper.GetID(r))
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-
 	slog.Info("Role permissions found")
 	h.SendResponse(w, h.NewResponse(output))
 }
@@ -60,13 +57,11 @@ func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *htt
 // @Router /role/{id}/permission [post]
 // @Security     JWT
 func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *http.Request) {
-
 	if err := h.service.CreateRolePermission(r.Body); err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-
 	slog.Info("Role permission created")
 	h.SendResponse(w, h.NewResponse(nil))
 
@@ -85,13 +80,10 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 // @Router /role/{id}/permission [put]
 // @Security     JWT
 func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
-	if err := h.service.UpdateRolePermission(id, r.Body); err != nil {
+	if err := h.service.UpdateRolePermission(helper.GetID(r), r.Body); err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-
-	slog.Info("Role permission updated")
 	h.SendResponse(w, h.NewResponse(nil))
 }

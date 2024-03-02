@@ -43,6 +43,8 @@ func (uc *GetRolesUseCase) Execute(input GetRolesInputDTO) (output []GetRolesOut
 			Name:         role.Name,
 			InternalName: role.InternalName,
 			Description:  role.Description,
+			CreatedAt:    role.CreatedAt,
+			UpdatedAt:    role.UpdatedAt,
 		})
 	}
 

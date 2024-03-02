@@ -2,6 +2,8 @@ package config
 
 import (
 	"os"
+
+	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
 type EnvironmentInterface interface {
@@ -32,7 +34,7 @@ type Env struct {
 }
 
 func NewEnv() *Env {
-	return &Env{
+	env := &Env{
 		nameProject:  os.Getenv("NAME_PROJECT"),
 		dbDriver:     os.Getenv("DB_DRIVER"),
 		dbSslMode:    os.Getenv("DB_SSL_MODE"),
@@ -45,6 +47,50 @@ func NewEnv() *Env {
 		jwtSecretKey: os.Getenv("JWT_SECRET_KEY"),
 		jwtExpiresIn: os.Getenv("JWT_EXPIRES_IN"),
 	}
+	notify := env.Validate()
+	if notify.HasErrors() {
+		panic(notify.Messages())
+	}
+	return env
+}
+
+func (e *Env) Validate() (notify *notification.Errors) {
+	notify = notification.New()
+
+	if e.nameProject == "" {
+		notify.AddError("NameProject is required", "config.env.nameProject")
+	}
+	if e.port == "" {
+		notify.AddError("Port is required", "config.env.port")
+	}
+	if e.dbDriver == "" {
+		notify.AddError("DBDriver is required", "config.env.dbDriver")
+	}
+	if e.dbSslMode == "" {
+		notify.AddError("DBSslMode is required", "config.env.dbSslMode")
+	}
+	if e.dbHost == "" {
+		notify.AddError("DBHost is required", "config.env.dbHost")
+	}
+	if e.dbPort == "" {
+		notify.AddError("DBPort is required", "config.env.dbPort")
+	}
+	if e.dbUser == "" {
+		notify.AddError("DBUser is required", "config.env.dbUser")
+	}
+	if e.dbPassword == "" {
+		notify.AddError("DBPassword is required", "config.env.dbPassword")
+	}
+	if e.dbName == "" {
+		notify.AddError("DBName is required", "config.env.dbName")
+	}
+	if e.jwtSecretKey == "" {
+		notify.AddError("JWTSecretKey is required", "config.env.jwtSecretKey")
+	}
+	if e.jwtExpiresIn == "" {
+		notify.AddError("JWTExpiresIn is required", "config.env.jwtExpiresIn")
+	}
+	return
 }
 
 func (e *Env) GetNameProject() string {

@@ -3,8 +3,6 @@ package response
 import (
 	"encoding/json"
 	"net/http"
-
-	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
 type ResponsesInterface interface {
@@ -17,7 +15,6 @@ type ResponsesInterface interface {
 type Responses struct {
 	Response
 	ResponseError
-	notification.Errors
 }
 
 type Response struct {

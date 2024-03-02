@@ -9,6 +9,16 @@ import (
 	"github.com/marceloamoreno/goapi/internal/shared/repository"
 )
 
+type RoleRepositoryInterface interface {
+	CreateRole(role *entity.Role) (err error)
+	GetRole(id int32) (*entity.Role, error)
+	GetRoleByInternalName(internal_name string) (*entity.Role, error)
+	GetRoles(limit int32, offset int32) ([]*entity.Role, error)
+	UpdateRole(role *entity.Role, id int32) (err error)
+	DeleteRole(id int32) (err error)
+	repository.RepositoryInterface
+}
+
 type RoleRepository struct {
 	repository.Repository
 }
@@ -81,7 +91,7 @@ func (repo *RoleRepository) GetRoles(limit int32, offset int32) (roles []*entity
 
 func (repo *RoleRepository) UpdateRole(role *entity.Role, id int32) (err error) {
 	err = repo.Repository.GetDbQueries().WithTx(repo.Repository.GetTx()).UpdateRole(context.Background(), db.UpdateRoleParams{
-		ID:           role.ID,
+		ID:           id,
 		Name:         role.Name,
 		InternalName: role.InternalName,
 		Description:  role.Description,

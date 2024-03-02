@@ -25,18 +25,18 @@ func NewRoutes(
 	}
 	route.mux.Route("/api/v1", func(r chi.Router) {
 		r.Group(func(r chi.Router) {
-			route.getAuthRoutes()
-			route.getRoute()
-			route.getSwaggerRoutes()
-			route.getHealthRoutes()
+			route.getAuthRoutes(r)
+			route.getRoute(r)
+			route.getSwaggerRoutes(r)
+			route.getHealthRoutes(r)
 		})
 
 		r.Group(func(r chi.Router) {
 			authMiddleware.NewMiddleware(r).AuthMiddleware()
 			slog.Info("Auth OK")
-			route.getUserRoutes()
-			route.getRoleRoutes()
-			route.getPermissionRoutes()
+			route.getUserRoutes(r)
+			route.getRoleRoutes(r)
+			route.getPermissionRoutes(r)
 		})
 	})
 }

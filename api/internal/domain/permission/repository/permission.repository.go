@@ -9,6 +9,16 @@ import (
 	"github.com/marceloamoreno/goapi/internal/shared/repository"
 )
 
+type PermissionRepositoryInterface interface {
+	CreatePermission(permission *entity.Permission) (err error)
+	GetPermission(id int32) (*entity.Permission, error)
+	GetPermissions(limit int32, offset int32) (permissions []*entity.Permission, err error)
+	UpdatePermission(permission *entity.Permission, id int32) (err error)
+	DeletePermission(id int32) (err error)
+	GetPermissionByInternalName(internal_name string) (permission *entity.Permission, err error)
+	repository.RepositoryInterface
+}
+
 type PermissionRepository struct {
 	repository.Repository
 }
@@ -66,7 +76,7 @@ func (repo *PermissionRepository) GetPermissions(limit int32, offset int32) (per
 
 func (repo *PermissionRepository) UpdatePermission(permission *entity.Permission, id int32) (err error) {
 	err = repo.Repository.GetDbQueries().WithTx(repo.Repository.GetTx()).UpdatePermission(context.Background(), db.UpdatePermissionParams{
-		ID:           permission.ID,
+		ID:           id,
 		Name:         permission.Name,
 		InternalName: permission.InternalName,
 		Description:  permission.Description,

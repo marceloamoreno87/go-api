@@ -8,6 +8,7 @@ import (
 	AvatarEntity "github.com/marceloamoreno/goapi/internal/domain/avatar/entity"
 	RoleEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
+	"github.com/marceloamoreno/goapi/pkg/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -16,6 +17,7 @@ type User struct {
 	Name      string               `json:"name"`
 	Email     string               `json:"email"`
 	Password  string               `json:"password"`
+	Token     string               `json:"token"`
 	RoleID    int32                `json:"role_id"`
 	AvatarID  int32                `json:"avatar_id"`
 	CreatedAt time.Time            `json:"created_at"`
@@ -42,7 +44,6 @@ func NewUser(name string, email string, password string, roleID int32, avatarID 
 		return nil, err
 	}
 	user.SetPassword(string(hash))
-
 	return
 }
 
@@ -67,6 +68,19 @@ func (u *User) Validate() (notify *notification.Errors) {
 	if u.AvatarID == 0 {
 		notify.AddError("Avatar is required", "user.entity.avatar_id")
 	}
+	return
+}
+
+func (u *User) GenerateToken() (err error) {
+	claims := map[string]interface{}{
+		"id":        u.ID,
+		"name":      u.Name,
+		"email":     u.Email,
+		"role_id":   u.RoleID,
+		"avatar_id": u.AvatarID,
+	}
+	jwtauth := jwt.New(claims)
+	u.Token = jwtauth.Token
 	return
 }
 

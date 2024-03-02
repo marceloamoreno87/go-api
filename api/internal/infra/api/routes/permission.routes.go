@@ -7,12 +7,12 @@ import (
 	permissionService "github.com/marceloamoreno/goapi/internal/domain/permission/service"
 )
 
-func (r *Route) getPermissionRoutes() {
+func (r *Route) getPermissionRoutes(router chi.Router) {
 	repo := permissionRepository.NewPermissionRepository(r.dbConn)
 	service := permissionService.NewPermissionService(repo)
 	handler := permissionHandler.NewPermissionHandler(service)
 
-	r.mux.Route("/permission", func(r chi.Router) {
+	router.Route("/permission", func(r chi.Router) {
 		r.Get("/", handler.GetPermissions)
 		r.Get("/{id}", handler.GetPermission)
 		r.Post("/", handler.CreatePermission)
