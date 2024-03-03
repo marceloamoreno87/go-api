@@ -37,3 +37,22 @@ func (e *Errors) Messages() (messages string) {
 func (e *Errors) HasErrors() bool {
 	return len(e.Errors) > 0
 }
+
+func (e *Errors) CheckRequiredField(field, fieldName, errorKey string) {
+	if field == "" {
+		e.AddError(fieldName+" is required", errorKey)
+	}
+}
+
+func (e *Errors) CheckIsContains(field string, array []string, fieldName, errorKey string) {
+	found := false
+	for _, value := range array {
+		if value == field {
+			found = true
+			break
+		}
+	}
+	if !found {
+		e.AddError(fieldName+" is invalid", errorKey)
+	}
+}

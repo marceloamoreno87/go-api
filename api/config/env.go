@@ -6,16 +6,10 @@ import (
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
-const (
-	Development = "development"
-	Production  = "production"
-
-	DbDriverPostgres = "postgres"
-	DbDriverMysql    = "mysql"
-
-	MailDriverSmtp       = "smtp"
-	MailDriverMailerSend = "mailersend"
-	MailDriverSendgrid   = "sendgrid"
+var (
+	Envs        = []string{"development", "production"}
+	DbDrivers   = []string{"postgres", "mysql"}
+	MailDrivers = []string{"smtp", "mailersend", "sendgrid"}
 )
 
 type EnvironmentInterface interface {
@@ -100,70 +94,30 @@ func NewEnv() {
 
 func (e *Env) Validate() (notify *notification.Errors) {
 	notify = notification.New()
-
-	if e.nameProject == "" {
-		notify.AddError("NameProject is required", "config.env.nameProject")
-	}
-	if e.env == "" || (e.env != Development && e.env != Production) {
-		notify.AddError("Env is wrong", "config.env.env")
-	}
-	if e.frontendUrl == "" {
-		notify.AddError("FrontendUrl is required", "config.env.frontendUrl")
-	}
-	if e.port == "" {
-		notify.AddError("Port is required", "config.env.port")
-	}
-	if e.dbDriver == "" || (e.dbDriver != DbDriverPostgres && e.dbDriver != DbDriverMysql) {
-		notify.AddError("DBDriver is wrong", "config.env.dbDriver")
-	}
-	if e.dbSslMode == "" {
-		notify.AddError("DBSslMode is required", "config.env.dbSslMode")
-	}
-	if e.dbHost == "" {
-		notify.AddError("DBHost is required", "config.env.dbHost")
-	}
-	if e.dbPort == "" {
-		notify.AddError("DBPort is required", "config.env.dbPort")
-	}
-	if e.dbUser == "" {
-		notify.AddError("DBUser is required", "config.env.dbUser")
-	}
-	if e.dbPassword == "" {
-		notify.AddError("DBPassword is required", "config.env.dbPassword")
-	}
-	if e.dbName == "" {
-		notify.AddError("DBName is required", "config.env.dbName")
-	}
-	if e.jwtSecretKey == "" {
-		notify.AddError("JWTSecretKey is required", "config.env.jwtSecretKey")
-	}
-	if e.jwtExpiresIn == "" {
-		notify.AddError("JWTExpiresIn is required", "config.env.jwtExpiresIn")
-	}
-	if e.mailFrom == "" {
-		notify.AddError("MailFrom is required", "config.env.mailFrom")
-	}
-	if e.mailHost == "" {
-		notify.AddError("MailhogHost is required", "config.env.mailHost")
-	}
-	if e.mailPort == "" {
-		notify.AddError("MailhogPort is required", "config.env.mailPort")
-	}
-	if e.mailUser == "" {
-		notify.AddError("MailhogUser is required", "config.env.mailUser")
-	}
-	if e.mailPassword == "" {
-		notify.AddError("MailhogPassword is required", "config.env.mailPassword")
-	}
-	if e.mailDriver == "" || (e.mailDriver != MailDriverSmtp && e.mailDriver != MailDriverMailerSend && e.mailDriver != MailDriverSendgrid) {
-		notify.AddError("MailDriver is wrong", "config.env.mailDriver")
-	}
-	if e.mailerSendApiKey == "" {
-		notify.AddError("MailerSendApiKey is required", "config.env.mailerSendApiKey")
-	}
-	if e.sendgridApiKey == "" {
-		notify.AddError("SendgridApiKey is required", "config.env.sendgridApiKey")
-	}
+	notify.CheckRequiredField(e.GetNameProject(), "NameProject", "config.env.nameProject")
+	notify.CheckRequiredField(e.GetPort(), "Port", "config.env.port")
+	notify.CheckRequiredField(e.GetDBHost(), "DBHost", "config.env.dbHost")
+	notify.CheckRequiredField(e.GetDBDriver(), "DBDriver", "config.env.dbDriver")
+	notify.CheckRequiredField(e.GetDBSslMode(), "DBSslMode", "config.env.dbSslMode")
+	notify.CheckRequiredField(e.GetDBPort(), "DBPort", "config.env.dbPort")
+	notify.CheckRequiredField(e.GetDBUser(), "DBUser", "config.env.dbUser")
+	notify.CheckRequiredField(e.GetDBPassword(), "DBPassword", "config.env.dbPassword")
+	notify.CheckRequiredField(e.GetDBName(), "DBName", "config.env.dbName")
+	notify.CheckRequiredField(e.GetJWTSecretKey(), "JWTSecretKey", "config.env.jwtSecretKey")
+	notify.CheckRequiredField(e.GetJWTExpiresIn(), "JWTExpiresIn", "config.env.jwtExpiresIn")
+	notify.CheckRequiredField(e.GetMailFrom(), "MailFrom", "config.env.mailFrom")
+	notify.CheckRequiredField(e.GetMailHost(), "MailHost", "config.env.mailHost")
+	notify.CheckRequiredField(e.GetMailPort(), "MailPort", "config.env.mailPort")
+	notify.CheckRequiredField(e.GetMailUser(), "MailUser", "config.env.mailUser")
+	notify.CheckRequiredField(e.GetMailPassword(), "MailPassword", "config.env.mailPassword")
+	notify.CheckRequiredField(e.GetMailDriver(), "MailDriver", "config.env.mailDriver")
+	notify.CheckRequiredField(e.GetMailerSendApiKey(), "MailerSendApiKey", "config.env.mailerSendApiKey")
+	notify.CheckRequiredField(e.GetSendgridApiKey(), "SendgridApiKey", "config.env.sendgridApiKey")
+	notify.CheckRequiredField(e.GetFrontendUrl(), "FrontendUrl", "config.env.frontendUrl")
+	notify.CheckRequiredField(e.GetEnv(), "Env", "config.env.env")
+	notify.CheckIsContains(e.GetEnv(), Envs, "Env", "config.env.env")
+	notify.CheckIsContains(e.GetDBDriver(), DbDrivers, "DBDriver", "config.env.dbDriver")
+	notify.CheckIsContains(e.GetMailDriver(), MailDrivers, "MailDriver", "config.env.mailDriver")
 	return
 }
 
