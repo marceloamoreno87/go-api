@@ -49,3 +49,23 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 // @Router /auth/refresh [post]
 func (h *AuthHandler) Refresh(w http.ResponseWriter, r *http.Request) {
 }
+
+// Register godoc
+// @Summary Register
+// @Description Register
+// @Tags Auth
+// @Accept  json
+// @Produce  json
+// @Param user body usecase.RegisterInputDTO true "User"
+// @Success 200 {object} response.Response{data=usecase.RegisterOutputDTO}
+// @Failure 400 {object} response.ResponseError{}
+// @Router /auth/register [post]
+func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
+	output, err := h.service.Register(r.Body)
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
+	}
+	h.SendResponse(w, h.NewResponse(output))
+}

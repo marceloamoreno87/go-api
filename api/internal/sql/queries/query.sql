@@ -57,6 +57,18 @@ INSERT INTO users (
   $1, $2, $3, $4, $5
 );
 
+-- name: RegisterUser :one
+INSERT INTO users (
+  name,
+  email,
+  password,
+  role_id,
+  avatar_id
+) VALUES (
+  $1, $2, $3, (select id from roles where internal_name = 'user'), (select id from avatars where id = 1)
+)
+RETURNING *;
+
 -- name: UpdateUser :exec
 UPDATE users SET
   name = $1,

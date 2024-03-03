@@ -16,6 +16,7 @@ type UserRepositoryInterface interface {
 	GetUsers(limit int32, offset int32) ([]*entity.User, error)
 	UpdateUser(user *entity.User, id int32) (err error)
 	DeleteUser(id int32) (err error)
+	RegisterUser(user *entity.User) (userOutput *entity.User, err error)
 	repository.RepositoryInterface
 }
 
@@ -37,6 +38,28 @@ func (repo *UserRepository) CreateUser(user *entity.User) (err error) {
 		RoleID:   user.RoleID,
 		AvatarID: user.AvatarID,
 	})
+	return
+}
+
+func (repo *UserRepository) RegisterUser(user *entity.User) (userOutput *entity.User, err error) {
+	newUser, err := repo.Repository.GetDbQueries().WithTx(repo.Repository.GetTx()).RegisterUser(context.Background(), db.RegisterUserParams{
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: user.Password,
+	})
+	if err != nil {
+		return
+	}
+	userOutput = &entity.User{
+		ID:        newUser.ID,
+		Name:      newUser.Name,
+		Email:     newUser.Email,
+		Password:  newUser.Password,
+		RoleID:    newUser.RoleID,
+		AvatarID:  newUser.AvatarID,
+		CreatedAt: newUser.CreatedAt,
+		UpdatedAt: newUser.UpdatedAt,
+	}
 	return
 }
 

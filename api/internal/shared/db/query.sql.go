@@ -903,6 +903,41 @@ func (q *Queries) GetUsersWithRoleAndAvatar(ctx context.Context, arg GetUsersWit
 	return items, nil
 }
 
+const registerUser = `-- name: RegisterUser :one
+INSERT INTO users (
+  name,
+  email,
+  password,
+  role_id,
+  avatar_id
+) VALUES (
+  $1, $2, $3, (select id from roles where internal_name = 'user'), (select id from avatars where id = 1)
+)
+RETURNING id, name, email, password, role_id, avatar_id, created_at, updated_at
+`
+
+type RegisterUserParams struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+func (q *Queries) RegisterUser(ctx context.Context, arg RegisterUserParams) (User, error) {
+	row := q.queryRow(ctx, q.registerUserStmt, registerUser, arg.Name, arg.Email, arg.Password)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+		&i.RoleID,
+		&i.AvatarID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const updateAvatar = `-- name: UpdateAvatar :exec
 UPDATE avatars SET
   svg = $1

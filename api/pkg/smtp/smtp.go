@@ -1,9 +1,11 @@
 package smtp
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"net/smtp"
+	"text/template"
 
 	"github.com/marceloamoreno/goapi/config"
 )
@@ -19,7 +21,9 @@ type Mail struct {
 }
 
 func NewMail() *Mail {
-	return &Mail{}
+	return &Mail{
+		From: config.Environment.GetMailFrom(),
+	}
 }
 
 func (m *Mail) Send() (err error) {
@@ -35,16 +39,24 @@ func (m *Mail) SetTo(to []string) {
 	m.To = to
 }
 
-func (m *Mail) SetFrom(from string) {
-	m.From = from
-}
-
 func (m *Mail) SetSubject(subject string) {
 	m.Subject = subject
 }
 
-func (m *Mail) SetBody(body string) {
-	m.Body = body
+// TODO: Refactor
+func (m *Mail) SetBody(filename string, data any) {
+	t, err := template.ParseFiles("internal/views/" + filename + ".html")
+	if err != nil {
+		log.Println(err)
+	}
+	var tpl bytes.Buffer
+	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	tpl.Write([]byte(fmt.Sprintf("Subject: %s \n%s\n\n", m.Subject, mimeHeaders)))
+	if err := t.Execute(&tpl, data); err != nil {
+		log.Println(err)
+	}
+	result := tpl.String()
+	m.Body = result
 }
 
 func (m *Mail) SetCC(cc string) {

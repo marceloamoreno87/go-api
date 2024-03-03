@@ -6,6 +6,18 @@ import (
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
+const (
+	Development = "development"
+	Production  = "production"
+
+	DbDriverPostgres = "postgres"
+	DbDriverMysql    = "mysql"
+
+	MailDriverSmtp       = "smtp"
+	MailDriverMailerSend = "mailersend"
+	MailDriverSendgrid   = "sendgrid"
+)
+
 type EnvironmentInterface interface {
 	GetNameProject() string
 	GetHost() string
@@ -24,11 +36,15 @@ type EnvironmentInterface interface {
 	GetMailDriver() string
 	GetMailerSendApiKey() string
 	GetSendgridApiKey() string
+	GetFrontendUrl() string
+	GetEnv() string
 }
 
 type Env struct {
 	nameProject      string
 	port             string
+	env              string
+	frontendUrl      string
 	dbDriver         string
 	dbSslMode        string
 	dbHost           string
@@ -38,6 +54,7 @@ type Env struct {
 	dbName           string
 	jwtSecretKey     string
 	jwtExpiresIn     string
+	mailFrom         string
 	mailHost         string
 	mailPort         string
 	mailUser         string
@@ -52,6 +69,8 @@ var Environment *Env
 func NewEnv() {
 	newEnv := &Env{
 		nameProject:      os.Getenv("NAME_PROJECT"),
+		env:              os.Getenv("ENV"),
+		frontendUrl:      os.Getenv("FRONTEND_URL"),
 		dbDriver:         os.Getenv("DB_DRIVER"),
 		dbSslMode:        os.Getenv("DB_SSL_MODE"),
 		port:             os.Getenv("PORT"),
@@ -62,6 +81,7 @@ func NewEnv() {
 		dbName:           os.Getenv("DB_NAME"),
 		jwtSecretKey:     os.Getenv("JWT_SECRET_KEY"),
 		jwtExpiresIn:     os.Getenv("JWT_EXPIRES_IN"),
+		mailFrom:         os.Getenv("MAIL_FROM"),
 		mailHost:         os.Getenv("MAIL_HOST"),
 		mailPort:         os.Getenv("MAIL_PORT"),
 		mailUser:         os.Getenv("MAIL_USER"),
@@ -84,11 +104,17 @@ func (e *Env) Validate() (notify *notification.Errors) {
 	if e.nameProject == "" {
 		notify.AddError("NameProject is required", "config.env.nameProject")
 	}
+	if e.env == "" || (e.env != Development && e.env != Production) {
+		notify.AddError("Env is wrong", "config.env.env")
+	}
+	if e.frontendUrl == "" {
+		notify.AddError("FrontendUrl is required", "config.env.frontendUrl")
+	}
 	if e.port == "" {
 		notify.AddError("Port is required", "config.env.port")
 	}
-	if e.dbDriver == "" {
-		notify.AddError("DBDriver is required", "config.env.dbDriver")
+	if e.dbDriver == "" || (e.dbDriver != DbDriverPostgres && e.dbDriver != DbDriverMysql) {
+		notify.AddError("DBDriver is wrong", "config.env.dbDriver")
 	}
 	if e.dbSslMode == "" {
 		notify.AddError("DBSslMode is required", "config.env.dbSslMode")
@@ -114,6 +140,9 @@ func (e *Env) Validate() (notify *notification.Errors) {
 	if e.jwtExpiresIn == "" {
 		notify.AddError("JWTExpiresIn is required", "config.env.jwtExpiresIn")
 	}
+	if e.mailFrom == "" {
+		notify.AddError("MailFrom is required", "config.env.mailFrom")
+	}
 	if e.mailHost == "" {
 		notify.AddError("MailhogHost is required", "config.env.mailHost")
 	}
@@ -126,8 +155,8 @@ func (e *Env) Validate() (notify *notification.Errors) {
 	if e.mailPassword == "" {
 		notify.AddError("MailhogPassword is required", "config.env.mailPassword")
 	}
-	if e.mailDriver == "" {
-		notify.AddError("MailDriver is required", "config.env.mailDriver")
+	if e.mailDriver == "" || (e.mailDriver != MailDriverSmtp && e.mailDriver != MailDriverMailerSend && e.mailDriver != MailDriverSendgrid) {
+		notify.AddError("MailDriver is wrong", "config.env.mailDriver")
 	}
 	if e.mailerSendApiKey == "" {
 		notify.AddError("MailerSendApiKey is required", "config.env.mailerSendApiKey")
@@ -182,6 +211,10 @@ func (e *Env) GetJWTExpiresIn() string {
 	return e.jwtExpiresIn
 }
 
+func (e *Env) GetMailFrom() string {
+	return e.mailFrom
+}
+
 func (e *Env) GetMailHost() string {
 	return e.mailHost
 }
@@ -208,4 +241,12 @@ func (e *Env) GetMailerSendApiKey() string {
 
 func (e *Env) GetSendgridApiKey() string {
 	return e.sendgridApiKey
+}
+
+func (e *Env) GetFrontendUrl() string {
+	return e.frontendUrl
+}
+
+func (e *Env) GetEnv() string {
+	return e.env
 }

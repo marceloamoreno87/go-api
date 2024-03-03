@@ -111,6 +111,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getUsersWithRoleAndAvatarStmt, err = db.PrepareContext(ctx, getUsersWithRoleAndAvatar); err != nil {
 		return nil, fmt.Errorf("error preparing query GetUsersWithRoleAndAvatar: %w", err)
 	}
+	if q.registerUserStmt, err = db.PrepareContext(ctx, registerUser); err != nil {
+		return nil, fmt.Errorf("error preparing query RegisterUser: %w", err)
+	}
 	if q.updateAvatarStmt, err = db.PrepareContext(ctx, updateAvatar); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateAvatar: %w", err)
 	}
@@ -273,6 +276,11 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing getUsersWithRoleAndAvatarStmt: %w", cerr)
 		}
 	}
+	if q.registerUserStmt != nil {
+		if cerr := q.registerUserStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing registerUserStmt: %w", cerr)
+		}
+	}
 	if q.updateAvatarStmt != nil {
 		if cerr := q.updateAvatarStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing updateAvatarStmt: %w", cerr)
@@ -361,6 +369,7 @@ type Queries struct {
 	getUsersWithAvatarStmt          *sql.Stmt
 	getUsersWithRoleStmt            *sql.Stmt
 	getUsersWithRoleAndAvatarStmt   *sql.Stmt
+	registerUserStmt                *sql.Stmt
 	updateAvatarStmt                *sql.Stmt
 	updatePermissionStmt            *sql.Stmt
 	updateRoleStmt                  *sql.Stmt
@@ -400,6 +409,7 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		getUsersWithAvatarStmt:          q.getUsersWithAvatarStmt,
 		getUsersWithRoleStmt:            q.getUsersWithRoleStmt,
 		getUsersWithRoleAndAvatarStmt:   q.getUsersWithRoleAndAvatarStmt,
+		registerUserStmt:                q.registerUserStmt,
 		updateAvatarStmt:                q.updateAvatarStmt,
 		updatePermissionStmt:            q.updatePermissionStmt,
 		updateRoleStmt:                  q.updateRoleStmt,

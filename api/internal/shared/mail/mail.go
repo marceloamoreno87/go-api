@@ -10,23 +10,26 @@ import (
 type MailInterface interface {
 	Send() error
 	SetTo(to []string)
-	SetFrom(from string)
 	SetSubject(subject string)
-	SetBody(body string)
+	SetBody(filename string, data any)
 	SetCC(cc string)
 	SetBCC(bcc string)
 	SetAttachments(attachments []string)
 }
 
 func NewMail() MailInterface {
-	switch {
-	case config.Environment.GetMailDriver() == "smtp":
+	if config.Environment.GetEnv() == "development" {
 		return smtp.NewMail()
-	case config.Environment.GetMailDriver() == "mailersend":
+	}
+
+	switch config.Environment.GetMailDriver() {
+	case "smtp":
+		return smtp.NewMail()
+	case "mailersend":
 		return mailersend.NewMailerSend()
-	case config.Environment.GetMailDriver() == "sendgrid":
+	case "sendgrid":
 		return sendgrid.NewSendGrid()
 	default:
-		return nil
+		return smtp.NewMail()
 	}
 }

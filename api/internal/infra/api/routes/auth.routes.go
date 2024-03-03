@@ -13,6 +13,7 @@ func (r *Route) getAuthRoutes(router chi.Router) {
 	service := userService.NewUserService(repo)
 	handler := authHandler.NewAuthHandler(service)
 	router.Route("/auth", func(r chi.Router) {
+		r.Post("/register", handler.Register)
 		r.Post("/login", handler.Login)
 		r.Post("/refresh", handler.Refresh)
 	})

@@ -220,6 +220,38 @@ definitions:
       token:
         type: string
     type: object
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.RegisterInputDTO:
+    properties:
+      avatar_id:
+        type: integer
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      role_id:
+        type: integer
+    type: object
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.RegisterOutputDTO:
+    properties:
+      avatar_id:
+        type: integer
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      role_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
   github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdateUserInputDTO:
     properties:
       avatar_id:
@@ -291,6 +323,37 @@ paths:
       - application/json
       responses: {}
       summary: Get Refresh JWT
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.RegisterInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.RegisterOutputDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+      summary: Register
       tags:
       - Auth
   /permission:

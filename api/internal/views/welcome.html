@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email de Boas-Vindas</title>
+    <style>
+        /* Reset de estilos */
+        body, h1, p {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Bem-vindo à nossa comunidade!</h1>
+        <p>Olá {{.Name}},</p>
+        <p>Estamos muito felizes em tê-lo(a) conosco! Seja bem-vindo(a) à nossa comunidade de desenvolvimento. Aqui, você terá a oportunidade de aprender, colaborar e crescer conosco.</p>
+        <p>Fique à vontade para explorar nossos recursos, participar de discussões e contribuir com seu conhecimento.</p>
+        <p>Se precisar de alguma assistência ou tiver alguma dúvida, não hesite em nos contatar. Estamos aqui para ajudar!</p>
+        <a href="#" class="btn">Comece Agora</a>
+    </div>
+</body>
+
+</html>

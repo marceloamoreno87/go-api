@@ -3,6 +3,8 @@ package response
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/marceloamoreno/goapi/config"
 )
 
 type ResponsesInterface interface {
@@ -54,6 +56,14 @@ func (rt *Responses) SendResponseError(
 	w http.ResponseWriter,
 	responseError ResponseError,
 ) {
+	if config.Environment.GetEnv() == "production" {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(ResponseError{
+			Err: "Internal server error",
+		})
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusBadRequest)
 	json.NewEncoder(w).Encode(responseError)

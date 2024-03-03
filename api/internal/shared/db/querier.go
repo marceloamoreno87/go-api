@@ -38,6 +38,7 @@ type Querier interface {
 	GetUsersWithAvatar(ctx context.Context, arg GetUsersWithAvatarParams) ([]GetUsersWithAvatarRow, error)
 	GetUsersWithRole(ctx context.Context, arg GetUsersWithRoleParams) ([]GetUsersWithRoleRow, error)
 	GetUsersWithRoleAndAvatar(ctx context.Context, arg GetUsersWithRoleAndAvatarParams) ([]GetUsersWithRoleAndAvatarRow, error)
+	RegisterUser(ctx context.Context, arg RegisterUserParams) (User, error)
 	UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) error
 	UpdatePermission(ctx context.Context, arg UpdatePermissionParams) error
 	UpdateRole(ctx context.Context, arg UpdateRoleParams) error
