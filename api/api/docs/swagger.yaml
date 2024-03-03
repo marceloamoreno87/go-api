@@ -1,5 +1,39 @@
 basePath: /api/v1
 definitions:
+  github_com_marceloamoreno_goapi_internal_domain_avatar_usecase.CreateAvatarInputDTO:
+    properties:
+      svg:
+        type: string
+    type: object
+  github_com_marceloamoreno_goapi_internal_domain_avatar_usecase.GetAvatarOutputDTO:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      svg:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  github_com_marceloamoreno_goapi_internal_domain_avatar_usecase.GetAvatarsOutputDTO:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      svg:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  github_com_marceloamoreno_goapi_internal_domain_avatar_usecase.UpdateAvatarInputDTO:
+    properties:
+      id:
+        type: integer
+      svg:
+        type: string
+    type: object
   github_com_marceloamoreno_goapi_internal_domain_permission_entity.Permission:
     properties:
       created_at:
@@ -283,6 +317,144 @@ info:
   title: GO API
   version: v1
 paths:
+  /Avatar:
+    get:
+      consumes:
+      - application/json
+      description: Get Avatars
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_avatar_usecase.GetAvatarsOutputDTO'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+      security:
+      - JWT: []
+      summary: Get Avatars
+      tags:
+      - Avatar
+  /Avatar/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Avatar
+      parameters:
+      - description: Avatar ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      - JWT: []
+      summary: Delete Avatar
+      tags:
+      - Avatar
+    get:
+      consumes:
+      - application/json
+      description: Get Avatar
+      parameters:
+      - description: Avatar ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_avatar_usecase.GetAvatarOutputDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+      security:
+      - JWT: []
+      summary: Get Avatar
+      tags:
+      - Avatar
+    put:
+      consumes:
+      - application/json
+      description: Update Avatar
+      parameters:
+      - description: Avatar ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Avatar
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_avatar_usecase.UpdateAvatarInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+      security:
+      - JWT: []
+      summary: Update Avatar
+      tags:
+      - Avatar
   /auth/login:
     post:
       consumes:

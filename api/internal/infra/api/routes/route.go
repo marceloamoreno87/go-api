@@ -37,6 +37,7 @@ func NewRoutes(
 			route.getUserRoutes(r)
 			route.getRoleRoutes(r)
 			route.getPermissionRoutes(r)
+			route.getAvatarRoutes(r)
 		})
 	})
 }
