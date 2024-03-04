@@ -7,8 +7,8 @@ import (
 	avatarService "github.com/marceloamoreno/goapi/internal/domain/avatar/service"
 )
 
-func (r *Route) getAvatarRoutes(router chi.Router) {
-	repo := avatarRepository.NewAvatarRepository(r.dbConn)
+func (route *Route) getAvatarRoutes(router chi.Router) {
+	repo := avatarRepository.NewAvatarRepository(route.dbConn)
 	service := avatarService.NewAvatarService(repo)
 	handler := avatarHandler.NewAvatarHandler(service)
 

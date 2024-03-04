@@ -7,8 +7,8 @@ import (
 	permissionService "github.com/marceloamoreno/goapi/internal/domain/permission/service"
 )
 
-func (r *Route) getPermissionRoutes(router chi.Router) {
-	repo := permissionRepository.NewPermissionRepository(r.dbConn)
+func (route *Route) getPermissionRoutes(router chi.Router) {
+	repo := permissionRepository.NewPermissionRepository(route.dbConn)
 	service := permissionService.NewPermissionService(repo)
 	handler := permissionHandler.NewPermissionHandler(service)
 

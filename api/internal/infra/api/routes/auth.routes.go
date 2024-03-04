@@ -8,8 +8,8 @@ import (
 	userService "github.com/marceloamoreno/goapi/internal/domain/user/service"
 )
 
-func (r *Route) getAuthRoutes(router chi.Router) {
-	repo := userRepository.NewUserRepository(r.dbConn)
+func (route *Route) getAuthRoutes(router chi.Router) {
+	repo := userRepository.NewUserRepository(route.dbConn)
 	service := userService.NewUserService(repo)
 	handler := authHandler.NewAuthHandler(service)
 	router.Route("/auth", func(r chi.Router) {
