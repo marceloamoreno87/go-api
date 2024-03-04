@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	"github.com/marceloamoreno/goapi/internal/domain/role/repository"
 	"github.com/stretchr/testify/assert"
@@ -16,8 +17,8 @@ func TestCreateRole(t *testing.T) {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
 	defer db.Close()
-
-	rr := repository.NewRoleRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewRoleRepository(config.DbMock)
 
 	role := &entity.Role{
 		ID:           1,
@@ -32,12 +33,12 @@ func TestCreateRole(t *testing.T) {
 		WithArgs(role.Name, role.InternalName, role.Description).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
-	
-	err = rr.Begin()
+
+	err = repo.Begin()
 	assert.NoError(t, err)
-	newRole := rr.CreateRole(role)
+	newRole := repo.CreateRole(role)
 	assert.NoError(t, newRole)
-	err = rr.Commit()
+	err = repo.Commit()
 	assert.NoError(t, err)
 }
 
@@ -48,7 +49,8 @@ func TestGetRole(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := repository.NewRoleRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewRoleRepository(config.DbMock)
 
 	role := &entity.Role{
 		ID:           1,
@@ -64,7 +66,7 @@ func TestGetRole(t *testing.T) {
 		WithArgs(role.ID).
 		WillReturnRows(rows)
 
-	r, err := rr.GetRole(role.ID)
+	r, err := repo.GetRole(role.ID)
 
 	assert.NoError(t, err)
 
@@ -81,7 +83,8 @@ func TestGetRoleByInternalName(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := repository.NewRoleRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewRoleRepository(config.DbMock)
 
 	role := &entity.Role{
 		ID:           1,
@@ -97,7 +100,7 @@ func TestGetRoleByInternalName(t *testing.T) {
 		WithArgs("test_test").
 		WillReturnRows(rows)
 
-	r, err := rr.GetRoleByInternalName(role.InternalName)
+	r, err := repo.GetRoleByInternalName(role.InternalName)
 
 	assert.NoError(t, err)
 
@@ -114,7 +117,8 @@ func TestDeleteRole(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := repository.NewRoleRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewRoleRepository(config.DbMock)
 
 	role := &entity.Role{
 		ID:           1,
@@ -130,11 +134,11 @@ func TestDeleteRole(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	mock.ExpectCommit()
-	err = rr.Begin()
+	err = repo.Begin()
 	assert.NoError(t, err)
-	deletedRole := rr.DeleteRole(role.ID)
+	deletedRole := repo.DeleteRole(role.ID)
 	assert.NoError(t, deletedRole)
-	err = rr.Commit()
+	err = repo.Commit()
 	assert.NoError(t, err)
 }
 
@@ -145,7 +149,8 @@ func TestUpdateRole(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := repository.NewRoleRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewRoleRepository(config.DbMock)
 
 	role := &entity.Role{
 		ID:           1,
@@ -161,11 +166,11 @@ func TestUpdateRole(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	mock.ExpectCommit()
-	err = rr.Begin()
+	err = repo.Begin()
 	assert.NoError(t, err)
-	updatedRole := rr.UpdateRole(role, role.ID)
+	updatedRole := repo.UpdateRole(role, role.ID)
 	assert.NoError(t, updatedRole)
-	err = rr.Commit()
+	err = repo.Commit()
 	assert.NoError(t, err)
 
 }
@@ -177,7 +182,8 @@ func TestGetRoles(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := repository.NewRoleRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewRoleRepository(config.DbMock)
 
 	role := &entity.Role{
 		ID:           1,
@@ -193,7 +199,7 @@ func TestGetRoles(t *testing.T) {
 		WithArgs(int32(10), int32(0)).
 		WillReturnRows(rows)
 
-	roles, err := rr.GetRoles(10, 0)
+	roles, err := repo.GetRoles(10, 0)
 
 	assert.NoError(t, err)
 

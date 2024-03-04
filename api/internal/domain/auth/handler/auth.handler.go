@@ -48,6 +48,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Router /auth/refresh [post]
 func (h *AuthHandler) Refresh(w http.ResponseWriter, r *http.Request) {
+	// TODO: Implement
 }
 
 // Register godoc

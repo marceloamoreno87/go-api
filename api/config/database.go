@@ -1,11 +1,10 @@
-package database
+package config
 
 import (
 	"database/sql"
 	"fmt"
 
 	_ "github.com/lib/pq"
-	"github.com/marceloamoreno/goapi/config"
 )
 
 type DatabaseInterface interface {
@@ -24,16 +23,20 @@ type Database struct {
 	sslmode  string
 }
 
-func NewDatabase() *Database {
-	return &Database{
-		driver:   config.Environment.GetDBDriver(),
-		host:     config.Environment.GetDBHost(),
-		port:     config.Environment.GetDBPort(),
-		user:     config.Environment.GetDBUser(),
-		password: config.Environment.GetDBPassword(),
-		dbname:   config.Environment.GetDBName(),
-		sslmode:  config.Environment.GetDBSslMode(),
+var Db DatabaseInterface
+
+func NewDatabase() {
+	db := &Database{
+		driver:   Environment.GetDBDriver(),
+		host:     Environment.GetDBHost(),
+		port:     Environment.GetDBPort(),
+		user:     Environment.GetDBUser(),
+		password: Environment.GetDBPassword(),
+		dbname:   Environment.GetDBName(),
+		sslmode:  Environment.GetDBSslMode(),
 	}
+	db.SetDbConn()
+	Db = db
 }
 
 func (d *Database) SetDbConn() (err error) {

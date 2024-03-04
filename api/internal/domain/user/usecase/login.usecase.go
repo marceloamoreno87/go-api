@@ -49,11 +49,7 @@ func (uc *LoginUseCase) Execute(input LoginInputDTO) (output LoginOutputDTO, err
 		return LoginOutputDTO{}, errors.New("invalid credentials")
 	}
 
-	err = newUser.GenerateToken()
-	if err != nil {
-		slog.Info("err", err)
-		return
-	}
+	newUser.GenerateToken()
 
 	return LoginOutputDTO{Token: newUser.Token}, nil
 }

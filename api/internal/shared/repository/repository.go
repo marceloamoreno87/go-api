@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/shared/db"
 )
 
@@ -21,10 +22,10 @@ type Repository struct {
 	tx        *sql.Tx
 }
 
-func NewRepository(dbConn *sql.DB) *Repository {
+func NewRepository(DB config.DatabaseInterface) *Repository {
 	return &Repository{
-		dbConn:    dbConn,
-		dbQueries: db.New(dbConn),
+		dbConn:    DB.GetDbConn(),
+		dbQueries: db.New(DB.GetDbConn()),
 		tx:        nil,
 	}
 }

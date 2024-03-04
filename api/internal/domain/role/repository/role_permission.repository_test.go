@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	"github.com/marceloamoreno/goapi/internal/domain/role/repository"
 	"github.com/stretchr/testify/assert"
@@ -16,8 +17,8 @@ func TestCreateRolePermission(t *testing.T) {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
 	defer db.Close()
-
-	rr := repository.NewRolePermissionRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewRolePermissionRepository(config.DbMock)
 
 	rolePermission := &entity.RolePermission{
 		RoleID:        1,
@@ -32,11 +33,11 @@ func TestCreateRolePermission(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	mock.ExpectCommit()
-	err = rr.Begin()
+	err = repo.Begin()
 	assert.NoError(t, err)
-	newRolePermission := rr.CreateRolePermission(rolePermission)
+	newRolePermission := repo.CreateRolePermission(rolePermission)
 	assert.NoError(t, newRolePermission)
-	err = rr.Commit()
+	err = repo.Commit()
 	assert.NoError(t, err)
 }
 
@@ -48,7 +49,8 @@ func GetRolePermissionsByRole(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := repository.NewRolePermissionRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewRolePermissionRepository(config.DbMock)
 
 	rolePermission := &entity.RolePermission{
 		ID:            1,
@@ -65,7 +67,7 @@ func GetRolePermissionsByRole(t *testing.T) {
 		WithArgs(rolePermission.RoleID).
 		WillReturnRows(rows)
 
-	_, err = rr.GetRolePermissionsByRole(rolePermission.RoleID)
+	_, err = repo.GetRolePermissionsByRole(rolePermission.RoleID)
 
 	assert.NoError(t, err)
 }
@@ -77,7 +79,8 @@ func TestUpdateRolePermission(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := repository.NewRolePermissionRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewRolePermissionRepository(config.DbMock)
 
 	rolePermission := &entity.RolePermission{
 		RoleID:        1,
@@ -95,12 +98,12 @@ func TestUpdateRolePermission(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
-	err = rr.Begin()
+	err = repo.Begin()
 	assert.NoError(t, err)
 
-	updatedRolePermission := rr.UpdateRolePermission(rolePermission, rolePermission.RoleID)
+	updatedRolePermission := repo.UpdateRolePermission(rolePermission, rolePermission.RoleID)
 	assert.NoError(t, updatedRolePermission)
 
-	err = rr.Commit()
+	err = repo.Commit()
 	assert.NoError(t, err)
 }

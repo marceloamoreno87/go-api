@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/permission/entity"
 	"github.com/marceloamoreno/goapi/internal/domain/permission/repository"
 	"github.com/stretchr/testify/assert"
@@ -17,8 +18,8 @@ func TestCreatePermission(t *testing.T) {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
 	defer db.Close()
-
-	rr := repository.NewPermissionRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewPermissionRepository(config.DbMock)
 
 	permission := &entity.Permission{
 		ID:           1,
@@ -33,11 +34,11 @@ func TestCreatePermission(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
-	err = rr.Begin()
+	err = repo.Begin()
 	assert.NoError(t, err)
-	newPermission := rr.CreatePermission(permission)
+	newPermission := repo.CreatePermission(permission)
 	assert.NoError(t, newPermission)
-	err = rr.Commit()
+	err = repo.Commit()
 	assert.NoError(t, err)
 
 }
@@ -49,7 +50,8 @@ func TestGetPermission(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := repository.NewPermissionRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewPermissionRepository(config.DbMock)
 
 	permission := &entity.Permission{
 		ID:           1,
@@ -65,7 +67,7 @@ func TestGetPermission(t *testing.T) {
 		WithArgs(permission.ID).
 		WillReturnRows(rows)
 
-	r, err := rr.GetPermission(permission.ID)
+	r, err := repo.GetPermission(permission.ID)
 
 	assert.NoError(t, err)
 
@@ -82,7 +84,8 @@ func TestGetPermissionByInternalName(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := repository.NewPermissionRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewPermissionRepository(config.DbMock)
 
 	permission := &entity.Permission{
 		ID:           1,
@@ -98,7 +101,7 @@ func TestGetPermissionByInternalName(t *testing.T) {
 		WithArgs("test_test").
 		WillReturnRows(rows)
 
-	r, err := rr.GetPermissionByInternalName(permission.InternalName)
+	r, err := repo.GetPermissionByInternalName(permission.InternalName)
 
 	assert.NoError(t, err)
 
@@ -115,7 +118,8 @@ func TestDeletePermission(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := repository.NewPermissionRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewPermissionRepository(config.DbMock)
 
 	permission := &entity.Permission{
 		ID:           1,
@@ -131,11 +135,11 @@ func TestDeletePermission(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
-	err = rr.Begin()
+	err = repo.Begin()
 	assert.NoError(t, err)
-	deletedPermission := rr.DeletePermission(permission.ID)
+	deletedPermission := repo.DeletePermission(permission.ID)
 	assert.NoError(t, deletedPermission)
-	err = rr.Commit()
+	err = repo.Commit()
 	assert.NoError(t, err)
 
 }
@@ -147,7 +151,8 @@ func TestUpdatePermission(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := repository.NewPermissionRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewPermissionRepository(config.DbMock)
 
 	permission := &entity.Permission{
 		ID:           1,
@@ -163,11 +168,11 @@ func TestUpdatePermission(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
-	err = rr.Begin()
+	err = repo.Begin()
 	assert.NoError(t, err)
-	updatedPermission := rr.UpdatePermission(permission, permission.ID)
+	updatedPermission := repo.UpdatePermission(permission, permission.ID)
 	assert.NoError(t, updatedPermission)
-	err = rr.Commit()
+	err = repo.Commit()
 	assert.NoError(t, err)
 
 }
@@ -179,7 +184,8 @@ func TestGetPermissions(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := repository.NewPermissionRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewPermissionRepository(config.DbMock)
 
 	permission := &entity.Permission{
 		ID:           1,
@@ -195,7 +201,7 @@ func TestGetPermissions(t *testing.T) {
 		WithArgs(int32(10), int32(0)).
 		WillReturnRows(rows)
 
-	permissions, err := rr.GetPermissions(10, 0)
+	permissions, err := repo.GetPermissions(10, 0)
 
 	assert.NoError(t, err)
 

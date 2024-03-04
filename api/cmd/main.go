@@ -7,6 +7,9 @@ import (
 
 func init() {
 	config.NewEnv()
+	config.NewDatabase()
+	config.NewJWT()
+	config.NewMux()
 }
 
 // @title GO API
@@ -19,5 +22,5 @@ func init() {
 // @in                          header
 // @name                        Authorization
 func main() {
-	webserver.Bootstrap()
+	webserver.NewServer().Start()
 }

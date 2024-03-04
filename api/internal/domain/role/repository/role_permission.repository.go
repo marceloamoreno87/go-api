@@ -2,9 +2,9 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 	"sync"
 
+	"github.com/marceloamoreno/goapi/config"
 	PermissionEntity "github.com/marceloamoreno/goapi/internal/domain/permission/entity"
 	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	RoleEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
@@ -24,9 +24,9 @@ type RolePermissionRepository struct {
 	repository.Repository
 }
 
-func NewRolePermissionRepository(dbConn *sql.DB) *RolePermissionRepository {
+func NewRolePermissionRepository(DB config.DatabaseInterface) *RolePermissionRepository {
 	return &RolePermissionRepository{
-		Repository: *repository.NewRepository(dbConn),
+		Repository: *repository.NewRepository(DB),
 	}
 }
 

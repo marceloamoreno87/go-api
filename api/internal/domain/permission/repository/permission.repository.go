@@ -2,8 +2,8 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/permission/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/db"
 	"github.com/marceloamoreno/goapi/internal/shared/repository"
@@ -23,9 +23,9 @@ type PermissionRepository struct {
 	repository.Repository
 }
 
-func NewPermissionRepository(dbConn *sql.DB) *PermissionRepository {
+func NewPermissionRepository(DB config.DatabaseInterface) *PermissionRepository {
 	return &PermissionRepository{
-		Repository: *repository.NewRepository(dbConn),
+		Repository: *repository.NewRepository(DB),
 	}
 }
 

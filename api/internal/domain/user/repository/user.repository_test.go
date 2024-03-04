@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 	"github.com/stretchr/testify/assert"
@@ -16,8 +17,8 @@ func TestCreateUser(t *testing.T) {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
 	defer db.Close()
-
-	ur := repository.NewUserRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewUserRepository(config.DbMock)
 
 	user := &entity.User{
 		ID:       1,
@@ -34,11 +35,11 @@ func TestCreateUser(t *testing.T) {
 		WithArgs(user.Name, user.Email, user.Password, user.RoleID, user.AvatarID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
-	err = ur.Begin()
+	err = repo.Begin()
 	assert.NoError(t, err)
-	newuser := ur.CreateUser(user)
+	newuser := repo.CreateUser(user)
 	assert.NoError(t, newuser)
-	err = ur.Commit()
+	err = repo.Commit()
 	assert.NoError(t, err)
 
 }
@@ -50,7 +51,8 @@ func TestGetUser(t *testing.T) {
 	}
 	defer db.Close()
 
-	ur := repository.NewUserRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewUserRepository(config.DbMock)
 
 	user := &entity.User{
 		ID:       1,
@@ -68,7 +70,7 @@ func TestGetUser(t *testing.T) {
 		WithArgs(user.ID).
 		WillReturnRows(rows)
 
-	u, err := ur.GetUser(user.ID)
+	u, err := repo.GetUser(user.ID)
 
 	assert.NoError(t, err)
 
@@ -86,7 +88,8 @@ func TestGetUserByEmail(t *testing.T) {
 	}
 	defer db.Close()
 
-	ur := repository.NewUserRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewUserRepository(config.DbMock)
 
 	user := &entity.User{
 		ID:       1,
@@ -104,7 +107,7 @@ func TestGetUserByEmail(t *testing.T) {
 		WithArgs(user.Email).
 		WillReturnRows(rows)
 
-	u, err := ur.GetUserByEmail(user.Email)
+	u, err := repo.GetUserByEmail(user.Email)
 
 	assert.NoError(t, err)
 
@@ -122,7 +125,8 @@ func TestDeleteUser(t *testing.T) {
 	}
 	defer db.Close()
 
-	ur := repository.NewUserRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewUserRepository(config.DbMock)
 
 	user := &entity.User{
 		ID:       1,
@@ -138,11 +142,11 @@ func TestDeleteUser(t *testing.T) {
 		WithArgs(user.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
-	err = ur.Begin()
+	err = repo.Begin()
 	assert.NoError(t, err)
-	deletedUser := ur.DeleteUser(user.ID)
+	deletedUser := repo.DeleteUser(user.ID)
 	assert.NoError(t, deletedUser)
-	err = ur.Commit()
+	err = repo.Commit()
 	assert.NoError(t, err)
 }
 
@@ -153,7 +157,8 @@ func TestUpdateUser(t *testing.T) {
 	}
 	defer db.Close()
 
-	ur := repository.NewUserRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewUserRepository(config.DbMock)
 
 	user := &entity.User{
 		Name:     "Test",
@@ -169,11 +174,11 @@ func TestUpdateUser(t *testing.T) {
 		WithArgs(user.Name, user.Email, user.Password, user.RoleID, 1, 1).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
-	err = ur.Begin()
+	err = repo.Begin()
 	assert.NoError(t, err)
-	updateduser := ur.UpdateUser(user, 1)
+	updateduser := repo.UpdateUser(user, 1)
 	assert.NoError(t, updateduser)
-	err = ur.Commit()
+	err = repo.Commit()
 	assert.NoError(t, err)
 
 }
@@ -185,7 +190,8 @@ func TestGetUsers(t *testing.T) {
 	}
 	defer db.Close()
 
-	ur := repository.NewUserRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewUserRepository(config.DbMock)
 
 	user := &entity.User{
 		ID:       1,
@@ -203,7 +209,7 @@ func TestGetUsers(t *testing.T) {
 		WithArgs(int32(10), int32(0)).
 		WillReturnRows(rows)
 
-	users, err := ur.GetUsers(10, 0)
+	users, err := repo.GetUsers(10, 0)
 
 	assert.NoError(t, err)
 

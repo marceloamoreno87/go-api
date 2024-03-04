@@ -6,6 +6,8 @@ type ErrorsInterface interface {
 	AddError(message string, context string)
 	Messages() string
 	HasErrors() bool
+	CheckRequiredField(field, fieldName, errorKey string)
+	CheckIsContains(field string, array []string, fieldName, errorKey string)
 }
 
 type NotificationError struct {

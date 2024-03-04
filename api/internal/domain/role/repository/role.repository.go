@@ -2,8 +2,8 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/db"
 	"github.com/marceloamoreno/goapi/internal/shared/repository"
@@ -23,9 +23,9 @@ type RoleRepository struct {
 	repository.Repository
 }
 
-func NewRoleRepository(dbConn *sql.DB) *RoleRepository {
+func NewRoleRepository(DB config.DatabaseInterface) *RoleRepository {
 	return &RoleRepository{
-		Repository: *repository.NewRepository(dbConn),
+		Repository: *repository.NewRepository(DB),
 	}
 }
 

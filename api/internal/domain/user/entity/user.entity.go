@@ -5,10 +5,10 @@ import (
 	"net/mail"
 	"time"
 
+	"github.com/marceloamoreno/goapi/config"
 	AvatarEntity "github.com/marceloamoreno/goapi/internal/domain/avatar/entity"
 	RoleEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
-	"github.com/marceloamoreno/goapi/pkg/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -72,7 +72,7 @@ func (u *User) Validate() (notify *notification.Errors) {
 	return
 }
 
-func (u *User) GenerateToken() (err error) {
+func (u *User) GenerateToken() {
 	claims := map[string]interface{}{
 		"id":        u.ID,
 		"name":      u.Name,
@@ -80,9 +80,7 @@ func (u *User) GenerateToken() (err error) {
 		"role_id":   u.RoleID,
 		"avatar_id": u.AvatarID,
 	}
-	jwtauth := jwt.New(claims)
-	u.Token = jwtauth.Token
-	return
+	u.Token = config.Jwt.Generate(claims).GetToken()
 }
 
 func (u *User) ComparePassword(password string) (b bool) {

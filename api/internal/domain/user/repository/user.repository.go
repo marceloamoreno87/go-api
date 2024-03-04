@@ -2,8 +2,8 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/db"
 	"github.com/marceloamoreno/goapi/internal/shared/repository"
@@ -24,9 +24,9 @@ type UserRepository struct {
 	repository.Repository
 }
 
-func NewUserRepository(dbConn *sql.DB) *UserRepository {
+func NewUserRepository(DB config.DatabaseInterface) *UserRepository {
 	return &UserRepository{
-		Repository: *repository.NewRepository(dbConn),
+		Repository: *repository.NewRepository(DB),
 	}
 }
 

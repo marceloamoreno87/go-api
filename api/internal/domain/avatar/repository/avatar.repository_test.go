@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/avatar/entity"
 	"github.com/marceloamoreno/goapi/internal/domain/avatar/repository"
 	"github.com/stretchr/testify/assert"
@@ -18,7 +19,8 @@ func TestCreateAvatar(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := repository.NewAvatarRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewAvatarRepository(config.DbMock)
 
 	avatar := &entity.Avatar{
 		ID:  1,
@@ -32,11 +34,11 @@ func TestCreateAvatar(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
-	err = rr.Begin()
+	err = repo.Begin()
 	assert.NoError(t, err)
-	newAvatar := rr.CreateAvatar(avatar)
+	newAvatar := repo.CreateAvatar(avatar)
 	assert.NoError(t, newAvatar)
-	err = rr.Commit()
+	err = repo.Commit()
 	assert.NoError(t, err)
 
 }
@@ -48,7 +50,8 @@ func TestGetAvatar(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := repository.NewAvatarRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewAvatarRepository(config.DbMock)
 
 	avatar := &entity.Avatar{
 		ID:  1,
@@ -62,7 +65,7 @@ func TestGetAvatar(t *testing.T) {
 		WithArgs(avatar.ID).
 		WillReturnRows(rows)
 
-	r, err := rr.GetAvatar(avatar.ID)
+	r, err := repo.GetAvatar(avatar.ID)
 	assert.NoError(t, err)
 	assert.Equal(t, avatar.SVG, r.SVG)
 }
@@ -74,7 +77,8 @@ func TestDeleteAvatar(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := repository.NewAvatarRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewAvatarRepository(config.DbMock)
 
 	avatar := &entity.Avatar{
 		ID:  1,
@@ -88,11 +92,11 @@ func TestDeleteAvatar(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
-	err = rr.Begin()
+	err = repo.Begin()
 	assert.NoError(t, err)
-	deletedAvatar := rr.DeleteAvatar(avatar.ID)
+	deletedAvatar := repo.DeleteAvatar(avatar.ID)
 	assert.NoError(t, deletedAvatar)
-	err = rr.Commit()
+	err = repo.Commit()
 	assert.NoError(t, err)
 
 }
@@ -104,7 +108,8 @@ func TestUpdateAvatar(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := repository.NewAvatarRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewAvatarRepository(config.DbMock)
 
 	avatar := &entity.Avatar{
 		ID:  1,
@@ -118,11 +123,11 @@ func TestUpdateAvatar(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
-	err = rr.Begin()
+	err = repo.Begin()
 	assert.NoError(t, err)
-	updatedAvatar := rr.UpdateAvatar(avatar, avatar.ID)
+	updatedAvatar := repo.UpdateAvatar(avatar, avatar.ID)
 	assert.NoError(t, updatedAvatar)
-	err = rr.Commit()
+	err = repo.Commit()
 	assert.NoError(t, err)
 
 }
@@ -134,7 +139,8 @@ func TestGetAvatars(t *testing.T) {
 	}
 	defer db.Close()
 
-	rr := repository.NewAvatarRepository(db)
+	config.NewDatabaseMock(db)
+	repo := repository.NewAvatarRepository(config.DbMock)
 
 	avatar := &entity.Avatar{
 		ID:  1,
@@ -148,7 +154,7 @@ func TestGetAvatars(t *testing.T) {
 		WithArgs(int32(10), int32(0)).
 		WillReturnRows(rows)
 
-	avatars, err := rr.GetAvatars(10, 0)
+	avatars, err := repo.GetAvatars(10, 0)
 
 	assert.NoError(t, err)
 

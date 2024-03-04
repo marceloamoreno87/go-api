@@ -14,13 +14,15 @@ var (
 
 type EnvironmentInterface interface {
 	GetNameProject() string
-	GetHost() string
 	GetPort() string
 	GetDBHost() string
 	GetDBPort() string
 	GetDBUser() string
 	GetDBPassword() string
 	GetDBName() string
+	GetDBDriver() string
+	GetDBSslMode() string
+	GetMailFrom() string
 	GetJWTSecretKey() string
 	GetJWTExpiresIn() string
 	GetMailHost() string
@@ -58,7 +60,7 @@ type Env struct {
 	sendgridApiKey   string
 }
 
-var Environment *Env
+var Environment EnvironmentInterface
 
 func NewEnv() {
 	newEnv := &Env{

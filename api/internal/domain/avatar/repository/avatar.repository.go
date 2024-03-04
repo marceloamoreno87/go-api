@@ -2,8 +2,8 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/avatar/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/db"
 	"github.com/marceloamoreno/goapi/internal/shared/repository"
@@ -22,9 +22,9 @@ type AvatarRepository struct {
 	repository.Repository
 }
 
-func NewAvatarRepository(dbConn *sql.DB) *AvatarRepository {
+func NewAvatarRepository(DB config.DatabaseInterface) *AvatarRepository {
 	return &AvatarRepository{
-		Repository: *repository.NewRepository(dbConn),
+		Repository: *repository.NewRepository(DB),
 	}
 }
 
