@@ -1,8 +1,6 @@
 package routes
 
 import (
-	"log/slog"
-
 	"github.com/go-chi/chi/v5"
 	_ "github.com/marceloamoreno/goapi/api/docs"
 	"github.com/marceloamoreno/goapi/config"
@@ -36,7 +34,6 @@ func NewRoutes(
 
 		r.Group(func(r chi.Router) {
 			authMiddleware.NewMiddleware(r).AuthMiddleware(jwt.GetJwtAuth())
-			slog.Info("Auth OK")
 			route.getUserRoutes(r)
 			route.getRoleRoutes(r)
 			route.getPermissionRoutes(r)

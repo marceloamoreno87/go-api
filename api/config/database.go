@@ -35,7 +35,10 @@ func NewDatabase() {
 		dbname:   Environment.GetDBName(),
 		sslmode:  Environment.GetDBSslMode(),
 	}
-	db.SetDbConn()
+	err := db.SetDbConn()
+	if err != nil {
+		panic(err)
+	}
 	Db = db
 }
 
