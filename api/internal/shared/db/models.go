@@ -73,3 +73,27 @@ type User struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
+
+type ValidationType struct {
+	ID           int32     `json:"id"`
+	Name         string    `json:"name"`
+	InternalName string    `json:"internal_name"`
+	Description  string    `json:"description"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+}
+
+// Validation user table
+type ValidationUser struct {
+	// Validation user id
+	ID int32 `json:"id"`
+	// User id
+	UserID int32 `json:"user_id"`
+	// Validation type id
+	ValidationTypeID int32 `json:"validation_type_id"`
+	// Validation hash
+	Hash string `json:"hash"`
+	// Expiration
+	ExpiresIn int32     `json:"expires_in"`
+	CreatedAt time.Time `json:"created_at"`
+}

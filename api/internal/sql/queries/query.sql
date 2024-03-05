@@ -198,3 +198,20 @@ WHERE id = $2;
 -- name: DeleteAvatar :exec
 DELETE FROM avatars
 WHERE id = $1;
+
+-- name: GetValidationUser :one
+SELECT * FROM validation_users
+WHERE user_id = $1 LIMIT 1;
+
+-- name: GetValidationUserByToken :one
+SELECT * FROM validation_users
+WHERE hash = $1 LIMIT 1;
+
+-- name: CreateValidationUser :exec
+INSERT INTO validation_users (
+  user_id,
+  hash,
+  expires_in
+) VALUES (
+  $1, $2, $3
+);

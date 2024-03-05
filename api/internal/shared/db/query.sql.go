@@ -118,6 +118,27 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
 	return err
 }
 
+const createValidationUser = `-- name: CreateValidationUser :exec
+INSERT INTO validation_users (
+  user_id,
+  hash,
+  expires_in
+) VALUES (
+  $1, $2, $3
+)
+`
+
+type CreateValidationUserParams struct {
+	UserID    int32  `json:"user_id"`
+	Hash      string `json:"hash"`
+	ExpiresIn int32  `json:"expires_in"`
+}
+
+func (q *Queries) CreateValidationUser(ctx context.Context, arg CreateValidationUserParams) error {
+	_, err := q.exec(ctx, q.createValidationUserStmt, createValidationUser, arg.UserID, arg.Hash, arg.ExpiresIn)
+	return err
+}
+
 const deleteAvatar = `-- name: DeleteAvatar :exec
 DELETE FROM avatars
 WHERE id = $1
@@ -919,6 +940,44 @@ func (q *Queries) GetUsersWithRoleAndAvatar(ctx context.Context, arg GetUsersWit
 		return nil, err
 	}
 	return items, nil
+}
+
+const getValidationUser = `-- name: GetValidationUser :one
+SELECT id, user_id, validation_type_id, hash, expires_in, created_at FROM validation_users
+WHERE user_id = $1 LIMIT 1
+`
+
+func (q *Queries) GetValidationUser(ctx context.Context, userID int32) (ValidationUser, error) {
+	row := q.queryRow(ctx, q.getValidationUserStmt, getValidationUser, userID)
+	var i ValidationUser
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.ValidationTypeID,
+		&i.Hash,
+		&i.ExpiresIn,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getValidationUserByToken = `-- name: GetValidationUserByToken :one
+SELECT id, user_id, validation_type_id, hash, expires_in, created_at FROM validation_users
+WHERE hash = $1 LIMIT 1
+`
+
+func (q *Queries) GetValidationUserByToken(ctx context.Context, hash string) (ValidationUser, error) {
+	row := q.queryRow(ctx, q.getValidationUserByTokenStmt, getValidationUserByToken, hash)
+	var i ValidationUser
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.ValidationTypeID,
+		&i.Hash,
+		&i.ExpiresIn,
+		&i.CreatedAt,
+	)
+	return i, err
 }
 
 const registerUser = `-- name: RegisterUser :one

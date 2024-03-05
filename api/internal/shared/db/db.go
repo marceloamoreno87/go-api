@@ -39,6 +39,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.createUserStmt, err = db.PrepareContext(ctx, createUser); err != nil {
 		return nil, fmt.Errorf("error preparing query CreateUser: %w", err)
 	}
+	if q.createValidationUserStmt, err = db.PrepareContext(ctx, createValidationUser); err != nil {
+		return nil, fmt.Errorf("error preparing query CreateValidationUser: %w", err)
+	}
 	if q.deleteAvatarStmt, err = db.PrepareContext(ctx, deleteAvatar); err != nil {
 		return nil, fmt.Errorf("error preparing query DeleteAvatar: %w", err)
 	}
@@ -111,6 +114,12 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getUsersWithRoleAndAvatarStmt, err = db.PrepareContext(ctx, getUsersWithRoleAndAvatar); err != nil {
 		return nil, fmt.Errorf("error preparing query GetUsersWithRoleAndAvatar: %w", err)
 	}
+	if q.getValidationUserStmt, err = db.PrepareContext(ctx, getValidationUser); err != nil {
+		return nil, fmt.Errorf("error preparing query GetValidationUser: %w", err)
+	}
+	if q.getValidationUserByTokenStmt, err = db.PrepareContext(ctx, getValidationUserByToken); err != nil {
+		return nil, fmt.Errorf("error preparing query GetValidationUserByToken: %w", err)
+	}
 	if q.registerUserStmt, err = db.PrepareContext(ctx, registerUser); err != nil {
 		return nil, fmt.Errorf("error preparing query RegisterUser: %w", err)
 	}
@@ -154,6 +163,11 @@ func (q *Queries) Close() error {
 	if q.createUserStmt != nil {
 		if cerr := q.createUserStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing createUserStmt: %w", cerr)
+		}
+	}
+	if q.createValidationUserStmt != nil {
+		if cerr := q.createValidationUserStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing createValidationUserStmt: %w", cerr)
 		}
 	}
 	if q.deleteAvatarStmt != nil {
@@ -276,6 +290,16 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing getUsersWithRoleAndAvatarStmt: %w", cerr)
 		}
 	}
+	if q.getValidationUserStmt != nil {
+		if cerr := q.getValidationUserStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getValidationUserStmt: %w", cerr)
+		}
+	}
+	if q.getValidationUserByTokenStmt != nil {
+		if cerr := q.getValidationUserByTokenStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getValidationUserByTokenStmt: %w", cerr)
+		}
+	}
 	if q.registerUserStmt != nil {
 		if cerr := q.registerUserStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing registerUserStmt: %w", cerr)
@@ -345,6 +369,7 @@ type Queries struct {
 	createRoleStmt                  *sql.Stmt
 	createRolePermissionStmt        *sql.Stmt
 	createUserStmt                  *sql.Stmt
+	createValidationUserStmt        *sql.Stmt
 	deleteAvatarStmt                *sql.Stmt
 	deletePermissionStmt            *sql.Stmt
 	deleteRoleStmt                  *sql.Stmt
@@ -369,6 +394,8 @@ type Queries struct {
 	getUsersWithAvatarStmt          *sql.Stmt
 	getUsersWithRoleStmt            *sql.Stmt
 	getUsersWithRoleAndAvatarStmt   *sql.Stmt
+	getValidationUserStmt           *sql.Stmt
+	getValidationUserByTokenStmt    *sql.Stmt
 	registerUserStmt                *sql.Stmt
 	updateAvatarStmt                *sql.Stmt
 	updatePermissionStmt            *sql.Stmt
@@ -385,6 +412,7 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		createRoleStmt:                  q.createRoleStmt,
 		createRolePermissionStmt:        q.createRolePermissionStmt,
 		createUserStmt:                  q.createUserStmt,
+		createValidationUserStmt:        q.createValidationUserStmt,
 		deleteAvatarStmt:                q.deleteAvatarStmt,
 		deletePermissionStmt:            q.deletePermissionStmt,
 		deleteRoleStmt:                  q.deleteRoleStmt,
@@ -409,6 +437,8 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		getUsersWithAvatarStmt:          q.getUsersWithAvatarStmt,
 		getUsersWithRoleStmt:            q.getUsersWithRoleStmt,
 		getUsersWithRoleAndAvatarStmt:   q.getUsersWithRoleAndAvatarStmt,
+		getValidationUserStmt:           q.getValidationUserStmt,
+		getValidationUserByTokenStmt:    q.getValidationUserByTokenStmt,
 		registerUserStmt:                q.registerUserStmt,
 		updateAvatarStmt:                q.updateAvatarStmt,
 		updatePermissionStmt:            q.updatePermissionStmt,
