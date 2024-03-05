@@ -89,10 +89,11 @@ INSERT INTO users (
   name,
   email,
   password,
+  active,
   role_id,
   avatar_id
 ) VALUES (
-  $1, $2, $3, $4, $5
+  $1, $2, $3, $4, $5, $6
 )
 `
 
@@ -100,6 +101,7 @@ type CreateUserParams struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Active   bool   `json:"active"`
 	RoleID   int32  `json:"role_id"`
 	AvatarID int32  `json:"avatar_id"`
 }
@@ -109,6 +111,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
 		arg.Name,
 		arg.Email,
 		arg.Password,
+		arg.Active,
 		arg.RoleID,
 		arg.AvatarID,
 	)
@@ -473,7 +476,7 @@ func (q *Queries) GetRoles(ctx context.Context, arg GetRolesParams) ([]Role, err
 }
 
 const getUser = `-- name: GetUser :one
-SELECT id, name, email, password, role_id, avatar_id, created_at, updated_at FROM users
+SELECT id, name, email, password, active, role_id, avatar_id, created_at, updated_at FROM users
 WHERE id = $1 LIMIT 1
 `
 
@@ -485,6 +488,7 @@ func (q *Queries) GetUser(ctx context.Context, id int32) (User, error) {
 		&i.Name,
 		&i.Email,
 		&i.Password,
+		&i.Active,
 		&i.RoleID,
 		&i.AvatarID,
 		&i.CreatedAt,
@@ -494,7 +498,7 @@ func (q *Queries) GetUser(ctx context.Context, id int32) (User, error) {
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, name, email, password, role_id, avatar_id, created_at, updated_at FROM users
+SELECT id, name, email, password, active, role_id, avatar_id, created_at, updated_at FROM users
 WHERE email = $1 LIMIT 1
 `
 
@@ -506,6 +510,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.Name,
 		&i.Email,
 		&i.Password,
+		&i.Active,
 		&i.RoleID,
 		&i.AvatarID,
 		&i.CreatedAt,
@@ -515,7 +520,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 }
 
 const getUserWithAvatar = `-- name: GetUserWithAvatar :one
-SELECT users.id, name, email, password, role_id, avatar_id, users.created_at, users.updated_at, avatars.id, svg, avatars.created_at, avatars.updated_at FROM users
+SELECT users.id, name, email, password, active, role_id, avatar_id, users.created_at, users.updated_at, avatars.id, svg, avatars.created_at, avatars.updated_at FROM users
 INNER JOIN avatars ON users.id = avatars.user_id
 WHERE users.id = $1 LIMIT 1
 `
@@ -525,6 +530,7 @@ type GetUserWithAvatarRow struct {
 	Name        string    `json:"name"`
 	Email       string    `json:"email"`
 	Password    string    `json:"password"`
+	Active      bool      `json:"active"`
 	RoleID      int32     `json:"role_id"`
 	AvatarID    int32     `json:"avatar_id"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -543,6 +549,7 @@ func (q *Queries) GetUserWithAvatar(ctx context.Context, id int32) (GetUserWithA
 		&i.Name,
 		&i.Email,
 		&i.Password,
+		&i.Active,
 		&i.RoleID,
 		&i.AvatarID,
 		&i.CreatedAt,
@@ -556,7 +563,7 @@ func (q *Queries) GetUserWithAvatar(ctx context.Context, id int32) (GetUserWithA
 }
 
 const getUserWithRole = `-- name: GetUserWithRole :one
-SELECT users.id, users.name, email, password, role_id, avatar_id, users.created_at, users.updated_at, roles.id, roles.name, internal_name, description, roles.created_at, roles.updated_at FROM users
+SELECT users.id, users.name, email, password, active, role_id, avatar_id, users.created_at, users.updated_at, roles.id, roles.name, internal_name, description, roles.created_at, roles.updated_at FROM users
 INNER JOIN roles ON users.role_id = roles.id
 WHERE users.id = $1 LIMIT 1
 `
@@ -566,6 +573,7 @@ type GetUserWithRoleRow struct {
 	Name         string    `json:"name"`
 	Email        string    `json:"email"`
 	Password     string    `json:"password"`
+	Active       bool      `json:"active"`
 	RoleID       int32     `json:"role_id"`
 	AvatarID     int32     `json:"avatar_id"`
 	CreatedAt    time.Time `json:"created_at"`
@@ -586,6 +594,7 @@ func (q *Queries) GetUserWithRole(ctx context.Context, id int32) (GetUserWithRol
 		&i.Name,
 		&i.Email,
 		&i.Password,
+		&i.Active,
 		&i.RoleID,
 		&i.AvatarID,
 		&i.CreatedAt,
@@ -601,7 +610,7 @@ func (q *Queries) GetUserWithRole(ctx context.Context, id int32) (GetUserWithRol
 }
 
 const getUserWithRoleAndAvatar = `-- name: GetUserWithRoleAndAvatar :one
-SELECT users.id, users.name, email, password, role_id, avatar_id, users.created_at, users.updated_at, roles.id, roles.name, internal_name, description, roles.created_at, roles.updated_at, avatars.id, svg, avatars.created_at, avatars.updated_at FROM users
+SELECT users.id, users.name, email, password, active, role_id, avatar_id, users.created_at, users.updated_at, roles.id, roles.name, internal_name, description, roles.created_at, roles.updated_at, avatars.id, svg, avatars.created_at, avatars.updated_at FROM users
 INNER JOIN roles ON users.role_id = roles.id
 INNER JOIN avatars ON users.id = avatars.user_id
 WHERE users.id = $1 LIMIT 1
@@ -612,6 +621,7 @@ type GetUserWithRoleAndAvatarRow struct {
 	Name         string    `json:"name"`
 	Email        string    `json:"email"`
 	Password     string    `json:"password"`
+	Active       bool      `json:"active"`
 	RoleID       int32     `json:"role_id"`
 	AvatarID     int32     `json:"avatar_id"`
 	CreatedAt    time.Time `json:"created_at"`
@@ -636,6 +646,7 @@ func (q *Queries) GetUserWithRoleAndAvatar(ctx context.Context, id int32) (GetUs
 		&i.Name,
 		&i.Email,
 		&i.Password,
+		&i.Active,
 		&i.RoleID,
 		&i.AvatarID,
 		&i.CreatedAt,
@@ -655,7 +666,7 @@ func (q *Queries) GetUserWithRoleAndAvatar(ctx context.Context, id int32) (GetUs
 }
 
 const getUsers = `-- name: GetUsers :many
-SELECT id, name, email, password, role_id, avatar_id, created_at, updated_at FROM users
+SELECT id, name, email, password, active, role_id, avatar_id, created_at, updated_at FROM users
 ORDER BY id ASC
 LIMIT $1 OFFSET $2
 `
@@ -679,6 +690,7 @@ func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]User, err
 			&i.Name,
 			&i.Email,
 			&i.Password,
+			&i.Active,
 			&i.RoleID,
 			&i.AvatarID,
 			&i.CreatedAt,
@@ -698,7 +710,7 @@ func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]User, err
 }
 
 const getUsersWithAvatar = `-- name: GetUsersWithAvatar :many
-SELECT users.id, name, email, password, role_id, avatar_id, users.created_at, users.updated_at, avatars.id, svg, avatars.created_at, avatars.updated_at FROM users
+SELECT users.id, name, email, password, active, role_id, avatar_id, users.created_at, users.updated_at, avatars.id, svg, avatars.created_at, avatars.updated_at FROM users
 INNER JOIN avatars ON users.id = avatars.user_id
 ORDER BY users.id ASC
 LIMIT $1 OFFSET $2
@@ -714,6 +726,7 @@ type GetUsersWithAvatarRow struct {
 	Name        string    `json:"name"`
 	Email       string    `json:"email"`
 	Password    string    `json:"password"`
+	Active      bool      `json:"active"`
 	RoleID      int32     `json:"role_id"`
 	AvatarID    int32     `json:"avatar_id"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -738,6 +751,7 @@ func (q *Queries) GetUsersWithAvatar(ctx context.Context, arg GetUsersWithAvatar
 			&i.Name,
 			&i.Email,
 			&i.Password,
+			&i.Active,
 			&i.RoleID,
 			&i.AvatarID,
 			&i.CreatedAt,
@@ -761,7 +775,7 @@ func (q *Queries) GetUsersWithAvatar(ctx context.Context, arg GetUsersWithAvatar
 }
 
 const getUsersWithRole = `-- name: GetUsersWithRole :many
-SELECT users.id, users.name, email, password, role_id, avatar_id, users.created_at, users.updated_at, roles.id, roles.name, internal_name, description, roles.created_at, roles.updated_at FROM users
+SELECT users.id, users.name, email, password, active, role_id, avatar_id, users.created_at, users.updated_at, roles.id, roles.name, internal_name, description, roles.created_at, roles.updated_at FROM users
 INNER JOIN roles ON users.role_id = roles.id
 ORDER BY users.id ASC
 LIMIT $1 OFFSET $2
@@ -777,6 +791,7 @@ type GetUsersWithRoleRow struct {
 	Name         string    `json:"name"`
 	Email        string    `json:"email"`
 	Password     string    `json:"password"`
+	Active       bool      `json:"active"`
 	RoleID       int32     `json:"role_id"`
 	AvatarID     int32     `json:"avatar_id"`
 	CreatedAt    time.Time `json:"created_at"`
@@ -803,6 +818,7 @@ func (q *Queries) GetUsersWithRole(ctx context.Context, arg GetUsersWithRolePara
 			&i.Name,
 			&i.Email,
 			&i.Password,
+			&i.Active,
 			&i.RoleID,
 			&i.AvatarID,
 			&i.CreatedAt,
@@ -828,7 +844,7 @@ func (q *Queries) GetUsersWithRole(ctx context.Context, arg GetUsersWithRolePara
 }
 
 const getUsersWithRoleAndAvatar = `-- name: GetUsersWithRoleAndAvatar :many
-SELECT users.id, users.name, email, password, role_id, avatar_id, users.created_at, users.updated_at, roles.id, roles.name, internal_name, description, roles.created_at, roles.updated_at, avatars.id, svg, avatars.created_at, avatars.updated_at FROM users
+SELECT users.id, users.name, email, password, active, role_id, avatar_id, users.created_at, users.updated_at, roles.id, roles.name, internal_name, description, roles.created_at, roles.updated_at, avatars.id, svg, avatars.created_at, avatars.updated_at FROM users
 INNER JOIN roles ON users.role_id = roles.id
 INNER JOIN avatars ON users.id = avatars.user_id
 ORDER BY users.id ASC
@@ -845,6 +861,7 @@ type GetUsersWithRoleAndAvatarRow struct {
 	Name         string    `json:"name"`
 	Email        string    `json:"email"`
 	Password     string    `json:"password"`
+	Active       bool      `json:"active"`
 	RoleID       int32     `json:"role_id"`
 	AvatarID     int32     `json:"avatar_id"`
 	CreatedAt    time.Time `json:"created_at"`
@@ -875,6 +892,7 @@ func (q *Queries) GetUsersWithRoleAndAvatar(ctx context.Context, arg GetUsersWit
 			&i.Name,
 			&i.Email,
 			&i.Password,
+			&i.Active,
 			&i.RoleID,
 			&i.AvatarID,
 			&i.CreatedAt,
@@ -908,28 +926,36 @@ INSERT INTO users (
   name,
   email,
   password,
+  active,
   role_id,
   avatar_id
 ) VALUES (
-  $1, $2, $3, (select id from roles where internal_name = 'user'), (select id from avatars where id = 1)
+  $1, $2, $3, $4, (select id from roles where internal_name = 'user'), (select id from avatars where id = 1)
 )
-RETURNING id, name, email, password, role_id, avatar_id, created_at, updated_at
+RETURNING id, name, email, password, active, role_id, avatar_id, created_at, updated_at
 `
 
 type RegisterUserParams struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Active   bool   `json:"active"`
 }
 
 func (q *Queries) RegisterUser(ctx context.Context, arg RegisterUserParams) (User, error) {
-	row := q.queryRow(ctx, q.registerUserStmt, registerUser, arg.Name, arg.Email, arg.Password)
+	row := q.queryRow(ctx, q.registerUserStmt, registerUser,
+		arg.Name,
+		arg.Email,
+		arg.Password,
+		arg.Active,
+	)
 	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
 		&i.Email,
 		&i.Password,
+		&i.Active,
 		&i.RoleID,
 		&i.AvatarID,
 		&i.CreatedAt,
@@ -1009,15 +1035,17 @@ UPDATE users SET
   name = $1,
   email = $2,
   password = $3,
-  role_id = $4,
-  avatar_id = $5
-WHERE id = $6
+  active = $4,
+  role_id = $5,
+  avatar_id = $6
+WHERE id = $7
 `
 
 type UpdateUserParams struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Active   bool   `json:"active"`
 	RoleID   int32  `json:"role_id"`
 	AvatarID int32  `json:"avatar_id"`
 	ID       int32  `json:"id"`
@@ -1028,6 +1056,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
 		arg.Name,
 		arg.Email,
 		arg.Password,
+		arg.Active,
 		arg.RoleID,
 		arg.AvatarID,
 		arg.ID,

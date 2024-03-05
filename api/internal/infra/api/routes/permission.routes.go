@@ -2,15 +2,15 @@ package routes
 
 import (
 	"github.com/go-chi/chi/v5"
-	permissionHandler "github.com/marceloamoreno/goapi/internal/domain/permission/handler"
-	permissionRepository "github.com/marceloamoreno/goapi/internal/domain/permission/repository"
-	permissionService "github.com/marceloamoreno/goapi/internal/domain/permission/service"
+	"github.com/marceloamoreno/goapi/internal/domain/permission/handler"
+	"github.com/marceloamoreno/goapi/internal/domain/permission/repository"
+	"github.com/marceloamoreno/goapi/internal/domain/permission/service"
 )
 
 func (route *Route) getPermissionRoutes(router chi.Router) {
-	repo := permissionRepository.NewPermissionRepository(route.dbConn)
-	service := permissionService.NewPermissionService(repo)
-	handler := permissionHandler.NewPermissionHandler(service)
+	repo := repository.NewPermissionRepository(route.dbConn)
+	service := service.NewPermissionService(repo)
+	handler := handler.NewPermissionHandler(service)
 
 	router.Route("/permission", func(r chi.Router) {
 		r.Get("/", handler.GetPermissions)

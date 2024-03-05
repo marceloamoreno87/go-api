@@ -51,10 +51,11 @@ INSERT INTO users (
   name,
   email,
   password,
+  active,
   role_id,
   avatar_id
 ) VALUES (
-  $1, $2, $3, $4, $5
+  $1, $2, $3, $4, $5, $6
 );
 
 -- name: RegisterUser :one
@@ -62,10 +63,11 @@ INSERT INTO users (
   name,
   email,
   password,
+  active,
   role_id,
   avatar_id
 ) VALUES (
-  $1, $2, $3, (select id from roles where internal_name = 'user'), (select id from avatars where id = 1)
+  $1, $2, $3, $4, (select id from roles where internal_name = 'user'), (select id from avatars where id = 1)
 )
 RETURNING *;
 
@@ -74,9 +76,10 @@ UPDATE users SET
   name = $1,
   email = $2,
   password = $3,
-  role_id = $4,
-  avatar_id = $5
-WHERE id = $6;
+  active = $4,
+  role_id = $5,
+  avatar_id = $6
+WHERE id = $7;
 
 -- name: DeleteUser :exec
 DELETE FROM users

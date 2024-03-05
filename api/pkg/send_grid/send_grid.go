@@ -1,9 +1,10 @@
 package sendgrid
 
+// TODO: Refactor
 import (
 	"bytes"
-	"fmt"
 	"log"
+	"log/slog"
 	"text/template"
 
 	"github.com/marceloamoreno/goapi/config"
@@ -12,6 +13,7 @@ import (
 )
 
 type SendGrid struct {
+	Name        string
 	To          []string
 	From        string
 	Subject     string
@@ -24,19 +26,22 @@ type SendGrid struct {
 func NewSendGrid() *SendGrid {
 	return &SendGrid{
 		From: config.Environment.GetMailFrom(),
+		Name: config.Environment.GetMailName(),
 	}
 }
 
-// TODO: REFACTOR
 func (m *SendGrid) Send() (err error) {
-	from := mail.NewEmail("Example User", "test@example.com")
-	subject := "Sending with SendGrid is Fun"
-	to := mail.NewEmail("Example User", "test@example.com")
-	plainTextContent := "and easy to do anywhere, even with Go"
-	htmlContent := "<strong>and easy to do anywhere, even with Go</strong>"
-	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
-	client := sendgrid.NewSendClient(config.Environment.GetSendgridApiKey())
-	_, err = client.Send(message)
+	from := mail.NewEmail("<"+m.Name+"> ", m.From)
+	subject := m.Subject
+	for _, to := range m.To {
+		to := mail.NewEmail(to, to)
+		message := mail.NewSingleEmail(from, subject, to, "", m.Body)
+		client := sendgrid.NewSendClient(config.Environment.GetSendgridApiKey())
+		_, err = client.Send(message)
+		if err != nil {
+			slog.Info(err.Error())
+		}
+	}
 	return err
 }
 
@@ -48,15 +53,12 @@ func (m *SendGrid) SetSubject(subject string) {
 	m.Subject = subject
 }
 
-// TODO: Refactor
 func (m *SendGrid) SetBody(filename string, data any) {
 	t, err := template.ParseFiles("internal/views/" + filename + ".html")
 	if err != nil {
 		log.Println(err)
 	}
 	var tpl bytes.Buffer
-	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
-	tpl.Write([]byte(fmt.Sprintf("Subject: %s \n%s\n\n", m.Subject, mimeHeaders)))
 	if err := t.Execute(&tpl, data); err != nil {
 		log.Println(err)
 	}

@@ -1,5 +1,6 @@
 package smtp
 
+// TODO: Refactor
 import (
 	"bytes"
 	"fmt"
@@ -22,7 +23,7 @@ type Mail struct {
 
 func NewMail() *Mail {
 	return &Mail{
-		From: config.Environment.GetMailFrom(),
+		From: "<" + config.Environment.GetMailName() + "> " + config.Environment.GetMailFrom(),
 	}
 }
 

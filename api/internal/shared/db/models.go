@@ -66,6 +66,7 @@ type User struct {
 	Email string `json:"email"`
 	// User password
 	Password string `json:"password"`
+	Active   bool   `json:"active"`
 	// User role id
 	RoleID    int32     `json:"role_id"`
 	AvatarID  int32     `json:"avatar_id"`

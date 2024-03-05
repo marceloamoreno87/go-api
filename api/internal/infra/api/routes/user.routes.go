@@ -2,15 +2,15 @@ package routes
 
 import (
 	"github.com/go-chi/chi/v5"
-	userHandler "github.com/marceloamoreno/goapi/internal/domain/user/handler"
-	userRepository "github.com/marceloamoreno/goapi/internal/domain/user/repository"
-	userService "github.com/marceloamoreno/goapi/internal/domain/user/service"
+	"github.com/marceloamoreno/goapi/internal/domain/user/handler"
+	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
+	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 )
 
 func (route *Route) getUserRoutes(router chi.Router) {
-	repo := userRepository.NewUserRepository(route.dbConn)
-	service := userService.NewUserService(repo)
-	handler := userHandler.NewUserHandler(service)
+	repo := repository.NewUserRepository(route.dbConn)
+	service := service.NewUserService(repo)
+	handler := handler.NewUserHandler(service)
 	router.Route("/user", func(r chi.Router) {
 		r.Get("/", handler.GetUsers)
 		r.Get("/{id}", handler.GetUser)

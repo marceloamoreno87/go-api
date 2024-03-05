@@ -30,61 +30,61 @@ type EnvironmentInterface interface {
 	GetMailUser() string
 	GetMailPassword() string
 	GetMailDriver() string
-	GetMailerSendApiKey() string
 	GetSendgridApiKey() string
 	GetFrontendUrl() string
 	GetEnv() string
+	GetMailName() string
 }
 
 type Env struct {
-	nameProject      string
-	port             string
-	env              string
-	frontendUrl      string
-	dbDriver         string
-	dbSslMode        string
-	dbHost           string
-	dbPort           string
-	dbUser           string
-	dbPassword       string
-	dbName           string
-	jwtSecretKey     string
-	jwtExpiresIn     string
-	mailFrom         string
-	mailHost         string
-	mailPort         string
-	mailUser         string
-	mailPassword     string
-	mailDriver       string
-	mailerSendApiKey string
-	sendgridApiKey   string
+	nameProject    string
+	port           string
+	env            string
+	frontendUrl    string
+	dbDriver       string
+	dbSslMode      string
+	dbHost         string
+	dbPort         string
+	dbUser         string
+	dbPassword     string
+	dbName         string
+	jwtSecretKey   string
+	jwtExpiresIn   string
+	mailFrom       string
+	mailHost       string
+	mailPort       string
+	mailUser       string
+	mailPassword   string
+	mailDriver     string
+	mailName       string
+	sendgridApiKey string
 }
 
 var Environment EnvironmentInterface
 
 func NewEnv() {
 	newEnv := &Env{
-		nameProject:      os.Getenv("NAME_PROJECT"),
-		env:              os.Getenv("ENV"),
-		frontendUrl:      os.Getenv("FRONTEND_URL"),
-		dbDriver:         os.Getenv("DB_DRIVER"),
-		dbSslMode:        os.Getenv("DB_SSL_MODE"),
-		port:             os.Getenv("PORT"),
-		dbHost:           os.Getenv("DB_HOST"),
-		dbPort:           os.Getenv("DB_PORT"),
-		dbUser:           os.Getenv("DB_USER"),
-		dbPassword:       os.Getenv("DB_PASSWORD"),
-		dbName:           os.Getenv("DB_NAME"),
-		jwtSecretKey:     os.Getenv("JWT_SECRET_KEY"),
-		jwtExpiresIn:     os.Getenv("JWT_EXPIRES_IN"),
-		mailFrom:         os.Getenv("MAIL_FROM"),
-		mailHost:         os.Getenv("MAIL_HOST"),
-		mailPort:         os.Getenv("MAIL_PORT"),
-		mailUser:         os.Getenv("MAIL_USER"),
-		mailPassword:     os.Getenv("MAIL_PASSWORD"),
-		mailDriver:       os.Getenv("MAIL_DRIVER"),
-		mailerSendApiKey: os.Getenv("MAILERSEND_API_KEY"),
-		sendgridApiKey:   os.Getenv("SENDGRID_API_KEY"),
+		nameProject:    os.Getenv("NAME_PROJECT"),
+		env:            os.Getenv("ENV"),
+		frontendUrl:    os.Getenv("FRONTEND_URL"),
+		dbDriver:       os.Getenv("DB_DRIVER"),
+		dbSslMode:      os.Getenv("DB_SSL_MODE"),
+		port:           os.Getenv("PORT"),
+		dbHost:         os.Getenv("DB_HOST"),
+		dbPort:         os.Getenv("DB_PORT"),
+		dbUser:         os.Getenv("DB_USER"),
+		dbPassword:     os.Getenv("DB_PASSWORD"),
+		dbName:         os.Getenv("DB_NAME"),
+		jwtSecretKey:   os.Getenv("JWT_SECRET_KEY"),
+		jwtExpiresIn:   os.Getenv("JWT_EXPIRES_IN"),
+		mailFrom:       os.Getenv("MAIL_FROM"),
+		mailHost:       os.Getenv("MAIL_HOST"),
+		mailPort:       os.Getenv("MAIL_PORT"),
+		mailUser:       os.Getenv("MAIL_USER"),
+		mailPassword:   os.Getenv("MAIL_PASSWORD"),
+		mailDriver:     os.Getenv("MAIL_DRIVER"),
+		mailName:       os.Getenv("MAIL_NAME"),
+		sendgridApiKey: os.Getenv("SENDGRID_API_KEY"),
 	}
 	notify := newEnv.Validate()
 	if notify.HasErrors() {
@@ -113,7 +113,7 @@ func (e *Env) Validate() (notify *notification.Errors) {
 	notify.CheckRequiredField(e.GetMailUser(), "MailUser", "config.env.mailUser")
 	notify.CheckRequiredField(e.GetMailPassword(), "MailPassword", "config.env.mailPassword")
 	notify.CheckRequiredField(e.GetMailDriver(), "MailDriver", "config.env.mailDriver")
-	notify.CheckRequiredField(e.GetMailerSendApiKey(), "MailerSendApiKey", "config.env.mailerSendApiKey")
+	notify.CheckRequiredField(e.GetMailName(), "MailName", "config.env.mailName")
 	notify.CheckRequiredField(e.GetSendgridApiKey(), "SendgridApiKey", "config.env.sendgridApiKey")
 	notify.CheckRequiredField(e.GetFrontendUrl(), "FrontendUrl", "config.env.frontendUrl")
 	notify.CheckRequiredField(e.GetEnv(), "Env", "config.env.env")
@@ -191,8 +191,8 @@ func (e *Env) GetMailDriver() string {
 	return e.mailDriver
 }
 
-func (e *Env) GetMailerSendApiKey() string {
-	return e.mailerSendApiKey
+func (e *Env) GetMailName() string {
+	return e.mailName
 }
 
 func (e *Env) GetSendgridApiKey() string {

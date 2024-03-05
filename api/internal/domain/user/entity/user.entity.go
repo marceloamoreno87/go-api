@@ -17,6 +17,7 @@ type User struct {
 	Name      string               `json:"name"`
 	Email     string               `json:"email"`
 	Password  string               `json:"password"`
+	Active    bool                 `json:"active"`
 	Token     string               `json:"token"`
 	RoleID    int32                `json:"role_id"`
 	AvatarID  int32                `json:"avatar_id"`
@@ -33,6 +34,7 @@ func NewUser(name string, email string, password string, roleID int32, avatarID 
 		Password: password,
 		RoleID:   roleID,
 		AvatarID: avatarID,
+		Active:   false,
 	}
 
 	notify := user.Validate()
@@ -77,6 +79,7 @@ func (u *User) GenerateToken() {
 		"id":        u.ID,
 		"name":      u.Name,
 		"email":     u.Email,
+		"active":    u.Active,
 		"role_id":   u.RoleID,
 		"avatar_id": u.AvatarID,
 	}
@@ -102,6 +105,10 @@ func (u *User) GetEmail() string {
 
 func (u *User) GetPassword() string {
 	return u.Password
+}
+
+func (u *User) GetActive() bool {
+	return u.Active
 }
 
 func (u *User) GetRoleID() int32 {
@@ -138,6 +145,10 @@ func (u *User) SetName(name string) {
 
 func (u *User) SetEmail(email string) {
 	u.Email = email
+}
+
+func (u *User) SetActive(active bool) {
+	u.Active = active
 }
 
 func (u *User) SetPassword(password string) {

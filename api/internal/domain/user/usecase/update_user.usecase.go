@@ -10,6 +10,7 @@ type UpdateUserInputDTO struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Active   bool   `json:"active"`
 	RoleID   int32  `json:"role_id"`
 	AvatarID int32  `json:"avatar_id"`
 }
@@ -29,7 +30,7 @@ func (uc *UpdateUserUseCase) Execute(input UpdateUserInputDTO) (err error) {
 	if err != nil {
 		return
 	}
-
+	user.SetActive(input.Active)
 	if err = uc.repo.UpdateUser(user, input.ID); err != nil {
 		return
 	}

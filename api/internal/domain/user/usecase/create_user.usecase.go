@@ -28,7 +28,7 @@ func (uc *CreateUserUseCase) Execute(input CreateUserInputDTO) (err error) {
 	if err != nil {
 		return
 	}
-
+	user.SetActive(true)
 	if err = uc.repo.CreateUser(user); err != nil {
 		return
 	}

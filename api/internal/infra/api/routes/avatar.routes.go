@@ -2,15 +2,15 @@ package routes
 
 import (
 	"github.com/go-chi/chi/v5"
-	avatarHandler "github.com/marceloamoreno/goapi/internal/domain/avatar/handler"
-	avatarRepository "github.com/marceloamoreno/goapi/internal/domain/avatar/repository"
-	avatarService "github.com/marceloamoreno/goapi/internal/domain/avatar/service"
+	"github.com/marceloamoreno/goapi/internal/domain/avatar/handler"
+	"github.com/marceloamoreno/goapi/internal/domain/avatar/repository"
+	"github.com/marceloamoreno/goapi/internal/domain/avatar/service"
 )
 
 func (route *Route) getAvatarRoutes(router chi.Router) {
-	repo := avatarRepository.NewAvatarRepository(route.dbConn)
-	service := avatarService.NewAvatarService(repo)
-	handler := avatarHandler.NewAvatarHandler(service)
+	repo := repository.NewAvatarRepository(route.dbConn)
+	service := service.NewAvatarService(repo)
+	handler := handler.NewAvatarHandler(service)
 
 	router.Route("/avatar", func(r chi.Router) {
 		r.Get("/", handler.GetAvatars)

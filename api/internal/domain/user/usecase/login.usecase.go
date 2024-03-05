@@ -39,6 +39,7 @@ func (uc *LoginUseCase) Execute(input LoginInputDTO) (output LoginOutputDTO, err
 		Name:      user.Name,
 		Email:     user.Email,
 		Password:  user.Password,
+		Active:    user.Active,
 		RoleID:    user.RoleID,
 		AvatarID:  user.AvatarID,
 		CreatedAt: user.CreatedAt,

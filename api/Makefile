@@ -13,8 +13,8 @@ migrate:
 	chown -R 1000:1000 internal/shared/db/
 
 migratedown:
-	migrate -path internal/sql/migrations -database "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable" down
 	rm -rf internal/shared/db/
+	migrate -path internal/sql/migrations -database "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable" down
 
 swaggen:
 	swag init --parseDependency --parseInternal  --parseDepth 1 -g cmd/main.go -o api/docs

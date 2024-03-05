@@ -15,6 +15,7 @@ type GetUserByEmailOutputDTO struct {
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`
+	Active    bool      `json:"active"`
 	RoleID    int32     `json:"role_id"`
 	AvatarID  int32     `json:"avatar_id"`
 	CreatedAt time.Time `json:"created_at"`
@@ -42,6 +43,7 @@ func (uc *GetUserByEmailUseCase) Execute(input GetUserByEmailInputDTO) (output G
 		Name:      user.Name,
 		Email:     user.Email,
 		Password:  user.Password,
+		Active:    user.Active,
 		RoleID:    user.RoleID,
 		AvatarID:  user.AvatarID,
 		CreatedAt: user.CreatedAt,

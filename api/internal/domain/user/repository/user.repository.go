@@ -35,6 +35,7 @@ func (repo *UserRepository) CreateUser(user *entity.User) (err error) {
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
+		Active:   user.Active,
 		RoleID:   user.RoleID,
 		AvatarID: user.AvatarID,
 	})
@@ -46,6 +47,7 @@ func (repo *UserRepository) RegisterUser(user *entity.User) (userOutput *entity.
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
+		Active:   user.Active,
 	})
 	if err != nil {
 		return
@@ -55,6 +57,7 @@ func (repo *UserRepository) RegisterUser(user *entity.User) (userOutput *entity.
 		Name:      newUser.Name,
 		Email:     newUser.Email,
 		Password:  newUser.Password,
+		Active:    newUser.Active,
 		RoleID:    newUser.RoleID,
 		AvatarID:  newUser.AvatarID,
 		CreatedAt: newUser.CreatedAt,
@@ -74,6 +77,7 @@ func (repo *UserRepository) GetUser(id int32) (user *entity.User, err error) {
 		Name:      u.Name,
 		Email:     u.Email,
 		Password:  u.Password,
+		Active:    u.Active,
 		RoleID:    u.RoleID,
 		AvatarID:  u.AvatarID,
 		CreatedAt: u.CreatedAt,
@@ -92,6 +96,7 @@ func (repo *UserRepository) GetUserByEmail(email string) (user *entity.User, err
 		Name:      u.Name,
 		Email:     u.Email,
 		Password:  u.Password,
+		Active:    u.Active,
 		RoleID:    u.RoleID,
 		AvatarID:  u.AvatarID,
 		CreatedAt: u.CreatedAt,
@@ -113,6 +118,7 @@ func (repo *UserRepository) GetUsers(limit int32, offset int32) (users []*entity
 			Name:      u.Name,
 			Email:     u.Email,
 			Password:  u.Password,
+			Active:    u.Active,
 			RoleID:    u.RoleID,
 			AvatarID:  u.AvatarID,
 			CreatedAt: u.CreatedAt,
@@ -128,6 +134,7 @@ func (repo *UserRepository) UpdateUser(user *entity.User, id int32) (err error) 
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
+		Active:   user.Active,
 		RoleID:   user.RoleID,
 		AvatarID: user.AvatarID,
 	})

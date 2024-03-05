@@ -13,6 +13,7 @@ CREATE INDEX idx_roles_internal_name ON roles(internal_name);
 -- Insert roles
 INSERT INTO roles (name, internal_name, description) VALUES ('Administrator', 'admin', 'Administrator user');
 INSERT INTO roles (name, internal_name, description) VALUES ('User', 'user', 'Common user');
+INSERT INTO roles (name, internal_name, description) VALUES ('Analyst', 'analyst', 'Analyst user');
 
 -- Create the 'permissions' table
 CREATE TABLE IF NOT EXISTS permissions (
@@ -67,11 +68,21 @@ INSERT INTO permissions (name, internal_name, description) VALUES ('Delete Role'
 INSERT INTO permissions (name, internal_name, description) VALUES ('Read Role', 'read_role', 'Read role permission');
 INSERT INTO permissions (name, internal_name, description) VALUES ('Read Roles', 'read_roles', 'Read roles permission');
 
+INSERT INTO permissions (name, internal_name, description) VALUES ('Create Role Permission', 'create_role_permission', 'Create role permission permission');
+INSERT INTO permissions (name, internal_name, description) VALUES ('Update Role Permission', 'update_role_permission', 'Update role permission permission');
+INSERT INTO permissions (name, internal_name, description) VALUES ('Read Role Permissions', 'read_role_permissions', 'Read role permissions permission');
+
 INSERT INTO permissions (name, internal_name, description) VALUES ('Create Permission', 'create_permission', 'Create permission permission');
 INSERT INTO permissions (name, internal_name, description) VALUES ('Update Permission', 'update_permission', 'Update permission permission');
 INSERT INTO permissions (name, internal_name, description) VALUES ('Delete Permission', 'delete_permission', 'Delete permission permission');
 INSERT INTO permissions (name, internal_name, description) VALUES ('Read Permission', 'read_permission', 'Read permission permission');
 INSERT INTO permissions (name, internal_name, description) VALUES ('Read Permissions', 'read_permissions', 'Read permissions permission');
+
+INSERT INTO permissions (name, internal_name, description) VALUES ('Create Avatar', 'create_avatar', 'Create avatar permission');
+INSERT INTO permissions (name, internal_name, description) VALUES ('Update Avatar', 'update_avatar', 'Update avatar permission');
+INSERT INTO permissions (name, internal_name, description) VALUES ('Delete Avatar', 'delete_avatar', 'Delete avatar permission');
+INSERT INTO permissions (name, internal_name, description) VALUES ('Read Avatar', 'read_avatar', 'Read avatar permission');
+INSERT INTO permissions (name, internal_name, description) VALUES ('Read Avatars', 'read_avatars', 'Read avatars permission');
 
 -- Create the 'users' table
 CREATE TABLE IF NOT EXISTS users (
@@ -79,6 +90,7 @@ CREATE TABLE IF NOT EXISTS users (
   name VARCHAR(255) NOT NULL, -- User name
   email VARCHAR(255) UNIQUE NOT NULL, -- User email
   password TEXT NOT NULL, -- User password
+  active BOOLEAN DEFAULT FALSE NOT NULL, -- User active
   role_id INT NOT NULL, -- User role id
   avatar_id INT NOT NULL, -- User avatar id
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, -- Creation timestamp
@@ -90,10 +102,11 @@ CREATE INDEX idx_users_role_id ON users(role_id);
 CREATE INDEX idx_users_avatar_id ON users(avatar_id);
 CREATE INDEX idx_users_name ON users(name);
 CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_active ON users(active);
 
 -- Insert users
-INSERT INTO users (name, password, email, role_id, avatar_id) VALUES ('admin', '$2a$10$FcjdWT805.CjOEz9xc/P9eJojZ0.3SLlLRAgI/2ve6zPjgGY2jFsS', 'admin@admin.com',(SELECT id FROM roles WHERE internal_name = 'admin'), 1);
-INSERT INTO users (name, password, email, role_id, avatar_id) VALUES ('user', '$2a$10$FcjdWT805.CjOEz9xc/P9eJojZ0.3SLlLRAgI/2ve6zPjgGY2jFsS', 'user@user.com',(SELECT id FROM roles WHERE internal_name = 'user'), 2);
+INSERT INTO users (name, password, active, email, role_id, avatar_id) VALUES ('admin', '$2a$10$FcjdWT805.CjOEz9xc/P9eJojZ0.3SLlLRAgI/2ve6zPjgGY2jFsS', true, 'admin@admin.com',(SELECT id FROM roles WHERE internal_name = 'admin'), 1);
+INSERT INTO users (name, password, active, email, role_id, avatar_id) VALUES ('user', '$2a$10$FcjdWT805.CjOEz9xc/P9eJojZ0.3SLlLRAgI/2ve6zPjgGY2jFsS', true, 'user@user.com',(SELECT id FROM roles WHERE internal_name = 'user'), 2);
 
 -- Create the 'role_permission' table
 CREATE TABLE IF NOT EXISTS role_permissions (
@@ -124,6 +137,16 @@ INSERT INTO role_permissions (role_id, permission_id) VALUES ((SELECT id FROM ro
 INSERT INTO role_permissions (role_id, permission_id) VALUES ((SELECT id FROM roles WHERE internal_name = 'admin'), (SELECT id FROM permissions WHERE internal_name = 'delete_permission'));
 INSERT INTO role_permissions (role_id, permission_id) VALUES ((SELECT id FROM roles WHERE internal_name = 'admin'), (SELECT id FROM permissions WHERE internal_name = 'read_permission'));
 INSERT INTO role_permissions (role_id, permission_id) VALUES ((SELECT id FROM roles WHERE internal_name = 'admin'), (SELECT id FROM permissions WHERE internal_name = 'read_permissions'));
+
+INSERT INTO role_permissions (role_id, permission_id) VALUES ((SELECT id FROM roles WHERE internal_name = 'admin'), (SELECT id FROM permissions WHERE internal_name = 'create_role_permission'));
+INSERT INTO role_permissions (role_id, permission_id) VALUES ((SELECT id FROM roles WHERE internal_name = 'admin'), (SELECT id FROM permissions WHERE internal_name = 'update_role_permission'));
+INSERT INTO role_permissions (role_id, permission_id) VALUES ((SELECT id FROM roles WHERE internal_name = 'admin'), (SELECT id FROM permissions WHERE internal_name = 'read_role_permissions'));
+
+INSERT INTO role_permissions (role_id, permission_id) VALUES ((SELECT id FROM roles WHERE internal_name = 'admin'), (SELECT id FROM permissions WHERE internal_name = 'create_avatar'));
+INSERT INTO role_permissions (role_id, permission_id) VALUES ((SELECT id FROM roles WHERE internal_name = 'admin'), (SELECT id FROM permissions WHERE internal_name = 'update_avatar'));
+INSERT INTO role_permissions (role_id, permission_id) VALUES ((SELECT id FROM roles WHERE internal_name = 'admin'), (SELECT id FROM permissions WHERE internal_name = 'delete_avatar'));
+INSERT INTO role_permissions (role_id, permission_id) VALUES ((SELECT id FROM roles WHERE internal_name = 'admin'), (SELECT id FROM permissions WHERE internal_name = 'read_avatar'));
+INSERT INTO role_permissions (role_id, permission_id) VALUES ((SELECT id FROM roles WHERE internal_name = 'admin'), (SELECT id FROM permissions WHERE internal_name = 'read_avatars'));
 
 INSERT INTO role_permissions (role_id, permission_id) VALUES ((SELECT id FROM roles WHERE internal_name = 'user'), (SELECT id FROM permissions WHERE internal_name = 'read_user'));
 

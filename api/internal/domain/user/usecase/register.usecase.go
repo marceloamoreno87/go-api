@@ -21,6 +21,7 @@ type RegisterOutputDTO struct {
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`
+	Active    bool      `json:"active"`
 	RoleID    int32     `json:"role_id"`
 	AvatarID  int32     `json:"avatar_id"`
 	CreatedAt time.Time `json:"created_at"`
@@ -55,6 +56,7 @@ func (uc *RegisterUseCase) Execute(input RegisterInputDTO) (output RegisterOutpu
 		Name:      newUser.Name,
 		Email:     newUser.Email,
 		Password:  newUser.Password,
+		Active:    newUser.Active,
 		RoleID:    newUser.RoleID,
 		AvatarID:  newUser.AvatarID,
 		CreatedAt: newUser.CreatedAt,
