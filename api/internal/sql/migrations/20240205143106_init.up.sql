@@ -148,35 +148,18 @@ INSERT INTO role_permissions (role_id, permission_id) VALUES ((SELECT id FROM ro
 
 INSERT INTO role_permissions (role_id, permission_id) VALUES ((SELECT id FROM roles WHERE internal_name = 'user'), (SELECT id FROM permissions WHERE internal_name = 'read_user'));
 
--- Create the 'validation_type' table
-CREATE TABLE IF NOT EXISTS validation_types (
-  id SERIAL PRIMARY KEY, -- Validation type id
-  name VARCHAR(255) UNIQUE NOT NULL, -- Validation type name
-  internal_name VARCHAR(255) UNIQUE NOT NULL, -- Validation type internal name
-  description TEXT NOT NULL NOT NULL, -- Validation type description
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, -- Creation timestamp
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL -- Update timestamp
-);
-CREATE INDEX idx_validation_types_internal_name ON validation_types(internal_name);
-
--- Insert validation types
-INSERT INTO validation_types (name, internal_name, description) VALUES ('New user', 'new_user', 'New user validation type');
-INSERT INTO validation_types (name, internal_name, description) VALUES ('Reset password', 'reset_password', 'Reset password validation type');
-
--- Create the 'validation_user' table
-CREATE TABLE IF NOT EXISTS validation_users (
+-- Create the 'users_validation' table
+CREATE TABLE IF NOT EXISTS users_validation (
   id SERIAL PRIMARY KEY, -- Validation user id
   user_id INT NOT NULL, -- User id
-  validation_type_id INT NOT NULL, -- Validation type id
   hash TEXT NOT NULL, -- Validation hash
   expires_in INT NOT NULL, -- Expiration
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, -- Creation timestamp
-  FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-  FOREIGN KEY (validation_type_id) REFERENCES validation_types (id) ON DELETE CASCADE
+  FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
-CREATE INDEX idx_validation_user_user_id ON validation_users(user_id);
-CREATE INDEX idx_validation_user_hash ON validation_users(hash);
-CREATE INDEX idc_validation_user_validation_type_id ON validation_users(validation_type_id);
+CREATE INDEX idx_users_validation_user_id ON users_validation(user_id);
+CREATE INDEX idx_users_validation_hash ON users_validation(hash);
+CREATE INDEX idx_users_validation_created_at ON users_validation(created_at);
 
 -- Add table and column comments
 COMMENT ON TABLE users IS 'Users table';
@@ -203,12 +186,11 @@ COMMENT ON COLUMN role_permissions.id IS 'Role permission id';
 COMMENT ON COLUMN role_permissions.role_id IS 'Role id';
 COMMENT ON COLUMN role_permissions.permission_id IS 'Permission id';
 
-COMMENT ON TABLE validation_users IS 'Validation user table';
-COMMENT ON COLUMN validation_users.id IS 'Validation user id';
-COMMENT ON COLUMN validation_users.user_id IS 'User id';
-COMMENT ON COLUMN validation_users.validation_type_id IS 'Validation type id';
-COMMENT ON COLUMN validation_users.hash IS 'Validation hash';
-COMMENT ON COLUMN validation_users.expires_in IS 'Expiration';
+COMMENT ON TABLE users_validation IS 'Validation user table';
+COMMENT ON COLUMN users_validation.id IS 'Validation user id';
+COMMENT ON COLUMN users_validation.user_id IS 'User id';
+COMMENT ON COLUMN users_validation.hash IS 'Validation hash';
+COMMENT ON COLUMN users_validation.expires_in IS 'Expiration';
 
 COMMENT ON TABLE avatars IS 'Avatars table';
 COMMENT ON COLUMN avatars.id IS 'Avatar id';

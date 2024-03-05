@@ -7,6 +7,22 @@ import (
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
+type RoleInterface interface {
+	GetID() int32
+	GetName() string
+	GetInternalName() string
+	GetDescription() string
+	GetCreatedAt() time.Time
+	GetUpdatedAt() time.Time
+	Validate() error
+	SetID(id int32)
+	SetName(name string)
+	SetInternalName(internal_name string)
+	SetDescription(description string)
+	SetCreatedAt(created_at time.Time)
+	SetUpdatedAt(updated_at time.Time)
+}
+
 type Role struct {
 	ID           int32     `json:"id"`
 	Name         string    `json:"name"`

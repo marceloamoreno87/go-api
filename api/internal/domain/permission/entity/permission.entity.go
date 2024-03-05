@@ -7,6 +7,19 @@ import (
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
+type PermissionInterface interface {
+	GetID() int
+	GetName() string
+	GetInternalName() string
+	GetDescription() string
+	GetCreatedAt() time.Time
+	GetUpdatedAt() time.Time
+	SetID(id int)
+	SetName(name string)
+	SetInternalName(internalName string)
+	SetDescription(description string)
+}
+
 type Permission struct {
 	ID           int32     `json:"id"`
 	Name         string    `json:"name"`

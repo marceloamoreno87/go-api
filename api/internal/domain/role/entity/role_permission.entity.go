@@ -7,6 +7,17 @@ import (
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
+type RolePermissionInterface interface {
+	Validate() (err error)
+	GetRole() *Role
+	GetPermission() *PermissionEntity.Permission
+	SetRole(role *Role)
+	SetPermission(permission *PermissionEntity.Permission)
+	GetRoleID()
+	GetPermissionID()
+	SetRoleID(roleId int32)
+	SetPermissionID(permissionId int32)
+}
 type RolePermission struct {
 	ID            int32
 	RoleID        int32

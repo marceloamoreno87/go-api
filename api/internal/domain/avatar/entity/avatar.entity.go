@@ -7,6 +7,17 @@ import (
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
+type AvatarInterface interface {
+	GetID() int32
+	GetSVG() string
+	GetCreatedAt() time.Time
+	GetUpdatedAt() time.Time
+	SetID(int32)
+	SetSVG(string)
+	SetCreatedAt(time.Time)
+	SetUpdatedAt(time.Time)
+}
+
 type Avatar struct {
 	ID        int32     `json:"id"`
 	SVG       string    `json:"svg"`

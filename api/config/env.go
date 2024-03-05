@@ -34,57 +34,63 @@ type EnvironmentInterface interface {
 	GetFrontendUrl() string
 	GetEnv() string
 	GetMailName() string
+	GetValidationSecretKey() string
+	GetValidationExpiresIn() string
 }
 
 type Env struct {
-	nameProject    string
-	port           string
-	env            string
-	frontendUrl    string
-	dbDriver       string
-	dbSslMode      string
-	dbHost         string
-	dbPort         string
-	dbUser         string
-	dbPassword     string
-	dbName         string
-	jwtSecretKey   string
-	jwtExpiresIn   string
-	mailFrom       string
-	mailHost       string
-	mailPort       string
-	mailUser       string
-	mailPassword   string
-	mailDriver     string
-	mailName       string
-	sendgridApiKey string
+	nameProject         string
+	port                string
+	env                 string
+	frontendUrl         string
+	dbDriver            string
+	dbSslMode           string
+	dbHost              string
+	dbPort              string
+	dbUser              string
+	dbPassword          string
+	dbName              string
+	jwtSecretKey        string
+	jwtExpiresIn        string
+	validationSecretKey string
+	validationExpiresIn string
+	mailFrom            string
+	mailHost            string
+	mailPort            string
+	mailUser            string
+	mailPassword        string
+	mailDriver          string
+	mailName            string
+	sendgridApiKey      string
 }
 
 var Environment EnvironmentInterface
 
 func NewEnv() {
 	newEnv := &Env{
-		nameProject:    os.Getenv("NAME_PROJECT"),
-		env:            os.Getenv("ENV"),
-		frontendUrl:    os.Getenv("FRONTEND_URL"),
-		dbDriver:       os.Getenv("DB_DRIVER"),
-		dbSslMode:      os.Getenv("DB_SSL_MODE"),
-		port:           os.Getenv("PORT"),
-		dbHost:         os.Getenv("DB_HOST"),
-		dbPort:         os.Getenv("DB_PORT"),
-		dbUser:         os.Getenv("DB_USER"),
-		dbPassword:     os.Getenv("DB_PASSWORD"),
-		dbName:         os.Getenv("DB_NAME"),
-		jwtSecretKey:   os.Getenv("JWT_SECRET_KEY"),
-		jwtExpiresIn:   os.Getenv("JWT_EXPIRES_IN"),
-		mailFrom:       os.Getenv("MAIL_FROM"),
-		mailHost:       os.Getenv("MAIL_HOST"),
-		mailPort:       os.Getenv("MAIL_PORT"),
-		mailUser:       os.Getenv("MAIL_USER"),
-		mailPassword:   os.Getenv("MAIL_PASSWORD"),
-		mailDriver:     os.Getenv("MAIL_DRIVER"),
-		mailName:       os.Getenv("MAIL_NAME"),
-		sendgridApiKey: os.Getenv("SENDGRID_API_KEY"),
+		nameProject:         os.Getenv("NAME_PROJECT"),
+		env:                 os.Getenv("ENV"),
+		frontendUrl:         os.Getenv("FRONTEND_URL"),
+		dbDriver:            os.Getenv("DB_DRIVER"),
+		dbSslMode:           os.Getenv("DB_SSL_MODE"),
+		port:                os.Getenv("PORT"),
+		dbHost:              os.Getenv("DB_HOST"),
+		dbPort:              os.Getenv("DB_PORT"),
+		dbUser:              os.Getenv("DB_USER"),
+		dbPassword:          os.Getenv("DB_PASSWORD"),
+		dbName:              os.Getenv("DB_NAME"),
+		jwtSecretKey:        os.Getenv("JWT_SECRET_KEY"),
+		jwtExpiresIn:        os.Getenv("JWT_EXPIRES_IN"),
+		validationSecretKey: os.Getenv("VALIDATION_SECRET_KEY"),
+		validationExpiresIn: os.Getenv("VALIDATION_EXPIRES_IN"),
+		mailFrom:            os.Getenv("MAIL_FROM"),
+		mailHost:            os.Getenv("MAIL_HOST"),
+		mailPort:            os.Getenv("MAIL_PORT"),
+		mailUser:            os.Getenv("MAIL_USER"),
+		mailPassword:        os.Getenv("MAIL_PASSWORD"),
+		mailDriver:          os.Getenv("MAIL_DRIVER"),
+		mailName:            os.Getenv("MAIL_NAME"),
+		sendgridApiKey:      os.Getenv("SENDGRID_API_KEY"),
 	}
 	notify := newEnv.Validate()
 	if notify.HasErrors() {
@@ -117,6 +123,8 @@ func (e *Env) Validate() (notify *notification.Errors) {
 	notify.CheckRequiredField(e.GetSendgridApiKey(), "SendgridApiKey", "config.env.sendgridApiKey")
 	notify.CheckRequiredField(e.GetFrontendUrl(), "FrontendUrl", "config.env.frontendUrl")
 	notify.CheckRequiredField(e.GetEnv(), "Env", "config.env.env")
+	notify.CheckRequiredField(e.GetValidationSecretKey(), "Validation", "config.env.validationSecretKey")
+	notify.CheckRequiredField(e.GetValidationExpiresIn(), "Validation", "config.env.validationExpiresIn")
 	notify.CheckIsContains(e.GetEnv(), Envs, "Env", "config.env.env")
 	notify.CheckIsContains(e.GetDBDriver(), DbDrivers, "DBDriver", "config.env.dbDriver")
 	notify.CheckIsContains(e.GetMailDriver(), MailDrivers, "MailDriver", "config.env.mailDriver")
@@ -165,6 +173,14 @@ func (e *Env) GetJWTSecretKey() string {
 
 func (e *Env) GetJWTExpiresIn() string {
 	return e.jwtExpiresIn
+}
+
+func (e *Env) GetValidationSecretKey() string {
+	return e.validationSecretKey
+}
+
+func (e *Env) GetValidationExpiresIn() string {
+	return e.validationExpiresIn
 }
 
 func (e *Env) GetMailFrom() string {

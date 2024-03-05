@@ -33,6 +33,11 @@ INNER JOIN roles ON users.role_id = roles.id
 ORDER BY users.id ASC
 LIMIT $1 OFFSET $2;
 
+-- name: GetUserWithValidationUser :one
+SELECT * FROM users
+INNER JOIN users_validation ON users.id = users_validation.user_id
+WHERE users.id = $1 ORDER BY users_validation.id DESC LIMIT 1;
+
 -- name: GetUsersWithAvatar :many
 SELECT * FROM users
 INNER JOIN avatars ON users.id = avatars.user_id
@@ -200,15 +205,15 @@ DELETE FROM avatars
 WHERE id = $1;
 
 -- name: GetValidationUser :one
-SELECT * FROM validation_users
-WHERE user_id = $1 LIMIT 1;
+SELECT * FROM users_validation
+WHERE user_id = $1 ORDER BY id DESC LIMIT 1;
 
--- name: GetValidationUserByToken :one
-SELECT * FROM validation_users
+-- name: GetValidationUserByHash :one
+SELECT * FROM users_validation
 WHERE hash = $1 LIMIT 1;
 
 -- name: CreateValidationUser :exec
-INSERT INTO validation_users (
+INSERT INTO users_validation (
   user_id,
   hash,
   expires_in

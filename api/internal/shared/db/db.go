@@ -102,6 +102,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getUserWithRoleAndAvatarStmt, err = db.PrepareContext(ctx, getUserWithRoleAndAvatar); err != nil {
 		return nil, fmt.Errorf("error preparing query GetUserWithRoleAndAvatar: %w", err)
 	}
+	if q.getUserWithValidationUserStmt, err = db.PrepareContext(ctx, getUserWithValidationUser); err != nil {
+		return nil, fmt.Errorf("error preparing query GetUserWithValidationUser: %w", err)
+	}
 	if q.getUsersStmt, err = db.PrepareContext(ctx, getUsers); err != nil {
 		return nil, fmt.Errorf("error preparing query GetUsers: %w", err)
 	}
@@ -117,8 +120,8 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getValidationUserStmt, err = db.PrepareContext(ctx, getValidationUser); err != nil {
 		return nil, fmt.Errorf("error preparing query GetValidationUser: %w", err)
 	}
-	if q.getValidationUserByTokenStmt, err = db.PrepareContext(ctx, getValidationUserByToken); err != nil {
-		return nil, fmt.Errorf("error preparing query GetValidationUserByToken: %w", err)
+	if q.getValidationUserByHashStmt, err = db.PrepareContext(ctx, getValidationUserByHash); err != nil {
+		return nil, fmt.Errorf("error preparing query GetValidationUserByHash: %w", err)
 	}
 	if q.registerUserStmt, err = db.PrepareContext(ctx, registerUser); err != nil {
 		return nil, fmt.Errorf("error preparing query RegisterUser: %w", err)
@@ -270,6 +273,11 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing getUserWithRoleAndAvatarStmt: %w", cerr)
 		}
 	}
+	if q.getUserWithValidationUserStmt != nil {
+		if cerr := q.getUserWithValidationUserStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getUserWithValidationUserStmt: %w", cerr)
+		}
+	}
 	if q.getUsersStmt != nil {
 		if cerr := q.getUsersStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing getUsersStmt: %w", cerr)
@@ -295,9 +303,9 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing getValidationUserStmt: %w", cerr)
 		}
 	}
-	if q.getValidationUserByTokenStmt != nil {
-		if cerr := q.getValidationUserByTokenStmt.Close(); cerr != nil {
-			err = fmt.Errorf("error closing getValidationUserByTokenStmt: %w", cerr)
+	if q.getValidationUserByHashStmt != nil {
+		if cerr := q.getValidationUserByHashStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getValidationUserByHashStmt: %w", cerr)
 		}
 	}
 	if q.registerUserStmt != nil {
@@ -390,12 +398,13 @@ type Queries struct {
 	getUserWithAvatarStmt           *sql.Stmt
 	getUserWithRoleStmt             *sql.Stmt
 	getUserWithRoleAndAvatarStmt    *sql.Stmt
+	getUserWithValidationUserStmt   *sql.Stmt
 	getUsersStmt                    *sql.Stmt
 	getUsersWithAvatarStmt          *sql.Stmt
 	getUsersWithRoleStmt            *sql.Stmt
 	getUsersWithRoleAndAvatarStmt   *sql.Stmt
 	getValidationUserStmt           *sql.Stmt
-	getValidationUserByTokenStmt    *sql.Stmt
+	getValidationUserByHashStmt     *sql.Stmt
 	registerUserStmt                *sql.Stmt
 	updateAvatarStmt                *sql.Stmt
 	updatePermissionStmt            *sql.Stmt
@@ -433,12 +442,13 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		getUserWithAvatarStmt:           q.getUserWithAvatarStmt,
 		getUserWithRoleStmt:             q.getUserWithRoleStmt,
 		getUserWithRoleAndAvatarStmt:    q.getUserWithRoleAndAvatarStmt,
+		getUserWithValidationUserStmt:   q.getUserWithValidationUserStmt,
 		getUsersStmt:                    q.getUsersStmt,
 		getUsersWithAvatarStmt:          q.getUsersWithAvatarStmt,
 		getUsersWithRoleStmt:            q.getUsersWithRoleStmt,
 		getUsersWithRoleAndAvatarStmt:   q.getUsersWithRoleAndAvatarStmt,
 		getValidationUserStmt:           q.getValidationUserStmt,
-		getValidationUserByTokenStmt:    q.getValidationUserByTokenStmt,
+		getValidationUserByHashStmt:     q.getValidationUserByHashStmt,
 		registerUserStmt:                q.registerUserStmt,
 		updateAvatarStmt:                q.updateAvatarStmt,
 		updatePermissionStmt:            q.updatePermissionStmt,
