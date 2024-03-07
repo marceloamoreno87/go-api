@@ -11,21 +11,11 @@ DROP INDEX IF EXISTS idx_permissions_internal_name;
 -- Drop 'permissions' table
 DROP TABLE IF EXISTS permissions;
 
--- Drop indexes from 'roles' table
-DROP INDEX IF EXISTS idx_roles_internal_name;
-
--- Drop 'roles' table
-DROP TABLE IF EXISTS roles;
-
--- Drop indexes from 'avatars' table
-DROP INDEX IF EXISTS idx_avatars_svg;
-
--- Drop 'avatars' table
-DROP TABLE IF EXISTS avatars;
-
 -- Drop indexes from 'users_validation' table
-DROP INDEX IF EXISTS users_validation;
+DROP INDEX IF EXISTS idx_users_validation_user_id;
 DROP INDEX IF EXISTS idx_users_validation_hash;
+DROP INDEX IF EXISTS idx_users_validation_used;
+DROP INDEX IF EXISTS idx_users_validation_created_at ;
 
 -- Drop 'users_validation' table
 DROP TABLE IF EXISTS users_validation;
@@ -38,3 +28,15 @@ DROP INDEX IF EXISTS idx_users_active;
 
 -- Drop 'users' table
 DROP TABLE IF EXISTS users;
+
+-- Drop indexes from 'roles' table
+DROP INDEX IF EXISTS idx_roles_internal_name;
+
+-- Drop 'roles' table
+DROP TABLE IF EXISTS roles;
+
+-- Drop indexes from 'avatars' table
+DROP INDEX IF EXISTS idx_avatars_svg;
+
+-- Drop 'avatars' table
+DROP TABLE IF EXISTS avatars;

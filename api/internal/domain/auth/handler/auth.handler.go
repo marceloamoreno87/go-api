@@ -9,6 +9,13 @@ import (
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
+type AuthHandlerInterface interface {
+	Login(w http.ResponseWriter, r *http.Request)
+	Refresh(w http.ResponseWriter, r *http.Request)
+	Register(w http.ResponseWriter, r *http.Request)
+	UserVerify(w http.ResponseWriter, r *http.Request)
+}
+
 type AuthHandler struct {
 	response.Responses
 	service service.UserServiceInterface
@@ -69,4 +76,24 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	h.SendResponse(w, h.NewResponse(output))
+}
+
+// GetVerify godoc
+// @Summary Get Verify
+// @Description Get Verify
+// @Tags Auth
+// @Accept  json
+// @Produce  json
+// @Param user body usecase.UserVerifyInputDTO true "User"
+// @Success 200 {object} response.Response{data=usecase.RegisterOutputDTO}
+// @Failure 400 {object} response.ResponseError{}
+// @Router /auth/verify [post]
+func (h *AuthHandler) UserVerify(w http.ResponseWriter, r *http.Request) {
+	err := h.service.UserVerify(r.Body)
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
+	}
+	h.SendResponse(w, h.NewResponse(nil))
 }

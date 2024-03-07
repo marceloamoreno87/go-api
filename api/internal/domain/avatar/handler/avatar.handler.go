@@ -10,6 +10,14 @@ import (
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
+type AvatarHandlerInterface interface {
+	GetAvatar(w http.ResponseWriter, r *http.Request)
+	GetAvatars(w http.ResponseWriter, r *http.Request)
+	CreateAvatar(w http.ResponseWriter, r *http.Request)
+	UpdateAvatar(w http.ResponseWriter, r *http.Request)
+	DeleteAvatar(w http.ResponseWriter, r *http.Request)
+}
+
 type AvatarHandler struct {
 	response.Responses
 	service service.AvatarServiceInterface

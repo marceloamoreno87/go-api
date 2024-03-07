@@ -47,6 +47,7 @@ type Querier interface {
 	UpdatePermission(ctx context.Context, arg UpdatePermissionParams) error
 	UpdateRole(ctx context.Context, arg UpdateRoleParams) error
 	UpdateUser(ctx context.Context, arg UpdateUserParams) error
+	UpdateValidationUser(ctx context.Context, arg UpdateValidationUserParams) error
 }
 
 var _ Querier = (*Queries)(nil)

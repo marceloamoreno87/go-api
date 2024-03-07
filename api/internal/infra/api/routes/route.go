@@ -30,6 +30,7 @@ func NewRoutes(
 			route.getRoute(r)
 			route.getSwaggerRoutes(r)
 			route.getHealthRoutes(r)
+			route.getTestHashValidate(r)
 		})
 
 		r.Group(func(r chi.Router) {

@@ -154,12 +154,15 @@ CREATE TABLE IF NOT EXISTS users_validation (
   user_id INT NOT NULL, -- User id
   hash TEXT NOT NULL, -- Validation hash
   expires_in INT NOT NULL, -- Expiration
+  used BOOLEAN DEFAULT FALSE NOT NULL, -- Used
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, -- Creation timestamp
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 CREATE INDEX idx_users_validation_user_id ON users_validation(user_id);
 CREATE INDEX idx_users_validation_hash ON users_validation(hash);
+CREATE INDEX idx_users_validation_used ON users_validation(used);
 CREATE INDEX idx_users_validation_created_at ON users_validation(created_at);
+
 
 -- Add table and column comments
 COMMENT ON TABLE users IS 'Users table';
@@ -190,6 +193,7 @@ COMMENT ON TABLE users_validation IS 'Validation user table';
 COMMENT ON COLUMN users_validation.id IS 'Validation user id';
 COMMENT ON COLUMN users_validation.user_id IS 'User id';
 COMMENT ON COLUMN users_validation.hash IS 'Validation hash';
+COMMENT ON COLUMN users_validation.used IS 'Used';
 COMMENT ON COLUMN users_validation.expires_in IS 'Expiration';
 
 COMMENT ON TABLE avatars IS 'Avatars table';

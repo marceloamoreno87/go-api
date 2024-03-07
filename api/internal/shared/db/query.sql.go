@@ -687,7 +687,7 @@ func (q *Queries) GetUserWithRoleAndAvatar(ctx context.Context, id int32) (GetUs
 }
 
 const getUserWithValidationUser = `-- name: GetUserWithValidationUser :one
-SELECT users.id, name, email, password, active, role_id, avatar_id, users.created_at, updated_at, users_validation.id, user_id, hash, expires_in, users_validation.created_at FROM users
+SELECT users.id, name, email, password, active, role_id, avatar_id, users.created_at, updated_at, users_validation.id, user_id, hash, expires_in, used, users_validation.created_at FROM users
 INNER JOIN users_validation ON users.id = users_validation.user_id
 WHERE users.id = $1 ORDER BY users_validation.id DESC LIMIT 1
 `
@@ -706,6 +706,7 @@ type GetUserWithValidationUserRow struct {
 	UserID      int32     `json:"user_id"`
 	Hash        string    `json:"hash"`
 	ExpiresIn   int32     `json:"expires_in"`
+	Used        bool      `json:"used"`
 	CreatedAt_2 time.Time `json:"created_at_2"`
 }
 
@@ -726,6 +727,7 @@ func (q *Queries) GetUserWithValidationUser(ctx context.Context, id int32) (GetU
 		&i.UserID,
 		&i.Hash,
 		&i.ExpiresIn,
+		&i.Used,
 		&i.CreatedAt_2,
 	)
 	return i, err
@@ -988,7 +990,7 @@ func (q *Queries) GetUsersWithRoleAndAvatar(ctx context.Context, arg GetUsersWit
 }
 
 const getValidationUser = `-- name: GetValidationUser :one
-SELECT id, user_id, hash, expires_in, created_at FROM users_validation
+SELECT id, user_id, hash, expires_in, used, created_at FROM users_validation
 WHERE user_id = $1 ORDER BY id DESC LIMIT 1
 `
 
@@ -1000,13 +1002,14 @@ func (q *Queries) GetValidationUser(ctx context.Context, userID int32) (UsersVal
 		&i.UserID,
 		&i.Hash,
 		&i.ExpiresIn,
+		&i.Used,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const getValidationUserByHash = `-- name: GetValidationUserByHash :one
-SELECT id, user_id, hash, expires_in, created_at FROM users_validation
+SELECT id, user_id, hash, expires_in, used, created_at FROM users_validation
 WHERE hash = $1 LIMIT 1
 `
 
@@ -1018,6 +1021,7 @@ func (q *Queries) GetValidationUserByHash(ctx context.Context, hash string) (Use
 		&i.UserID,
 		&i.Hash,
 		&i.ExpiresIn,
+		&i.Used,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -1163,5 +1167,21 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
 		arg.AvatarID,
 		arg.ID,
 	)
+	return err
+}
+
+const updateValidationUser = `-- name: UpdateValidationUser :exec
+UPDATE users_validation SET
+  used = $1
+WHERE id = $2
+`
+
+type UpdateValidationUserParams struct {
+	Used bool  `json:"used"`
+	ID   int32 `json:"id"`
+}
+
+func (q *Queries) UpdateValidationUser(ctx context.Context, arg UpdateValidationUserParams) error {
+	_, err := q.exec(ctx, q.updateValidationUserStmt, updateValidationUser, arg.Used, arg.ID)
 	return err
 }

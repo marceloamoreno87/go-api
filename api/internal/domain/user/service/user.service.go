@@ -18,13 +18,16 @@ type UserServiceInterface interface {
 	DeleteUser(id int32) (err error)
 	Login(body io.ReadCloser) (output usecase.LoginOutputDTO, err error)
 	Register(body io.ReadCloser) (output usecase.RegisterOutputDTO, err error)
+	UserVerify(body io.ReadCloser) (err error)
 }
 
 type UserService struct {
 	repo repository.UserRepositoryInterface
 }
 
-func NewUserService(repo repository.UserRepositoryInterface) *UserService {
+func NewUserService(
+	repo repository.UserRepositoryInterface,
+) *UserService {
 	return &UserService{
 		repo: repo,
 	}
@@ -137,6 +140,7 @@ func (s *UserService) Login(body io.ReadCloser) (output usecase.LoginOutputDTO, 
 }
 
 func (s *UserService) Register(body io.ReadCloser) (output usecase.RegisterOutputDTO, err error) {
+
 	s.repo.Begin()
 
 	input := usecase.RegisterInputDTO{}
@@ -157,7 +161,27 @@ func (s *UserService) Register(body io.ReadCloser) (output usecase.RegisterOutpu
 		slog.Info("err", err)
 		return
 	}
+
 	s.repo.Commit()
 	slog.Info("User registered")
+	return
+}
+
+func (s *UserService) UserVerify(body io.ReadCloser) (err error) {
+
+	s.repo.Begin()
+	input := usecase.UserVerifyInputDTO{}
+	if err = json.NewDecoder(body).Decode(&input); err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	if err = usecase.NewUserVerifyUseCase(s.repo).Execute(input); err != nil {
+		s.repo.Rollback()
+		slog.Info("err", err)
+		return
+	}
+	s.repo.Commit()
+	slog.Info("User verified")
 	return
 }

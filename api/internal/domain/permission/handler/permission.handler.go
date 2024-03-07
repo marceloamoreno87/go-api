@@ -10,6 +10,14 @@ import (
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
+type PermissionHandlerInterface interface {
+	GetPermission(w http.ResponseWriter, r *http.Request)
+	GetPermissions(w http.ResponseWriter, r *http.Request)
+	CreatePermission(w http.ResponseWriter, r *http.Request)
+	UpdatePermission(w http.ResponseWriter, r *http.Request)
+	DeletePermission(w http.ResponseWriter, r *http.Request)
+}
+
 type PermissionHandler struct {
 	response.Responses
 	service service.PermissionServiceInterface

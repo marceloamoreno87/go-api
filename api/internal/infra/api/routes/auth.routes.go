@@ -9,11 +9,12 @@ import (
 )
 
 func (route *Route) getAuthRoutes(router chi.Router) {
-	repo := repository.NewUserRepository(route.dbConn)
-	service := service.NewUserService(repo)
+	userRepo := repository.NewUserRepository(route.dbConn)
+	service := service.NewUserService(userRepo)
 	handler := handler.NewAuthHandler(service)
 	router.Route("/auth", func(r chi.Router) {
 		r.Post("/register", handler.Register)
+		r.Post("/verify-user", handler.UserVerify)
 		r.Post("/login", handler.Login)
 		r.Post("/refresh", handler.Refresh)
 	})

@@ -83,6 +83,8 @@ type UsersValidation struct {
 	// Validation hash
 	Hash string `json:"hash"`
 	// Expiration
-	ExpiresIn int32     `json:"expires_in"`
+	ExpiresIn int32 `json:"expires_in"`
+	// Used
+	Used      bool      `json:"used"`
 	CreatedAt time.Time `json:"created_at"`
 }

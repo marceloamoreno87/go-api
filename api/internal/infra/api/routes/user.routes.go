@@ -8,8 +8,8 @@ import (
 )
 
 func (route *Route) getUserRoutes(router chi.Router) {
-	repo := repository.NewUserRepository(route.dbConn)
-	service := service.NewUserService(repo)
+	userRepo := repository.NewUserRepository(route.dbConn)
+	service := service.NewUserService(userRepo)
 	handler := handler.NewUserHandler(service)
 	router.Route("/user", func(r chi.Router) {
 		r.Get("/", handler.GetUsers)

@@ -10,6 +10,12 @@ import (
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
+type RolePermissionHandlerInterface interface {
+	GetRolePermissions(w http.ResponseWriter, r *http.Request)
+	CreateRolePermission(w http.ResponseWriter, r *http.Request)
+	UpdateRolePermission(w http.ResponseWriter, r *http.Request)
+}
+
 type RolePermissionHandler struct {
 	response.Responses
 	service service.RolePermissionServiceInterface

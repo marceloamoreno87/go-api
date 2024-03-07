@@ -32,7 +32,9 @@ type RegisterUseCase struct {
 	repo repository.UserRepositoryInterface
 }
 
-func NewRegisterUseCase(repo repository.UserRepositoryInterface) *RegisterUseCase {
+func NewRegisterUseCase(
+	repo repository.UserRepositoryInterface,
+) *RegisterUseCase {
 	return &RegisterUseCase{
 		repo: repo,
 	}
@@ -49,7 +51,17 @@ func (uc *RegisterUseCase) Execute(input RegisterInputDTO) (output RegisterOutpu
 		return
 	}
 
-	go event.NewWelcomeEmailEvent(*newUser).Send()
+	userValidation, err := entity.NewUserValidation(newUser)
+	if err != nil {
+		return
+	}
+
+	err = uc.repo.CreateValidationUser(userValidation)
+	if err != nil {
+		return
+	}
+
+	go event.NewUserVerifyEmailEvent(userValidation).Send()
 
 	output = RegisterOutputDTO{
 		ID:        newUser.ID,

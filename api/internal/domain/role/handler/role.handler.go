@@ -10,6 +10,14 @@ import (
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
+type RoleHandlerInterface interface {
+	GetRole(w http.ResponseWriter, r *http.Request)
+	GetRoles(w http.ResponseWriter, r *http.Request)
+	CreateRole(w http.ResponseWriter, r *http.Request)
+	UpdateRole(w http.ResponseWriter, r *http.Request)
+	DeleteRole(w http.ResponseWriter, r *http.Request)
+}
+
 type RoleHandler struct {
 	response.Responses
 	service service.RoleServiceInterface

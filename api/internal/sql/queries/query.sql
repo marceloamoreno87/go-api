@@ -220,3 +220,8 @@ INSERT INTO users_validation (
 ) VALUES (
   $1, $2, $3
 );
+
+-- name: UpdateValidationUser :exec
+UPDATE users_validation SET
+  used = $1
+WHERE id = $2;
