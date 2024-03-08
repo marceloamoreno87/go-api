@@ -16,8 +16,10 @@ func (repo *UserRepository) GetValidationUser(id int32) (userValidation *entity.
 		ID:        newUserValidation.ID,
 		UserID:    newUserValidation.UserID,
 		Hash:      newUserValidation.Hash,
+		Used:      newUserValidation.Used,
 		ExpiresIn: newUserValidation.ExpiresIn,
 		CreatedAt: newUserValidation.CreatedAt,
+		UpdatedAt: newUserValidation.UpdatedAt,
 	}
 	return
 }
@@ -31,8 +33,10 @@ func (repo *UserRepository) GetValidationUserByHash(hash string) (userValidation
 		ID:        newUserValidation.ID,
 		UserID:    newUserValidation.UserID,
 		Hash:      newUserValidation.Hash,
+		Used:      newUserValidation.Used,
 		ExpiresIn: newUserValidation.ExpiresIn,
 		CreatedAt: newUserValidation.CreatedAt,
+		UpdatedAt: newUserValidation.UpdatedAt,
 	}
 	return
 }

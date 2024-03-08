@@ -13,7 +13,6 @@ import (
 )
 
 type SendGrid struct {
-	Name        string
 	To          []string
 	From        string
 	Subject     string
@@ -26,12 +25,11 @@ type SendGrid struct {
 func NewSendGrid() *SendGrid {
 	return &SendGrid{
 		From: config.Environment.GetMailFrom(),
-		Name: config.Environment.GetMailName(),
 	}
 }
 
 func (m *SendGrid) Send() (err error) {
-	from := mail.NewEmail("<"+m.Name+"> ", m.From)
+	from := mail.NewEmail("", m.From)
 	subject := m.Subject
 	for _, to := range m.To {
 		to := mail.NewEmail(to, to)

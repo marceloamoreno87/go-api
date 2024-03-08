@@ -38,6 +38,7 @@ type UserValidation struct {
 	Used      bool      `json:"used"`
 	User      *User     `json:"user"`
 	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 func NewUserValidation(user *User) (userValidation *UserValidation, err error) {
@@ -103,6 +104,10 @@ func (u *UserValidation) GetExpiresIn() int32 {
 
 func (u *UserValidation) GetCreatedAt() time.Time {
 	return u.CreatedAt
+}
+
+func (u *UserValidation) GetUpdatedAt() time.Time {
+	return u.UpdatedAt
 }
 
 func (u *UserValidation) GetUser() *User {

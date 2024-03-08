@@ -210,7 +210,7 @@ WHERE user_id = $1 ORDER BY id DESC LIMIT 1;
 
 -- name: GetValidationUserByHash :one
 SELECT * FROM users_validation
-WHERE hash = $1 LIMIT 1;
+WHERE hash = $1 and used is false LIMIT 1;
 
 -- name: CreateValidationUser :exec
 INSERT INTO users_validation (

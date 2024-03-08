@@ -87,4 +87,5 @@ type UsersValidation struct {
 	// Used
 	Used      bool      `json:"used"`
 	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }

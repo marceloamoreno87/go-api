@@ -156,6 +156,7 @@ CREATE TABLE IF NOT EXISTS users_validation (
   expires_in INT NOT NULL, -- Expiration
   used BOOLEAN DEFAULT FALSE NOT NULL, -- Used
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, -- Creation timestamp
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, -- Update timestamp
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 CREATE INDEX idx_users_validation_user_id ON users_validation(user_id);

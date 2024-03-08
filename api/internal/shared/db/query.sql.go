@@ -687,7 +687,7 @@ func (q *Queries) GetUserWithRoleAndAvatar(ctx context.Context, id int32) (GetUs
 }
 
 const getUserWithValidationUser = `-- name: GetUserWithValidationUser :one
-SELECT users.id, name, email, password, active, role_id, avatar_id, users.created_at, updated_at, users_validation.id, user_id, hash, expires_in, used, users_validation.created_at FROM users
+SELECT users.id, name, email, password, active, role_id, avatar_id, users.created_at, users.updated_at, users_validation.id, user_id, hash, expires_in, used, users_validation.created_at, users_validation.updated_at FROM users
 INNER JOIN users_validation ON users.id = users_validation.user_id
 WHERE users.id = $1 ORDER BY users_validation.id DESC LIMIT 1
 `
@@ -708,6 +708,7 @@ type GetUserWithValidationUserRow struct {
 	ExpiresIn   int32     `json:"expires_in"`
 	Used        bool      `json:"used"`
 	CreatedAt_2 time.Time `json:"created_at_2"`
+	UpdatedAt_2 time.Time `json:"updated_at_2"`
 }
 
 func (q *Queries) GetUserWithValidationUser(ctx context.Context, id int32) (GetUserWithValidationUserRow, error) {
@@ -729,6 +730,7 @@ func (q *Queries) GetUserWithValidationUser(ctx context.Context, id int32) (GetU
 		&i.ExpiresIn,
 		&i.Used,
 		&i.CreatedAt_2,
+		&i.UpdatedAt_2,
 	)
 	return i, err
 }
@@ -990,7 +992,7 @@ func (q *Queries) GetUsersWithRoleAndAvatar(ctx context.Context, arg GetUsersWit
 }
 
 const getValidationUser = `-- name: GetValidationUser :one
-SELECT id, user_id, hash, expires_in, used, created_at FROM users_validation
+SELECT id, user_id, hash, expires_in, used, created_at, updated_at FROM users_validation
 WHERE user_id = $1 ORDER BY id DESC LIMIT 1
 `
 
@@ -1004,13 +1006,14 @@ func (q *Queries) GetValidationUser(ctx context.Context, userID int32) (UsersVal
 		&i.ExpiresIn,
 		&i.Used,
 		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }
 
 const getValidationUserByHash = `-- name: GetValidationUserByHash :one
-SELECT id, user_id, hash, expires_in, used, created_at FROM users_validation
-WHERE hash = $1 LIMIT 1
+SELECT id, user_id, hash, expires_in, used, created_at, updated_at FROM users_validation
+WHERE hash = $1 and used is false LIMIT 1
 `
 
 func (q *Queries) GetValidationUserByHash(ctx context.Context, hash string) (UsersValidation, error) {
@@ -1023,6 +1026,7 @@ func (q *Queries) GetValidationUserByHash(ctx context.Context, hash string) (Use
 		&i.ExpiresIn,
 		&i.Used,
 		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }

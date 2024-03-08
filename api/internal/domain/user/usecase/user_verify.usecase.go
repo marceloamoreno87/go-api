@@ -26,11 +26,7 @@ func NewUserVerifyUseCase(
 func (uc *UserVerifyUseCase) Execute(input UserVerifyInputDTO) (err error) {
 	userValidation, err := uc.repo.GetValidationUserByHash(input.Hash)
 	if err != nil {
-		return
-	}
-
-	if userValidation == nil {
-		return
+		return errors.New("hash not found")
 	}
 
 	if !userValidation.ValidateHashExpiresIn() {

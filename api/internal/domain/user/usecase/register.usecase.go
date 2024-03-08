@@ -60,7 +60,7 @@ func (uc *RegisterUseCase) Execute(input RegisterInputDTO) (output RegisterOutpu
 	if err != nil {
 		return
 	}
-
+	
 	go event.NewUserVerifyEmailEvent(userValidation).Send()
 
 	output = RegisterOutputDTO{
