@@ -86,6 +86,11 @@ UPDATE users SET
   avatar_id = $6
 WHERE id = $7;
 
+-- name: UpdatePasswordUser :exec
+UPDATE users SET
+  password = $1
+WHERE id = $2;
+
 -- name: DeleteUser :exec
 DELETE FROM users
 WHERE id = $1;

@@ -31,8 +31,9 @@ type UserInterface interface {
 	SetUpdatedAt(updatedAt time.Time)
 	SetRole(role *RoleEntity.Role)
 	SetAvatarID(avatarID int32)
-	Validate() (err error)
+	Validate() (notify *notification.Errors)
 	ComparePassword(password string) (b bool)
+	HashPassword()
 }
 
 type User struct {
@@ -65,11 +66,8 @@ func NewUser(name string, email string, password string, roleID int32, avatarID 
 		return nil, errors.New(notify.Messages())
 	}
 
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		return nil, err
-	}
-	user.SetPassword(string(hash))
+	user.HashPassword()
+
 	return
 }
 
@@ -112,6 +110,14 @@ func (u *User) GenerateToken() {
 func (u *User) ComparePassword(password string) (b bool) {
 	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
 	return err == nil
+}
+
+func (u *User) HashPassword() {
+	hashed, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return
+	}
+	u.Password = string(hashed)
 }
 
 func (u *User) GetID() int32 {

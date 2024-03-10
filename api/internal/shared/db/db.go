@@ -129,6 +129,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.updateAvatarStmt, err = db.PrepareContext(ctx, updateAvatar); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateAvatar: %w", err)
 	}
+	if q.updatePasswordUserStmt, err = db.PrepareContext(ctx, updatePasswordUser); err != nil {
+		return nil, fmt.Errorf("error preparing query UpdatePasswordUser: %w", err)
+	}
 	if q.updatePermissionStmt, err = db.PrepareContext(ctx, updatePermission); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdatePermission: %w", err)
 	}
@@ -321,6 +324,11 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing updateAvatarStmt: %w", cerr)
 		}
 	}
+	if q.updatePasswordUserStmt != nil {
+		if cerr := q.updatePasswordUserStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing updatePasswordUserStmt: %w", cerr)
+		}
+	}
 	if q.updatePermissionStmt != nil {
 		if cerr := q.updatePermissionStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing updatePermissionStmt: %w", cerr)
@@ -415,6 +423,7 @@ type Queries struct {
 	getValidationUserByHashStmt     *sql.Stmt
 	registerUserStmt                *sql.Stmt
 	updateAvatarStmt                *sql.Stmt
+	updatePasswordUserStmt          *sql.Stmt
 	updatePermissionStmt            *sql.Stmt
 	updateRoleStmt                  *sql.Stmt
 	updateUserStmt                  *sql.Stmt
@@ -460,6 +469,7 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		getValidationUserByHashStmt:     q.getValidationUserByHashStmt,
 		registerUserStmt:                q.registerUserStmt,
 		updateAvatarStmt:                q.updateAvatarStmt,
+		updatePasswordUserStmt:          q.updatePasswordUserStmt,
 		updatePermissionStmt:            q.updatePermissionStmt,
 		updateRoleStmt:                  q.updateRoleStmt,
 		updateUserStmt:                  q.updateUserStmt,

@@ -21,6 +21,7 @@ type UserRepositoryInterface interface {
 	GetValidationUser(id int32) (userValidation *entity.UserValidation, err error)
 	GetValidationUserByHash(hash string) (userValidation *entity.UserValidation, err error)
 	UpdateValidationUser(userValidation *entity.UserValidation, id int32) (err error)
+	UpdatePasswordUser(user *entity.User, id int32) (err error)
 	repository.RepositoryInterface
 }
 
@@ -141,6 +142,14 @@ func (repo *UserRepository) UpdateUser(user *entity.User, id int32) (err error) 
 		Active:   user.Active,
 		RoleID:   user.RoleID,
 		AvatarID: user.AvatarID,
+	})
+	return
+}
+
+func (repo *UserRepository) UpdatePasswordUser(user *entity.User, id int32) (err error) {
+	err = repo.GetDbQueries().WithTx(repo.GetTx()).UpdatePasswordUser(context.Background(), db.UpdatePasswordUserParams{
+		ID:       id,
+		Password: user.Password,
 	})
 	return
 }

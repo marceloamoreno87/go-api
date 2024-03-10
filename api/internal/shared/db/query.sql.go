@@ -1090,6 +1090,22 @@ func (q *Queries) UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) erro
 	return err
 }
 
+const updatePasswordUser = `-- name: UpdatePasswordUser :exec
+UPDATE users SET
+  password = $1
+WHERE id = $2
+`
+
+type UpdatePasswordUserParams struct {
+	Password string `json:"password"`
+	ID       int32  `json:"id"`
+}
+
+func (q *Queries) UpdatePasswordUser(ctx context.Context, arg UpdatePasswordUserParams) error {
+	_, err := q.exec(ctx, q.updatePasswordUserStmt, updatePasswordUser, arg.Password, arg.ID)
+	return err
+}
+
 const updatePermission = `-- name: UpdatePermission :exec
 UPDATE permissions SET
   name = $1,

@@ -97,3 +97,43 @@ func (h *AuthHandler) UserVerify(w http.ResponseWriter, r *http.Request) {
 	}
 	h.SendResponse(w, h.NewResponse(nil))
 }
+
+// GetForgotPassword godoc
+// @Summary Get Forgot Password
+// @Description Get Forgot Password
+// @Tags Auth
+// @Accept  json
+// @Produce  json
+// @Param user body usecase.ForgotPasswordInputDTO true "User"
+// @Success 200 {object} response.Response{data=usecase.ForgotPasswordOutputDTO}
+// @Failure 400 {object} response.ResponseError{}
+// @Router /auth/forgot-password [post]
+func (h *AuthHandler) ForgotPassword(w http.ResponseWriter, r *http.Request) {
+	err := h.service.ForgotPassword(r.Body)
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
+	}
+	h.SendResponse(w, h.NewResponse(nil))
+}
+
+// GetUpdatePasswordUser godoc
+// @Summary Get Update Password User
+// @Description Get Update Password User
+// @Tags Auth
+// @Accept  json
+// @Produce  json
+// @Param user body usecase.UpdatePasswordUserInputDTO true "User"
+// @Success 200 {object} response.Response{data=usecase.UpdatePasswordUserOutputDTO}
+// @Failure 400 {object} response.ResponseError{}
+// @Router /auth/update-password [patch]
+func (h *AuthHandler) UpdatePasswordUser(w http.ResponseWriter, r *http.Request) {
+	err := h.service.UpdatePasswordUser(r.Body)
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
+	}
+	h.SendResponse(w, h.NewResponse(nil))
+}
