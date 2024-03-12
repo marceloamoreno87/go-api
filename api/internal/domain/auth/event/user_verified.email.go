@@ -3,7 +3,7 @@ package event
 import (
 	"log/slog"
 
-	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
+	"github.com/marceloamoreno/goapi/internal/domain/auth/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/mail"
 )
 

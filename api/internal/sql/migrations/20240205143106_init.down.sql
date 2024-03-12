@@ -11,6 +11,15 @@ DROP INDEX IF EXISTS idx_permissions_internal_name;
 -- Drop 'permissions' table
 DROP TABLE IF EXISTS permissions;
 
+-- Drop 'auth' table
+DROP TABLE IF EXISTS auth;
+
+-- Drop indexes from 'auth' table
+DROP INDEX IF EXISTS idx_auth_user_id;
+DROP INDEX IF EXISTS idx_auth_token;
+DROP INDEX IF EXISTS idx_auth_refresh_token;
+DROP INDEX IF EXISTS idx_auth_active;
+
 -- Drop indexes from 'users_validation' table
 DROP INDEX IF EXISTS idx_users_validation_user_id;
 DROP INDEX IF EXISTS idx_users_validation_hash;

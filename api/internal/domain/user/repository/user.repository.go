@@ -17,10 +17,6 @@ type UserRepositoryInterface interface {
 	UpdateUser(user *entity.User, id int32) (err error)
 	DeleteUser(id int32) (err error)
 	RegisterUser(user *entity.User) (userOutput *entity.User, err error)
-	CreateValidationUser(userValidation *entity.UserValidation) (err error)
-	GetValidationUser(id int32) (userValidation *entity.UserValidation, err error)
-	GetValidationUserByHash(hash string) (userValidation *entity.UserValidation, err error)
-	UpdateValidationUser(userValidation *entity.UserValidation, id int32) (err error)
 	UpdatePasswordUser(user *entity.User, id int32) (err error)
 	repository.RepositoryInterface
 }

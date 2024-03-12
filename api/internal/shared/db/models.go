@@ -8,6 +8,24 @@ import (
 	"time"
 )
 
+// Auth tokens table
+type Auth struct {
+	// Auth token id
+	ID int32 `json:"id"`
+	// User id
+	UserID int32 `json:"user_id"`
+	// Auth token
+	Token string `json:"token"`
+	// Refresh token
+	RefreshToken string `json:"refresh_token"`
+	// Auth token active
+	Active bool `json:"active"`
+	// Expiration
+	ExpiresIn int32     `json:"expires_in"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
 // Avatars table
 type Avatar struct {
 	// Avatar id

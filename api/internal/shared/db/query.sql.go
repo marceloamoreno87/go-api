@@ -84,6 +84,34 @@ func (q *Queries) CreateRolePermission(ctx context.Context, arg CreateRolePermis
 	return err
 }
 
+const createToken = `-- name: CreateToken :exec
+INSERT INTO auth (
+  user_id,
+  token,
+  refresh_token,
+  expires_in
+) VALUES (
+  $1, $2, $3, $4
+)
+`
+
+type CreateTokenParams struct {
+	UserID       int32  `json:"user_id"`
+	Token        string `json:"token"`
+	RefreshToken string `json:"refresh_token"`
+	ExpiresIn    int32  `json:"expires_in"`
+}
+
+func (q *Queries) CreateToken(ctx context.Context, arg CreateTokenParams) error {
+	_, err := q.exec(ctx, q.createTokenStmt, createToken,
+		arg.UserID,
+		arg.Token,
+		arg.RefreshToken,
+		arg.ExpiresIn,
+	)
+	return err
+}
+
 const createUser = `-- name: CreateUser :exec
 INSERT INTO users (
   name,
@@ -494,6 +522,48 @@ func (q *Queries) GetRoles(ctx context.Context, arg GetRolesParams) ([]Role, err
 		return nil, err
 	}
 	return items, nil
+}
+
+const getToken = `-- name: GetToken :one
+SELECT id, user_id, token, refresh_token, active, expires_in, created_at, updated_at FROM auth
+WHERE id = $1 and active is true LIMIT 1
+`
+
+func (q *Queries) GetToken(ctx context.Context, id int32) (Auth, error) {
+	row := q.queryRow(ctx, q.getTokenStmt, getToken, id)
+	var i Auth
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Token,
+		&i.RefreshToken,
+		&i.Active,
+		&i.ExpiresIn,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getTokenByUser = `-- name: GetTokenByUser :one
+SELECT id, user_id, token, refresh_token, active, expires_in, created_at, updated_at FROM auth
+WHERE user_id = $1 and active is true LIMIT 1
+`
+
+func (q *Queries) GetTokenByUser(ctx context.Context, userID int32) (Auth, error) {
+	row := q.queryRow(ctx, q.getTokenByUserStmt, getTokenByUser, userID)
+	var i Auth
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Token,
+		&i.RefreshToken,
+		&i.Active,
+		&i.ExpiresIn,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const getUser = `-- name: GetUser :one
@@ -1072,6 +1142,17 @@ func (q *Queries) RegisterUser(ctx context.Context, arg RegisterUserParams) (Use
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const revokeTokenByUser = `-- name: RevokeTokenByUser :exec
+UPDATE auth SET
+  active = false
+WHERE user_id = $1
+`
+
+func (q *Queries) RevokeTokenByUser(ctx context.Context, userID int32) error {
+	_, err := q.exec(ctx, q.revokeTokenByUserStmt, revokeTokenByUser, userID)
+	return err
 }
 
 const updateAvatar = `-- name: UpdateAvatar :exec

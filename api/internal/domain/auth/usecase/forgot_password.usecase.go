@@ -1,9 +1,9 @@
 package usecase
 
 import (
-	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
-	"github.com/marceloamoreno/goapi/internal/domain/user/event"
-	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
+	"github.com/marceloamoreno/goapi/internal/domain/auth/entity"
+	"github.com/marceloamoreno/goapi/internal/domain/auth/event"
+	"github.com/marceloamoreno/goapi/internal/domain/auth/repository"
 )
 
 type ForgotPasswordInputDTO struct {

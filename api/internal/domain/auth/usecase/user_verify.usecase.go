@@ -3,8 +3,8 @@ package usecase
 import (
 	"errors"
 
-	"github.com/marceloamoreno/goapi/internal/domain/user/event"
-	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
+	"github.com/marceloamoreno/goapi/internal/domain/auth/event"
+	"github.com/marceloamoreno/goapi/internal/domain/auth/repository"
 )
 
 type UserVerifyInputDTO struct {

@@ -18,6 +18,3 @@ type UpdateUserUseCaseInterface interface {
 type DeleteUserUseCaseInterface interface {
 	Execute(input DeleteUserInputDTO) (err error)
 }
-type LoginUseCaseInterface interface {
-	Execute(input LoginInputDTO) (err error)
-}

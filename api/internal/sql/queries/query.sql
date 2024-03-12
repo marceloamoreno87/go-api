@@ -95,6 +95,29 @@ WHERE id = $2;
 DELETE FROM users
 WHERE id = $1;
 
+-- name: GetToken :one
+SELECT * FROM auth
+WHERE id = $1 and active is true LIMIT 1;
+
+-- name: GetTokenByUser :one
+SELECT * FROM auth
+WHERE user_id = $1 and active is true LIMIT 1;
+
+-- name: CreateToken :exec
+INSERT INTO auth (
+  user_id,
+  token,
+  refresh_token,
+  expires_in
+) VALUES (
+  $1, $2, $3, $4
+);
+
+-- name: RevokeTokenByUser :exec
+UPDATE auth SET
+  active = false
+WHERE user_id = $1;
+
 -- name: GetRole :one
 SELECT * FROM roles
 WHERE id = $1 LIMIT 1;

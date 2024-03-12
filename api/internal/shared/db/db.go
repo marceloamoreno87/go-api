@@ -36,6 +36,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.createRolePermissionStmt, err = db.PrepareContext(ctx, createRolePermission); err != nil {
 		return nil, fmt.Errorf("error preparing query CreateRolePermission: %w", err)
 	}
+	if q.createTokenStmt, err = db.PrepareContext(ctx, createToken); err != nil {
+		return nil, fmt.Errorf("error preparing query CreateToken: %w", err)
+	}
 	if q.createUserStmt, err = db.PrepareContext(ctx, createUser); err != nil {
 		return nil, fmt.Errorf("error preparing query CreateUser: %w", err)
 	}
@@ -87,6 +90,12 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getRolesStmt, err = db.PrepareContext(ctx, getRoles); err != nil {
 		return nil, fmt.Errorf("error preparing query GetRoles: %w", err)
 	}
+	if q.getTokenStmt, err = db.PrepareContext(ctx, getToken); err != nil {
+		return nil, fmt.Errorf("error preparing query GetToken: %w", err)
+	}
+	if q.getTokenByUserStmt, err = db.PrepareContext(ctx, getTokenByUser); err != nil {
+		return nil, fmt.Errorf("error preparing query GetTokenByUser: %w", err)
+	}
 	if q.getUserStmt, err = db.PrepareContext(ctx, getUser); err != nil {
 		return nil, fmt.Errorf("error preparing query GetUser: %w", err)
 	}
@@ -125,6 +134,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	}
 	if q.registerUserStmt, err = db.PrepareContext(ctx, registerUser); err != nil {
 		return nil, fmt.Errorf("error preparing query RegisterUser: %w", err)
+	}
+	if q.revokeTokenByUserStmt, err = db.PrepareContext(ctx, revokeTokenByUser); err != nil {
+		return nil, fmt.Errorf("error preparing query RevokeTokenByUser: %w", err)
 	}
 	if q.updateAvatarStmt, err = db.PrepareContext(ctx, updateAvatar); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateAvatar: %w", err)
@@ -167,6 +179,11 @@ func (q *Queries) Close() error {
 	if q.createRolePermissionStmt != nil {
 		if cerr := q.createRolePermissionStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing createRolePermissionStmt: %w", cerr)
+		}
+	}
+	if q.createTokenStmt != nil {
+		if cerr := q.createTokenStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing createTokenStmt: %w", cerr)
 		}
 	}
 	if q.createUserStmt != nil {
@@ -254,6 +271,16 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing getRolesStmt: %w", cerr)
 		}
 	}
+	if q.getTokenStmt != nil {
+		if cerr := q.getTokenStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getTokenStmt: %w", cerr)
+		}
+	}
+	if q.getTokenByUserStmt != nil {
+		if cerr := q.getTokenByUserStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getTokenByUserStmt: %w", cerr)
+		}
+	}
 	if q.getUserStmt != nil {
 		if cerr := q.getUserStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing getUserStmt: %w", cerr)
@@ -317,6 +344,11 @@ func (q *Queries) Close() error {
 	if q.registerUserStmt != nil {
 		if cerr := q.registerUserStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing registerUserStmt: %w", cerr)
+		}
+	}
+	if q.revokeTokenByUserStmt != nil {
+		if cerr := q.revokeTokenByUserStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing revokeTokenByUserStmt: %w", cerr)
 		}
 	}
 	if q.updateAvatarStmt != nil {
@@ -392,6 +424,7 @@ type Queries struct {
 	createPermissionStmt            *sql.Stmt
 	createRoleStmt                  *sql.Stmt
 	createRolePermissionStmt        *sql.Stmt
+	createTokenStmt                 *sql.Stmt
 	createUserStmt                  *sql.Stmt
 	createValidationUserStmt        *sql.Stmt
 	deleteAvatarStmt                *sql.Stmt
@@ -409,6 +442,8 @@ type Queries struct {
 	getRolePermissionStmt           *sql.Stmt
 	getRolePermissionsByRoleStmt    *sql.Stmt
 	getRolesStmt                    *sql.Stmt
+	getTokenStmt                    *sql.Stmt
+	getTokenByUserStmt              *sql.Stmt
 	getUserStmt                     *sql.Stmt
 	getUserByEmailStmt              *sql.Stmt
 	getUserWithAvatarStmt           *sql.Stmt
@@ -422,6 +457,7 @@ type Queries struct {
 	getValidationUserStmt           *sql.Stmt
 	getValidationUserByHashStmt     *sql.Stmt
 	registerUserStmt                *sql.Stmt
+	revokeTokenByUserStmt           *sql.Stmt
 	updateAvatarStmt                *sql.Stmt
 	updatePasswordUserStmt          *sql.Stmt
 	updatePermissionStmt            *sql.Stmt
@@ -438,6 +474,7 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		createPermissionStmt:            q.createPermissionStmt,
 		createRoleStmt:                  q.createRoleStmt,
 		createRolePermissionStmt:        q.createRolePermissionStmt,
+		createTokenStmt:                 q.createTokenStmt,
 		createUserStmt:                  q.createUserStmt,
 		createValidationUserStmt:        q.createValidationUserStmt,
 		deleteAvatarStmt:                q.deleteAvatarStmt,
@@ -455,6 +492,8 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		getRolePermissionStmt:           q.getRolePermissionStmt,
 		getRolePermissionsByRoleStmt:    q.getRolePermissionsByRoleStmt,
 		getRolesStmt:                    q.getRolesStmt,
+		getTokenStmt:                    q.getTokenStmt,
+		getTokenByUserStmt:              q.getTokenByUserStmt,
 		getUserStmt:                     q.getUserStmt,
 		getUserByEmailStmt:              q.getUserByEmailStmt,
 		getUserWithAvatarStmt:           q.getUserWithAvatarStmt,
@@ -468,6 +507,7 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		getValidationUserStmt:           q.getValidationUserStmt,
 		getValidationUserByHashStmt:     q.getValidationUserByHashStmt,
 		registerUserStmt:                q.registerUserStmt,
+		revokeTokenByUserStmt:           q.revokeTokenByUserStmt,
 		updateAvatarStmt:                q.updateAvatarStmt,
 		updatePasswordUserStmt:          q.updatePasswordUserStmt,
 		updatePermissionStmt:            q.updatePermissionStmt,

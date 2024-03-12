@@ -164,6 +164,24 @@ CREATE INDEX idx_users_validation_hash ON users_validation(hash);
 CREATE INDEX idx_users_validation_used ON users_validation(used);
 CREATE INDEX idx_users_validation_created_at ON users_validation(created_at);
 
+-- Create the 'auth' table
+CREATE TABLE IF NOT EXISTS auth (
+  id SERIAL PRIMARY KEY, -- Auth token id
+  user_id INT NOT NULL, -- User id
+  token TEXT NOT NULL, -- Auth token
+  refresh_token TEXT NOT NULL, -- Refresh token
+  active BOOLEAN DEFAULT TRUE NOT NULL, -- Auth token active
+  expires_in INT NOT NULL, -- Expiration
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, -- Creation timestamp
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, -- Update timestamp
+  FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_auth_user_id ON auth(user_id);
+CREATE INDEX idx_auth_token ON auth(token);
+CREATE INDEX idx_auth_refresh_token ON auth(refresh_token);
+CREATE INDEX idx_auth_active ON auth(active);
+
 
 -- Add table and column comments
 COMMENT ON TABLE users IS 'Users table';
@@ -172,6 +190,14 @@ COMMENT ON COLUMN users.name IS 'User name';
 COMMENT ON COLUMN users.email IS 'User email';
 COMMENT ON COLUMN users.password IS 'User password';
 COMMENT ON COLUMN users.role_id IS 'User role id';
+
+COMMENT ON TABLE auth IS 'Auth tokens table';
+COMMENT ON COLUMN auth.id IS 'Auth token id';
+COMMENT ON COLUMN auth.user_id IS 'User id';
+COMMENT ON COLUMN auth.token IS 'Auth token';
+COMMENT ON COLUMN auth.refresh_token IS 'Refresh token';
+COMMENT ON COLUMN auth.active IS 'Auth token active';
+COMMENT ON COLUMN auth.expires_in IS 'Expiration';
 
 COMMENT ON TABLE roles IS 'Roles table';
 COMMENT ON COLUMN roles.id IS 'Role id';
