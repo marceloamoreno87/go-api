@@ -43,7 +43,7 @@ func (uc *UpdatePasswordUserUseCase) Execute(input UpdatePasswordUserInputDTO) (
 	}
 
 	userValidation.SetUsed(true)
-	err = uc.repo.UpdateValidationUser(userValidation, userValidation.ID)
+	err = uc.repo.SetUserValidationUsed(userValidation.ID)
 	if err != nil {
 		return
 	}

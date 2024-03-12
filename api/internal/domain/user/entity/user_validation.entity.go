@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/marceloamoreno/goapi/config"
-	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/helper"
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
@@ -21,28 +20,28 @@ type UserValidationInterface interface {
 	GetExpiresIn() int32
 	GetCreatedAt() time.Time
 	GetUsed() bool
-	GetUser() *entity.User
+	GetUser() *User
 	SetID(id int32)
 	SetUserID(userID int32)
 	SetHash(hash string)
 	SetUsed(used bool)
-	SetUser(user *entity.User)
+	SetUser(user *User)
 	SetExpiresIn(expiresIn int32)
 	ValidateHashExpiresIn() bool
 }
 
 type UserValidation struct {
-	ID        int32        `json:"id"`
-	UserID    int32        `json:"user_id"`
-	Hash      string       `json:"hash"`
-	ExpiresIn int32        `json:"expires_in"`
-	Used      bool         `json:"used"`
-	User      *entity.User `json:"user"`
-	CreatedAt time.Time    `json:"created_at"`
-	UpdatedAt time.Time    `json:"updated_at"`
+	ID        int32     `json:"id"`
+	UserID    int32     `json:"user_id"`
+	Hash      string    `json:"hash"`
+	ExpiresIn int32     `json:"expires_in"`
+	Used      bool      `json:"used"`
+	User      *User     `json:"user"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func NewUserValidation(user *entity.User) (userValidation *UserValidation, err error) {
+func NewUserValidation(user *User) (userValidation *UserValidation, err error) {
 	hash, err := generateHash(user)
 	userValidation = &UserValidation{
 		User:      user,
@@ -63,12 +62,12 @@ func NewUserValidation(user *entity.User) (userValidation *UserValidation, err e
 func (u *UserValidation) Validate() (notify *notification.Errors) {
 	notify = notification.New()
 	if u.UserID == 0 {
-		notify.AddError("User is required", "user_validation.entity.user")
+		notify.AddError("User is required", "user_validation.user")
 	}
 	return
 }
 
-func generateHash(user *entity.User) (hash string, err error) {
+func generateHash(user *User) (hash string, err error) {
 	userJson, err := json.Marshal(user)
 	if err != nil {
 		return
@@ -111,7 +110,7 @@ func (u *UserValidation) GetUpdatedAt() time.Time {
 	return u.UpdatedAt
 }
 
-func (u *UserValidation) GetUser() *entity.User {
+func (u *UserValidation) GetUser() *User {
 	return u.User
 }
 
@@ -119,7 +118,7 @@ func (u *UserValidation) SetID(id int32) {
 	u.ID = id
 }
 
-func (u *UserValidation) SetUser(user *entity.User) {
+func (u *UserValidation) SetUser(user *User) {
 	u.User = user
 }
 

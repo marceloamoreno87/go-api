@@ -1155,6 +1155,17 @@ func (q *Queries) RevokeTokenByUser(ctx context.Context, userID int32) error {
 	return err
 }
 
+const setUserValidationUsed = `-- name: SetUserValidationUsed :exec
+UPDATE users_validation SET
+  used = true
+WHERE id = $1
+`
+
+func (q *Queries) SetUserValidationUsed(ctx context.Context, id int32) error {
+	_, err := q.exec(ctx, q.setUserValidationUsedStmt, setUserValidationUsed, id)
+	return err
+}
+
 const updateAvatar = `-- name: UpdateAvatar :exec
 UPDATE avatars SET
   svg = $1
@@ -1268,21 +1279,5 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
 		arg.AvatarID,
 		arg.ID,
 	)
-	return err
-}
-
-const updateValidationUser = `-- name: UpdateValidationUser :exec
-UPDATE users_validation SET
-  used = $1
-WHERE id = $2
-`
-
-type UpdateValidationUserParams struct {
-	Used bool  `json:"used"`
-	ID   int32 `json:"id"`
-}
-
-func (q *Queries) UpdateValidationUser(ctx context.Context, arg UpdateValidationUserParams) error {
-	_, err := q.exec(ctx, q.updateValidationUserStmt, updateValidationUser, arg.Used, arg.ID)
 	return err
 }

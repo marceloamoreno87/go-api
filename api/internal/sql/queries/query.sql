@@ -249,7 +249,7 @@ INSERT INTO users_validation (
   $1, $2, $3
 );
 
--- name: UpdateValidationUser :exec
+-- name: SetUserValidationUsed :exec
 UPDATE users_validation SET
-  used = $1
-WHERE id = $2;
+  used = true
+WHERE id = $1;

@@ -138,6 +138,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.revokeTokenByUserStmt, err = db.PrepareContext(ctx, revokeTokenByUser); err != nil {
 		return nil, fmt.Errorf("error preparing query RevokeTokenByUser: %w", err)
 	}
+	if q.setUserValidationUsedStmt, err = db.PrepareContext(ctx, setUserValidationUsed); err != nil {
+		return nil, fmt.Errorf("error preparing query SetUserValidationUsed: %w", err)
+	}
 	if q.updateAvatarStmt, err = db.PrepareContext(ctx, updateAvatar); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateAvatar: %w", err)
 	}
@@ -152,9 +155,6 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	}
 	if q.updateUserStmt, err = db.PrepareContext(ctx, updateUser); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateUser: %w", err)
-	}
-	if q.updateValidationUserStmt, err = db.PrepareContext(ctx, updateValidationUser); err != nil {
-		return nil, fmt.Errorf("error preparing query UpdateValidationUser: %w", err)
 	}
 	return &q, nil
 }
@@ -351,6 +351,11 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing revokeTokenByUserStmt: %w", cerr)
 		}
 	}
+	if q.setUserValidationUsedStmt != nil {
+		if cerr := q.setUserValidationUsedStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing setUserValidationUsedStmt: %w", cerr)
+		}
+	}
 	if q.updateAvatarStmt != nil {
 		if cerr := q.updateAvatarStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing updateAvatarStmt: %w", cerr)
@@ -374,11 +379,6 @@ func (q *Queries) Close() error {
 	if q.updateUserStmt != nil {
 		if cerr := q.updateUserStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing updateUserStmt: %w", cerr)
-		}
-	}
-	if q.updateValidationUserStmt != nil {
-		if cerr := q.updateValidationUserStmt.Close(); cerr != nil {
-			err = fmt.Errorf("error closing updateValidationUserStmt: %w", cerr)
 		}
 	}
 	return err
@@ -458,12 +458,12 @@ type Queries struct {
 	getValidationUserByHashStmt     *sql.Stmt
 	registerUserStmt                *sql.Stmt
 	revokeTokenByUserStmt           *sql.Stmt
+	setUserValidationUsedStmt       *sql.Stmt
 	updateAvatarStmt                *sql.Stmt
 	updatePasswordUserStmt          *sql.Stmt
 	updatePermissionStmt            *sql.Stmt
 	updateRoleStmt                  *sql.Stmt
 	updateUserStmt                  *sql.Stmt
-	updateValidationUserStmt        *sql.Stmt
 }
 
 func (q *Queries) WithTx(tx *sql.Tx) *Queries {
@@ -508,11 +508,11 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		getValidationUserByHashStmt:     q.getValidationUserByHashStmt,
 		registerUserStmt:                q.registerUserStmt,
 		revokeTokenByUserStmt:           q.revokeTokenByUserStmt,
+		setUserValidationUsedStmt:       q.setUserValidationUsedStmt,
 		updateAvatarStmt:                q.updateAvatarStmt,
 		updatePasswordUserStmt:          q.updatePasswordUserStmt,
 		updatePermissionStmt:            q.updatePermissionStmt,
 		updateRoleStmt:                  q.updateRoleStmt,
 		updateUserStmt:                  q.updateUserStmt,
-		updateValidationUserStmt:        q.updateValidationUserStmt,
 	}
 }

@@ -3,29 +3,9 @@ package repository
 import (
 	"context"
 
-	"github.com/marceloamoreno/goapi/config"
-	"github.com/marceloamoreno/goapi/internal/domain/auth/entity"
+	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/db"
-	"github.com/marceloamoreno/goapi/internal/shared/repository"
 )
-
-type UserRepositoryInterface interface {
-	CreateValidationUser(userValidation *entity.UserValidation) (err error)
-	GetValidationUser(id int32) (userValidation *entity.UserValidation, err error)
-	GetValidationUserByHash(hash string) (userValidation *entity.UserValidation, err error)
-	UpdateValidationUser(userValidation *entity.UserValidation, id int32) (err error)
-	repository.RepositoryInterface
-}
-
-type UserRepository struct {
-	repository.Repository
-}
-
-func NewUserRepository(DB config.DatabaseInterface) *UserRepository {
-	return &UserRepository{
-		Repository: *repository.NewRepository(DB),
-	}
-}
 
 func (repo *UserRepository) GetValidationUser(id int32) (userValidation *entity.UserValidation, err error) {
 	newUserValidation, err := repo.GetDbQueries().GetValidationUser(context.Background(), id)
@@ -70,10 +50,7 @@ func (repo *UserRepository) CreateValidationUser(userValidation *entity.UserVali
 	return
 }
 
-func (repo *UserRepository) UpdateValidationUser(userValidation *entity.UserValidation, id int32) (err error) {
-	err = repo.GetDbQueries().WithTx(repo.GetTx()).UpdateValidationUser(context.Background(), db.UpdateValidationUserParams{
-		ID:   id,
-		Used: userValidation.Used,
-	})
+func (repo *UserRepository) SetUserValidationUsed(id int32) (err error) {
+	err = repo.GetDbQueries().WithTx(repo.GetTx()).SetUserValidationUsed(context.Background(), id)
 	return
 }
