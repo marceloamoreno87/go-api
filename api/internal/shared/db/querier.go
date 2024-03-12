@@ -31,7 +31,6 @@ type Querier interface {
 	GetRolePermission(ctx context.Context, id int32) ([]RolePermission, error)
 	GetRolePermissionsByRole(ctx context.Context, roleID int32) ([]GetRolePermissionsByRoleRow, error)
 	GetRoles(ctx context.Context, arg GetRolesParams) ([]Role, error)
-	GetToken(ctx context.Context, id int32) (Auth, error)
 	GetTokenByUser(ctx context.Context, userID int32) (Auth, error)
 	GetUser(ctx context.Context, id int32) (User, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)

@@ -90,9 +90,6 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getRolesStmt, err = db.PrepareContext(ctx, getRoles); err != nil {
 		return nil, fmt.Errorf("error preparing query GetRoles: %w", err)
 	}
-	if q.getTokenStmt, err = db.PrepareContext(ctx, getToken); err != nil {
-		return nil, fmt.Errorf("error preparing query GetToken: %w", err)
-	}
 	if q.getTokenByUserStmt, err = db.PrepareContext(ctx, getTokenByUser); err != nil {
 		return nil, fmt.Errorf("error preparing query GetTokenByUser: %w", err)
 	}
@@ -271,11 +268,6 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing getRolesStmt: %w", cerr)
 		}
 	}
-	if q.getTokenStmt != nil {
-		if cerr := q.getTokenStmt.Close(); cerr != nil {
-			err = fmt.Errorf("error closing getTokenStmt: %w", cerr)
-		}
-	}
 	if q.getTokenByUserStmt != nil {
 		if cerr := q.getTokenByUserStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing getTokenByUserStmt: %w", cerr)
@@ -442,7 +434,6 @@ type Queries struct {
 	getRolePermissionStmt           *sql.Stmt
 	getRolePermissionsByRoleStmt    *sql.Stmt
 	getRolesStmt                    *sql.Stmt
-	getTokenStmt                    *sql.Stmt
 	getTokenByUserStmt              *sql.Stmt
 	getUserStmt                     *sql.Stmt
 	getUserByEmailStmt              *sql.Stmt
@@ -492,7 +483,6 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		getRolePermissionStmt:           q.getRolePermissionStmt,
 		getRolePermissionsByRoleStmt:    q.getRolePermissionsByRoleStmt,
 		getRolesStmt:                    q.getRolesStmt,
-		getTokenStmt:                    q.getTokenStmt,
 		getTokenByUserStmt:              q.getTokenByUserStmt,
 		getUserStmt:                     q.getUserStmt,
 		getUserByEmailStmt:              q.getUserByEmailStmt,

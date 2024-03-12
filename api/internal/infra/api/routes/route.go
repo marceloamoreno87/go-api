@@ -27,6 +27,7 @@ func NewRoutes(
 	route.mux.GetMux().Route("/api/v1", func(r chi.Router) {
 		r.Group(func(r chi.Router) {
 			route.getAuthRoutes(r)
+			route.getUserNonAuthRoutes(r)
 			route.getRoute(r)
 			route.getSwaggerRoutes(r)
 			route.getHealthRoutes(r)

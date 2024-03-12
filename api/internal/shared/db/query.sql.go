@@ -524,27 +524,6 @@ func (q *Queries) GetRoles(ctx context.Context, arg GetRolesParams) ([]Role, err
 	return items, nil
 }
 
-const getToken = `-- name: GetToken :one
-SELECT id, user_id, token, refresh_token, active, expires_in, created_at, updated_at FROM auth
-WHERE id = $1 and active is true LIMIT 1
-`
-
-func (q *Queries) GetToken(ctx context.Context, id int32) (Auth, error) {
-	row := q.queryRow(ctx, q.getTokenStmt, getToken, id)
-	var i Auth
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.Token,
-		&i.RefreshToken,
-		&i.Active,
-		&i.ExpiresIn,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
 const getTokenByUser = `-- name: GetTokenByUser :one
 SELECT id, user_id, token, refresh_token, active, expires_in, created_at, updated_at FROM auth
 WHERE user_id = $1 and active is true LIMIT 1

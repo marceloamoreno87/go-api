@@ -4,24 +4,22 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/marceloamoreno/goapi/internal/domain/user/service"
-	_ "github.com/marceloamoreno/goapi/internal/domain/user/usecase"
+	"github.com/marceloamoreno/goapi/internal/domain/auth/service"
+	_ "github.com/marceloamoreno/goapi/internal/domain/auth/usecase"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
 type AuthHandlerInterface interface {
 	Login(w http.ResponseWriter, r *http.Request)
-	Refresh(w http.ResponseWriter, r *http.Request)
-	Register(w http.ResponseWriter, r *http.Request)
-	UserVerify(w http.ResponseWriter, r *http.Request)
+	RefreshToken(w http.ResponseWriter, r *http.Request)
 }
 
 type AuthHandler struct {
 	response.Responses
-	service service.UserServiceInterface
+	service service.AuthServiceInterface
 }
 
-func NewAuthHandler(service service.UserServiceInterface) *AuthHandler {
+func NewAuthHandler(service service.AuthServiceInterface) *AuthHandler {
 	return &AuthHandler{
 		service: service,
 	}
@@ -55,5 +53,11 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Router /auth/refresh [post]
 func (h *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	// TODO: Implement
+	output, err := h.service.RefreshToken(r.Body)
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
+	}
+	h.SendResponse(w, h.NewResponse(output))
 }

@@ -95,10 +95,6 @@ WHERE id = $2;
 DELETE FROM users
 WHERE id = $1;
 
--- name: GetToken :one
-SELECT * FROM auth
-WHERE id = $1 and active is true LIMIT 1;
-
 -- name: GetTokenByUser :one
 SELECT * FROM auth
 WHERE user_id = $1 and active is true LIMIT 1;

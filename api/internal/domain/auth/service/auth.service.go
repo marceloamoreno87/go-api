@@ -11,7 +11,6 @@ import (
 
 type AuthServiceInterface interface {
 	Login(body io.ReadCloser) (output usecase.LoginOutputDTO, err error)
-	Logout(body io.ReadCloser) (err error)
 	RefreshToken(body io.ReadCloser) (output usecase.RefreshTokenOutputDTO, err error)
 }
 
@@ -39,21 +38,6 @@ func (s *AuthService) Login(body io.ReadCloser) (output usecase.LoginOutputDTO, 
 		return
 	}
 	slog.Info("User logged in")
-	return
-}
-
-func (s *AuthService) Logout(body io.ReadCloser) (err error) {
-	input := usecase.LogoutInputDTO{}
-	if err = json.NewDecoder(body).Decode(&input); err != nil {
-		slog.Info("err", err)
-		return
-	}
-	err = usecase.NewLogoutUseCase(s.repo).Execute(input)
-	if err != nil {
-		slog.Info("err", err)
-		return
-	}
-	slog.Info("User logged out")
 	return
 }
 
