@@ -8,7 +8,7 @@ import (
 )
 
 func (route *Route) getAvatarRoutes(router chi.Router) {
-	repo := repository.NewAvatarRepository(route.dbConn)
+	repo := repository.NewAvatarRepository()
 	service := service.NewAvatarService(repo)
 	handler := handler.NewAvatarHandler(service)
 

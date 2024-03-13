@@ -6,7 +6,6 @@ import (
 	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/db"
-	"github.com/marceloamoreno/goapi/internal/shared/repository"
 )
 
 type UserRepositoryInterface interface {
@@ -22,17 +21,15 @@ type UserRepositoryInterface interface {
 	GetValidationUser(id int32) (userValidation *entity.UserValidation, err error)
 	GetValidationUserByHash(hash string) (userValidation *entity.UserValidation, err error)
 	SetUserValidationUsed(id int32) (err error)
-	repository.RepositoryInterface
+	config.SQLCInterface
 }
 
 type UserRepository struct {
-	repository.Repository
+	config.SQLCInterface
 }
 
-func NewUserRepository(DB config.DatabaseInterface) *UserRepository {
-	return &UserRepository{
-		Repository: *repository.NewRepository(DB),
-	}
+func NewUserRepository() *UserRepository {
+	return &UserRepository{}
 }
 
 func (repo *UserRepository) CreateUser(user *entity.User) (err error) {

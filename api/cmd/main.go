@@ -10,6 +10,7 @@ func init() {
 	config.NewDatabase()
 	config.NewJWT()
 	config.NewMux()
+	config.NewSqlc(config.Db)
 }
 
 // @title GO API

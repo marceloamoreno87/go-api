@@ -8,7 +8,7 @@ import (
 )
 
 func (route *Route) getPermissionRoutes(router chi.Router) {
-	repo := repository.NewPermissionRepository(route.dbConn)
+	repo := repository.NewPermissionRepository()
 	service := service.NewPermissionService(repo)
 	handler := handler.NewPermissionHandler(service)
 

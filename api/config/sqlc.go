@@ -1,13 +1,13 @@
-package repository
+package config
 
 import (
 	"database/sql"
 
-	"github.com/marceloamoreno/goapi/config"
+	_ "github.com/lib/pq"
 	"github.com/marceloamoreno/goapi/internal/shared/db"
 )
 
-type RepositoryInterface interface {
+type SQLCInterface interface {
 	GetDbQueries() *db.Queries
 	GetDbConn() *sql.DB
 	Begin() (err error)
@@ -16,29 +16,33 @@ type RepositoryInterface interface {
 	GetTx() *sql.Tx
 }
 
-type Repository struct {
+type SQLC struct {
 	dbConn    *sql.DB
 	dbQueries *db.Queries
 	tx        *sql.Tx
 }
 
-func NewRepository(DB config.DatabaseInterface) *Repository {
-	return &Repository{
+var Sqcl SQLCInterface
+
+func NewSqlc(DB DatabaseInterface) {
+	sqlc := &SQLC{
 		dbConn:    DB.GetDbConn(),
 		dbQueries: db.New(DB.GetDbConn()),
 		tx:        nil,
 	}
+
+	Sqcl = sqlc
 }
 
-func (t *Repository) GetDbConn() *sql.DB {
+func (t *SQLC) GetDbConn() *sql.DB {
 	return t.dbConn
 }
 
-func (t *Repository) GetDbQueries() *db.Queries {
+func (t *SQLC) GetDbQueries() *db.Queries {
 	return t.dbQueries
 }
 
-func (t *Repository) Begin() (err error) {
+func (t *SQLC) Begin() (err error) {
 	tx, err := t.dbConn.Begin()
 	if err != nil {
 		return
@@ -47,16 +51,16 @@ func (t *Repository) Begin() (err error) {
 	return
 }
 
-func (t *Repository) Commit() (err error) {
+func (t *SQLC) Commit() (err error) {
 	err = t.tx.Commit()
 	return
 }
 
-func (t *Repository) Rollback() (err error) {
+func (t *SQLC) Rollback() (err error) {
 	err = t.tx.Rollback()
 	return
 }
 
-func (t *Repository) GetTx() *sql.Tx {
+func (t *SQLC) GetTx() *sql.Tx {
 	return t.tx
 }

@@ -6,24 +6,21 @@ import (
 	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/auth/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/db"
-	"github.com/marceloamoreno/goapi/internal/shared/repository"
 )
 
 type AuthRepositoryInterface interface {
 	CreateToken(auth *entity.Auth) (err error)
 	GetTokenByUser() (auth *entity.Auth, err error)
 	RevokeTokenByUser(*entity.Auth) error
-	repository.RepositoryInterface
+	config.SQLCInterface
 }
 
 type AuthRepository struct {
-	repository.Repository
+	config.SQLCInterface
 }
 
-func NewAuthRepository(DB config.DatabaseInterface) *AuthRepository {
-	return &AuthRepository{
-		Repository: *repository.NewRepository(DB),
-	}
+func NewAuthRepository() *AuthRepository {
+	return &AuthRepository{}
 }
 
 func (repo *AuthRepository) CreateToken(auth *entity.Auth) (err error) {

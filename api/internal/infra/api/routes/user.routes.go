@@ -8,8 +8,8 @@ import (
 )
 
 func (route *Route) getUserRoutes(router chi.Router) {
-	userRepo := repository.NewUserRepository(route.dbConn)
-	service := service.NewUserService(userRepo)
+	repo := repository.NewUserRepository()
+	service := service.NewUserService(repo)
 	handler := handler.NewUserHandler(service)
 	router.Route("/user", func(r chi.Router) {
 		r.Get("/", handler.GetUsers)
@@ -21,8 +21,8 @@ func (route *Route) getUserRoutes(router chi.Router) {
 }
 
 func (route *Route) getUserNonAuthRoutes(router chi.Router) {
-	userRepo := repository.NewUserRepository(route.dbConn)
-	service := service.NewUserService(userRepo)
+	repo := repository.NewUserRepository()
+	service := service.NewUserService(repo)
 	handler := handler.NewUserHandler(service)
 	router.Route("/user", func(r chi.Router) {
 		r.Post("/register", handler.Register)

@@ -8,7 +8,7 @@ import (
 )
 
 func (route *Route) getRoleRoutes(router chi.Router) {
-	repo := repository.NewRoleRepository(route.dbConn)
+	repo := repository.NewRoleRepository()
 	service := service.NewRoleService(repo)
 	handler := handler.NewRoleHandler(service)
 

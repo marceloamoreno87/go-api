@@ -9,7 +9,7 @@ import (
 )
 
 func (route *Route) getAuthRoutes(router chi.Router) {
-	repo := repository.NewAuthRepository(route.dbConn)
+	repo := repository.NewAuthRepository()
 	service := service.NewAuthService(repo)
 	handler := handler.NewAuthHandler(service)
 	router.Route("/auth", func(r chi.Router) {

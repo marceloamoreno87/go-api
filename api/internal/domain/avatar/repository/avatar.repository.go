@@ -6,7 +6,6 @@ import (
 	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/avatar/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/db"
-	"github.com/marceloamoreno/goapi/internal/shared/repository"
 )
 
 type AvatarRepositoryInterface interface {
@@ -15,17 +14,15 @@ type AvatarRepositoryInterface interface {
 	GetAvatars(limit int32, offset int32) (avatars []*entity.Avatar, err error)
 	UpdateAvatar(avatar *entity.Avatar, id int32) (err error)
 	DeleteAvatar(id int32) (err error)
-	repository.RepositoryInterface
+	config.SQLCInterface
 }
 
 type AvatarRepository struct {
-	repository.Repository
+	config.SQLCInterface
 }
 
-func NewAvatarRepository(DB config.DatabaseInterface) *AvatarRepository {
-	return &AvatarRepository{
-		Repository: *repository.NewRepository(DB),
-	}
+func NewAvatarRepository() *AvatarRepository {
+	return &AvatarRepository{}
 }
 
 func (repo *AvatarRepository) CreateAvatar(avatar *entity.Avatar) (err error) {

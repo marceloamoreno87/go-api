@@ -6,7 +6,6 @@ import (
 	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/permission/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/db"
-	"github.com/marceloamoreno/goapi/internal/shared/repository"
 )
 
 type PermissionRepositoryInterface interface {
@@ -16,17 +15,15 @@ type PermissionRepositoryInterface interface {
 	UpdatePermission(permission *entity.Permission, id int32) (err error)
 	DeletePermission(id int32) (err error)
 	GetPermissionByInternalName(internal_name string) (permission *entity.Permission, err error)
-	repository.RepositoryInterface
+	config.SQLCInterface
 }
 
 type PermissionRepository struct {
-	repository.Repository
+	config.SQLCInterface
 }
 
-func NewPermissionRepository(DB config.DatabaseInterface) *PermissionRepository {
-	return &PermissionRepository{
-		Repository: *repository.NewRepository(DB),
-	}
+func NewPermissionRepository() *PermissionRepository {
+	return &PermissionRepository{}
 }
 
 func (repo *PermissionRepository) CreatePermission(permission *entity.Permission) (err error) {
