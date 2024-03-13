@@ -11,7 +11,7 @@ import (
 type RoleRepositoryInterface interface {
 	CreateRole(role *entity.Role) (err error)
 	GetRole(id int32) (*entity.Role, error)
-	GetRoleByInternalName(internal_name string) (*entity.Role, error)
+	GetRoleByInternalName(internalName string) (*entity.Role, error)
 	GetRoles(limit int32, offset int32) ([]*entity.Role, error)
 	UpdateRole(role *entity.Role, id int32) (err error)
 	DeleteRole(id int32) (err error)
@@ -50,8 +50,8 @@ func (repo *RoleRepository) GetRole(id int32) (role *entity.Role, err error) {
 	}, nil
 }
 
-func (repo *RoleRepository) GetRoleByInternalName(internal_name string) (role *entity.Role, err error) {
-	r, err := repo.GetDbQueries().GetRoleByInternalName(context.Background(), internal_name)
+func (repo *RoleRepository) GetRoleByInternalName(internalName string) (role *entity.Role, err error) {
+	r, err := repo.GetDbQueries().GetRoleByInternalName(context.Background(), internalName)
 	if err != nil {
 		return
 	}

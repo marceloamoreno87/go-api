@@ -14,7 +14,7 @@ type PermissionRepositoryInterface interface {
 	GetPermissions(limit int32, offset int32) (permissions []*entity.Permission, err error)
 	UpdatePermission(permission *entity.Permission, id int32) (err error)
 	DeletePermission(id int32) (err error)
-	GetPermissionByInternalName(internal_name string) (permission *entity.Permission, err error)
+	GetPermissionByInternalName(internalName string) (permission *entity.Permission, err error)
 	config.SQLCInterface
 }
 
@@ -86,8 +86,8 @@ func (repo *PermissionRepository) DeletePermission(id int32) (err error) {
 	return
 }
 
-func (repo *PermissionRepository) GetPermissionByInternalName(internal_name string) (permission *entity.Permission, err error) {
-	p, err := repo.GetDbQueries().GetPermissionByInternalName(context.Background(), internal_name)
+func (repo *PermissionRepository) GetPermissionByInternalName(internalName string) (permission *entity.Permission, err error) {
+	p, err := repo.GetDbQueries().GetPermissionByInternalName(context.Background(), internalName)
 	if err != nil {
 		return
 	}
