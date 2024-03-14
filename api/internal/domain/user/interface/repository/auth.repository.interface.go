@@ -6,8 +6,8 @@ import (
 )
 
 type AuthRepositoryInterface interface {
-	CreateToken(auth entityInterface.AuthInterface) (err error)
-	GetTokenByUser() (auth entityInterface.AuthInterface, err error)
-	RevokeTokenByUser(auth entityInterface.AuthInterface) error
+	CreateToken(auth entityInterface.AuthInterface) (output entityInterface.AuthInterface, err error)
+	GetTokenByUser() (output entityInterface.AuthInterface, err error)
+	RevokeTokenByUser(auth entityInterface.AuthInterface) (output entityInterface.AuthInterface, err error)
 	config.SQLCInterface
 }

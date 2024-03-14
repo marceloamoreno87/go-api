@@ -6,8 +6,8 @@ import (
 )
 
 type RolePermissionRepositoryInterface interface {
-	GetRolePermissionsByRole(id int32) (rolePermissions entityInterface.RolePermissionInterface, err error)
-	CreateRolePermission(rolePermission entityInterface.RolePermissionInterface) (err error)
-	UpdateRolePermission(rolePermission entityInterface.RolePermissionInterface, id int32) (err error)
+	GetRolePermissionsByRole(id int32) (output entityInterface.RolePermissionInterface, err error)
+	CreateRolePermission(rolePermission entityInterface.RolePermissionInterface) (output entityInterface.RolePermissionInterface, err error)
+	UpdateRolePermission(rolePermission entityInterface.RolePermissionInterface, id int32) (output entityInterface.RolePermissionInterface, err error)
 	config.SQLCInterface
 }

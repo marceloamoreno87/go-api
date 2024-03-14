@@ -6,9 +6,9 @@ import (
 )
 
 type UserValidationRepositoryInterface interface {
-	CreateValidationUser(userValidation entityInterface.UserValidationInterface) (err error)
-	GetValidationUser(id int32) (userValidation entityInterface.UserValidationInterface, err error)
-	GetValidationUserByHash(hash string) (userValidation entityInterface.UserValidationInterface, err error)
-	UpdateUserValidationUsed(id int32) (err error)
+	CreateValidationUser(userValidation entityInterface.UserValidationInterface) (output entityInterface.UserValidationInterface, err error)
+	GetValidationUser(id int32) (output entityInterface.UserValidationInterface, err error)
+	GetValidationUserByHash(hash string) (output entityInterface.UserValidationInterface, err error)
+	UpdateUserValidationUsed(id int32) (output entityInterface.UserValidationInterface, err error)
 	config.SQLCInterface
 }
