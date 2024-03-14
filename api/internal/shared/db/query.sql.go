@@ -10,20 +10,28 @@ import (
 	"time"
 )
 
-const createAvatar = `-- name: CreateAvatar :exec
+const createAvatar = `-- name: CreateAvatar :one
 INSERT INTO avatars (
   svg
 ) VALUES (
   $1
 )
+RETURNING id, svg, created_at, updated_at
 `
 
-func (q *Queries) CreateAvatar(ctx context.Context, svg string) error {
-	_, err := q.exec(ctx, q.createAvatarStmt, createAvatar, svg)
-	return err
+func (q *Queries) CreateAvatar(ctx context.Context, svg string) (Avatar, error) {
+	row := q.queryRow(ctx, q.createAvatarStmt, createAvatar, svg)
+	var i Avatar
+	err := row.Scan(
+		&i.ID,
+		&i.Svg,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const createPermission = `-- name: CreatePermission :exec
+const createPermission = `-- name: CreatePermission :one
 INSERT INTO permissions (
   name,
   internal_name,
@@ -31,6 +39,7 @@ INSERT INTO permissions (
 ) VALUES (
   $1, $2, $3
 )
+RETURNING id, name, internal_name, description, created_at, updated_at
 `
 
 type CreatePermissionParams struct {
@@ -39,12 +48,21 @@ type CreatePermissionParams struct {
 	Description  string `json:"description"`
 }
 
-func (q *Queries) CreatePermission(ctx context.Context, arg CreatePermissionParams) error {
-	_, err := q.exec(ctx, q.createPermissionStmt, createPermission, arg.Name, arg.InternalName, arg.Description)
-	return err
+func (q *Queries) CreatePermission(ctx context.Context, arg CreatePermissionParams) (Permission, error) {
+	row := q.queryRow(ctx, q.createPermissionStmt, createPermission, arg.Name, arg.InternalName, arg.Description)
+	var i Permission
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.InternalName,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const createRole = `-- name: CreateRole :exec
+const createRole = `-- name: CreateRole :one
 INSERT INTO roles (
   name,
   internal_name,
@@ -52,6 +70,7 @@ INSERT INTO roles (
 ) VALUES (
   $1, $2, $3
 )
+RETURNING id, name, internal_name, description, created_at, updated_at
 `
 
 type CreateRoleParams struct {
@@ -60,18 +79,28 @@ type CreateRoleParams struct {
 	Description  string `json:"description"`
 }
 
-func (q *Queries) CreateRole(ctx context.Context, arg CreateRoleParams) error {
-	_, err := q.exec(ctx, q.createRoleStmt, createRole, arg.Name, arg.InternalName, arg.Description)
-	return err
+func (q *Queries) CreateRole(ctx context.Context, arg CreateRoleParams) (Role, error) {
+	row := q.queryRow(ctx, q.createRoleStmt, createRole, arg.Name, arg.InternalName, arg.Description)
+	var i Role
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.InternalName,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const createRolePermission = `-- name: CreateRolePermission :exec
+const createRolePermission = `-- name: CreateRolePermission :one
 INSERT INTO role_permissions (
   role_id,
   permission_id
 ) VALUES (
   $1, $2
 )
+RETURNING id, role_id, permission_id
 `
 
 type CreateRolePermissionParams struct {
@@ -79,12 +108,14 @@ type CreateRolePermissionParams struct {
 	PermissionID int32 `json:"permission_id"`
 }
 
-func (q *Queries) CreateRolePermission(ctx context.Context, arg CreateRolePermissionParams) error {
-	_, err := q.exec(ctx, q.createRolePermissionStmt, createRolePermission, arg.RoleID, arg.PermissionID)
-	return err
+func (q *Queries) CreateRolePermission(ctx context.Context, arg CreateRolePermissionParams) (RolePermission, error) {
+	row := q.queryRow(ctx, q.createRolePermissionStmt, createRolePermission, arg.RoleID, arg.PermissionID)
+	var i RolePermission
+	err := row.Scan(&i.ID, &i.RoleID, &i.PermissionID)
+	return i, err
 }
 
-const createToken = `-- name: CreateToken :exec
+const createToken = `-- name: CreateToken :one
 INSERT INTO auth (
   user_id,
   token,
@@ -93,6 +124,7 @@ INSERT INTO auth (
 ) VALUES (
   $1, $2, $3, $4
 )
+RETURNING id, user_id, token, refresh_token, active, expires_in, created_at, updated_at
 `
 
 type CreateTokenParams struct {
@@ -102,17 +134,28 @@ type CreateTokenParams struct {
 	ExpiresIn    int32  `json:"expires_in"`
 }
 
-func (q *Queries) CreateToken(ctx context.Context, arg CreateTokenParams) error {
-	_, err := q.exec(ctx, q.createTokenStmt, createToken,
+func (q *Queries) CreateToken(ctx context.Context, arg CreateTokenParams) (Auth, error) {
+	row := q.queryRow(ctx, q.createTokenStmt, createToken,
 		arg.UserID,
 		arg.Token,
 		arg.RefreshToken,
 		arg.ExpiresIn,
 	)
-	return err
+	var i Auth
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Token,
+		&i.RefreshToken,
+		&i.Active,
+		&i.ExpiresIn,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const createUser = `-- name: CreateUser :exec
+const createUser = `-- name: CreateUser :one
 INSERT INTO users (
   name,
   email,
@@ -123,6 +166,7 @@ INSERT INTO users (
 ) VALUES (
   $1, $2, $3, $4, $5, $6
 )
+RETURNING id, name, email, password, active, role_id, avatar_id, created_at, updated_at
 `
 
 type CreateUserParams struct {
@@ -134,8 +178,8 @@ type CreateUserParams struct {
 	AvatarID int32  `json:"avatar_id"`
 }
 
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
-	_, err := q.exec(ctx, q.createUserStmt, createUser,
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+	row := q.queryRow(ctx, q.createUserStmt, createUser,
 		arg.Name,
 		arg.Email,
 		arg.Password,
@@ -143,10 +187,22 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
 		arg.RoleID,
 		arg.AvatarID,
 	)
-	return err
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+		&i.Active,
+		&i.RoleID,
+		&i.AvatarID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const createValidationUser = `-- name: CreateValidationUser :exec
+const createValidationUser = `-- name: CreateValidationUser :one
 INSERT INTO users_validation (
   user_id,
   hash,
@@ -154,6 +210,7 @@ INSERT INTO users_validation (
 ) VALUES (
   $1, $2, $3
 )
+RETURNING id, user_id, hash, expires_in, used, created_at, updated_at
 `
 
 type CreateValidationUserParams struct {
@@ -162,59 +219,113 @@ type CreateValidationUserParams struct {
 	ExpiresIn int32  `json:"expires_in"`
 }
 
-func (q *Queries) CreateValidationUser(ctx context.Context, arg CreateValidationUserParams) error {
-	_, err := q.exec(ctx, q.createValidationUserStmt, createValidationUser, arg.UserID, arg.Hash, arg.ExpiresIn)
-	return err
+func (q *Queries) CreateValidationUser(ctx context.Context, arg CreateValidationUserParams) (UsersValidation, error) {
+	row := q.queryRow(ctx, q.createValidationUserStmt, createValidationUser, arg.UserID, arg.Hash, arg.ExpiresIn)
+	var i UsersValidation
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Hash,
+		&i.ExpiresIn,
+		&i.Used,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const deleteAvatar = `-- name: DeleteAvatar :exec
+const deleteAvatar = `-- name: DeleteAvatar :one
 DELETE FROM avatars
 WHERE id = $1
+RETURNING id, svg, created_at, updated_at
 `
 
-func (q *Queries) DeleteAvatar(ctx context.Context, id int32) error {
-	_, err := q.exec(ctx, q.deleteAvatarStmt, deleteAvatar, id)
-	return err
+func (q *Queries) DeleteAvatar(ctx context.Context, id int32) (Avatar, error) {
+	row := q.queryRow(ctx, q.deleteAvatarStmt, deleteAvatar, id)
+	var i Avatar
+	err := row.Scan(
+		&i.ID,
+		&i.Svg,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const deletePermission = `-- name: DeletePermission :exec
+const deletePermission = `-- name: DeletePermission :one
 DELETE FROM permissions
 WHERE id = $1
+RETURNING id, name, internal_name, description, created_at, updated_at
 `
 
-func (q *Queries) DeletePermission(ctx context.Context, id int32) error {
-	_, err := q.exec(ctx, q.deletePermissionStmt, deletePermission, id)
-	return err
+func (q *Queries) DeletePermission(ctx context.Context, id int32) (Permission, error) {
+	row := q.queryRow(ctx, q.deletePermissionStmt, deletePermission, id)
+	var i Permission
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.InternalName,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const deleteRole = `-- name: DeleteRole :exec
+const deleteRole = `-- name: DeleteRole :one
 DELETE FROM roles
 WHERE id = $1
+RETURNING id, name, internal_name, description, created_at, updated_at
 `
 
-func (q *Queries) DeleteRole(ctx context.Context, id int32) error {
-	_, err := q.exec(ctx, q.deleteRoleStmt, deleteRole, id)
-	return err
+func (q *Queries) DeleteRole(ctx context.Context, id int32) (Role, error) {
+	row := q.queryRow(ctx, q.deleteRoleStmt, deleteRole, id)
+	var i Role
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.InternalName,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const deleteRolePermission = `-- name: DeleteRolePermission :exec
+const deleteRolePermission = `-- name: DeleteRolePermission :one
 DELETE FROM role_permissions
 WHERE role_id = $1
+RETURNING id, role_id, permission_id
 `
 
-func (q *Queries) DeleteRolePermission(ctx context.Context, roleID int32) error {
-	_, err := q.exec(ctx, q.deleteRolePermissionStmt, deleteRolePermission, roleID)
-	return err
+func (q *Queries) DeleteRolePermission(ctx context.Context, roleID int32) (RolePermission, error) {
+	row := q.queryRow(ctx, q.deleteRolePermissionStmt, deleteRolePermission, roleID)
+	var i RolePermission
+	err := row.Scan(&i.ID, &i.RoleID, &i.PermissionID)
+	return i, err
 }
 
-const deleteUser = `-- name: DeleteUser :exec
+const deleteUser = `-- name: DeleteUser :one
 DELETE FROM users
 WHERE id = $1
+RETURNING id, name, email, password, active, role_id, avatar_id, created_at, updated_at
 `
 
-func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
-	_, err := q.exec(ctx, q.deleteUserStmt, deleteUser, id)
-	return err
+func (q *Queries) DeleteUser(ctx context.Context, id int32) (User, error) {
+	row := q.queryRow(ctx, q.deleteUserStmt, deleteUser, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+		&i.Active,
+		&i.RoleID,
+		&i.AvatarID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const getAvatar = `-- name: GetAvatar :one
@@ -1123,21 +1234,34 @@ func (q *Queries) RegisterUser(ctx context.Context, arg RegisterUserParams) (Use
 	return i, err
 }
 
-const revokeTokenByUser = `-- name: RevokeTokenByUser :exec
+const revokeTokenByUser = `-- name: RevokeTokenByUser :one
 UPDATE auth SET
   active = false
 WHERE user_id = $1
+RETURNING id, user_id, token, refresh_token, active, expires_in, created_at, updated_at
 `
 
-func (q *Queries) RevokeTokenByUser(ctx context.Context, userID int32) error {
-	_, err := q.exec(ctx, q.revokeTokenByUserStmt, revokeTokenByUser, userID)
-	return err
+func (q *Queries) RevokeTokenByUser(ctx context.Context, userID int32) (Auth, error) {
+	row := q.queryRow(ctx, q.revokeTokenByUserStmt, revokeTokenByUser, userID)
+	var i Auth
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Token,
+		&i.RefreshToken,
+		&i.Active,
+		&i.ExpiresIn,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const updateAvatar = `-- name: UpdateAvatar :exec
+const updateAvatar = `-- name: UpdateAvatar :one
 UPDATE avatars SET
   svg = $1
 WHERE id = $2
+RETURNING id, svg, created_at, updated_at
 `
 
 type UpdateAvatarParams struct {
@@ -1145,17 +1269,25 @@ type UpdateAvatarParams struct {
 	ID  int32  `json:"id"`
 }
 
-func (q *Queries) UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) error {
-	_, err := q.exec(ctx, q.updateAvatarStmt, updateAvatar, arg.Svg, arg.ID)
-	return err
+func (q *Queries) UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) (Avatar, error) {
+	row := q.queryRow(ctx, q.updateAvatarStmt, updateAvatar, arg.Svg, arg.ID)
+	var i Avatar
+	err := row.Scan(
+		&i.ID,
+		&i.Svg,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const updatePermission = `-- name: UpdatePermission :exec
+const updatePermission = `-- name: UpdatePermission :one
 UPDATE permissions SET
   name = $1,
   internal_name = $2,
   description = $3
 WHERE id = $4
+RETURNING id, name, internal_name, description, created_at, updated_at
 `
 
 type UpdatePermissionParams struct {
@@ -1165,22 +1297,32 @@ type UpdatePermissionParams struct {
 	ID           int32  `json:"id"`
 }
 
-func (q *Queries) UpdatePermission(ctx context.Context, arg UpdatePermissionParams) error {
-	_, err := q.exec(ctx, q.updatePermissionStmt, updatePermission,
+func (q *Queries) UpdatePermission(ctx context.Context, arg UpdatePermissionParams) (Permission, error) {
+	row := q.queryRow(ctx, q.updatePermissionStmt, updatePermission,
 		arg.Name,
 		arg.InternalName,
 		arg.Description,
 		arg.ID,
 	)
-	return err
+	var i Permission
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.InternalName,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const updateRole = `-- name: UpdateRole :exec
+const updateRole = `-- name: UpdateRole :one
 UPDATE roles SET
   name = $1,
   internal_name = $2,
   description = $3
 WHERE id = $4
+RETURNING id, name, internal_name, description, created_at, updated_at
 `
 
 type UpdateRoleParams struct {
@@ -1190,17 +1332,26 @@ type UpdateRoleParams struct {
 	ID           int32  `json:"id"`
 }
 
-func (q *Queries) UpdateRole(ctx context.Context, arg UpdateRoleParams) error {
-	_, err := q.exec(ctx, q.updateRoleStmt, updateRole,
+func (q *Queries) UpdateRole(ctx context.Context, arg UpdateRoleParams) (Role, error) {
+	row := q.queryRow(ctx, q.updateRoleStmt, updateRole,
 		arg.Name,
 		arg.InternalName,
 		arg.Description,
 		arg.ID,
 	)
-	return err
+	var i Role
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.InternalName,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const updateUser = `-- name: UpdateUser :exec
+const updateUser = `-- name: UpdateUser :one
 UPDATE users SET
   name = $1,
   email = $2,
@@ -1209,6 +1360,7 @@ UPDATE users SET
   role_id = $5,
   avatar_id = $6
 WHERE id = $7
+RETURNING id, name, email, password, active, role_id, avatar_id, created_at, updated_at
 `
 
 type UpdateUserParams struct {
@@ -1221,8 +1373,8 @@ type UpdateUserParams struct {
 	ID       int32  `json:"id"`
 }
 
-func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
-	_, err := q.exec(ctx, q.updateUserStmt, updateUser,
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
+	row := q.queryRow(ctx, q.updateUserStmt, updateUser,
 		arg.Name,
 		arg.Email,
 		arg.Password,
@@ -1231,13 +1383,26 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
 		arg.AvatarID,
 		arg.ID,
 	)
-	return err
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+		&i.Active,
+		&i.RoleID,
+		&i.AvatarID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const updateUserActive = `-- name: UpdateUserActive :exec
+const updateUserActive = `-- name: UpdateUserActive :one
 UPDATE users SET
   active = $1
 WHERE id = $2
+RETURNING id, name, email, password, active, role_id, avatar_id, created_at, updated_at
 `
 
 type UpdateUserActiveParams struct {
@@ -1245,15 +1410,28 @@ type UpdateUserActiveParams struct {
 	ID     int32 `json:"id"`
 }
 
-func (q *Queries) UpdateUserActive(ctx context.Context, arg UpdateUserActiveParams) error {
-	_, err := q.exec(ctx, q.updateUserActiveStmt, updateUserActive, arg.Active, arg.ID)
-	return err
+func (q *Queries) UpdateUserActive(ctx context.Context, arg UpdateUserActiveParams) (User, error) {
+	row := q.queryRow(ctx, q.updateUserActiveStmt, updateUserActive, arg.Active, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+		&i.Active,
+		&i.RoleID,
+		&i.AvatarID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const updateUserPassword = `-- name: UpdateUserPassword :exec
+const updateUserPassword = `-- name: UpdateUserPassword :one
 UPDATE users SET
   password = $1
 WHERE id = $2
+RETURNING id, name, email, password, active, role_id, avatar_id, created_at, updated_at
 `
 
 type UpdateUserPasswordParams struct {
@@ -1261,18 +1439,41 @@ type UpdateUserPasswordParams struct {
 	ID       int32  `json:"id"`
 }
 
-func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error {
-	_, err := q.exec(ctx, q.updateUserPasswordStmt, updateUserPassword, arg.Password, arg.ID)
-	return err
+func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) (User, error) {
+	row := q.queryRow(ctx, q.updateUserPasswordStmt, updateUserPassword, arg.Password, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+		&i.Active,
+		&i.RoleID,
+		&i.AvatarID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const updateUserValidationUsed = `-- name: UpdateUserValidationUsed :exec
+const updateUserValidationUsed = `-- name: UpdateUserValidationUsed :one
 UPDATE users_validation SET
   used = true
 WHERE id = $1
+RETURNING id, user_id, hash, expires_in, used, created_at, updated_at
 `
 
-func (q *Queries) UpdateUserValidationUsed(ctx context.Context, id int32) error {
-	_, err := q.exec(ctx, q.updateUserValidationUsedStmt, updateUserValidationUsed, id)
-	return err
+func (q *Queries) UpdateUserValidationUsed(ctx context.Context, id int32) (UsersValidation, error) {
+	row := q.queryRow(ctx, q.updateUserValidationUsedStmt, updateUserValidationUsed, id)
+	var i UsersValidation
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Hash,
+		&i.ExpiresIn,
+		&i.Used,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

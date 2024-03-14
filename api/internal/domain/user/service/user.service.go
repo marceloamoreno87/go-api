@@ -17,7 +17,7 @@ type UserServiceInterface interface {
 	GetUsers(limit int32, offset int32) (output []usecase.GetUsersOutputDTO, err error)
 	UpdateUser(id int32, body io.ReadCloser) (err error)
 	DeleteUser(id int32) (err error)
-	UpdateUserPassword(body io.ReadCloser) (err error)
+	UpdateUserPassword(id int32, body io.ReadCloser) (err error)
 	config.SQLCInterface
 }
 

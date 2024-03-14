@@ -9,18 +9,18 @@ import (
 )
 
 type Querier interface {
-	CreateAvatar(ctx context.Context, svg string) error
-	CreatePermission(ctx context.Context, arg CreatePermissionParams) error
-	CreateRole(ctx context.Context, arg CreateRoleParams) error
-	CreateRolePermission(ctx context.Context, arg CreateRolePermissionParams) error
-	CreateToken(ctx context.Context, arg CreateTokenParams) error
-	CreateUser(ctx context.Context, arg CreateUserParams) error
-	CreateValidationUser(ctx context.Context, arg CreateValidationUserParams) error
-	DeleteAvatar(ctx context.Context, id int32) error
-	DeletePermission(ctx context.Context, id int32) error
-	DeleteRole(ctx context.Context, id int32) error
-	DeleteRolePermission(ctx context.Context, roleID int32) error
-	DeleteUser(ctx context.Context, id int32) error
+	CreateAvatar(ctx context.Context, svg string) (Avatar, error)
+	CreatePermission(ctx context.Context, arg CreatePermissionParams) (Permission, error)
+	CreateRole(ctx context.Context, arg CreateRoleParams) (Role, error)
+	CreateRolePermission(ctx context.Context, arg CreateRolePermissionParams) (RolePermission, error)
+	CreateToken(ctx context.Context, arg CreateTokenParams) (Auth, error)
+	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	CreateValidationUser(ctx context.Context, arg CreateValidationUserParams) (UsersValidation, error)
+	DeleteAvatar(ctx context.Context, id int32) (Avatar, error)
+	DeletePermission(ctx context.Context, id int32) (Permission, error)
+	DeleteRole(ctx context.Context, id int32) (Role, error)
+	DeleteRolePermission(ctx context.Context, roleID int32) (RolePermission, error)
+	DeleteUser(ctx context.Context, id int32) (User, error)
 	GetAvatar(ctx context.Context, id int32) (Avatar, error)
 	GetAvatars(ctx context.Context, arg GetAvatarsParams) ([]Avatar, error)
 	GetPermission(ctx context.Context, id int32) (Permission, error)
@@ -45,14 +45,14 @@ type Querier interface {
 	GetValidationUser(ctx context.Context, userID int32) (UsersValidation, error)
 	GetValidationUserByHash(ctx context.Context, hash string) (UsersValidation, error)
 	RegisterUser(ctx context.Context, arg RegisterUserParams) (User, error)
-	RevokeTokenByUser(ctx context.Context, userID int32) error
-	UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) error
-	UpdatePermission(ctx context.Context, arg UpdatePermissionParams) error
-	UpdateRole(ctx context.Context, arg UpdateRoleParams) error
-	UpdateUser(ctx context.Context, arg UpdateUserParams) error
-	UpdateUserActive(ctx context.Context, arg UpdateUserActiveParams) error
-	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error
-	UpdateUserValidationUsed(ctx context.Context, id int32) error
+	RevokeTokenByUser(ctx context.Context, userID int32) (Auth, error)
+	UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) (Avatar, error)
+	UpdatePermission(ctx context.Context, arg UpdatePermissionParams) (Permission, error)
+	UpdateRole(ctx context.Context, arg UpdateRoleParams) (Role, error)
+	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
+	UpdateUserActive(ctx context.Context, arg UpdateUserActiveParams) (User, error)
+	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) (User, error)
+	UpdateUserValidationUsed(ctx context.Context, id int32) (UsersValidation, error)
 }
 
 var _ Querier = (*Queries)(nil)
