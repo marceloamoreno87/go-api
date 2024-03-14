@@ -5,7 +5,7 @@ import (
 	"io"
 	"log/slog"
 
-	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
@@ -13,14 +13,15 @@ type RolePermissionServiceInterface interface {
 	GetRolePermissions(id int32) (output usecase.GetRolePermissionsOutputDTO, err error)
 	CreateRolePermission(body io.ReadCloser) (err error)
 	UpdateRolePermission(id int32, body io.ReadCloser) (err error)
+	config.SQLCInterface
 }
 
 type RolePermissionService struct {
+	config.SQLCInterface
 }
 
 func NewRolePermissionService() *RolePermissionService {
-	return &RolePermissionService{
-	}
+	return &RolePermissionService{}
 }
 
 func (s *RolePermissionService) GetRolePermissions(id int32) (output usecase.GetRolePermissionsOutputDTO, err error) {
@@ -39,7 +40,7 @@ func (s *RolePermissionService) GetRolePermissions(id int32) (output usecase.Get
 }
 
 func (s *RolePermissionService) CreateRolePermission(body io.ReadCloser) (err error) {
-	s.rolePermissionRepo.Begin()
+	s.Begin()
 	input := usecase.CreateRolePermissionInputDTO{}
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
@@ -47,17 +48,17 @@ func (s *RolePermissionService) CreateRolePermission(body io.ReadCloser) (err er
 	}
 
 	if err = usecase.NewCreateRolePermissionUseCase().Execute(input); err != nil {
-		s.rolePermissionRepo.Rollback()
+		s.Rollback()
 		slog.Info("err", err)
 		return
 	}
-	s.rolePermissionRepo.Commit()
+	s.Commit()
 	return
 
 }
 
 func (s *RolePermissionService) UpdateRolePermission(id int32, body io.ReadCloser) (err error) {
-	s.rolePermissionRepo.Begin()
+	s.Begin()
 	input := usecase.UpdateRolePermissionInputDTO{
 		RoleID: id,
 	}
@@ -67,11 +68,11 @@ func (s *RolePermissionService) UpdateRolePermission(id int32, body io.ReadClose
 	}
 
 	if err = usecase.NewUpdateRolePermissionUseCase().Execute(input); err != nil {
-		s.rolePermissionRepo.Rollback()
+		s.Rollback()
 		slog.Info("err", err)
 		return
 	}
-	s.rolePermissionRepo.Commit()
+	s.Commit()
 	slog.Info("Role permission updated")
 	return
 }

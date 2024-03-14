@@ -5,15 +5,18 @@ import (
 	"io"
 	"log/slog"
 
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type AuthServiceInterface interface {
 	Login(body io.ReadCloser) (output usecase.LoginOutputDTO, err error)
 	RefreshToken(body io.ReadCloser) (output usecase.RefreshTokenOutputDTO, err error)
+	config.SQLCInterface
 }
 
 type AuthService struct {
+	config.SQLCInterface
 }
 
 func NewAuthService() *AuthService {

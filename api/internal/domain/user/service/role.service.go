@@ -6,7 +6,7 @@ import (
 	"io"
 	"log/slog"
 
-	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
@@ -16,14 +16,15 @@ type RoleServiceInterface interface {
 	GetRoles(limit int32, offset int32) (output []usecase.GetRolesOutputDTO, err error)
 	UpdateRole(id int32, body io.ReadCloser) (err error)
 	DeleteRole(id int32) (err error)
+	config.SQLCInterface
 }
 
 type RoleService struct {
+	config.SQLCInterface
 }
 
 func NewRoleService() *RoleService {
-	return &RoleService{
-	}
+	return &RoleService{}
 }
 
 func (s *RoleService) GetRole(id int32) (output usecase.GetRoleOutputDTO, err error) {
@@ -58,7 +59,7 @@ func (s *RoleService) GetRoles(limit int32, offset int32) (output []usecase.GetR
 }
 
 func (s *RoleService) CreateRole(body io.ReadCloser) (err error) {
-	s.roleRepo.Begin()
+	s.Begin()
 	input := usecase.CreateRoleInputDTO{}
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
@@ -72,17 +73,17 @@ func (s *RoleService) CreateRole(body io.ReadCloser) (err error) {
 	}
 
 	if err = usecase.NewCreateRoleUseCase().Execute(input); err != nil {
-		s.roleRepo.Rollback()
+		s.Rollback()
 		slog.Info("err", err)
 		return
 	}
-	s.roleRepo.Commit()
+	s.Commit()
 	slog.Info("Role created")
 	return
 }
 
 func (s *RoleService) UpdateRole(id int32, body io.ReadCloser) (err error) {
-	s.roleRepo.Begin()
+	s.Begin()
 	input := usecase.UpdateRoleInputDTO{
 		ID: id,
 	}
@@ -92,27 +93,27 @@ func (s *RoleService) UpdateRole(id int32, body io.ReadCloser) (err error) {
 	}
 
 	if err = usecase.NewUpdateRoleUseCase().Execute(input); err != nil {
-		s.roleRepo.Rollback()
+		s.Rollback()
 		slog.Info("err", err)
 		return
 	}
-	s.roleRepo.Commit()
+	s.Commit()
 	slog.Info("Role updated")
 	return
 }
 
 func (s *RoleService) DeleteRole(id int32) (err error) {
-	s.roleRepo.Begin()
+	s.Begin()
 	input := usecase.DeleteRoleInputDTO{
 		ID: id,
 	}
 
 	if err = usecase.NewDeleteRoleUseCase().Execute(input); err != nil {
-		s.roleRepo.Rollback()
+		s.Rollback()
 		slog.Info("err", err)
 		return
 	}
-	s.roleRepo.Commit()
+	s.Commit()
 	slog.Info("Role deleted")
 	return
 }
