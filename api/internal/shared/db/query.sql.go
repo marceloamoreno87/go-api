@@ -1134,17 +1134,6 @@ func (q *Queries) RevokeTokenByUser(ctx context.Context, userID int32) error {
 	return err
 }
 
-const setUserValidationUsed = `-- name: SetUserValidationUsed :exec
-UPDATE users_validation SET
-  used = true
-WHERE id = $1
-`
-
-func (q *Queries) SetUserValidationUsed(ctx context.Context, id int32) error {
-	_, err := q.exec(ctx, q.setUserValidationUsedStmt, setUserValidationUsed, id)
-	return err
-}
-
 const updateAvatar = `-- name: UpdateAvatar :exec
 UPDATE avatars SET
   svg = $1
@@ -1158,22 +1147,6 @@ type UpdateAvatarParams struct {
 
 func (q *Queries) UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) error {
 	_, err := q.exec(ctx, q.updateAvatarStmt, updateAvatar, arg.Svg, arg.ID)
-	return err
-}
-
-const updatePasswordUser = `-- name: UpdatePasswordUser :exec
-UPDATE users SET
-  password = $1
-WHERE id = $2
-`
-
-type UpdatePasswordUserParams struct {
-	Password string `json:"password"`
-	ID       int32  `json:"id"`
-}
-
-func (q *Queries) UpdatePasswordUser(ctx context.Context, arg UpdatePasswordUserParams) error {
-	_, err := q.exec(ctx, q.updatePasswordUserStmt, updatePasswordUser, arg.Password, arg.ID)
 	return err
 }
 
@@ -1258,5 +1231,48 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
 		arg.AvatarID,
 		arg.ID,
 	)
+	return err
+}
+
+const updateUserActive = `-- name: UpdateUserActive :exec
+UPDATE users SET
+  active = $1
+WHERE id = $2
+`
+
+type UpdateUserActiveParams struct {
+	Active bool  `json:"active"`
+	ID     int32 `json:"id"`
+}
+
+func (q *Queries) UpdateUserActive(ctx context.Context, arg UpdateUserActiveParams) error {
+	_, err := q.exec(ctx, q.updateUserActiveStmt, updateUserActive, arg.Active, arg.ID)
+	return err
+}
+
+const updateUserPassword = `-- name: UpdateUserPassword :exec
+UPDATE users SET
+  password = $1
+WHERE id = $2
+`
+
+type UpdateUserPasswordParams struct {
+	Password string `json:"password"`
+	ID       int32  `json:"id"`
+}
+
+func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error {
+	_, err := q.exec(ctx, q.updateUserPasswordStmt, updateUserPassword, arg.Password, arg.ID)
+	return err
+}
+
+const updateUserValidationUsed = `-- name: UpdateUserValidationUsed :exec
+UPDATE users_validation SET
+  used = true
+WHERE id = $1
+`
+
+func (q *Queries) UpdateUserValidationUsed(ctx context.Context, id int32) error {
+	_, err := q.exec(ctx, q.updateUserValidationUsedStmt, updateUserValidationUsed, id)
 	return err
 }

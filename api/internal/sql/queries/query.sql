@@ -86,9 +86,14 @@ UPDATE users SET
   avatar_id = $6
 WHERE id = $7;
 
--- name: UpdatePasswordUser :exec
+-- name: UpdateUserPassword :exec
 UPDATE users SET
   password = $1
+WHERE id = $2;
+
+-- name: UpdateUserActive :exec
+UPDATE users SET
+  active = $1
 WHERE id = $2;
 
 -- name: DeleteUser :exec
@@ -245,7 +250,7 @@ INSERT INTO users_validation (
   $1, $2, $3
 );
 
--- name: SetUserValidationUsed :exec
+-- name: UpdateUserValidationUsed :exec
 UPDATE users_validation SET
   used = true
 WHERE id = $1;

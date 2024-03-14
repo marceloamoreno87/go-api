@@ -46,12 +46,13 @@ type Querier interface {
 	GetValidationUserByHash(ctx context.Context, hash string) (UsersValidation, error)
 	RegisterUser(ctx context.Context, arg RegisterUserParams) (User, error)
 	RevokeTokenByUser(ctx context.Context, userID int32) error
-	SetUserValidationUsed(ctx context.Context, id int32) error
 	UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) error
-	UpdatePasswordUser(ctx context.Context, arg UpdatePasswordUserParams) error
 	UpdatePermission(ctx context.Context, arg UpdatePermissionParams) error
 	UpdateRole(ctx context.Context, arg UpdateRoleParams) error
 	UpdateUser(ctx context.Context, arg UpdateUserParams) error
+	UpdateUserActive(ctx context.Context, arg UpdateUserActiveParams) error
+	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error
+	UpdateUserValidationUsed(ctx context.Context, id int32) error
 }
 
 var _ Querier = (*Queries)(nil)

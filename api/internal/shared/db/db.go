@@ -135,14 +135,8 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.revokeTokenByUserStmt, err = db.PrepareContext(ctx, revokeTokenByUser); err != nil {
 		return nil, fmt.Errorf("error preparing query RevokeTokenByUser: %w", err)
 	}
-	if q.setUserValidationUsedStmt, err = db.PrepareContext(ctx, setUserValidationUsed); err != nil {
-		return nil, fmt.Errorf("error preparing query SetUserValidationUsed: %w", err)
-	}
 	if q.updateAvatarStmt, err = db.PrepareContext(ctx, updateAvatar); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateAvatar: %w", err)
-	}
-	if q.updatePasswordUserStmt, err = db.PrepareContext(ctx, updatePasswordUser); err != nil {
-		return nil, fmt.Errorf("error preparing query UpdatePasswordUser: %w", err)
 	}
 	if q.updatePermissionStmt, err = db.PrepareContext(ctx, updatePermission); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdatePermission: %w", err)
@@ -152,6 +146,15 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	}
 	if q.updateUserStmt, err = db.PrepareContext(ctx, updateUser); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateUser: %w", err)
+	}
+	if q.updateUserActiveStmt, err = db.PrepareContext(ctx, updateUserActive); err != nil {
+		return nil, fmt.Errorf("error preparing query UpdateUserActive: %w", err)
+	}
+	if q.updateUserPasswordStmt, err = db.PrepareContext(ctx, updateUserPassword); err != nil {
+		return nil, fmt.Errorf("error preparing query UpdateUserPassword: %w", err)
+	}
+	if q.updateUserValidationUsedStmt, err = db.PrepareContext(ctx, updateUserValidationUsed); err != nil {
+		return nil, fmt.Errorf("error preparing query UpdateUserValidationUsed: %w", err)
 	}
 	return &q, nil
 }
@@ -343,19 +346,9 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing revokeTokenByUserStmt: %w", cerr)
 		}
 	}
-	if q.setUserValidationUsedStmt != nil {
-		if cerr := q.setUserValidationUsedStmt.Close(); cerr != nil {
-			err = fmt.Errorf("error closing setUserValidationUsedStmt: %w", cerr)
-		}
-	}
 	if q.updateAvatarStmt != nil {
 		if cerr := q.updateAvatarStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing updateAvatarStmt: %w", cerr)
-		}
-	}
-	if q.updatePasswordUserStmt != nil {
-		if cerr := q.updatePasswordUserStmt.Close(); cerr != nil {
-			err = fmt.Errorf("error closing updatePasswordUserStmt: %w", cerr)
 		}
 	}
 	if q.updatePermissionStmt != nil {
@@ -371,6 +364,21 @@ func (q *Queries) Close() error {
 	if q.updateUserStmt != nil {
 		if cerr := q.updateUserStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing updateUserStmt: %w", cerr)
+		}
+	}
+	if q.updateUserActiveStmt != nil {
+		if cerr := q.updateUserActiveStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing updateUserActiveStmt: %w", cerr)
+		}
+	}
+	if q.updateUserPasswordStmt != nil {
+		if cerr := q.updateUserPasswordStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing updateUserPasswordStmt: %w", cerr)
+		}
+	}
+	if q.updateUserValidationUsedStmt != nil {
+		if cerr := q.updateUserValidationUsedStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing updateUserValidationUsedStmt: %w", cerr)
 		}
 	}
 	return err
@@ -449,12 +457,13 @@ type Queries struct {
 	getValidationUserByHashStmt     *sql.Stmt
 	registerUserStmt                *sql.Stmt
 	revokeTokenByUserStmt           *sql.Stmt
-	setUserValidationUsedStmt       *sql.Stmt
 	updateAvatarStmt                *sql.Stmt
-	updatePasswordUserStmt          *sql.Stmt
 	updatePermissionStmt            *sql.Stmt
 	updateRoleStmt                  *sql.Stmt
 	updateUserStmt                  *sql.Stmt
+	updateUserActiveStmt            *sql.Stmt
+	updateUserPasswordStmt          *sql.Stmt
+	updateUserValidationUsedStmt    *sql.Stmt
 }
 
 func (q *Queries) WithTx(tx *sql.Tx) *Queries {
@@ -498,11 +507,12 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		getValidationUserByHashStmt:     q.getValidationUserByHashStmt,
 		registerUserStmt:                q.registerUserStmt,
 		revokeTokenByUserStmt:           q.revokeTokenByUserStmt,
-		setUserValidationUsedStmt:       q.setUserValidationUsedStmt,
 		updateAvatarStmt:                q.updateAvatarStmt,
-		updatePasswordUserStmt:          q.updatePasswordUserStmt,
 		updatePermissionStmt:            q.updatePermissionStmt,
 		updateRoleStmt:                  q.updateRoleStmt,
 		updateUserStmt:                  q.updateUserStmt,
+		updateUserActiveStmt:            q.updateUserActiveStmt,
+		updateUserPasswordStmt:          q.updateUserPasswordStmt,
+		updateUserValidationUsedStmt:    q.updateUserValidationUsedStmt,
 	}
 }

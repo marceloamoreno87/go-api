@@ -8,6 +8,7 @@ import (
 	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/db"
 )
+
 type UserRepository struct {
 	config.SQLCInterface
 }
@@ -127,12 +128,16 @@ func (repo *UserRepository) UpdateUser(user entityInterface.UserInterface, id in
 	return
 }
 
-func (repo *UserRepository) UpdatePasswordUser(user entityInterface.UserInterface, id int32) (err error) {
-	err = repo.GetDbQueries().WithTx(repo.GetTx()).UpdatePasswordUser(context.Background(), db.UpdatePasswordUserParams{
+func (repo *UserRepository) UpdateUserPassword(user entityInterface.UserInterface, id int32) (err error) {
+	err = repo.GetDbQueries().WithTx(repo.GetTx()).UpdateUserPassword(context.Background(), db.UpdateUserPasswordParams{
 		ID:       id,
 		Password: user.GetPassword(),
 	})
 	return
+}
+
+func (repo *UserRepository) UpdatedUserValidationUsed(id int32) (err error) {
+	return repo.GetDbQueries().WithTx(repo.GetTx()).UpdateUserValidationUsed(context.Background(), id)
 }
 
 func (repo *UserRepository) DeleteUser(id int32) (err error) {

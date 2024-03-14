@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
-	"github.com/marceloamoreno/goapi/internal/domain/user/event"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -49,18 +48,6 @@ func (uc *RegisterUseCase) Execute(input RegisterInputDTO) (output RegisterOutpu
 	if err != nil {
 		return
 	}
-
-	userValidation, err := entity.NewUserValidation(newUser)
-	if err != nil {
-		return
-	}
-
-	err = uc.repo.CreateValidationUser(userValidation)
-	if err != nil {
-		return
-	}
-
-	go event.NewUserVerifyEmailEvent(userValidation).Send()
 
 	output = RegisterOutputDTO{
 		ID:        newUser.GetID(),
