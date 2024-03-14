@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"github.com/marceloamoreno/goapi/internal/domain/user/event"
+	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -11,12 +12,12 @@ type UpdatePasswordUserInputDTO struct {
 }
 
 type UpdatePasswordUserUseCase struct {
-	repo repository.UserRepositoryInterface
+	repo repositoryInterface.UserRepositoryInterface
 }
 
-func NewUpdatePasswordUserUseCase(repo repository.UserRepositoryInterface) *UpdatePasswordUserUseCase {
+func NewUpdatePasswordUserUseCase() *UpdatePasswordUserUseCase {
 	return &UpdatePasswordUserUseCase{
-		repo: repo,
+		repo: repository.NewUserRepository(),
 	}
 }
 
@@ -43,7 +44,7 @@ func (uc *UpdatePasswordUserUseCase) Execute(input UpdatePasswordUserInputDTO) (
 	}
 
 	userValidation.SetUsed(true)
-	err = uc.repo.SetUserValidationUsed(userValidation.ID)
+	err = uc.repo.SetUserValidationUsed(userValidation.GetID())
 	if err != nil {
 		return
 	}

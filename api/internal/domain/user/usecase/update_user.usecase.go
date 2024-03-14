@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
+	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -16,12 +17,12 @@ type UpdateUserInputDTO struct {
 }
 
 type UpdateUserUseCase struct {
-	repo repository.UserRepositoryInterface
+	repo repositoryInterface.UserRepositoryInterface
 }
 
-func NewUpdateUserUseCase(repo repository.UserRepositoryInterface) *UpdateUserUseCase {
+func NewUpdateUserUseCase() *UpdateUserUseCase {
 	return &UpdateUserUseCase{
-		repo: repo,
+		repo: repository.NewUserRepository(),
 	}
 }
 

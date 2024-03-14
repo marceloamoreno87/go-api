@@ -3,15 +3,11 @@ package routes
 import (
 	"github.com/go-chi/chi/v5"
 
-	"github.com/marceloamoreno/goapi/internal/domain/auth/handler"
-	"github.com/marceloamoreno/goapi/internal/domain/auth/repository"
-	"github.com/marceloamoreno/goapi/internal/domain/auth/service"
+	"github.com/marceloamoreno/goapi/internal/domain/user/handler"
 )
 
 func (route *Route) getAuthRoutes(router chi.Router) {
-	repo := repository.NewAuthRepository()
-	service := service.NewAuthService(repo)
-	handler := handler.NewAuthHandler(service)
+	handler := handler.NewAuthHandler()
 	router.Route("/auth", func(r chi.Router) {
 		r.Post("/login", handler.Login)
 		r.Post("/refresh", handler.RefreshToken)

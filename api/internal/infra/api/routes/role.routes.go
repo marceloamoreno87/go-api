@@ -2,15 +2,11 @@ package routes
 
 import (
 	"github.com/go-chi/chi/v5"
-	"github.com/marceloamoreno/goapi/internal/domain/role/handler"
-	"github.com/marceloamoreno/goapi/internal/domain/role/repository"
-	"github.com/marceloamoreno/goapi/internal/domain/role/service"
+	"github.com/marceloamoreno/goapi/internal/domain/user/handler"
 )
 
 func (route *Route) getRoleRoutes(router chi.Router) {
-	repo := repository.NewRoleRepository()
-	service := service.NewRoleService(repo)
-	handler := handler.NewRoleHandler(service)
+	handler := handler.NewRoleHandler()
 
 	router.Route("/role", func(r chi.Router) {
 		r.Get("/", handler.GetRoles)

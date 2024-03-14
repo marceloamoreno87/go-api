@@ -1,18 +1,21 @@
 package usecase
 
-import "github.com/marceloamoreno/goapi/internal/domain/user/repository"
+import (
+	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
+	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
+)
 
 type DeleteUserInputDTO struct {
 	ID int32 `json:"id"`
 }
 
 type DeleteUserUseCase struct {
-	repo repository.UserRepositoryInterface
+	repo repositoryInterface.UserRepositoryInterface
 }
 
-func NewDeleteUserUseCase(repo repository.UserRepositoryInterface) *DeleteUserUseCase {
+func NewDeleteUserUseCase() *DeleteUserUseCase {
 	return &DeleteUserUseCase{
-		repo: repo,
+		repo: repository.NewUserRepository(),
 	}
 }
 

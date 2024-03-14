@@ -5,6 +5,7 @@ import (
 
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	"github.com/marceloamoreno/goapi/internal/domain/user/event"
+	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -29,14 +30,12 @@ type RegisterOutputDTO struct {
 }
 
 type RegisterUseCase struct {
-	repo repository.UserRepositoryInterface
+	repo repositoryInterface.UserRepositoryInterface
 }
 
-func NewRegisterUseCase(
-	repo repository.UserRepositoryInterface,
-) *RegisterUseCase {
+func NewRegisterUseCase() *RegisterUseCase {
 	return &RegisterUseCase{
-		repo: repo,
+		repo: repository.NewUserRepository(),
 	}
 }
 
@@ -64,15 +63,15 @@ func (uc *RegisterUseCase) Execute(input RegisterInputDTO) (output RegisterOutpu
 	go event.NewUserVerifyEmailEvent(userValidation).Send()
 
 	output = RegisterOutputDTO{
-		ID:        newUser.ID,
-		Name:      newUser.Name,
-		Email:     newUser.Email,
-		Password:  newUser.Password,
-		Active:    newUser.Active,
-		RoleID:    newUser.RoleID,
-		AvatarID:  newUser.AvatarID,
-		CreatedAt: newUser.CreatedAt,
-		UpdatedAt: newUser.UpdatedAt,
+		ID:        newUser.GetID(),
+		Name:      newUser.GetName(),
+		Email:     newUser.GetEmail(),
+		Password:  newUser.GetPassword(),
+		Active:    newUser.GetActive(),
+		RoleID:    newUser.GetRoleID(),
+		AvatarID:  newUser.GetAvatarID(),
+		CreatedAt: newUser.GetCreatedAt(),
+		UpdatedAt: newUser.GetUpdatedAt(),
 	}
 
 	return

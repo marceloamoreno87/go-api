@@ -3,6 +3,7 @@ package usecase
 import (
 	"time"
 
+	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -23,12 +24,12 @@ type GetUserByEmailOutputDTO struct {
 }
 
 type GetUserByEmailUseCase struct {
-	repo repository.UserRepositoryInterface
+	repo repositoryInterface.UserRepositoryInterface
 }
 
-func NewGetUserByEmailUseCase(repo repository.UserRepositoryInterface) *GetUserByEmailUseCase {
+func NewGetUserByEmailUseCase() *GetUserByEmailUseCase {
 	return &GetUserByEmailUseCase{
-		repo: repo,
+		repo: repository.NewUserRepository(),
 	}
 }
 
@@ -39,15 +40,15 @@ func (uc *GetUserByEmailUseCase) Execute(input GetUserByEmailInputDTO) (output G
 	}
 
 	output = GetUserByEmailOutputDTO{
-		ID:        user.ID,
-		Name:      user.Name,
-		Email:     user.Email,
-		Password:  user.Password,
-		Active:    user.Active,
-		RoleID:    user.RoleID,
-		AvatarID:  user.AvatarID,
-		CreatedAt: user.CreatedAt,
-		UpdatedAt: user.UpdatedAt,
+		ID:        user.GetID(),
+		Name:      user.GetName(),
+		Email:     user.GetEmail(),
+		Password:  user.GetPassword(),
+		Active:    user.GetActive(),
+		RoleID:    user.GetRoleID(),
+		AvatarID:  user.GetAvatarID(),
+		CreatedAt: user.GetCreatedAt(),
+		UpdatedAt: user.GetUpdatedAt(),
 	}
 
 	return

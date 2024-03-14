@@ -3,7 +3,7 @@ package event
 import (
 	"log/slog"
 
-	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
+	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/mail"
 )
 
@@ -12,11 +12,11 @@ type PasswordForgotEmailEventInterface interface {
 }
 
 type PasswordForgotEmailEvent struct {
-	UserValidation entity.UserValidationInterface
+	UserValidation entityInterface.UserValidationInterface
 	Mail           mail.MailInterface
 }
 
-func NewPasswordForgotEmailEvent(userValidation entity.UserValidationInterface) *PasswordForgotEmailEvent {
+func NewPasswordForgotEmailEvent(userValidation entityInterface.UserValidationInterface) *PasswordForgotEmailEvent {
 	return &PasswordForgotEmailEvent{
 		UserValidation: userValidation,
 		Mail:           mail.NewMail(),

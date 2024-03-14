@@ -5,7 +5,7 @@ import (
 	_ "github.com/marceloamoreno/goapi/api/docs"
 	"github.com/marceloamoreno/goapi/config"
 
-	authMiddleware "github.com/marceloamoreno/goapi/internal/domain/auth/middleware"
+	authMiddleware "github.com/marceloamoreno/goapi/internal/domain/user/middleware"
 )
 
 type Route struct {

@@ -2,8 +2,8 @@ package mail
 
 import (
 	"github.com/marceloamoreno/goapi/config"
-	sendgrid "github.com/marceloamoreno/goapi/pkg/send_grid"
-	"github.com/marceloamoreno/goapi/pkg/smtp"
+	sendgrid "github.com/marceloamoreno/goapi/internal/shared/mail/send_grid"
+	"github.com/marceloamoreno/goapi/internal/shared/mail/smtp"
 )
 
 type MailInterface interface {

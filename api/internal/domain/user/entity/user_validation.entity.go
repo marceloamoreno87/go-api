@@ -8,40 +8,23 @@ import (
 	"time"
 
 	"github.com/marceloamoreno/goapi/config"
+	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/helper"
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
-type UserValidationInterface interface {
-	Validate() (notify *notification.Errors)
-	GetID() int32
-	GetUserID() int32
-	GetHash() string
-	GetExpiresIn() int32
-	GetCreatedAt() time.Time
-	GetUsed() bool
-	GetUser() *User
-	SetID(id int32)
-	SetUserID(userID int32)
-	SetHash(hash string)
-	SetUsed(used bool)
-	SetUser(user *User)
-	SetExpiresIn(expiresIn int32)
-	ValidateHashExpiresIn() bool
-}
-
 type UserValidation struct {
-	ID        int32     `json:"id"`
-	UserID    int32     `json:"user_id"`
-	Hash      string    `json:"hash"`
-	ExpiresIn int32     `json:"expires_in"`
-	Used      bool      `json:"used"`
-	User      *User     `json:"user"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        int32                         `json:"id"`
+	UserID    int32                         `json:"user_id"`
+	Hash      string                        `json:"hash"`
+	ExpiresIn int32                         `json:"expires_in"`
+	Used      bool                          `json:"used"`
+	User      entityInterface.UserInterface `json:"user"`
+	CreatedAt time.Time                     `json:"created_at"`
+	UpdatedAt time.Time                     `json:"updated_at"`
 }
 
-func NewUserValidation(user *User) (userValidation *UserValidation, err error) {
+func NewUserValidation(user entityInterface.UserInterface) (userValidation entityInterface.UserValidationInterface, err error) {
 	hash, err := generateHash(user)
 	userValidation = &UserValidation{
 		User:      user,
@@ -59,7 +42,7 @@ func NewUserValidation(user *User) (userValidation *UserValidation, err error) {
 	return
 }
 
-func (u *UserValidation) Validate() (notify *notification.Errors) {
+func (u *UserValidation) Validate() (notify notification.ErrorsInterface) {
 	notify = notification.New()
 	if u.UserID == 0 {
 		notify.AddError("User is required", "user_validation.user")
@@ -67,7 +50,7 @@ func (u *UserValidation) Validate() (notify *notification.Errors) {
 	return
 }
 
-func generateHash(user *User) (hash string, err error) {
+func generateHash(user entityInterface.UserInterface) (hash string, err error) {
 	userJson, err := json.Marshal(user)
 	if err != nil {
 		return
@@ -110,7 +93,7 @@ func (u *UserValidation) GetUpdatedAt() time.Time {
 	return u.UpdatedAt
 }
 
-func (u *UserValidation) GetUser() *User {
+func (u *UserValidation) GetUser() entityInterface.UserInterface {
 	return u.User
 }
 
@@ -118,7 +101,7 @@ func (u *UserValidation) SetID(id int32) {
 	u.ID = id
 }
 
-func (u *UserValidation) SetUser(user *User) {
+func (u *UserValidation) SetUser(user entityInterface.UserInterface) {
 	u.User = user
 }
 

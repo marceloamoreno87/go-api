@@ -6,52 +6,27 @@ import (
 	"time"
 
 	"github.com/marceloamoreno/goapi/config"
-	AvatarEntity "github.com/marceloamoreno/goapi/internal/domain/avatar/entity"
-	RoleEntity "github.com/marceloamoreno/goapi/internal/domain/role/entity"
+	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
 	"golang.org/x/crypto/bcrypt"
 )
 
-type UserInterface interface {
-	GetID() int32
-	GetName() string
-	GetEmail() string
-	GetPassword() string
-	GetRoleID() int32
-	GetAvatarID() int32
-	GetCreatedAt() time.Time
-	GetUpdatedAt() time.Time
-	GetRole() *RoleEntity.Role
-	SetID(id int32)
-	SetName(name string)
-	SetEmail(email string)
-	SetPassword(password string)
-	SetRoleID(roleID int32)
-	SetCreatedAt(createdAt time.Time)
-	SetUpdatedAt(updatedAt time.Time)
-	SetRole(role *RoleEntity.Role)
-	SetAvatarID(avatarID int32)
-	Validate() (notify *notification.Errors)
-	ComparePassword(password string) (b bool)
-	HashPassword()
-}
-
 type User struct {
-	ID        int32                `json:"id"`
-	Name      string               `json:"name"`
-	Email     string               `json:"email"`
-	Password  string               `json:"password"`
-	Active    bool                 `json:"active"`
-	Token     string               `json:"token"`
-	RoleID    int32                `json:"role_id"`
-	AvatarID  int32                `json:"avatar_id"`
-	Role      *RoleEntity.Role     `json:"role"`
-	Avatar    *AvatarEntity.Avatar `json:"avatar"`
-	CreatedAt time.Time            `json:"created_at"`
-	UpdatedAt time.Time            `json:"updated_at"`
+	ID        int32                           `json:"id"`
+	Name      string                          `json:"name"`
+	Email     string                          `json:"email"`
+	Password  string                          `json:"password"`
+	Active    bool                            `json:"active"`
+	Token     string                          `json:"token"`
+	RoleID    int32                           `json:"role_id"`
+	AvatarID  int32                           `json:"avatar_id"`
+	Role      entityInterface.RoleInterface   `json:"role"`
+	Avatar    entityInterface.AvatarInterface `json:"avatar"`
+	CreatedAt time.Time                       `json:"created_at"`
+	UpdatedAt time.Time                       `json:"updated_at"`
 }
 
-func NewUser(name string, email string, password string, roleID int32, avatarID int32) (user *User, err error) {
+func NewUser(name string, email string, password string, roleID int32, avatarID int32) (user entityInterface.UserInterface, err error) {
 	user = &User{
 		Name:     name,
 		Email:    email,
@@ -71,7 +46,7 @@ func NewUser(name string, email string, password string, roleID int32, avatarID 
 	return
 }
 
-func (u *User) Validate() (notify *notification.Errors) {
+func (u *User) Validate() (notify notification.ErrorsInterface) {
 
 	notify = notification.New()
 	if u.Name == "" {
@@ -156,12 +131,16 @@ func (u *User) GetUpdatedAt() time.Time {
 	return u.UpdatedAt
 }
 
-func (u *User) GetRole() *RoleEntity.Role {
+func (u *User) GetRole() entityInterface.RoleInterface {
 	return u.Role
 }
 
-func (u *User) GetAvatar() *AvatarEntity.Avatar {
+func (u *User) GetAvatar() entityInterface.AvatarInterface {
 	return u.Avatar
+}
+
+func (u *User) GetToken() string {
+	return u.Token
 }
 
 func (u *User) SetID(id int32) {
@@ -200,10 +179,10 @@ func (u *User) SetUpdatedAt(updatedAt time.Time) {
 	u.UpdatedAt = updatedAt
 }
 
-func (u *User) SetRole(role *RoleEntity.Role) {
+func (u *User) SetRole(role entityInterface.RoleInterface) {
 	u.Role = role
 }
 
-func (u *User) SetAvatar(avatar *AvatarEntity.Avatar) {
+func (u *User) SetAvatar(avatar entityInterface.AvatarInterface) {
 	u.Avatar = avatar
 }

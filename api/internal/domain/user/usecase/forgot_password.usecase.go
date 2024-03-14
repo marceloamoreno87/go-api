@@ -3,6 +3,7 @@ package usecase
 import (
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	"github.com/marceloamoreno/goapi/internal/domain/user/event"
+	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -11,12 +12,12 @@ type ForgotPasswordInputDTO struct {
 }
 
 type ForgotPasswordUseCase struct {
-	repo repository.UserRepositoryInterface
+	repo repositoryInterface.UserRepositoryInterface
 }
 
-func NewForgotPasswordUseCase(repo repository.UserRepositoryInterface) *ForgotPasswordUseCase {
+func NewForgotPasswordUseCase() *ForgotPasswordUseCase {
 	return &ForgotPasswordUseCase{
-		repo: repo,
+		repo: repository.NewUserRepository(),
 	}
 }
 

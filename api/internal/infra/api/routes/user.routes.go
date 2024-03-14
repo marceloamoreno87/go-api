@@ -3,14 +3,10 @@ package routes
 import (
 	"github.com/go-chi/chi/v5"
 	"github.com/marceloamoreno/goapi/internal/domain/user/handler"
-	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
-	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 )
 
 func (route *Route) getUserRoutes(router chi.Router) {
-	repo := repository.NewUserRepository()
-	service := service.NewUserService(repo)
-	handler := handler.NewUserHandler(service)
+	handler := handler.NewUserHandler()
 	router.Route("/user", func(r chi.Router) {
 		r.Get("/", handler.GetUsers)
 		r.Get("/{id}", handler.GetUser)
@@ -21,9 +17,7 @@ func (route *Route) getUserRoutes(router chi.Router) {
 }
 
 func (route *Route) getUserNonAuthRoutes(router chi.Router) {
-	repo := repository.NewUserRepository()
-	service := service.NewUserService(repo)
-	handler := handler.NewUserHandler(service)
+	handler := handler.NewUserHandler()
 	router.Route("/user", func(r chi.Router) {
 		r.Post("/register", handler.Register)
 		r.Post("/verify-user", handler.UserVerify)

@@ -3,7 +3,7 @@ package event
 import (
 	"log/slog"
 
-	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
+	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/mail"
 )
 
@@ -12,11 +12,11 @@ type UserVerifiedEmailEventInterface interface {
 }
 
 type UserVerifiedEmailEvent struct {
-	UserValidation entity.UserValidationInterface
+	UserValidation entityInterface.UserValidationInterface
 	Mail           mail.MailInterface
 }
 
-func NewUserVerifiedEmailEvent(userValidation entity.UserValidationInterface) *UserVerifiedEmailEvent {
+func NewUserVerifiedEmailEvent(userValidation entityInterface.UserValidationInterface) *UserVerifiedEmailEvent {
 	return &UserVerifiedEmailEvent{
 		UserValidation: userValidation,
 		Mail:           mail.NewMail(),

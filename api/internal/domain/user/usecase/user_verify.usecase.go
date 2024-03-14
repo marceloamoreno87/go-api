@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/marceloamoreno/goapi/internal/domain/user/event"
+	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -12,14 +13,12 @@ type UserVerifyInputDTO struct {
 }
 
 type UserVerifyUseCase struct {
-	repo repository.UserRepositoryInterface
+	repo repositoryInterface.UserRepositoryInterface
 }
 
-func NewUserVerifyUseCase(
-	repo repository.UserRepositoryInterface,
-) *UserVerifyUseCase {
+func NewUserVerifyUseCase() *UserVerifyUseCase {
 	return &UserVerifyUseCase{
-		repo: repo,
+		repo: repository.NewUserRepository(),
 	}
 }
 
@@ -39,13 +38,13 @@ func (uc *UserVerifyUseCase) Execute(input UserVerifyInputDTO) (err error) {
 	}
 
 	user.SetActive(true)
-	err = uc.repo.UpdateUser(user, user.ID)
+	err = uc.repo.UpdateUser(user, user.GetID())
 	if err != nil {
 		return
 	}
 
 	userValidation.SetUsed(true)
-	err = uc.repo.SetUserValidationUsed(userValidation.ID)
+	err = uc.repo.SetUserValidationUsed(userValidation.GetID())
 	if err != nil {
 		return
 	}
