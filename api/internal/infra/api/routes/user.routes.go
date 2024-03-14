@@ -9,7 +9,7 @@ func (route *Route) getUserRoutes(router chi.Router) {
 	handler := handler.NewUserHandler()
 	router.Route("/user", func(r chi.Router) {
 		r.Get("/", handler.GetUsers)
-		r.Get("/{id}", handler.GetUser)
+		r.Get("/{id}", handler.GetUserById)
 		r.Post("/", handler.CreateUser)
 		r.Put("/{id}", handler.UpdateUser)
 		r.Delete("/{id}", handler.DeleteUser)
@@ -22,6 +22,6 @@ func (route *Route) getUserNonAuthRoutes(router chi.Router) {
 		r.Post("/register", handler.Register)
 		r.Post("/verify-user", handler.UserVerify)
 		r.Post("/forgot-password", handler.ForgotPassword)
-		r.Post("/update-password", handler.UpdatePasswordUser)
+		r.Post("/update-password", handler.UpdateUserPassword)
 	})
 }

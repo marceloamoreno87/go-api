@@ -64,8 +64,8 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} response.ResponseError{}
 // @Router /user/{id} [get]
 // @Security     JWT
-func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
-	output, err := h.service.GetUser(helper.GetID(r))
+func (h *UserHandler) GetUserById(w http.ResponseWriter, r *http.Request) {
+	output, err := h.service.GetUserById(helper.GetID(r))
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -209,8 +209,8 @@ func (h *UserHandler) ForgotPassword(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} response.Response{data=usecase.UpdatePasswordUserOutputDTO}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /auth/update-password [patch]
-func (h *UserHandler) UpdatePasswordUser(w http.ResponseWriter, r *http.Request) {
-	err := h.service.UpdatePasswordUser(r.Body)
+func (h *UserHandler) UpdateUserPassword(w http.ResponseWriter, r *http.Request) {
+	err := h.service.UpdateUserPassword(r.Body)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))

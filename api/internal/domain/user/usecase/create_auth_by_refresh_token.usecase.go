@@ -8,26 +8,26 @@ import (
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
-type LoginInputDTO struct {
+type CreateAuthByRefreshTokenInputDTO struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-type LoginOutputDTO struct {
+type CreateAuthByRefreshTokenOutputDTO struct {
 	Token string `json:"token"`
 }
 
-type LoginUseCase struct {
+type CreateAuthByRefreshTokenUseCase struct {
 	repo repositoryInterface.UserRepositoryInterface
 }
 
-func NewLoginUseCase() *LoginUseCase {
-	return &LoginUseCase{
+func NewCreateAuthByRefreshTokenUseCase() *CreateAuthByRefreshTokenUseCase {
+	return &CreateAuthByRefreshTokenUseCase{
 		repo: repository.NewUserRepository(),
 	}
 }
 
-func (uc *LoginUseCase) Execute(input LoginInputDTO) (output LoginOutputDTO, err error) {
+func (uc *CreateAuthByRefreshTokenUseCase) Execute(input CreateAuthByRefreshTokenInputDTO) (output CreateAuthByRefreshTokenOutputDTO, err error) {
 	user, err := uc.repo.GetUserByEmail(input.Email)
 	if err != nil {
 		slog.Info("err", err)
@@ -35,10 +35,10 @@ func (uc *LoginUseCase) Execute(input LoginInputDTO) (output LoginOutputDTO, err
 	}
 
 	if !user.ComparePassword(input.Password) {
-		return LoginOutputDTO{}, errors.New("invalid credentials")
+		return CreateAuthByRefreshTokenOutputDTO{}, errors.New("invalid credentials")
 	}
 
 	user.GenerateToken()
 
-	return LoginOutputDTO{Token: user.GetToken()}, nil
+	return CreateAuthByRefreshTokenOutputDTO{Token: user.GetToken()}, nil
 }

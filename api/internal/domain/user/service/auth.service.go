@@ -10,8 +10,8 @@ import (
 )
 
 type AuthServiceInterface interface {
-	Login(body io.ReadCloser) (output usecase.LoginOutputDTO, err error)
-	RefreshToken(body io.ReadCloser) (output usecase.RefreshTokenOutputDTO, err error)
+	Login(body io.ReadCloser) (output usecase.CreateAuthOutputDTO, err error)
+	// RefreshToken(body io.ReadCloser) (output usecase.CreateAuthOutputDTO, err error)
 	config.SQLCInterface
 }
 
@@ -23,13 +23,13 @@ func NewAuthService() *AuthService {
 	return &AuthService{}
 }
 
-func (s *AuthService) Login(body io.ReadCloser) (output usecase.LoginOutputDTO, err error) {
-	input := usecase.LoginInputDTO{}
+func (s *AuthService) Login(body io.ReadCloser) (output usecase.CreateAuthOutputDTO, err error) {
+	input := usecase.CreateAuthInputDTO{}
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
 	}
-	output, err = usecase.NewLoginUseCase().Execute(input)
+	output, err = usecase.NewAuthUseCase().Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -38,17 +38,17 @@ func (s *AuthService) Login(body io.ReadCloser) (output usecase.LoginOutputDTO, 
 	return
 }
 
-func (s *AuthService) RefreshToken(body io.ReadCloser) (output usecase.RefreshTokenOutputDTO, err error) {
-	input := usecase.RefreshTokenInputDTO{}
-	if err = json.NewDecoder(body).Decode(&input); err != nil {
-		slog.Info("err", err)
-		return
-	}
-	output, err = usecase.NewRefreshTokenUseCase().Execute(input)
-	if err != nil {
-		slog.Info("err", err)
-		return
-	}
-	slog.Info("Token refreshed")
-	return
-}
+// func (s *AuthService) RefreshToken(body io.ReadCloser) (output usecase.RefreshTokenOutputDTO, err error) {
+// 	input := usecase.RefreshTokenInputDTO{}
+// 	if err = json.NewDecoder(body).Decode(&input); err != nil {
+// 		slog.Info("err", err)
+// 		return
+// 	}
+// 	output, err = usecase.NewRefreshTokenUseCase().Execute(input)
+// 	if err != nil {
+// 		slog.Info("err", err)
+// 		return
+// 	}
+// 	slog.Info("Token refreshed")
+// 	return
+// }

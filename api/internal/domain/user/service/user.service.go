@@ -12,14 +12,12 @@ import (
 
 type UserServiceInterface interface {
 	CreateUser(body io.ReadCloser) (err error)
-	GetUser(id int32) (output usecase.GetUserOutputDTO, err error)
+	GetUserById(id int32) (output usecase.GetUserOutputDTO, err error)
+	GetUserByEmail(email string) (output usecase.GetUserOutputDTO, err error)
 	GetUsers(limit int32, offset int32) (output []usecase.GetUsersOutputDTO, err error)
 	UpdateUser(id int32, body io.ReadCloser) (err error)
 	DeleteUser(id int32) (err error)
-	Register(body io.ReadCloser) (output usecase.RegisterOutputDTO, err error)
-	UserVerify(body io.ReadCloser) (err error)
-	ForgotPassword(body io.ReadCloser) (err error)
-	UpdatePasswordUser(body io.ReadCloser) (err error)
+	UpdateUserPassword(body io.ReadCloser) (err error)
 	config.SQLCInterface
 }
 
@@ -56,13 +54,26 @@ func (s *UserService) CreateUser(body io.ReadCloser) (err error) {
 	return
 }
 
-func (s *UserService) GetUser(id int32) (output usecase.GetUserOutputDTO, err error) {
+func (s *UserService) GetUserById(id int32) (output usecase.GetUserOutputDTO, err error) {
 
 	input := usecase.GetUserInputDTO{
 		ID: id,
 	}
 
 	output, err = usecase.NewGetUserUseCase().Execute(input)
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+	slog.Info("User found")
+	return
+}
+
+func (s *UserService) GetUserByEmail(email string) (output usecase.GetUserOutputDTO, err error) {
+	input := usecase.GetUserByEmailInputDTO{
+		Email: email,
+	}
+	output, err = usecase.NewGetUserByEmailUseCase().Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -122,84 +133,5 @@ func (s *UserService) DeleteUser(id int32) (err error) {
 	return
 }
 
-func (s *UserService) Register(body io.ReadCloser) (output usecase.RegisterOutputDTO, err error) {
-
-	s.Begin()
-
-	input := usecase.RegisterInputDTO{}
-	if err = json.NewDecoder(body).Decode(&input); err != nil {
-		slog.Info("err", err)
-		return
-	}
-
-	check, _ := usecase.NewGetUserByEmailUseCase().Execute(usecase.GetUserByEmailInputDTO{Email: input.Email})
-	if check.ID != 0 {
-		slog.Info("email already exists")
-		return usecase.RegisterOutputDTO{}, errors.New("email already exists")
-	}
-
-	output, err = usecase.NewRegisterUseCase().Execute(input)
-	if err != nil {
-		s.Rollback()
-		slog.Info("err", err)
-		return
-	}
-
-	s.Commit()
-	slog.Info("User registered")
-	return
-}
-
-func (s *UserService) UserVerify(body io.ReadCloser) (err error) {
-	s.Begin()
-	input := usecase.UserVerifyInputDTO{}
-	if err = json.NewDecoder(body).Decode(&input); err != nil {
-		slog.Info("err", err)
-		return
-	}
-
-	if err = usecase.NewUserVerifyUseCase().Execute(input); err != nil {
-		s.Rollback()
-		slog.Info("err", err)
-		return
-	}
-	s.Commit()
-	slog.Info("User verified")
-	return
-}
-
-func (s *UserService) ForgotPassword(body io.ReadCloser) (err error) {
-	s.Begin()
-	input := usecase.ForgotPasswordInputDTO{}
-	if err = json.NewDecoder(body).Decode(&input); err != nil {
-		slog.Info("err", err)
-		return
-	}
-
-	if err = usecase.NewForgotPasswordUseCase().Execute(input); err != nil {
-		s.Rollback()
-		slog.Info("err", err)
-		return
-	}
-	s.Commit()
-	slog.Info("Email Sended")
-	return
-}
-
-func (s *UserService) UpdatePasswordUser(body io.ReadCloser) (err error) {
-	s.Begin()
-	input := usecase.UpdatePasswordUserInputDTO{}
-	if err = json.NewDecoder(body).Decode(&input); err != nil {
-		slog.Info("err", err)
-		return
-	}
-
-	if err = usecase.NewUpdatePasswordUserUseCase().Execute(input); err != nil {
-		s.Rollback()
-		slog.Info("err", err)
-		return
-	}
-	s.Commit()
-	slog.Info("Password updated")
-	return
+func (s *UserService) UpdateUserPassword(id int32, body io.ReadCloser) (err error) {
 }

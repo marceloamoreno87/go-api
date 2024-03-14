@@ -60,6 +60,6 @@ func (repo *UserValidationRepository) CreateValidationUser(userValidation entity
 	return
 }
 
-func (repo *UserValidationRepository) SetUserValidationUsed(id int32) (err error) {
-	return repo.GetDbQueries().WithTx(repo.GetTx()).SetUserValidationUsed(context.Background(), id)
+func (repo *UserValidationRepository) UpdateUserValidationUsed(id int32) (err error) {
+	return repo.GetDbQueries().WithTx(repo.GetTx()).UpdateUserValidationUsed(context.Background(), id)
 }
