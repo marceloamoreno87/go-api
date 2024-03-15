@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"time"
-
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -12,12 +10,7 @@ type DeletePermissionInputDTO struct {
 }
 
 type DeletePermissionOutputDTO struct {
-	ID           int32     `json:"id"`
-	Name         string    `json:"name"`
-	InternalName string    `json:"internal_name"`
-	Description  string    `json:"description"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
+	ID int32 `json:"id"`
 }
 
 type DeletePermissionUseCase struct {
@@ -31,22 +24,9 @@ func NewDeletePermissionUseCase() *DeletePermissionUseCase {
 }
 
 func (uc *DeletePermissionUseCase) Execute(input DeletePermissionInputDTO) (output DeletePermissionOutputDTO, err error) {
-	permission, err := uc.repo.GetPermission(input.ID)
-	if err != nil {
-		return
-	}
-
-	p, err := uc.repo.DeletePermission(permission.GetID())
-	if err != nil {
-		return
-	}
+	err = uc.repo.DeletePermission(input.ID)
 	output = DeletePermissionOutputDTO{
-		ID:           p.GetID(),
-		Name:         p.GetName(),
-		InternalName: p.GetInternalName(),
-		Description:  p.GetDescription(),
-		CreatedAt:    p.GetCreatedAt(),
-		UpdatedAt:    p.GetUpdatedAt(),
+		input.ID,
 	}
 	return
 }

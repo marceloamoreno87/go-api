@@ -5,26 +5,21 @@ import (
 	"net/mail"
 	"time"
 
-	"github.com/marceloamoreno/goapi/config"
 	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
-	ID           int32                           `json:"id"`
-	Name         string                          `json:"name"`
-	Email        string                          `json:"email"`
-	Password     string                          `json:"password"`
-	Active       bool                            `json:"active"`
-	Token        string                          `json:"token"`
-	RefreshToken string                          `json:"refresh_token"`
-	RoleID       int32                           `json:"role_id"`
-	AvatarID     int32                           `json:"avatar_id"`
-	Role         entityInterface.RoleInterface   `json:"role"`
-	Avatar       entityInterface.AvatarInterface `json:"avatar"`
-	CreatedAt    time.Time                       `json:"created_at"`
-	UpdatedAt    time.Time                       `json:"updated_at"`
+	ID        int32     `json:"id"`
+	Name      string    `json:"name"`
+	Email     string    `json:"email"`
+	Password  string    `json:"password"`
+	Active    bool      `json:"active"`
+	RoleID    int32     `json:"role_id"`
+	AvatarID  int32     `json:"avatar_id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 func NewUser(name string, email string, password string, roleID int32, avatarID int32) (user entityInterface.UserInterface, err error) {
@@ -41,8 +36,6 @@ func NewUser(name string, email string, password string, roleID int32, avatarID 
 	if notify.HasErrors() {
 		return nil, errors.New(notify.Messages())
 	}
-
-	user.HashPassword()
 
 	return
 }
@@ -69,21 +62,6 @@ func (u *User) Validate() (notify notification.ErrorsInterface) {
 		notify.AddError("Avatar is required", "user.entity.avatar_id")
 	}
 	return
-}
-
-func (u *User) GenerateToken() {
-	claims := map[string]interface{}{
-		"id":        u.ID,
-		"name":      u.Name,
-		"email":     u.Email,
-		"active":    u.Active,
-		"role_id":   u.RoleID,
-		"avatar_id": u.AvatarID,
-	}
-	u.Token = config.Jwt.Generate(claims).GetToken()
-
-	claims = map[string]interface{}{}
-	u.RefreshToken = config.Jwt.Generate(claims).GetRefreshToken()
 }
 
 func (u *User) ComparePassword(password string) (b bool) {
@@ -135,18 +113,6 @@ func (u *User) GetUpdatedAt() time.Time {
 	return u.UpdatedAt
 }
 
-func (u *User) GetRole() entityInterface.RoleInterface {
-	return u.Role
-}
-
-func (u *User) GetAvatar() entityInterface.AvatarInterface {
-	return u.Avatar
-}
-
-func (u *User) GetToken() string {
-	return u.Token
-}
-
 func (u *User) SetID(id int32) {
 	u.ID = id
 }
@@ -181,12 +147,4 @@ func (u *User) SetCreatedAt(createdAt time.Time) {
 
 func (u *User) SetUpdatedAt(updatedAt time.Time) {
 	u.UpdatedAt = updatedAt
-}
-
-func (u *User) SetRole(role entityInterface.RoleInterface) {
-	u.Role = role
-}
-
-func (u *User) SetAvatar(avatar entityInterface.AvatarInterface) {
-	u.Avatar = avatar
 }

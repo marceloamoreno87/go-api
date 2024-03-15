@@ -4,30 +4,34 @@ import (
 	"errors"
 	"time"
 
+	"github.com/marceloamoreno/goapi/config"
 	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
 type Auth struct {
-	ID           int32                         `json:"id"`
-	UserID       int32                         `json:"user_id"`
-	Token        string                        `json:"token"`
-	RefreshToken string                        `json:"refresh_token"`
-	Active       bool                          `json:"active"`
-	ExpiresIn    int32                         `json:"expires_in"`
-	CreatedAt    time.Time                     `json:"created_at"`
-	UpdatedAt    time.Time                     `json:"updated_at"`
-	User         entityInterface.UserInterface `json:"user"`
+	ID                    int32     `json:"id"`
+	UserID                int32     `json:"user_id"`
+	Token                 string    `json:"token"`
+	RefreshToken          string    `json:"refresh_token"`
+	Active                bool      `json:"active"`
+	TokenExpiresIn        int32     `json:"token_expires_in"`
+	RefreshTokenExpiresIn int32     `json:"refresh_token_expires_in"`
+	CreatedAt             time.Time `json:"created_at"`
+	UpdatedAt             time.Time `json:"updated_at"`
 }
 
-func NewAuth(userId int32, token string, refreshToken string) (auth entityInterface.AuthInterface, err error) {
-	newAuth := &Auth{
-		UserID:       userId,
-		Token:        token,
-		RefreshToken: refreshToken,
+func NewAuth(userId int32) (auth entityInterface.AuthInterface, err error) {
+	auth = &Auth{
+		UserID:                userId,
+		Active:                true,
+		TokenExpiresIn:        config.Jwt.GetTokenExpiresIn(),
+		RefreshTokenExpiresIn: config.Jwt.GetRefreshTokenExpiresIn(),
 	}
 
-	notify := newAuth.Validate()
+	auth.GenerateToken()
+
+	notify := auth.Validate()
 	if notify.HasErrors() {
 		return nil, errors.New(notify.Messages())
 	}
@@ -35,21 +39,37 @@ func NewAuth(userId int32, token string, refreshToken string) (auth entityInterf
 	return
 }
 
-func (u *Auth) Validate() (notify notification.ErrorsInterface) {
+func (a *Auth) Validate() (notify notification.ErrorsInterface) {
 
 	notify = notification.New()
 
-	if u.UserID == 0 {
+	if a.UserID == 0 {
 		notify.AddError("User is required", "auth.entity.user_id")
 	}
-	if u.Token == "" {
+	if a.Token == "" {
 		notify.AddError("Token is required", "auth.entity.token")
 	}
-	if u.RefreshToken == "" {
+	if a.RefreshToken == "" {
 		notify.AddError("RefreshToken is required", "auth.entity.refresh_token")
 	}
 
 	return
+}
+
+func (a *Auth) IsValidToken() bool {
+	return config.Jwt.Validate(a.Token)
+}
+
+func (a *Auth) IsValidRefreshToken() bool {
+	return config.Jwt.Validate(a.RefreshToken)
+}
+
+func (a *Auth) GenerateToken() {
+	claims := map[string]interface{}{
+		"id": a.GetUserID(),
+	}
+	a.Token = config.Jwt.Generate(claims).GetToken()
+	a.RefreshToken = config.Jwt.GenerateRefresh(map[string]interface{}{}).GetRefreshToken()
 }
 
 func (a *Auth) SetID(id int32) {
@@ -58,10 +78,6 @@ func (a *Auth) SetID(id int32) {
 
 func (a *Auth) SetUserID(userID int32) {
 	a.UserID = userID
-}
-
-func (a *Auth) SetUser(user entityInterface.UserInterface) {
-	a.User = user
 }
 
 func (a *Auth) SetToken(token string) {
@@ -76,8 +92,12 @@ func (a *Auth) SetActive(active bool) {
 	a.Active = active
 }
 
-func (a *Auth) SetExpiresIn(expiresIn int32) {
-	a.ExpiresIn = expiresIn
+func (a *Auth) SetTokenExpiresIn(tokenExpiresIn int32) {
+	a.TokenExpiresIn = tokenExpiresIn
+}
+
+func (a *Auth) SetRefreshTokenExpiresIn(refreshTokenExpiresIn int32) {
+	a.RefreshTokenExpiresIn = refreshTokenExpiresIn
 }
 
 func (a *Auth) SetCreatedAt(createdAt time.Time) {
@@ -96,10 +116,6 @@ func (a *Auth) GetUserID() int32 {
 	return a.UserID
 }
 
-func (a *Auth) GetUser() entityInterface.UserInterface {
-	return a.User
-}
-
 func (a *Auth) GetToken() string {
 	return a.Token
 }
@@ -112,8 +128,12 @@ func (a *Auth) GetActive() bool {
 	return a.Active
 }
 
-func (a *Auth) GetExpiresIn() int32 {
-	return a.ExpiresIn
+func (a *Auth) GetTokenExpiresIn() int32 {
+	return a.TokenExpiresIn
+}
+
+func (a *Auth) GetRefreshTokenExpiresIn() int32 {
+	return a.RefreshTokenExpiresIn
 }
 
 func (a *Auth) GetCreatedAt() time.Time {

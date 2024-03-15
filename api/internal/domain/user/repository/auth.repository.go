@@ -19,58 +19,76 @@ func NewAuthRepository() *AuthRepository {
 	}
 }
 
-func (repo *AuthRepository) CreateAuth(auth entityInterface.AuthInterface) (output entityInterface.AuthInterface, err error) {
-	a, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateAuth(context.Background(), db.CreateAuthParams{
-		UserID:       auth.GetUserID(),
-		Token:        auth.GetToken(),
-		RefreshToken: auth.GetRefreshToken(),
-		ExpiresIn:    auth.GetExpiresIn(),
+func (repo *AuthRepository) CreateAuth(auth entityInterface.AuthInterface) (err error) {
+	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateAuth(context.Background(), db.CreateAuthParams{
+		UserID:                auth.GetUserID(),
+		Token:                 auth.GetToken(),
+		RefreshToken:          auth.GetRefreshToken(),
+		TokenExpiresIn:        auth.GetTokenExpiresIn(),
+		RefreshTokenExpiresIn: auth.GetRefreshTokenExpiresIn(),
+	})
+}
+
+func (repo *AuthRepository) GetAuthByUserID(userId int32) (output entityInterface.AuthInterface, err error) {
+	a, err := repo.DB.GetDbQueries().GetAuthByUserID(context.Background(), userId)
+	if err != nil {
+		return
+	}
+	output = &entity.Auth{
+		UserID:                a.UserID,
+		Token:                 a.Token,
+		RefreshToken:          a.RefreshToken,
+		TokenExpiresIn:        a.TokenExpiresIn,
+		RefreshTokenExpiresIn: a.RefreshTokenExpiresIn,
+		Active:                a.Active,
+		CreatedAt:             a.CreatedAt,
+		UpdatedAt:             a.UpdatedAt,
+	}
+	return
+}
+
+func (repo *AuthRepository) UpdateAuthRevokeByUserID(userId int32) (err error) {
+	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdateAuthRevokeByUserID(context.Background(), userId)
+}
+
+func (repo *AuthRepository) GetAuthByToken(userId int32, token string) (output entityInterface.AuthInterface, err error) {
+	a, err := repo.DB.GetDbQueries().GetAuthByToken(context.Background(), db.GetAuthByTokenParams{
+		Token:  token,
+		UserID: userId,
 	})
 	if err != nil {
 		return
 	}
 	output = &entity.Auth{
-		UserID:       a.UserID,
-		Token:        a.Token,
-		RefreshToken: a.RefreshToken,
-		ExpiresIn:    a.ExpiresIn,
-		Active:       a.Active,
-		CreatedAt:    a.CreatedAt,
-		UpdatedAt:    a.UpdatedAt,
+		UserID:                a.UserID,
+		Token:                 a.Token,
+		RefreshToken:          a.RefreshToken,
+		TokenExpiresIn:        a.TokenExpiresIn,
+		RefreshTokenExpiresIn: a.RefreshTokenExpiresIn,
+		Active:                a.Active,
+		CreatedAt:             a.CreatedAt,
+		UpdatedAt:             a.UpdatedAt,
 	}
 	return
 }
 
-func (repo *AuthRepository) GetAuthByUser(auth entityInterface.AuthInterface) (output entityInterface.AuthInterface, err error) {
-	a, err := repo.DB.GetDbQueries().GetAuthByUser(context.Background(), auth.GetUserID())
+func (repo *AuthRepository) GetAuthByRefreshToken(userId int32, refreshToken string) (output entityInterface.AuthInterface, err error) {
+	a, err := repo.DB.GetDbQueries().GetAuthByRefreshToken(context.Background(), db.GetAuthByRefreshTokenParams{
+		RefreshToken: refreshToken,
+		UserID:       userId,
+	})
 	if err != nil {
 		return
 	}
 	output = &entity.Auth{
-		UserID:       a.UserID,
-		Token:        a.Token,
-		RefreshToken: a.RefreshToken,
-		ExpiresIn:    a.ExpiresIn,
-		Active:       a.Active,
-		CreatedAt:    a.CreatedAt,
-		UpdatedAt:    a.UpdatedAt,
-	}
-	return
-}
-
-func (repo *AuthRepository) RevokeAuthByUser(auth entityInterface.AuthInterface) (output entityInterface.AuthInterface, err error) {
-	a, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).RevokeAuthByUser(context.Background(), auth.GetUserID())
-	if err != nil {
-		return
-	}
-	output = &entity.Auth{
-		UserID:       a.UserID,
-		Token:        a.Token,
-		RefreshToken: a.RefreshToken,
-		ExpiresIn:    a.ExpiresIn,
-		Active:       a.Active,
-		CreatedAt:    a.CreatedAt,
-		UpdatedAt:    a.UpdatedAt,
+		UserID:                a.UserID,
+		Token:                 a.Token,
+		RefreshToken:          a.RefreshToken,
+		TokenExpiresIn:        a.TokenExpiresIn,
+		RefreshTokenExpiresIn: a.RefreshTokenExpiresIn,
+		Active:                a.Active,
+		CreatedAt:             a.CreatedAt,
+		UpdatedAt:             a.UpdatedAt,
 	}
 	return
 }

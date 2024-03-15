@@ -20,10 +20,12 @@ type Auth struct {
 	RefreshToken string `json:"refresh_token"`
 	// Auth token active
 	Active bool `json:"active"`
-	// Expiration
-	ExpiresIn int32     `json:"expires_in"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	// Expiration token
+	TokenExpiresIn int32 `json:"token_expires_in"`
+	// Expiration refresh token
+	RefreshTokenExpiresIn int32     `json:"refresh_token_expires_in"`
+	CreatedAt             time.Time `json:"created_at"`
+	UpdatedAt             time.Time `json:"updated_at"`
 }
 
 // Avatars table

@@ -19,8 +19,8 @@ func NewUserRepository() *UserRepository {
 	}
 }
 
-func (repo *UserRepository) CreateUser(user entityInterface.UserInterface) (output entityInterface.UserInterface, err error) {
-	u, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateUser(context.Background(), db.CreateUserParams{
+func (repo *UserRepository) CreateUser(user entityInterface.UserInterface) (err error) {
+	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateUser(context.Background(), db.CreateUserParams{
 		Name:     user.GetName(),
 		Email:    user.GetEmail(),
 		Password: user.GetPassword(),
@@ -28,45 +28,6 @@ func (repo *UserRepository) CreateUser(user entityInterface.UserInterface) (outp
 		RoleID:   user.GetRoleID(),
 		AvatarID: user.GetAvatarID(),
 	})
-	if err != nil {
-		return
-	}
-	output = &entity.User{
-		ID:        u.ID,
-		Name:      u.Name,
-		Email:     u.Email,
-		Password:  u.Password,
-		Active:    u.Active,
-		RoleID:    u.RoleID,
-		AvatarID:  u.AvatarID,
-		CreatedAt: u.CreatedAt,
-		UpdatedAt: u.UpdatedAt,
-	}
-	return
-}
-
-func (repo *UserRepository) RegisterUser(user entityInterface.UserInterface) (output entityInterface.UserInterface, err error) {
-	u, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).RegisterUser(context.Background(), db.RegisterUserParams{
-		Name:     user.GetName(),
-		Email:    user.GetEmail(),
-		Password: user.GetPassword(),
-		Active:   user.GetActive(),
-	})
-	if err != nil {
-		return
-	}
-	output = &entity.User{
-		ID:        u.ID,
-		Name:      u.Name,
-		Email:     u.Email,
-		Password:  u.Password,
-		Active:    u.Active,
-		RoleID:    u.RoleID,
-		AvatarID:  u.AvatarID,
-		CreatedAt: u.CreatedAt,
-		UpdatedAt: u.UpdatedAt,
-	}
-	return
 }
 
 func (repo *UserRepository) GetUser(id int32) (output entityInterface.UserInterface, err error) {
@@ -131,8 +92,8 @@ func (repo *UserRepository) GetUsers(limit int32, offset int32) (output []entity
 	return
 }
 
-func (repo *UserRepository) UpdateUser(user entityInterface.UserInterface, id int32) (output entityInterface.UserInterface, err error) {
-	u, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdateUser(context.Background(), db.UpdateUserParams{
+func (repo *UserRepository) UpdateUser(user entityInterface.UserInterface, id int32) (err error) {
+	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdateUser(context.Background(), db.UpdateUserParams{
 		ID:       id,
 		Name:     user.GetName(),
 		Email:    user.GetEmail(),
@@ -141,60 +102,15 @@ func (repo *UserRepository) UpdateUser(user entityInterface.UserInterface, id in
 		RoleID:   user.GetRoleID(),
 		AvatarID: user.GetAvatarID(),
 	})
-	if err != nil {
-		return
-	}
-	output = &entity.User{
-		ID:        u.ID,
-		Name:      u.Name,
-		Email:     u.Email,
-		Password:  u.Password,
-		Active:    u.Active,
-		RoleID:    u.RoleID,
-		AvatarID:  u.AvatarID,
-		CreatedAt: u.CreatedAt,
-		UpdatedAt: u.UpdatedAt,
-	}
-	return
 }
 
-func (repo *UserRepository) UpdateUserPassword(id int32, password string) (output entityInterface.UserInterface, err error) {
-	u, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdateUserPassword(context.Background(), db.UpdateUserPasswordParams{
+func (repo *UserRepository) UpdateUserPassword(id int32, password string) (err error) {
+	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdateUserPassword(context.Background(), db.UpdateUserPasswordParams{
 		ID:       id,
 		Password: password,
 	})
-	if err != nil {
-		return
-	}
-	output = &entity.User{
-		ID:        u.ID,
-		Name:      u.Name,
-		Email:     u.Email,
-		Password:  u.Password,
-		Active:    u.Active,
-		RoleID:    u.RoleID,
-		AvatarID:  u.AvatarID,
-		CreatedAt: u.CreatedAt,
-		UpdatedAt: u.UpdatedAt,
-	}
-	return
 }
 
-func (repo *UserRepository) DeleteUser(id int32) (output entityInterface.UserInterface, err error) {
-	u, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).DeleteUser(context.Background(), id)
-	if err != nil {
-		return
-	}
-	output = &entity.User{
-		ID:        u.ID,
-		Name:      u.Name,
-		Email:     u.Email,
-		Password:  u.Password,
-		Active:    u.Active,
-		RoleID:    u.RoleID,
-		AvatarID:  u.AvatarID,
-		CreatedAt: u.CreatedAt,
-		UpdatedAt: u.UpdatedAt,
-	}
-	return
+func (repo *UserRepository) DeleteUser(id int32) (err error) {
+	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).DeleteUser(context.Background(), id)
 }

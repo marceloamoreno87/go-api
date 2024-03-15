@@ -12,7 +12,8 @@ type AuthInterface interface {
 	SetToken(token string)
 	SetRefreshToken(refreshToken string)
 	SetActive(active bool)
-	SetExpiresIn(expiresIn int32)
+	SetTokenExpiresIn(tokenExpiresIn int32)
+	SetRefreshTokenExpiresIn(refreshTokenExpiresIn int32)
 	SetCreatedAt(createdAt time.Time)
 	SetUpdatedAt(updatedAt time.Time)
 	GetID() int32
@@ -20,10 +21,12 @@ type AuthInterface interface {
 	GetToken() string
 	GetRefreshToken() string
 	GetActive() bool
-	GetExpiresIn() int32
+	GetTokenExpiresIn() int32
+	GetRefreshTokenExpiresIn() int32
 	GetCreatedAt() time.Time
 	GetUpdatedAt() time.Time
-	GetUser() UserInterface
-	SetUser(user UserInterface)
 	Validate() notification.ErrorsInterface
+	IsValidToken() bool
+	IsValidRefreshToken() bool
+	GenerateToken()
 }

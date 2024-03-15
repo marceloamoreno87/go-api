@@ -51,7 +51,7 @@ INNER JOIN avatars ON users.id = avatars.user_id
 ORDER BY users.id ASC
 LIMIT $1 OFFSET $2;
 
--- name: CreateUser :one
+-- name: CreateUser :exec
 INSERT INTO users (
   name,
   email,
@@ -62,22 +62,9 @@ INSERT INTO users (
 ) VALUES (
   $1, $2, $3, $4, $5, $6
 )
-RETURNING *;
+;
 
--- name: RegisterUser :one
-INSERT INTO users (
-  name,
-  email,
-  password,
-  active,
-  role_id,
-  avatar_id
-) VALUES (
-  $1, $2, $3, $4, (select id from roles where internal_name = 'user'), (select id from avatars where id = 1)
-)
-RETURNING *;
-
--- name: UpdateUser :one
+-- name: UpdateUser :exec
 UPDATE users SET
   name = $1,
   email = $2,
@@ -86,45 +73,54 @@ UPDATE users SET
   role_id = $5,
   avatar_id = $6
 WHERE id = $7
-RETURNING *;
+;
 
--- name: UpdateUserPassword :one
+-- name: UpdateUserPassword :exec
 UPDATE users SET
   password = $1
 WHERE id = $2
-RETURNING *;
+;
 
--- name: UpdateUserActive :one
+-- name: UpdateUserActive :exec
 UPDATE users SET
   active = $1
 WHERE id = $2
-RETURNING *;
+;
 
--- name: DeleteUser :one
+-- name: DeleteUser :exec
 DELETE FROM users
 WHERE id = $1
-RETURNING *;
+;
 
--- name: GetAuthByUser :one
+-- name: GetAuthByUserID :one
 SELECT * FROM auth
-WHERE user_id = $1 and active is true LIMIT 1;
+WHERE user_id = $1 and active is true ORDER BY id DESC LIMIT 1;
 
--- name: CreateAuth :one
+-- name: GetAuthByToken :one
+SELECT * FROM auth
+WHERE token = $1 and user_id = $2 and active is true ORDER BY id DESC LIMIT 1;
+
+-- name: GetAuthByRefreshToken :one
+SELECT * FROM auth
+WHERE refresh_token = $1 and user_id = $2 and active is true ORDER BY id DESC LIMIT 1;
+
+-- name: CreateAuth :exec
 INSERT INTO auth (
   user_id,
   token,
   refresh_token,
-  expires_in
+  token_expires_in,
+  refresh_token_expires_in
 ) VALUES (
-  $1, $2, $3, $4
+  $1, $2, $3, $4, $5
 )
-RETURNING *;
+;
 
--- name: RevokeAuthByUser :one
+-- name: UpdateAuthRevokeByUserID :exec
 UPDATE auth SET
   active = false
 WHERE user_id = $1
-RETURNING *;
+;
 
 -- name: GetRole :one
 SELECT * FROM roles
@@ -139,7 +135,7 @@ SELECT * FROM roles
 ORDER BY id ASC
 LIMIT $1 OFFSET $2;
 
--- name: CreateRole :one
+-- name: CreateRole :exec
 INSERT INTO roles (
   name,
   internal_name,
@@ -147,20 +143,20 @@ INSERT INTO roles (
 ) VALUES (
   $1, $2, $3
 )
-RETURNING *;
+;
 
--- name: UpdateRole :one
+-- name: UpdateRole :exec
 UPDATE roles SET
   name = $1,
   internal_name = $2,
   description = $3
 WHERE id = $4
-RETURNING *;
+;
 
--- name: DeleteRole :one
+-- name: DeleteRole :exec
 DELETE FROM roles
 WHERE id = $1
-RETURNING *;
+;
 
 -- name: GetPermission :one
 SELECT * FROM permissions
@@ -175,7 +171,7 @@ SELECT * FROM permissions
 ORDER BY id ASC
 LIMIT $1 OFFSET $2;
 
--- name: CreatePermission :one
+-- name: CreatePermission :exec
 INSERT INTO permissions (
   name,
   internal_name,
@@ -183,29 +179,29 @@ INSERT INTO permissions (
 ) VALUES (
   $1, $2, $3
 )
-RETURNING *;
+;
 
--- name: UpdatePermission :one
+-- name: UpdatePermission :exec
 UPDATE permissions SET
   name = $1,
   internal_name = $2,
   description = $3
 WHERE id = $4
-RETURNING *;
+;
 
--- name: DeletePermission :one
+-- name: DeletePermission :exec
 DELETE FROM permissions
 WHERE id = $1
-RETURNING *;
+;
 
--- name: CreateRolePermission :one
+-- name: CreateRolePermission :exec
 INSERT INTO role_permissions (
   role_id,
   permission_id
 ) VALUES (
   $1, $2
 )
-RETURNING *;
+;
 
 -- name: GetRolePermission :many
 SELECT * FROM role_permissions
@@ -218,10 +214,10 @@ INNER JOIN roles ON role_permissions.role_id = roles.id
 WHERE role_id = $1
 ORDER BY permission_id ASC;
 
--- name: DeleteRolePermission :one
+-- name: DeleteRolePermission :exec
 DELETE FROM role_permissions
 WHERE role_id = $1
-RETURNING *;
+;
 
 -- name: GetAvatar :one
 SELECT * FROM avatars
@@ -232,24 +228,24 @@ SELECT * FROM avatars
 ORDER BY id ASC
 LIMIT $1 OFFSET $2;
 
--- name: CreateAvatar :one
+-- name: CreateAvatar :exec
 INSERT INTO avatars (
   svg
 ) VALUES (
   $1
 )
-RETURNING *;
+;
 
--- name: UpdateAvatar :one
+-- name: UpdateAvatar :exec
 UPDATE avatars SET
   svg = $1
 WHERE id = $2
-RETURNING *;
+;
 
--- name: DeleteAvatar :one
+-- name: DeleteAvatar :exec
 DELETE FROM avatars
 WHERE id = $1
-RETURNING *;
+;
 
 -- name: GetValidationUser :one
 SELECT * FROM users_validation
@@ -259,7 +255,7 @@ WHERE user_id = $1 ORDER BY id DESC LIMIT 1;
 SELECT * FROM users_validation
 WHERE hash = $1 and used is false LIMIT 1;
 
--- name: CreateValidationUser :one
+-- name: CreateValidationUser :exec
 INSERT INTO users_validation (
   user_id,
   hash,
@@ -267,10 +263,10 @@ INSERT INTO users_validation (
 ) VALUES (
   $1, $2, $3
 )
-RETURNING *;
+;
 
--- name: UpdateUserValidationUsed :one
+-- name: UpdateUserValidationUsed :exec
 UPDATE users_validation SET
   used = true
 WHERE id = $1
-RETURNING *;
+;

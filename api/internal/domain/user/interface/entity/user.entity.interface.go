@@ -13,25 +13,19 @@ type UserInterface interface {
 	GetPassword() string
 	GetRoleID() int32
 	GetAvatarID() int32
+	GetActive() bool
 	GetCreatedAt() time.Time
 	GetUpdatedAt() time.Time
-	GetRole() RoleInterface
-	GetAvatar() AvatarInterface
 	SetID(id int32)
 	SetName(name string)
 	SetEmail(email string)
 	SetPassword(password string)
+	SetActive(active bool)
 	SetRoleID(roleID int32)
+	SetAvatarID(avatarID int32)
 	SetCreatedAt(createdAt time.Time)
 	SetUpdatedAt(updatedAt time.Time)
-	SetRole(role RoleInterface)
-	SetAvatarID(avatarID int32)
-	SetAvatar(avatar AvatarInterface)
 	Validate() (notify notification.ErrorsInterface)
 	ComparePassword(password string) (b bool)
 	HashPassword()
-	SetActive(active bool)
-	GetActive() bool
-	GenerateToken()
-	GetToken() string
 }

@@ -6,16 +6,27 @@ import (
 	"log/slog"
 
 	"github.com/marceloamoreno/goapi/config"
+	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type AvatarService struct {
-	DB config.SQLCInterface
+	DB                     config.SQLCInterface
+	NewGetAvatarUseCase    usecaseInterface.NewGetAvatarUseCaseInterface
+	NewGetAvatarsUseCase   usecaseInterface.NewGetAvatarsUseCaseInterface
+	NewCreateAvatarUseCase usecaseInterface.NewCreateAvatarUseCaseInterface
+	NewUpdateAvatarUseCase usecaseInterface.NewUpdateAvatarUseCaseInterface
+	NewDeleteAvatarUseCase usecaseInterface.NewDeleteAvatarUseCaseInterface
 }
 
 func NewAvatarService() *AvatarService {
 	return &AvatarService{
-		DB: config.Sqcl,
+		DB:                     config.Sqcl,
+		NewGetAvatarUseCase:    usecase.NewGetAvatarUseCase(),
+		NewGetAvatarsUseCase:   usecase.NewGetAvatarsUseCase(),
+		NewCreateAvatarUseCase: usecase.NewCreateAvatarUseCase(),
+		NewUpdateAvatarUseCase: usecase.NewUpdateAvatarUseCase(),
+		NewDeleteAvatarUseCase: usecase.NewDeleteAvatarUseCase(),
 	}
 }
 
@@ -41,7 +52,7 @@ func (s *AvatarService) GetAvatars(limit int32, offset int32) (output []usecase.
 		Offset: offset,
 	}
 
-	output, err = usecase.NewGetAvatarsUseCase().Execute(input)
+	output, err = s.NewGetAvatarsUseCase.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -58,7 +69,7 @@ func (s *AvatarService) CreateAvatar(body io.ReadCloser) (output usecase.CreateA
 		return
 	}
 
-	output, err = usecase.NewCreateAvatarUseCase().Execute(input)
+	output, err = s.NewCreateAvatarUseCase.Execute(input)
 	if err != nil {
 		s.DB.Rollback()
 		slog.Info("err", err)
@@ -78,7 +89,7 @@ func (s *AvatarService) UpdateAvatar(id int32, body io.ReadCloser) (output useca
 		slog.Info("err", err)
 		return
 	}
-	output, err = usecase.NewUpdateAvatarUseCase().Execute(input)
+	output, err = s.NewUpdateAvatarUseCase.Execute(input)
 	if err != nil {
 		s.DB.Rollback()
 		slog.Info("err", err)
@@ -96,7 +107,7 @@ func (s *AvatarService) DeleteAvatar(id int32) (output usecase.DeleteAvatarOutpu
 		ID: id,
 	}
 
-	output, err = usecase.NewDeleteAvatarUseCase().Execute(input)
+	output, err = s.NewDeleteAvatarUseCase.Execute(input)
 	if err != nil {
 		s.DB.Rollback()
 		slog.Info("err", err)

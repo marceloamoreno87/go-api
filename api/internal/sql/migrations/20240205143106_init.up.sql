@@ -171,7 +171,8 @@ CREATE TABLE IF NOT EXISTS auth (
   token TEXT NOT NULL, -- Auth token
   refresh_token TEXT NOT NULL, -- Refresh token
   active BOOLEAN DEFAULT TRUE NOT NULL, -- Auth token active
-  expires_in INT NOT NULL, -- Expiration
+  token_expires_in INT NOT NULL, -- Expiration
+  refresh_token_expires_in INT NOT NULL, -- Expiration
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, -- Creation timestamp
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, -- Update timestamp
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
@@ -197,7 +198,8 @@ COMMENT ON COLUMN auth.user_id IS 'User id';
 COMMENT ON COLUMN auth.token IS 'Auth token';
 COMMENT ON COLUMN auth.refresh_token IS 'Refresh token';
 COMMENT ON COLUMN auth.active IS 'Auth token active';
-COMMENT ON COLUMN auth.expires_in IS 'Expiration';
+COMMENT ON COLUMN auth.token_expires_in IS 'Expiration token';
+COMMENT ON COLUMN auth.refresh_token_expires_in IS 'Expiration refresh token';
 
 COMMENT ON TABLE roles IS 'Roles table';
 COMMENT ON COLUMN roles.id IS 'Role id';

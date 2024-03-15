@@ -6,30 +6,38 @@ import (
 )
 
 type GetUserValidationByHashInputDTO struct {
+	Hash string `json:"hash"`
 }
 
 type GetUserValidationByHashOutputDTO struct {
+	ID        int32  `json:"id"`
+	UserID    int32  `json:"user_id"`
+	Hash      string `json:"hash"`
+	ExpiresIn int32  `json:"expires_in"`
+	Used      bool   `json:"used"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }
 
 type GetUserValidationByHashUseCase struct {
-	repo repositoryInterface.UserRepositoryInterface
+	repo repositoryInterface.UserValidationRepositoryInterface
 }
 
 func NewGetUserValidationByHashUseCase() *GetUserValidationByHashUseCase {
 	return &GetUserValidationByHashUseCase{
-		repo: repository.NewUserRepository(),
+		repo: repository.NewUserValidationRepository(),
 	}
 }
 
-func (uc *GetUserValidationByHashUseCase) Execute(input GetUserInputDTO) (output GetUserOutputDTO, err error) {
-	// userValidation, err := uc.repo.GetValidationUserByHash(input.Hash)
-	// if err != nil {
-	// 	return
-	// }
+func (uc *GetUserValidationByHashUseCase) Execute(input GetUserValidationByHashInputDTO) (output GetUserValidationByHashOutputDTO, err error) {
+	userValidation, err := uc.repo.GetValidationUserByHash(input.Hash)
+	if err != nil {
+		return
+	}
 
-	// if !userValidation.ValidateHashExpiresIn() {
-	// 	return
-	// }
+	if !userValidation.ValidateHashExpiresIn() {
+		return
+	}
 
 	return
 }

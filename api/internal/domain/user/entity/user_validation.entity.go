@@ -14,24 +14,25 @@ import (
 )
 
 type UserValidation struct {
-	ID        int32                         `json:"id"`
-	UserID    int32                         `json:"user_id"`
-	Hash      string                        `json:"hash"`
-	ExpiresIn int32                         `json:"expires_in"`
-	Used      bool                          `json:"used"`
-	User      entityInterface.UserInterface `json:"user"`
-	CreatedAt time.Time                     `json:"created_at"`
-	UpdatedAt time.Time                     `json:"updated_at"`
+	ID        int32     `json:"id"`
+	UserID    int32     `json:"user_id"`
+	Hash      string    `json:"hash"`
+	ExpiresIn int32     `json:"expires_in"`
+	Used      bool      `json:"used"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func NewUserValidation(user entityInterface.UserInterface) (userValidation entityInterface.UserValidationInterface, err error) {
-	hash, err := generateHash(user)
+func NewUserValidation(userId int32) (userValidation entityInterface.UserValidationInterface, err error) {
 	userValidation = &UserValidation{
-		User:      user,
-		UserID:    user.GetID(),
-		Hash:      hash,
+		UserID:    userId,
 		Used:      false,
 		ExpiresIn: int32(time.Now().Add(time.Second * time.Duration(helper.StrToInt32(config.Environment.GetValidationExpiresIn()))).Unix()),
+	}
+
+	err = userValidation.GenerateHash()
+	if err != nil {
+		return nil, err
 	}
 
 	notify := userValidation.Validate()
@@ -44,20 +45,26 @@ func NewUserValidation(user entityInterface.UserInterface) (userValidation entit
 
 func (u *UserValidation) Validate() (notify notification.ErrorsInterface) {
 	notify = notification.New()
+
 	if u.UserID == 0 {
-		notify.AddError("User is required", "user_validation.user")
+		notify.AddError("UserID", "UserID is required")
 	}
+
+	if u.Hash == "" {
+		notify.AddError("Hash", "Hash is required")
+	}
+
 	return
 }
 
-func generateHash(user entityInterface.UserInterface) (hash string, err error) {
-	userJson, err := json.Marshal(user)
+func (u *UserValidation) GenerateHash() (err error) {
+	userJson, err := json.Marshal(u)
 	if err != nil {
 		return
 	}
 	mergeStr := string(userJson) + config.Environment.GetValidationSecretKey()
 	sha512.New().Write([]byte(mergeStr))
-	hash = fmt.Sprintf("%x", sha512.Sum512([]byte(mergeStr)))
+	u.Hash = fmt.Sprintf("%x", sha512.Sum512([]byte(mergeStr)))
 	return
 }
 
@@ -93,16 +100,8 @@ func (u *UserValidation) GetUpdatedAt() time.Time {
 	return u.UpdatedAt
 }
 
-func (u *UserValidation) GetUser() entityInterface.UserInterface {
-	return u.User
-}
-
 func (u *UserValidation) SetID(id int32) {
 	u.ID = id
-}
-
-func (u *UserValidation) SetUser(user entityInterface.UserInterface) {
-	u.User = user
 }
 
 func (u *UserValidation) SetUsed(used bool) {

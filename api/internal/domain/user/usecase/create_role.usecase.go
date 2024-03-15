@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"time"
-
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -15,12 +13,9 @@ type CreateRoleInputDTO struct {
 }
 
 type CreateRoleOutputDTO struct {
-	ID           int32     `json:"id"`
-	Name         string    `json:"name"`
-	InternalName string    `json:"internal_name"`
-	Description  string    `json:"description"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
+	Name         string `json:"name"`
+	InternalName string `json:"internal_name"`
+	Description  string `json:"description"`
 }
 
 type CreateRoleUseCase struct {
@@ -39,17 +34,11 @@ func (uc *CreateRoleUseCase) Execute(input CreateRoleInputDTO) (output CreateRol
 		return
 	}
 
-	r, err := uc.repo.CreateRole(role)
-	if err != nil {
-		return
-	}
+	err = uc.repo.CreateRole(role)
 	output = CreateRoleOutputDTO{
-		ID:           r.GetID(),
-		Name:         r.GetName(),
-		InternalName: r.GetInternalName(),
-		Description:  r.GetDescription(),
-		CreatedAt:    r.GetCreatedAt(),
-		UpdatedAt:    r.GetUpdatedAt(),
+		Name:         role.GetName(),
+		InternalName: role.GetInternalName(),
+		Description:  role.GetDescription(),
 	}
 	return
 }

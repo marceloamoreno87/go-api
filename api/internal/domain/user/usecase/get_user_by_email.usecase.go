@@ -38,7 +38,6 @@ func (uc *GetUserByEmailUseCase) Execute(input GetUserByEmailInputDTO) (output G
 	if err != nil {
 		return
 	}
-
 	output = GetUserByEmailOutputDTO{
 		ID:        user.GetID(),
 		Name:      user.GetName(),

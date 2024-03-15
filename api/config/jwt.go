@@ -14,6 +14,10 @@ type JWTAuthInterface interface {
 	GenerateRefresh(claims map[string]interface{}) *JWTAuth
 	GetToken() string
 	GetJwtAuth() *jwtauth.JWTAuth
+	GetTokenExpiresIn() int32
+	GetRefreshToken() string
+	GetRefreshTokenExpiresIn() int32
+	Validate(token string) (b bool)
 }
 
 type JWTAuth struct {
@@ -32,7 +36,7 @@ func NewJWT() {
 }
 
 func (j *JWTAuth) Generate(claims map[string]interface{}) *JWTAuth {
-	claims["exp"] = time.Now().Add(time.Second * time.Duration(helper.StrToInt32(Environment.GetJWTExpiresIn()))).Unix()
+	claims["exp"] = j.GetTokenExpiresIn()
 	_, token, err := j.JwtAuth.Encode(claims)
 	if err != nil {
 		slog.Info("err", err)
@@ -42,13 +46,27 @@ func (j *JWTAuth) Generate(claims map[string]interface{}) *JWTAuth {
 }
 
 func (j *JWTAuth) GenerateRefresh(claims map[string]interface{}) *JWTAuth {
-	claims["exp"] = time.Now().Add(time.Second * time.Duration(helper.StrToInt32(Environment.GetJWTExpiresIn())) * 2).Unix()
+	claims["exp"] = j.GetRefreshTokenExpiresIn()
 	_, token, err := j.JwtAuth.Encode(claims)
 	if err != nil {
 		slog.Info("err", err)
 	}
 	j.RefreshToken = token
 	return j
+}
+
+func (j *JWTAuth) Validate(token string) (b bool) {
+	t, err := j.JwtAuth.Decode(token)
+	if err != nil {
+		return false
+	}
+	println(t.Expiration().Unix())
+	println(time.Now().Unix())
+	println(t.Expiration().Unix() > time.Now().Unix())
+	if t.Expiration().Unix() > time.Now().Unix() {
+		return true
+	}
+	return false
 }
 
 func (j *JWTAuth) GetToken() string {
@@ -61,4 +79,12 @@ func (j *JWTAuth) GetRefreshToken() string {
 
 func (j *JWTAuth) GetJwtAuth() *jwtauth.JWTAuth {
 	return j.JwtAuth
+}
+
+func (j *JWTAuth) GetTokenExpiresIn() int32 {
+	return int32(time.Now().Add(time.Second * time.Duration(helper.StrToInt32(Environment.GetJWTExpiresIn()))).Unix())
+}
+
+func (j *JWTAuth) GetRefreshTokenExpiresIn() int32 {
+	return int32(time.Now().Add(time.Second * time.Duration(helper.StrToInt32(Environment.GetJWTExpiresIn())) * 2).Unix())
 }

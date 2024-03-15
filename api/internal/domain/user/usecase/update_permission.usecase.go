@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"time"
-
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -16,12 +14,10 @@ type UpdatePermissionInputDTO struct {
 }
 
 type UpdatePermissionOutputDTO struct {
-	ID           int32     `json:"id"`
-	Name         string    `json:"name"`
-	InternalName string    `json:"internal_name"`
-	Description  string    `json:"description"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
+	ID           int32  `json:"id"`
+	Name         string `json:"name"`
+	InternalName string `json:"internal_name"`
+	Description  string `json:"description"`
 }
 
 type UpdatePermissionUseCase struct {
@@ -40,17 +36,12 @@ func (uc *UpdatePermissionUseCase) Execute(input UpdatePermissionInputDTO) (outp
 		return
 	}
 
-	p, err := uc.repo.UpdatePermission(permission, input.ID)
-	if err != nil {
-		return
-	}
+	err = uc.repo.UpdatePermission(permission, input.ID)
 	output = UpdatePermissionOutputDTO{
-		ID:           p.GetID(),
-		Name:         p.GetName(),
-		InternalName: p.GetInternalName(),
-		Description:  p.GetDescription(),
-		CreatedAt:    p.GetCreatedAt(),
-		UpdatedAt:    p.GetUpdatedAt(),
+		ID:           permission.GetID(),
+		Name:         permission.GetName(),
+		InternalName: permission.GetInternalName(),
+		Description:  permission.GetDescription(),
 	}
 	return
 }

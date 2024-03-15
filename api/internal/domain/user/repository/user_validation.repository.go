@@ -54,40 +54,14 @@ func (repo *UserValidationRepository) GetValidationUserByHash(hash string) (outp
 	return
 }
 
-func (repo *UserValidationRepository) CreateValidationUser(userValidation entityInterface.UserValidationInterface) (output entityInterface.UserValidationInterface, err error) {
-	uv, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateValidationUser(context.Background(), db.CreateValidationUserParams{
+func (repo *UserValidationRepository) CreateValidationUser(userValidation entityInterface.UserValidationInterface) (err error) {
+	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateValidationUser(context.Background(), db.CreateValidationUserParams{
 		UserID:    userValidation.GetUserID(),
 		Hash:      userValidation.GetHash(),
 		ExpiresIn: userValidation.GetExpiresIn(),
 	})
-	if err != nil {
-		return
-	}
-	output = &entity.UserValidation{
-		ID:        uv.ID,
-		UserID:    uv.UserID,
-		Hash:      uv.Hash,
-		ExpiresIn: uv.ExpiresIn,
-		Used:      uv.Used,
-		CreatedAt: uv.CreatedAt,
-		UpdatedAt: uv.UpdatedAt,
-	}
-	return
 }
 
-func (repo *UserValidationRepository) UpdateUserValidationUsed(id int32) (output entityInterface.UserValidationInterface, err error) {
-	uv, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdateUserValidationUsed(context.Background(), id)
-	if err != nil {
-		return
-	}
-	output = &entity.UserValidation{
-		ID:        uv.ID,
-		UserID:    uv.UserID,
-		Hash:      uv.Hash,
-		ExpiresIn: uv.ExpiresIn,
-		Used:      uv.Used,
-		CreatedAt: uv.CreatedAt,
-		UpdatedAt: uv.UpdatedAt,
-	}
-	return
+func (repo *UserValidationRepository) UpdateUserValidationUsed(id int32) (err error) {
+	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdateUserValidationUsed(context.Background(), id)
 }

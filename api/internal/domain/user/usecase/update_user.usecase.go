@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"time"
-
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -18,15 +16,13 @@ type UpdateUserInputDTO struct {
 }
 
 type UpdateUserOutputDTO struct {
-	ID        int32     `json:"id"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
-	Password  string    `json:"password"`
-	Active    bool      `json:"active"`
-	RoleID    int32     `json:"role_id"`
-	AvatarID  int32     `json:"avatar_id"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID       int32  `json:"id"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Active   bool   `json:"active"`
+	RoleID   int32  `json:"role_id"`
+	AvatarID int32  `json:"avatar_id"`
 }
 
 type UpdateUserUseCase struct {
@@ -44,21 +40,16 @@ func (uc *UpdateUserUseCase) Execute(input UpdateUserInputDTO) (output UpdateUse
 	if err != nil {
 		return
 	}
-	u, err := uc.repo.UpdateUser(user, input.ID)
-	if err != nil {
-		return
-	}
+	err = uc.repo.UpdateUser(user, input.ID)
 
 	output = UpdateUserOutputDTO{
-		ID:        u.GetID(),
-		Name:      u.GetName(),
-		Email:     u.GetEmail(),
-		Password:  u.GetPassword(),
-		Active:    u.GetActive(),
-		RoleID:    u.GetRoleID(),
-		AvatarID:  u.GetAvatarID(),
-		CreatedAt: u.GetCreatedAt(),
-		UpdatedAt: u.GetUpdatedAt(),
+		ID:       user.GetID(),
+		Name:     user.GetName(),
+		Email:    user.GetEmail(),
+		Password: user.GetPassword(),
+		Active:   user.GetActive(),
+		RoleID:   user.GetRoleID(),
+		AvatarID: user.GetAvatarID(),
 	}
 	return
 }

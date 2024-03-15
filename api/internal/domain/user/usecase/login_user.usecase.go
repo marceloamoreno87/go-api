@@ -5,12 +5,15 @@ import (
 )
 
 type LoginUserInputDTO struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Name            string `json:"name"`
+	Email           string `json:"email"`
+	Password        string `json:"password"`
+	RoleID          int32  `json:"role_id"`
+	AvatarID        int32  `json:"avatar_id"`
+	RequestPassword string `json:"request_password"`
 }
 type LoginUserOutputDTO struct {
-	Token        string `json:"token"`
-	RefreshToken string `json:"refresh_token"`
+	Valid bool `json:"valid"`
 }
 
 type LoginUserUseCase struct {
@@ -21,20 +24,10 @@ func NewLoginUserUseCase() *LoginUserUseCase {
 }
 
 func (uc *LoginUserUseCase) Execute(input LoginUserInputDTO) (output LoginUserOutputDTO, err error) {
-
-	// new user entity
 	user, err := entity.NewUser(input.Name, input.Email, input.Password, input.RoleID, input.AvatarID)
 	if err != nil {
 		return
 	}
-	if !user.ComparePassword(input.RequestPassword) {
-		return
-	}
-	// generate token
-	user.GenerateToken()
-	// save token in DB
-
-	// return token
-
+	output.Valid = user.ComparePassword(input.RequestPassword)
 	return
 }

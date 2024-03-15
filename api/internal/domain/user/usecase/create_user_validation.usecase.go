@@ -1,16 +1,20 @@
 package usecase
 
 import (
+	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
 type CreateUserValidationInputDTO struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	RoleID   int32  `json:"role_id"`
-	AvatarID int32  `json:"avatar_id"`
+	UserID int32 `json:"user_id"`
+}
+
+type CreateUserValidationOutputDTO struct {
+	UserID    int32  `json:"user_id"`
+	Hash      string `json:"hash"`
+	ExpiresIn int32  `json:"expires_in"`
+	Used      bool   `json:"used"`
 }
 
 type CreateUserValidationUseCase struct {
@@ -23,16 +27,23 @@ func NewCreateUserValidationUseCase() *CreateUserValidationUseCase {
 	}
 }
 
-func (uc *CreateUserValidationUseCase) Execute(input CreateUserValidationInputDTO) (err error) {
-	// userValidation, err := entity.NewUserValidation(newUser)
-	// if err != nil {
-	// 	return
-	// }
+func (uc *CreateUserValidationUseCase) Execute(input CreateUserValidationInputDTO) (output CreateUserValidationOutputDTO, err error) {
+	userValidation, err := entity.NewUserValidation(input.UserID)
+	if err != nil {
+		return
+	}
 
-	// err = uc.repo.CreateValidationUser(userValidation)
-	// if err != nil {
-	// 	return
-	// }
+	err = uc.repo.CreateValidationUser(userValidation)
+	if err != nil {
+		return
+	}
+
+	output = CreateUserValidationOutputDTO{
+		UserID:    userValidation.GetUserID(),
+		Hash:      userValidation.GetHash(),
+		ExpiresIn: userValidation.GetExpiresIn(),
+		Used:      userValidation.GetUsed(),
+	}
 
 	return
 }

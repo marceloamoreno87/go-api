@@ -19,16 +19,8 @@ func NewAvatarRepository() *AvatarRepository {
 	}
 }
 
-func (repo *AvatarRepository) CreateAvatar(avatar entityInterface.AvatarInterface) (output entityInterface.AvatarInterface, err error) {
-	a, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateAvatar(context.Background(), avatar.GetSVG())
-	if err != nil {
-		return
-	}
-	output = &entity.Avatar{
-		ID:  a.ID,
-		SVG: a.Svg,
-	}
-	return
+func (repo *AvatarRepository) CreateAvatar(avatar entityInterface.AvatarInterface) (err error) {
+	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateAvatar(context.Background(), avatar.GetSVG())
 }
 
 func (repo *AvatarRepository) GetAvatar(id int32) (output entityInterface.AvatarInterface, err error) {
@@ -60,29 +52,13 @@ func (repo *AvatarRepository) GetAvatars(limit int32, offset int32) (output []en
 	return
 }
 
-func (repo *AvatarRepository) UpdateAvatar(avatar entityInterface.AvatarInterface, id int32) (output entityInterface.AvatarInterface, err error) {
-	a, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdateAvatar(context.Background(), db.UpdateAvatarParams{
-		Svg: avatar.GetSVG(),
+func (repo *AvatarRepository) UpdateAvatar(avatar entityInterface.AvatarInterface, id int32) (err error) {
+	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdateAvatar(context.Background(), db.UpdateAvatarParams{
 		ID:  id,
+		Svg: avatar.GetSVG(),
 	})
-	if err != nil {
-		return
-	}
-	output = &entity.Avatar{
-		ID:  a.ID,
-		SVG: a.Svg,
-	}
-	return
 }
 
-func (repo *AvatarRepository) DeleteAvatar(id int32) (output entityInterface.AvatarInterface, err error) {
-	a, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).DeleteAvatar(context.Background(), id)
-	if err != nil {
-		return
-	}
-	output = &entity.Avatar{
-		ID:  a.ID,
-		SVG: a.Svg,
-	}
-	return
+func (repo *AvatarRepository) DeleteAvatar(id int32) (err error) {
+	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).DeleteAvatar(context.Background(), id)
 }

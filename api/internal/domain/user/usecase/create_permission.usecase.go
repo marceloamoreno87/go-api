@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"time"
-
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -15,12 +13,9 @@ type CreatePermissionInputDTO struct {
 }
 
 type CreatePermissionOutputDTO struct {
-	ID           int32     `json:"id"`
-	Name         string    `json:"name"`
-	InternalName string    `json:"internal_name"`
-	Description  string    `json:"description"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
+	Name         string `json:"name"`
+	InternalName string `json:"internal_name"`
+	Description  string `json:"description"`
 }
 
 type CreatePermissionUseCase struct {
@@ -39,18 +34,12 @@ func (uc *CreatePermissionUseCase) Execute(input CreatePermissionInputDTO) (outp
 		return
 	}
 
-	p, err := uc.repo.CreatePermission(permission)
-	if err != nil {
-		return
-	}
+	err = uc.repo.CreatePermission(permission)
 
 	output = CreatePermissionOutputDTO{
-		ID:           p.GetID(),
-		Name:         p.GetName(),
-		InternalName: p.GetInternalName(),
-		Description:  p.GetDescription(),
-		CreatedAt:    p.GetCreatedAt(),
-		UpdatedAt:    p.GetUpdatedAt(),
+		Name:         permission.GetName(),
+		InternalName: permission.GetInternalName(),
+		Description:  permission.GetDescription(),
 	}
 	return
 }

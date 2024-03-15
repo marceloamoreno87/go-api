@@ -7,16 +7,29 @@ import (
 	"log/slog"
 
 	"github.com/marceloamoreno/goapi/config"
+	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type RoleService struct {
-	DB config.SQLCInterface
+	DB                              config.SQLCInterface
+	NewGetRoleUseCase               usecaseInterface.GetRoleUseCaseInterface
+	NewGetRolesUseCase              usecaseInterface.GetRolesUseCaseInterface
+	NewCreateRoleUseCase            usecaseInterface.CreateRoleUseCaseInterface
+	NewUpdateRoleUseCase            usecaseInterface.UpdateRoleUseCaseInterface
+	NewDeleteRoleUseCase            usecaseInterface.DeleteRoleUseCaseInterface
+	NewGetRoleByInternalNameUseCase usecaseInterface.NewGetRoleByInternalNameUseCaseInterface
 }
 
 func NewRoleService() *RoleService {
 	return &RoleService{
-		DB: config.Sqcl,
+		DB:                              config.Sqcl,
+		NewGetRoleUseCase:               usecase.NewGetRoleUseCase(),
+		NewGetRolesUseCase:              usecase.NewGetRolesUseCase(),
+		NewCreateRoleUseCase:            usecase.NewCreateRoleUseCase(),
+		NewUpdateRoleUseCase:            usecase.NewUpdateRoleUseCase(),
+		NewDeleteRoleUseCase:            usecase.NewDeleteRoleUseCase(),
+		NewGetRoleByInternalNameUseCase: usecase.NewGetRoleByInternalNameUseCase(),
 	}
 }
 
@@ -25,7 +38,7 @@ func (s *RoleService) GetRole(id int32) (output usecase.GetRoleOutputDTO, err er
 		ID: id,
 	}
 
-	output, err = usecase.NewGetRoleUseCase().Execute(input)
+	output, err = s.NewGetRoleUseCase.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -41,7 +54,7 @@ func (s *RoleService) GetRoles(limit int32, offset int32) (output []usecase.GetR
 		Offset: offset,
 	}
 
-	output, err = usecase.NewGetRolesUseCase().Execute(input)
+	output, err = s.NewGetRolesUseCase.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -58,13 +71,13 @@ func (s *RoleService) CreateRole(body io.ReadCloser) (output usecase.CreateRoleO
 		return
 	}
 
-	check, _ := usecase.NewGetRoleByInternalNameUseCase().Execute(usecase.GetRoleByInternalNameInputDTO{InternalName: input.InternalName})
+	check, _ := s.NewGetRoleByInternalNameUseCase.Execute(usecase.GetRoleByInternalNameInputDTO{InternalName: input.InternalName})
 	if check.ID != 0 {
 		slog.Info("role already exists")
 		return output, errors.New("role already exists")
 	}
 
-	output, err = usecase.NewCreateRoleUseCase().Execute(input)
+	output, err = s.NewCreateRoleUseCase.Execute(input)
 	if err != nil {
 		s.DB.Rollback()
 		slog.Info("err", err)
@@ -85,7 +98,7 @@ func (s *RoleService) UpdateRole(id int32, body io.ReadCloser) (output usecase.U
 		return
 	}
 
-	output, err = usecase.NewUpdateRoleUseCase().Execute(input)
+	output, err = s.NewUpdateRoleUseCase.Execute(input)
 	if err != nil {
 		s.DB.Rollback()
 		slog.Info("err", err)
@@ -102,7 +115,7 @@ func (s *RoleService) DeleteRole(id int32) (output usecase.DeleteRoleOutputDTO, 
 		ID: id,
 	}
 
-	output, err = usecase.NewDeleteRoleUseCase().Execute(input)
+	output, err = s.NewDeleteRoleUseCase.Execute(input)
 	if err != nil {
 		s.DB.Rollback()
 		slog.Info("err", err)

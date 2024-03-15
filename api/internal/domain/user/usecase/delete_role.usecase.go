@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"time"
-
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -12,12 +10,7 @@ type DeleteRoleInputDTO struct {
 }
 
 type DeleteRoleOutputDTO struct {
-	ID           int32     `json:"id"`
-	Name         string    `json:"name"`
-	InternalName string    `json:"internal_name"`
-	Description  string    `json:"description"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
+	ID int32 `json:"id"`
 }
 
 type DeleteRoleUseCase struct {
@@ -31,22 +24,12 @@ func NewDeleteRoleUseCase() *DeleteRoleUseCase {
 }
 
 func (uc *DeleteRoleUseCase) Execute(input DeleteRoleInputDTO) (output DeleteRoleOutputDTO, err error) {
-	role, err := uc.repo.GetRole(input.ID)
-	if err != nil {
-		return
-	}
-
-	r, err := uc.repo.DeleteRole(role.GetID())
+	err = uc.repo.DeleteRole(input.ID)
 	if err != nil {
 		return
 	}
 	output = DeleteRoleOutputDTO{
-		ID:           r.GetID(),
-		Name:         r.GetName(),
-		InternalName: r.GetInternalName(),
-		Description:  r.GetDescription(),
-		CreatedAt:    r.GetCreatedAt(),
-		UpdatedAt:    r.GetUpdatedAt(),
+		ID: input.ID,
 	}
 	return
 }

@@ -6,16 +6,23 @@ import (
 	"log/slog"
 
 	"github.com/marceloamoreno/goapi/config"
+	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type RolePermissionService struct {
-	DB config.SQLCInterface
+	DB                             config.SQLCInterface
+	NewGetRolePermissionsUseCase   usecaseInterface.GetRolePermissionsUseCaseInterface
+	NewCreateRolePermissionUseCase usecaseInterface.CreateRolePermissionUseCaseInterface
+	NewDeleteRolePermissionUseCase usecaseInterface.DeleteRolePermissionUseCaseInterface
 }
 
 func NewRolePermissionService() *RolePermissionService {
 	return &RolePermissionService{
-		DB: config.Sqcl,
+		DB:                             config.Sqcl,
+		NewGetRolePermissionsUseCase:   usecase.NewGetRolePermissionsUseCase(),
+		NewCreateRolePermissionUseCase: usecase.NewCreateRolePermissionUseCase(),
+		NewDeleteRolePermissionUseCase: usecase.NewDeleteRolePermissionUseCase(),
 	}
 }
 

@@ -11,7 +11,6 @@ type CreateAvatarInputDTO struct {
 }
 
 type CreateAvatarOutputDTO struct {
-	ID        int32  `json:"id"`
 	SVG       string `json:"svg"`
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
@@ -33,16 +32,10 @@ func (uc *CreateAvatarUseCase) Execute(input CreateAvatarInputDTO) (output Creat
 		return
 	}
 
-	a, err := uc.repo.CreateAvatar(avatar)
-	if err != nil {
-		return
-	}
+	err = uc.repo.CreateAvatar(avatar)
 
 	output = CreateAvatarOutputDTO{
-		ID:        a.GetID(),
-		SVG:       a.GetSVG(),
-		CreatedAt: a.GetCreatedAt().String(),
-		UpdatedAt: a.GetUpdatedAt().String(),
+		SVG: avatar.GetSVG(),
 	}
 	return
 }

@@ -35,26 +35,19 @@ func (repo *RolePermissionRepository) GetRolePermissionsByRole(id int32) (output
 	return
 }
 
-// TODO: REFACTOR
-func (repo *RolePermissionRepository) CreateRolePermission(rolePermission entityInterface.RolePermissionInterface) (output []entityInterface.RolePermissionInterface, err error) {
+func (repo *RolePermissionRepository) CreateRolePermission(rolePermission entityInterface.RolePermissionInterface) (err error) {
 
 	errCh := make(chan error, len(rolePermission.GetPermissionIDs()))
-	rpCh := make(chan entityInterface.RolePermissionInterface, len(rolePermission.GetPermissionIDs()))
 	var wg sync.WaitGroup
 	wg.Add(len(rolePermission.GetPermissionIDs()))
 
 	for _, id := range rolePermission.GetPermissionIDs() {
 		go func(permissionID int32) {
 			defer wg.Done()
-			rp, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateRolePermission(context.Background(), db.CreateRolePermissionParams{
+			err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateRolePermission(context.Background(), db.CreateRolePermissionParams{
 				RoleID:       rolePermission.GetRoleID(),
 				PermissionID: permissionID,
 			})
-
-			rpCh <- &entity.RolePermission{
-				ID:     rp.ID,
-				RoleID: rp.RoleID,
-			}
 
 			if err != nil {
 				errCh <- err
@@ -63,24 +56,12 @@ func (repo *RolePermissionRepository) CreateRolePermission(rolePermission entity
 	}
 	wg.Wait()
 	close(errCh)
-	close(rpCh)
 	if len(errCh) > 0 {
-		return nil, <-errCh
+		return <-errCh
 	}
-	output = append(output, <-rpCh)
 	return
 }
 
-func (repo *RolePermissionRepository) DeleteRolePermission(rolePermission entityInterface.RolePermissionInterface, id int32) (output entityInterface.RolePermissionInterface, err error) {
-	rp, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).DeleteRolePermission(context.Background(), id)
-	if err != nil {
-		return
-	}
-
-	output = &entity.RolePermission{
-		ID:     rp.ID,
-		RoleID: rp.RoleID,
-	}
-
-	return
+func (repo *RolePermissionRepository) DeleteRolePermission(id int32) (err error) {
+	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).DeleteRolePermission(context.Background(), id)
 }

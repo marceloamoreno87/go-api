@@ -10,8 +10,9 @@ type GetRolePermissionsInputDTO struct {
 }
 
 type GetRolePermissionsOutputDTO struct {
-	ID     int32 `json:"id"`
-	RoleID int32 `json:"role_id"`
+	ID            int32   `json:"id"`
+	RoleID        int32   `json:"role_id"`
+	PermissionIDs []int32 `json:"permission_ids"`
 }
 
 type GetRolePermissionsUseCase struct {
@@ -30,10 +31,11 @@ func (uc *GetRolePermissionsUseCase) Execute(input GetRolePermissionsInputDTO) (
 		return
 	}
 
-	for _, r := range rp {
+	for _, v := range rp {
 		output = append(output, GetRolePermissionsOutputDTO{
-			ID:     r.GetRolePermissionID(),
-			RoleID: r.GetRoleID(),
+			ID:            v.GetID(),
+			RoleID:        v.GetRoleID(),
+			PermissionIDs: v.GetPermissionIDs(),
 		})
 	}
 	return

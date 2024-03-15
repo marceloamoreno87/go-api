@@ -7,16 +7,29 @@ import (
 	"log/slog"
 
 	"github.com/marceloamoreno/goapi/config"
+	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type PermissionService struct {
-	DB config.SQLCInterface
+	DB                                    config.SQLCInterface
+	NewGetPermissionUseCase               usecaseInterface.GetPermissionUseCaseInterface
+	NewGetPermissionsUseCase              usecaseInterface.GetPermissionsUseCaseInterface
+	NewCreatePermissionUseCase            usecaseInterface.CreatePermissionUseCaseInterface
+	NewUpdatePermissionUseCase            usecaseInterface.UpdatePermissionUseCaseInterface
+	NewDeletePermissionUseCase            usecaseInterface.DeletePermissionUseCaseInterface
+	NewGetPermissionByInternalNameUseCase usecaseInterface.GetPermissionByInternalNameUseCaseInterface
 }
 
 func NewPermissionService() *PermissionService {
 	return &PermissionService{
-		DB: config.Sqcl,
+		DB:                                    config.Sqcl,
+		NewGetPermissionUseCase:               usecase.NewGetPermissionUseCase(),
+		NewGetPermissionsUseCase:              usecase.NewGetPermissionsUseCase(),
+		NewCreatePermissionUseCase:            usecase.NewCreatePermissionUseCase(),
+		NewUpdatePermissionUseCase:            usecase.NewUpdatePermissionUseCase(),
+		NewDeletePermissionUseCase:            usecase.NewDeletePermissionUseCase(),
+		NewGetPermissionByInternalNameUseCase: usecase.NewGetPermissionByInternalNameUseCase(),
 	}
 }
 
@@ -26,7 +39,7 @@ func (s *PermissionService) GetPermission(id int32) (output usecase.GetPermissio
 		ID: id,
 	}
 
-	output, err = usecase.NewGetPermissionUseCase().Execute(input)
+	output, err = s.NewGetPermissionUseCase.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -42,7 +55,7 @@ func (s *PermissionService) GetPermissions(limit int32, offset int32) (output []
 		Offset: offset,
 	}
 
-	output, err = usecase.NewGetPermissionsUseCase().Execute(input)
+	output, err = s.NewGetPermissionsUseCase.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -59,7 +72,7 @@ func (s *PermissionService) CreatePermission(body io.ReadCloser) (output usecase
 		return
 	}
 
-	check, _ := usecase.NewGetPermissionByInternalNameUseCase().Execute(usecase.GetPermissionByInternalNameInputDTO{
+	check, _ := s.NewGetPermissionByInternalNameUseCase.Execute(usecase.GetPermissionByInternalNameInputDTO{
 		InternalName: input.InternalName,
 	})
 
@@ -88,7 +101,7 @@ func (s *PermissionService) UpdatePermission(id int32, body io.ReadCloser) (outp
 		slog.Info("err", err)
 		return
 	}
-	output, err = usecase.NewUpdatePermissionUseCase().Execute(input)
+	output, err = s.NewUpdatePermissionUseCase.Execute(input)
 	if err != nil {
 		s.DB.Rollback()
 		slog.Info("err", err)
@@ -106,7 +119,7 @@ func (s *PermissionService) DeletePermission(id int32) (output usecase.DeletePer
 		ID: id,
 	}
 
-	output, err = usecase.NewDeletePermissionUseCase().Execute(input)
+	output, err = s.NewDeletePermissionUseCase.Execute(input)
 	if err != nil {
 		s.DB.Rollback()
 		slog.Info("err", err)

@@ -1,23 +1,23 @@
-package user_interface
+package usecaseInterface
 
 import "github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 
-type CreateAvatarUseCaseInterface interface {
-	Execute(input usecase.CreateAvatarInputDTO) (err error)
+type NewGetAvatarUseCaseInterface interface {
+	Execute(input usecase.GetAvatarInputDTO) (output usecase.GetAvatarOutputDTO, err error)
 }
 
-type GetAvatarUseCaseInterface interface {
-	Execute(id int32) (output usecase.GetAvatarOutputDTO, err error)
-}
-
-type GetAvatarsUseCaseInterface interface {
+type NewGetAvatarsUseCaseInterface interface {
 	Execute(input usecase.GetAvatarsInputDTO) (output []usecase.GetAvatarsOutputDTO, err error)
 }
 
-type UpdateAvatarUseCaseInterface interface {
-	Execute(id int32, input usecase.UpdateAvatarInputDTO) (err error)
+type NewCreateAvatarUseCaseInterface interface {
+	Execute(input usecase.CreateAvatarInputDTO) (output usecase.CreateAvatarOutputDTO, err error)
 }
 
-type DeleteAvatarUseCaseInterface interface {
-	Execute(id int32) (err error)
+type NewUpdateAvatarUseCaseInterface interface {
+	Execute(input usecase.UpdateAvatarInputDTO) (output usecase.UpdateAvatarOutputDTO, err error)
+}
+
+type NewDeleteAvatarUseCaseInterface interface {
+	Execute(input usecase.DeleteAvatarInputDTO) (output usecase.DeleteAvatarOutputDTO, err error)
 }

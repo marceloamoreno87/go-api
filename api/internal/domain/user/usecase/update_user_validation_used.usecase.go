@@ -6,22 +6,23 @@ import (
 )
 
 type UpdateUserValidationUsedInputDTO struct {
+	ID int32 `json:"user_id"`
+}
+
+type UpdateUserValidationUsedOutputDTO struct {
+	ID int32 `json:"user_id"`
 }
 
 type UpdateUserValidationUsedUseCase struct {
-	repo repositoryInterface.UserRepositoryInterface
+	repo repositoryInterface.UserValidationRepositoryInterface
 }
 
 func NewUpdateUserValidationUsedUseCase() *UpdateUserValidationUsedUseCase {
 	return &UpdateUserValidationUsedUseCase{
-		repo: repository.NewUserRepository(),
+		repo: repository.NewUserValidationRepository(),
 	}
 }
 
 func (uc *UpdateUserValidationUsedUseCase) Execute(input UpdateUserValidationUsedInputDTO) (err error) {
-	// err = uc.repo.UpdatedUserValidationUsed(userValidation.GetID())
-	// if err != nil {
-	// 	return
-	// }
-	return
+	return uc.repo.UpdateUserValidationUsed(input.ID)
 }

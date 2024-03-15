@@ -2,39 +2,62 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"log/slog"
 
 	"github.com/marceloamoreno/goapi/config"
+	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type AuthService struct {
-	DB config.SQLCInterface
+	DB                              config.SQLCInterface
+	NewGetUserByEmailUseCase        usecaseInterface.GetUserByEmailUseCaseInterface
+	NewCreateAuthUseCase            usecaseInterface.NewCreateAuthUseCaseInterface
+	NewLoginUserUseCase             usecaseInterface.NewLoginUserUseCaseInterface
+	NewGetAuthByRefreshTokenUseCase usecaseInterface.NewGetAuthByRefreshTokenUseCase
+	NewUpdateAuthRevokeUseCase      usecaseInterface.NewUpdateAuthRevokeUseCaseInterface
+	NewGetAuthByTokenUseCase        usecaseInterface.NewGetAuthByTokenUseCaseInterface
+	NewGetAuthByUserIDUseCase       usecaseInterface.NewGetAuthByUserIDUseCaseInterface
+	NewCheckTokenUseCase            usecaseInterface.NewCheckTokenUseCaseInterface
+	NewCheckRefreshTokenUseCase     usecaseInterface.NewCheckRefreshTokenUseCaseInterface
 }
 
 func NewAuthService() *AuthService {
 	return &AuthService{
-		DB: config.Sqcl,
+		DB:                              config.Sqcl,
+		NewGetUserByEmailUseCase:        usecase.NewGetUserByEmailUseCase(),
+		NewCreateAuthUseCase:            usecase.NewCreateAuthUseCase(),
+		NewLoginUserUseCase:             usecase.NewLoginUserUseCase(),
+		NewGetAuthByRefreshTokenUseCase: usecase.NewGetAuthByRefreshTokenUseCase(),
+		NewUpdateAuthRevokeUseCase:      usecase.NewUpdateAuthRevokeUseCase(),
+		NewGetAuthByTokenUseCase:        usecase.NewGetAuthByTokenUseCase(),
+		NewGetAuthByUserIDUseCase:       usecase.NewGetAuthByUserIDUseCase(),
+		NewCheckTokenUseCase:            usecase.NewCheckTokenUseCase(),
+		NewCheckRefreshTokenUseCase:     usecase.NewCheckRefreshTokenUseCase(),
 	}
 }
 
 func (s *AuthService) Login(body io.ReadCloser) (output usecase.CreateAuthOutputDTO, err error) {
-	input := usecase.LoginUserInputDTO{}
+	s.DB.Begin()
+	input := struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}{}
+
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
 	}
-
 	// get user by email
-	user, err := usecase.NewGetUserByEmailUseCase().Execute(usecase.GetUserByEmailInputDTO{Email: input.Email})
+	user, err := s.NewGetUserByEmailUseCase.Execute(usecase.GetUserByEmailInputDTO{Email: input.Email})
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
 
-	// login use case
-	logged, err := usecase.NewLoginUserUseCase().Execute(usecase.LoginUserInputDTO{
+	valid, err := s.NewLoginUserUseCase.Execute(usecase.LoginUserInputDTO{
 		Name:            user.Name,
 		Email:           user.Email,
 		Password:        user.Password,
@@ -46,31 +69,145 @@ func (s *AuthService) Login(body io.ReadCloser) (output usecase.CreateAuthOutput
 		slog.Info("err", err)
 		return
 	}
-	// save token in DB
-	output, err = usecase.NewAuthUseCase().Execute(input)
+
+	if !valid.Valid {
+		slog.Info("Invalid user")
+		return usecase.CreateAuthOutputDTO{}, errors.New("invalid user")
+	}
+
+	// consulta se tem token valido
+	token, _ := s.NewGetAuthByUserIDUseCase.Execute(usecase.GetAuthByUserIDInputDTO{
+		UserID: user.ID,
+	})
+
+	check, err := s.NewCheckTokenUseCase.Execute(usecase.CheckTokenInputDTO{
+		UserID: user.ID,
+		Token:  token.Token,
+	})
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
-	// return token
 
+	if check.Valid {
+		output = usecase.CreateAuthOutputDTO{
+			Token:                 token.Token,
+			RefreshToken:          token.RefreshToken,
+			UserID:                token.UserID,
+			Active:                token.Active,
+			TokenExpiresIn:        token.TokenExpiresIn,
+			RefreshTokenExpiresIn: token.RefreshTokenExpiresIn,
+		}
+		return
+	}
+
+	_, err = s.NewUpdateAuthRevokeUseCase.Execute(usecase.UpdateAuthRevokeInputDTO{
+		UserID: user.ID,
+	})
+	if err != nil {
+		s.DB.Rollback()
+		slog.Info("err", err)
+		return
+	}
+
+	newToken, err := s.NewCreateAuthUseCase.Execute(usecase.CreateAuthInputDTO{
+		UserID: user.ID,
+	})
+	if err != nil {
+		s.DB.Rollback()
+		slog.Info("err", err)
+		return
+	}
+
+	output = usecase.CreateAuthOutputDTO{
+		Token:                 newToken.Token,
+		RefreshToken:          newToken.RefreshToken,
+		UserID:                newToken.UserID,
+		Active:                newToken.Active,
+		TokenExpiresIn:        newToken.TokenExpiresIn,
+		RefreshTokenExpiresIn: newToken.RefreshTokenExpiresIn,
+	}
+	s.DB.Commit()
 	slog.Info("User logged in")
 	return
 }
 
-// TODO: REFACTOR
-func (s *AuthService) RefreshToken(body io.ReadCloser) (output usecase.CreateAuthByRefreshTokenOutputDTO, err error) {
-	input := usecase.CreateAuthByRefreshTokenInputDTO{}
+func (s *AuthService) RefreshToken(body io.ReadCloser) (output usecase.CreateAuthOutputDTO, err error) {
+
+	s.DB.Begin()
+	input := struct {
+		UserID       int32  `json:"user_id"`
+		RefreshToken string `json:"refresh_token"`
+	}{}
+
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
 	}
-	output, err = usecase.NewCreateAuthByRefreshTokenUseCase().Execute(input)
+
+	// Consultar o refresh token e user ID no banco
+	rt, err := s.NewGetAuthByRefreshTokenUseCase.Execute(usecase.GetAuthByRefreshTokenInputDTO{
+		UserID:       input.UserID,
+		RefreshToken: input.RefreshToken,
+	})
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
-	slog.Info("User logged in")
+
+	// Validar se o token é válido - Se for válido não gera novo token
+	checkToken, err := s.NewCheckTokenUseCase.Execute(usecase.CheckTokenInputDTO{
+		UserID: rt.UserID,
+		Token:  rt.Token,
+	})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+	if checkToken.Valid {
+		return output, errors.New("token is valid")
+	}
+
+	checkRefreshToken, err := s.NewCheckRefreshTokenUseCase.Execute(usecase.CheckRefreshTokenInputDTO{
+		UserID:       rt.UserID,
+		RefreshToken: rt.RefreshToken,
+	})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	if !checkRefreshToken.Valid {
+		return output, errors.New("invalid refresh token")
+	}
+
+	_, err = s.NewUpdateAuthRevokeUseCase.Execute(usecase.UpdateAuthRevokeInputDTO{
+		UserID: rt.UserID,
+	})
+	if err != nil {
+		s.DB.Rollback()
+		slog.Info("err", err)
+		return
+	}
+
+	token, err := s.NewCreateAuthUseCase.Execute(usecase.CreateAuthInputDTO{
+		UserID: rt.UserID,
+	})
+	if err != nil {
+		s.DB.Rollback()
+		slog.Info("err", err)
+		return
+	}
+	output = usecase.CreateAuthOutputDTO{
+		Token:                 token.Token,
+		RefreshToken:          token.RefreshToken,
+		UserID:                token.UserID,
+		Active:                token.Active,
+		TokenExpiresIn:        token.TokenExpiresIn,
+		RefreshTokenExpiresIn: token.RefreshTokenExpiresIn,
+	}
+	s.DB.Commit()
+	slog.Info("Token refreshed")
 	return
 }
 

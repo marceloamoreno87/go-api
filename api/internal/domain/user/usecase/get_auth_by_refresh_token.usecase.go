@@ -1,16 +1,16 @@
 package usecase
 
 import (
-	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
-type CreateAuthInputDTO struct {
-	UserID int32 `json:"user_id"`
+type GetAuthByRefreshTokenInputDTO struct {
+	UserID       int32  `json:"user_id"`
+	RefreshToken string `json:"refresh_token"`
 }
 
-type CreateAuthOutputDTO struct {
+type GetAuthByRefreshTokenOutputDTO struct {
 	UserID                int32  `json:"user_id"`
 	Token                 string `json:"token"`
 	RefreshToken          string `json:"refresh_token"`
@@ -19,28 +19,23 @@ type CreateAuthOutputDTO struct {
 	RefreshTokenExpiresIn int32  `json:"refresh_token_expires_in"`
 }
 
-type CreateAuthUseCase struct {
+type GetAuthByRefreshTokenUseCase struct {
 	repo repositoryInterface.AuthRepositoryInterface
 }
 
-func NewCreateAuthUseCase() *CreateAuthUseCase {
-	return &CreateAuthUseCase{
+func NewGetAuthByRefreshTokenUseCase() *GetAuthByRefreshTokenUseCase {
+	return &GetAuthByRefreshTokenUseCase{
 		repo: repository.NewAuthRepository(),
 	}
 }
 
-func (uc *CreateAuthUseCase) Execute(input CreateAuthInputDTO) (output CreateAuthOutputDTO, err error) {
-	auth, err := entity.NewAuth(input.UserID)
+func (uc *GetAuthByRefreshTokenUseCase) Execute(input GetAuthByRefreshTokenInputDTO) (output GetAuthByRefreshTokenOutputDTO, err error) {
+	auth, err := uc.repo.GetAuthByRefreshToken(input.UserID, input.RefreshToken)
 	if err != nil {
 		return
 	}
 
-	err = uc.repo.CreateAuth(auth)
-	if err != nil {
-		return
-	}
-
-	output = CreateAuthOutputDTO{
+	output = GetAuthByRefreshTokenOutputDTO{
 		UserID:                auth.GetUserID(),
 		Token:                 auth.GetToken(),
 		RefreshToken:          auth.GetRefreshToken(),
