@@ -19,14 +19,14 @@ type AvatarService struct {
 	NewDeleteAvatarUseCase usecaseInterface.NewDeleteAvatarUseCaseInterface
 }
 
-func NewAvatarService() *AvatarService {
+func NewAvatarService(DB config.SQLCInterface) *AvatarService {
 	return &AvatarService{
-		DB:                     config.Sqcl,
-		NewGetAvatarUseCase:    usecase.NewGetAvatarUseCase(),
-		NewGetAvatarsUseCase:   usecase.NewGetAvatarsUseCase(),
-		NewCreateAvatarUseCase: usecase.NewCreateAvatarUseCase(),
-		NewUpdateAvatarUseCase: usecase.NewUpdateAvatarUseCase(),
-		NewDeleteAvatarUseCase: usecase.NewDeleteAvatarUseCase(),
+		DB:                     DB,
+		NewGetAvatarUseCase:    usecase.NewGetAvatarUseCase(DB),
+		NewGetAvatarsUseCase:   usecase.NewGetAvatarsUseCase(DB),
+		NewCreateAvatarUseCase: usecase.NewCreateAvatarUseCase(DB),
+		NewUpdateAvatarUseCase: usecase.NewUpdateAvatarUseCase(DB),
+		NewDeleteAvatarUseCase: usecase.NewDeleteAvatarUseCase(DB),
 	}
 }
 
@@ -36,7 +36,7 @@ func (s *AvatarService) GetAvatar(id int32) (output usecase.GetAvatarOutputDTO, 
 		ID: id,
 	}
 
-	output, err = usecase.NewGetAvatarUseCase().Execute(input)
+	output, err = s.NewGetAvatarUseCase.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		return

@@ -14,13 +14,14 @@ type RolePermissionRepository struct {
 	DB config.SQLCInterface
 }
 
-func NewRolePermissionRepository() *RolePermissionRepository {
+func NewRolePermissionRepository(DB config.SQLCInterface) *RolePermissionRepository {
 	return &RolePermissionRepository{
-		DB: config.Sqcl,
+		DB: DB,
 	}
 }
 
 func (repo *RolePermissionRepository) GetRolePermissionsByRole(id int32) (output []entityInterface.RolePermissionInterface, err error) {
+
 	rp, err := repo.DB.GetDbQueries().GetRolePermissionsByRole(context.Background(), id)
 	if err != nil {
 		return
@@ -63,5 +64,6 @@ func (repo *RolePermissionRepository) CreateRolePermission(rolePermission entity
 }
 
 func (repo *RolePermissionRepository) DeleteRolePermission(id int32) (err error) {
+
 	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).DeleteRolePermission(context.Background(), id)
 }

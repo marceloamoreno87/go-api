@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -17,9 +18,9 @@ type DeleteAvatarUseCase struct {
 	repo repositoryInterface.AvatarRepositoryInterface
 }
 
-func NewDeleteAvatarUseCase() *DeleteAvatarUseCase {
+func NewDeleteAvatarUseCase(DB config.SQLCInterface) *DeleteAvatarUseCase {
 	return &DeleteAvatarUseCase{
-		repo: repository.NewAvatarRepository(),
+		repo: repository.NewAvatarRepository(DB),
 	}
 }
 

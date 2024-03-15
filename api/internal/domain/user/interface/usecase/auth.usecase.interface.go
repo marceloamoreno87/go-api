@@ -32,3 +32,11 @@ type NewCheckTokenUseCaseInterface interface {
 type NewCheckRefreshTokenUseCaseInterface interface {
 	Execute(input usecase.CheckRefreshTokenInputDTO) (output usecase.CheckRefreshTokenOutputDTO, err error)
 }
+
+type NewCreateUserUseCaseInterface interface {
+	Execute(input usecase.CreateUserInputDTO) (output usecase.CreateUserOutputDTO, err error)
+}
+
+type NewUpdateUserPasswordUseCaseInterface interface {
+	Execute(input usecase.UpdateUserPasswordInputDTO) (output usecase.UpdateUserPasswordOutputDTO, err error)
+}

@@ -60,9 +60,6 @@ func (j *JWTAuth) Validate(token string) (b bool) {
 	if err != nil {
 		return false
 	}
-	println(t.Expiration().Unix())
-	println(time.Now().Unix())
-	println(t.Expiration().Unix() > time.Now().Unix())
 	if t.Expiration().Unix() > time.Now().Unix() {
 		return true
 	}

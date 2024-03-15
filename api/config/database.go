@@ -23,9 +23,7 @@ type Database struct {
 	sslmode  string
 }
 
-var Db DatabaseInterface
-
-func NewDatabase() {
+func NewDatabase() DatabaseInterface {
 	db := &Database{
 		driver:   Environment.GetDBDriver(),
 		host:     Environment.GetDBHost(),
@@ -39,7 +37,8 @@ func NewDatabase() {
 	if err != nil {
 		panic(err)
 	}
-	Db = db
+
+	return db
 }
 
 func (d *Database) SetDbConn() (err error) {

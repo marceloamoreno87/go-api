@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/marceloamoreno/goapi/config"
 	serviceInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/service"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	_ "github.com/marceloamoreno/goapi/internal/domain/user/usecase"
@@ -16,9 +17,9 @@ type RoleHandler struct {
 	service serviceInterface.RoleServiceInterface
 }
 
-func NewRoleHandler() *RoleHandler {
+func NewRoleHandler(DB config.SQLCInterface) *RoleHandler {
 	return &RoleHandler{
-		service: service.NewRoleService(),
+		service: service.NewRoleService(DB),
 	}
 }
 

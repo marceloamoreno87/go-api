@@ -21,15 +21,15 @@ type RoleService struct {
 	NewGetRoleByInternalNameUseCase usecaseInterface.NewGetRoleByInternalNameUseCaseInterface
 }
 
-func NewRoleService() *RoleService {
+func NewRoleService(DB config.SQLCInterface) *RoleService {
 	return &RoleService{
-		DB:                              config.Sqcl,
-		NewGetRoleUseCase:               usecase.NewGetRoleUseCase(),
-		NewGetRolesUseCase:              usecase.NewGetRolesUseCase(),
-		NewCreateRoleUseCase:            usecase.NewCreateRoleUseCase(),
-		NewUpdateRoleUseCase:            usecase.NewUpdateRoleUseCase(),
-		NewDeleteRoleUseCase:            usecase.NewDeleteRoleUseCase(),
-		NewGetRoleByInternalNameUseCase: usecase.NewGetRoleByInternalNameUseCase(),
+		DB:                              DB,
+		NewGetRoleUseCase:               usecase.NewGetRoleUseCase(DB),
+		NewGetRolesUseCase:              usecase.NewGetRolesUseCase(DB),
+		NewCreateRoleUseCase:            usecase.NewCreateRoleUseCase(DB),
+		NewUpdateRoleUseCase:            usecase.NewUpdateRoleUseCase(DB),
+		NewDeleteRoleUseCase:            usecase.NewDeleteRoleUseCase(DB),
+		NewGetRoleByInternalNameUseCase: usecase.NewGetRoleByInternalNameUseCase(DB),
 	}
 }
 

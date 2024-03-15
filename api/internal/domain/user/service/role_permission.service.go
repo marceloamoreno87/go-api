@@ -17,12 +17,12 @@ type RolePermissionService struct {
 	NewDeleteRolePermissionUseCase usecaseInterface.DeleteRolePermissionUseCaseInterface
 }
 
-func NewRolePermissionService() *RolePermissionService {
+func NewRolePermissionService(DB config.SQLCInterface) *RolePermissionService {
 	return &RolePermissionService{
-		DB:                             config.Sqcl,
-		NewGetRolePermissionsUseCase:   usecase.NewGetRolePermissionsUseCase(),
-		NewCreateRolePermissionUseCase: usecase.NewCreateRolePermissionUseCase(),
-		NewDeleteRolePermissionUseCase: usecase.NewDeleteRolePermissionUseCase(),
+		DB:                             DB,
+		NewGetRolePermissionsUseCase:   usecase.NewGetRolePermissionsUseCase(DB),
+		NewCreateRolePermissionUseCase: usecase.NewCreateRolePermissionUseCase(DB),
+		NewDeleteRolePermissionUseCase: usecase.NewDeleteRolePermissionUseCase(DB),
 	}
 }
 
@@ -32,7 +32,7 @@ func (s *RolePermissionService) GetRolePermissions(id int32) (output []usecase.G
 		RoleID: id,
 	}
 
-	output, err = usecase.NewGetRolePermissionsUseCase().Execute(input)
+	output, err = s.NewGetRolePermissionsUseCase.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -49,7 +49,7 @@ func (s *RolePermissionService) CreateRolePermission(body io.ReadCloser) (output
 		return
 	}
 
-	output, err = usecase.NewCreateRolePermissionUseCase().Execute(input)
+	output, err = s.NewCreateRolePermissionUseCase.Execute(input)
 	if err != nil {
 		s.DB.Rollback()
 		slog.Info("err", err)
@@ -70,7 +70,7 @@ func (s *RolePermissionService) DeleteRolePermission(id int32, body io.ReadClose
 		return
 	}
 
-	output, err = usecase.NewDeleteRolePermissionUseCase().Execute(input)
+	output, err = s.NewDeleteRolePermissionUseCase.Execute(input)
 	if err != nil {
 		s.DB.Rollback()
 		slog.Info("err", err)

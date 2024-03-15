@@ -13,13 +13,14 @@ type PermissionRepository struct {
 	DB config.SQLCInterface
 }
 
-func NewPermissionRepository() *PermissionRepository {
+func NewPermissionRepository(DB config.SQLCInterface) *PermissionRepository {
 	return &PermissionRepository{
-		DB: config.Sqcl,
+		DB: DB,
 	}
 }
 
 func (repo *PermissionRepository) CreatePermission(permission entityInterface.PermissionInterface) (err error) {
+
 	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreatePermission(context.Background(), db.CreatePermissionParams{
 		Name:         permission.GetName(),
 		InternalName: permission.GetInternalName(),
@@ -28,6 +29,7 @@ func (repo *PermissionRepository) CreatePermission(permission entityInterface.Pe
 }
 
 func (repo *PermissionRepository) GetPermission(id int32) (output entityInterface.PermissionInterface, err error) {
+
 	p, err := repo.DB.GetDbQueries().GetPermission(context.Background(), id)
 	if err != nil {
 		return
@@ -44,6 +46,7 @@ func (repo *PermissionRepository) GetPermission(id int32) (output entityInterfac
 }
 
 func (repo *PermissionRepository) GetPermissions(limit int32, offset int32) (output []entityInterface.PermissionInterface, err error) {
+
 	p, err := repo.DB.GetDbQueries().GetPermissions(context.Background(), db.GetPermissionsParams{
 		Limit:  limit,
 		Offset: offset,
@@ -65,6 +68,7 @@ func (repo *PermissionRepository) GetPermissions(limit int32, offset int32) (out
 }
 
 func (repo *PermissionRepository) UpdatePermission(permission entityInterface.PermissionInterface, id int32) (err error) {
+
 	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdatePermission(context.Background(), db.UpdatePermissionParams{
 		ID:           id,
 		Name:         permission.GetName(),
@@ -79,6 +83,7 @@ func (repo *PermissionRepository) DeletePermission(id int32) (err error) {
 }
 
 func (repo *PermissionRepository) GetPermissionByInternalName(internalName string) (output entityInterface.PermissionInterface, err error) {
+
 	p, err := repo.DB.GetDbQueries().GetPermissionByInternalName(context.Background(), internalName)
 	if err != nil {
 		return

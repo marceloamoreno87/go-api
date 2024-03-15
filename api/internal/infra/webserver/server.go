@@ -18,7 +18,7 @@ type Server struct {
 func NewServer() *Server {
 	return &Server{
 		mux:    config.M,
-		dbConn: config.Db,
+		dbConn: config.NewDatabase(),
 		jwt:    config.Jwt,
 	}
 }

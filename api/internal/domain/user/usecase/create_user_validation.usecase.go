@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -21,9 +22,9 @@ type CreateUserValidationUseCase struct {
 	repo repositoryInterface.UserValidationRepositoryInterface
 }
 
-func NewCreateUserValidationUseCase() *CreateUserValidationUseCase {
+func NewCreateUserValidationUseCase(DB config.SQLCInterface) *CreateUserValidationUseCase {
 	return &CreateUserValidationUseCase{
-		repo: repository.NewUserValidationRepository(),
+		repo: repository.NewUserValidationRepository(DB),
 	}
 }
 

@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/marceloamoreno/goapi/config"
 	serviceInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/service"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	_ "github.com/marceloamoreno/goapi/internal/domain/user/usecase"
@@ -16,9 +17,9 @@ type PermissionHandler struct {
 	service serviceInterface.PermissionServiceInterface
 }
 
-func NewPermissionHandler() *PermissionHandler {
+func NewPermissionHandler(DB config.SQLCInterface) *PermissionHandler {
 	return &PermissionHandler{
-		service: service.NewPermissionService(),
+		service: service.NewPermissionService(DB),
 	}
 }
 

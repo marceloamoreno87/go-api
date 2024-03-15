@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/marceloamoreno/goapi/config"
 	serviceInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/service"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	_ "github.com/marceloamoreno/goapi/internal/domain/user/usecase"
@@ -21,8 +22,9 @@ type AuthHandler struct {
 }
 
 func NewAuthHandler() *AuthHandler {
+	DB := config.NewSqlc(config.NewDatabase())
 	return &AuthHandler{
-		service: service.NewAuthService(),
+		service: service.NewAuthService(DB),
 	}
 }
 

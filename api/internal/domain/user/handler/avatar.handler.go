@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/marceloamoreno/goapi/config"
 	serviceInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/service"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	_ "github.com/marceloamoreno/goapi/internal/domain/user/usecase"
@@ -16,9 +17,9 @@ type AvatarHandler struct {
 	service serviceInterface.AvatarServiceInterface
 }
 
-func NewAvatarHandler() *AvatarHandler {
+func NewAvatarHandler(DB config.SQLCInterface) *AvatarHandler {
 	return &AvatarHandler{
-		service: service.NewAvatarService(),
+		service: service.NewAvatarService(DB),
 	}
 }
 

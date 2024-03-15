@@ -14,6 +14,7 @@ type SQLCInterface interface {
 	Commit() (err error)
 	Rollback() (err error)
 	GetTx() *sql.Tx
+	Close()
 }
 
 type SQLC struct {
@@ -22,16 +23,12 @@ type SQLC struct {
 	tx        *sql.Tx
 }
 
-var Sqcl SQLCInterface
-
-func NewSqlc(DB DatabaseInterface) {
-	sqlc := &SQLC{
+func NewSqlc(DB DatabaseInterface) SQLCInterface {
+	return &SQLC{
 		dbConn:    DB.GetDbConn(),
 		dbQueries: db.New(DB.GetDbConn()),
 		tx:        nil,
 	}
-
-	Sqcl = sqlc
 }
 
 func (t *SQLC) GetDbConn() *sql.DB {
@@ -63,4 +60,8 @@ func (t *SQLC) Rollback() (err error) {
 
 func (t *SQLC) GetTx() *sql.Tx {
 	return t.tx
+}
+
+func (t *SQLC) Close() {
+	t.dbConn.Close()
 }

@@ -13,13 +13,14 @@ type RoleRepository struct {
 	DB config.SQLCInterface
 }
 
-func NewRoleRepository() *RoleRepository {
+func NewRoleRepository(DB config.SQLCInterface) *RoleRepository {
 	return &RoleRepository{
-		DB: config.Sqcl,
+		DB: DB,
 	}
 }
 
 func (repo *RoleRepository) CreateRole(role entityInterface.RoleInterface) (err error) {
+
 	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateRole(context.Background(), db.CreateRoleParams{
 		Name:         role.GetName(),
 		InternalName: role.GetInternalName(),
@@ -28,6 +29,7 @@ func (repo *RoleRepository) CreateRole(role entityInterface.RoleInterface) (err 
 }
 
 func (repo *RoleRepository) GetRole(id int32) (output entityInterface.RoleInterface, err error) {
+
 	r, err := repo.DB.GetDbQueries().GetRole(context.Background(), id)
 	if err != nil {
 		return
@@ -44,6 +46,7 @@ func (repo *RoleRepository) GetRole(id int32) (output entityInterface.RoleInterf
 }
 
 func (repo *RoleRepository) GetRoleByInternalName(internalName string) (output entityInterface.RoleInterface, err error) {
+
 	r, err := repo.DB.GetDbQueries().GetRoleByInternalName(context.Background(), internalName)
 	if err != nil {
 		return
@@ -60,6 +63,7 @@ func (repo *RoleRepository) GetRoleByInternalName(internalName string) (output e
 }
 
 func (repo *RoleRepository) GetRoles(limit int32, offset int32) (output []entityInterface.RoleInterface, err error) {
+
 	r, err := repo.DB.GetDbQueries().GetRoles(context.Background(), db.GetRolesParams{
 		Limit:  limit,
 		Offset: offset,
@@ -81,6 +85,7 @@ func (repo *RoleRepository) GetRoles(limit int32, offset int32) (output []entity
 }
 
 func (repo *RoleRepository) UpdateRole(role entityInterface.RoleInterface, id int32) (err error) {
+
 	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdateRole(context.Background(), db.UpdateRoleParams{
 		ID:           id,
 		Name:         role.GetName(),
@@ -90,5 +95,6 @@ func (repo *RoleRepository) UpdateRole(role entityInterface.RoleInterface, id in
 }
 
 func (repo *RoleRepository) DeleteRole(id int32) (err error) {
+
 	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).DeleteRole(context.Background(), id)
 }

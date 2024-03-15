@@ -22,16 +22,16 @@ type UserService struct {
 	NewUpdateUserPasswordUseCase usecaseInterface.UpdateUserPasswordUseCaseInterface
 }
 
-func NewUserService() *UserService {
+func NewUserService(DB config.SQLCInterface) *UserService {
 	return &UserService{
-		DB:                           config.Sqcl,
-		NewGetUserByEmailUseCase:     usecase.NewGetUserByEmailUseCase(),
-		NewCreateUserUseCase:         usecase.NewCreateUserUseCase(),
-		NewGetUserUseCase:            usecase.NewGetUserUseCase(),
-		NewGetUsersUseCase:           usecase.NewGetUsersUseCase(),
-		NewUpdateUserUseCase:         usecase.NewUpdateUserUseCase(),
-		NewDeleteUserUseCase:         usecase.NewDeleteUserUseCase(),
-		NewUpdateUserPasswordUseCase: usecase.NewUpdateUserPasswordUseCase(),
+		DB:                           DB,
+		NewGetUserByEmailUseCase:     usecase.NewGetUserByEmailUseCase(DB),
+		NewCreateUserUseCase:         usecase.NewCreateUserUseCase(DB),
+		NewGetUserUseCase:            usecase.NewGetUserUseCase(DB),
+		NewGetUsersUseCase:           usecase.NewGetUsersUseCase(DB),
+		NewUpdateUserUseCase:         usecase.NewUpdateUserUseCase(DB),
+		NewDeleteUserUseCase:         usecase.NewDeleteUserUseCase(DB),
+		NewUpdateUserPasswordUseCase: usecase.NewUpdateUserPasswordUseCase(DB),
 	}
 }
 

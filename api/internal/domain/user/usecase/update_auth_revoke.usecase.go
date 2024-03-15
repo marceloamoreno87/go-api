@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -17,9 +18,9 @@ type UpdateAuthRevokeUseCase struct {
 	repo repositoryInterface.AuthRepositoryInterface
 }
 
-func NewUpdateAuthRevokeUseCase() *UpdateAuthRevokeUseCase {
+func NewUpdateAuthRevokeUseCase(DB config.SQLCInterface) *UpdateAuthRevokeUseCase {
 	return &UpdateAuthRevokeUseCase{
-		repo: repository.NewAuthRepository(),
+		repo: repository.NewAuthRepository(DB),
 	}
 }
 

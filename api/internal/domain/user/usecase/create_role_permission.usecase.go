@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -20,9 +21,9 @@ type CreateRolePermissionUseCase struct {
 	repo repositoryInterface.RolePermissionRepositoryInterface
 }
 
-func NewCreateRolePermissionUseCase() *CreateRolePermissionUseCase {
+func NewCreateRolePermissionUseCase(DB config.SQLCInterface) *CreateRolePermissionUseCase {
 	return &CreateRolePermissionUseCase{
-		repo: repository.NewRolePermissionRepository(),
+		repo: repository.NewRolePermissionRepository(DB),
 	}
 }
 

@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -29,9 +30,9 @@ type UpdateUserUseCase struct {
 	repo repositoryInterface.UserRepositoryInterface
 }
 
-func NewUpdateUserUseCase() *UpdateUserUseCase {
+func NewUpdateUserUseCase(DB config.SQLCInterface) *UpdateUserUseCase {
 	return &UpdateUserUseCase{
-		repo: repository.NewUserRepository(),
+		repo: repository.NewUserRepository(DB),
 	}
 }
 

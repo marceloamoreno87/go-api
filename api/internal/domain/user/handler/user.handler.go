@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/marceloamoreno/goapi/config"
 	serviceInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/service"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	_ "github.com/marceloamoreno/goapi/internal/domain/user/usecase"
@@ -16,9 +17,9 @@ type UserHandler struct {
 	service serviceInterface.UserServiceInterface
 }
 
-func NewUserHandler() *UserHandler {
+func NewUserHandler(DB config.SQLCInterface) *UserHandler {
 	return &UserHandler{
-		service: service.NewUserService(),
+		service: service.NewUserService(DB),
 	}
 }
 

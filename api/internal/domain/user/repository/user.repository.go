@@ -13,13 +13,14 @@ type UserRepository struct {
 	DB config.SQLCInterface
 }
 
-func NewUserRepository() *UserRepository {
+func NewUserRepository(DB config.SQLCInterface) *UserRepository {
 	return &UserRepository{
-		DB: config.Sqcl,
+		DB: DB,
 	}
 }
 
 func (repo *UserRepository) CreateUser(user entityInterface.UserInterface) (err error) {
+
 	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateUser(context.Background(), db.CreateUserParams{
 		Name:     user.GetName(),
 		Email:    user.GetEmail(),
@@ -31,6 +32,7 @@ func (repo *UserRepository) CreateUser(user entityInterface.UserInterface) (err 
 }
 
 func (repo *UserRepository) GetUser(id int32) (output entityInterface.UserInterface, err error) {
+
 	u, err := repo.DB.GetDbQueries().GetUser(context.Background(), id)
 	if err != nil {
 		return
@@ -50,6 +52,7 @@ func (repo *UserRepository) GetUser(id int32) (output entityInterface.UserInterf
 }
 
 func (repo *UserRepository) GetUserByEmail(email string) (output entityInterface.UserInterface, err error) {
+
 	u, err := repo.DB.GetDbQueries().GetUserByEmail(context.Background(), email)
 	if err != nil {
 		return
@@ -69,6 +72,7 @@ func (repo *UserRepository) GetUserByEmail(email string) (output entityInterface
 }
 
 func (repo *UserRepository) GetUsers(limit int32, offset int32) (output []entityInterface.UserInterface, err error) {
+
 	u, err := repo.DB.GetDbQueries().GetUsers(context.Background(), db.GetUsersParams{
 		Limit:  limit,
 		Offset: offset,
@@ -93,6 +97,7 @@ func (repo *UserRepository) GetUsers(limit int32, offset int32) (output []entity
 }
 
 func (repo *UserRepository) UpdateUser(user entityInterface.UserInterface, id int32) (err error) {
+
 	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdateUser(context.Background(), db.UpdateUserParams{
 		ID:       id,
 		Name:     user.GetName(),
@@ -105,6 +110,7 @@ func (repo *UserRepository) UpdateUser(user entityInterface.UserInterface, id in
 }
 
 func (repo *UserRepository) UpdateUserPassword(id int32, password string) (err error) {
+
 	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdateUserPassword(context.Background(), db.UpdateUserPasswordParams{
 		ID:       id,
 		Password: password,
@@ -112,5 +118,6 @@ func (repo *UserRepository) UpdateUserPassword(id int32, password string) (err e
 }
 
 func (repo *UserRepository) DeleteUser(id int32) (err error) {
+
 	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).DeleteUser(context.Background(), id)
 }

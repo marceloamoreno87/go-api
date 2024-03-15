@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -11,18 +12,16 @@ type CreateAvatarInputDTO struct {
 }
 
 type CreateAvatarOutputDTO struct {
-	SVG       string `json:"svg"`
-	CreatedAt string `json:"created_at"`
-	UpdatedAt string `json:"updated_at"`
+	SVG string `json:"svg"`
 }
 
 type CreateAvatarUseCase struct {
 	repo repositoryInterface.AvatarRepositoryInterface
 }
 
-func NewCreateAvatarUseCase() *CreateAvatarUseCase {
+func NewCreateAvatarUseCase(DB config.SQLCInterface) *CreateAvatarUseCase {
 	return &CreateAvatarUseCase{
-		repo: repository.NewAvatarRepository(),
+		repo: repository.NewAvatarRepository(DB),
 	}
 }
 

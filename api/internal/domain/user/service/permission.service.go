@@ -21,15 +21,15 @@ type PermissionService struct {
 	NewGetPermissionByInternalNameUseCase usecaseInterface.GetPermissionByInternalNameUseCaseInterface
 }
 
-func NewPermissionService() *PermissionService {
+func NewPermissionService(DB config.SQLCInterface) *PermissionService {
 	return &PermissionService{
-		DB:                                    config.Sqcl,
-		NewGetPermissionUseCase:               usecase.NewGetPermissionUseCase(),
-		NewGetPermissionsUseCase:              usecase.NewGetPermissionsUseCase(),
-		NewCreatePermissionUseCase:            usecase.NewCreatePermissionUseCase(),
-		NewUpdatePermissionUseCase:            usecase.NewUpdatePermissionUseCase(),
-		NewDeletePermissionUseCase:            usecase.NewDeletePermissionUseCase(),
-		NewGetPermissionByInternalNameUseCase: usecase.NewGetPermissionByInternalNameUseCase(),
+		DB:                                    DB,
+		NewGetPermissionUseCase:               usecase.NewGetPermissionUseCase(DB),
+		NewGetPermissionsUseCase:              usecase.NewGetPermissionsUseCase(DB),
+		NewCreatePermissionUseCase:            usecase.NewCreatePermissionUseCase(DB),
+		NewUpdatePermissionUseCase:            usecase.NewUpdatePermissionUseCase(DB),
+		NewDeletePermissionUseCase:            usecase.NewDeletePermissionUseCase(DB),
+		NewGetPermissionByInternalNameUseCase: usecase.NewGetPermissionByInternalNameUseCase(DB),
 	}
 }
 
@@ -81,7 +81,7 @@ func (s *PermissionService) CreatePermission(body io.ReadCloser) (output usecase
 		return output, errors.New("permission already exists")
 	}
 
-	output, err = usecase.NewCreatePermissionUseCase().Execute(input)
+	output, err = s.NewCreatePermissionUseCase.Execute(input)
 	if err != nil {
 		s.DB.Rollback()
 		slog.Info("err", err)

@@ -22,20 +22,24 @@ type AuthService struct {
 	NewGetAuthByUserIDUseCase       usecaseInterface.NewGetAuthByUserIDUseCaseInterface
 	NewCheckTokenUseCase            usecaseInterface.NewCheckTokenUseCaseInterface
 	NewCheckRefreshTokenUseCase     usecaseInterface.NewCheckRefreshTokenUseCaseInterface
+	NewCreateUserUseCase            usecaseInterface.NewCreateUserUseCaseInterface
+	NewUpdateUserPasswordUseCase    usecaseInterface.NewUpdateUserPasswordUseCaseInterface
 }
 
-func NewAuthService() *AuthService {
+func NewAuthService(DB config.SQLCInterface) *AuthService {
 	return &AuthService{
-		DB:                              config.Sqcl,
-		NewGetUserByEmailUseCase:        usecase.NewGetUserByEmailUseCase(),
-		NewCreateAuthUseCase:            usecase.NewCreateAuthUseCase(),
+		DB:                              DB,
+		NewGetUserByEmailUseCase:        usecase.NewGetUserByEmailUseCase(DB),
+		NewCreateAuthUseCase:            usecase.NewCreateAuthUseCase(DB),
 		NewLoginUserUseCase:             usecase.NewLoginUserUseCase(),
-		NewGetAuthByRefreshTokenUseCase: usecase.NewGetAuthByRefreshTokenUseCase(),
-		NewUpdateAuthRevokeUseCase:      usecase.NewUpdateAuthRevokeUseCase(),
-		NewGetAuthByTokenUseCase:        usecase.NewGetAuthByTokenUseCase(),
-		NewGetAuthByUserIDUseCase:       usecase.NewGetAuthByUserIDUseCase(),
+		NewGetAuthByRefreshTokenUseCase: usecase.NewGetAuthByRefreshTokenUseCase(DB),
+		NewUpdateAuthRevokeUseCase:      usecase.NewUpdateAuthRevokeUseCase(DB),
+		NewGetAuthByTokenUseCase:        usecase.NewGetAuthByTokenUseCase(DB),
+		NewGetAuthByUserIDUseCase:       usecase.NewGetAuthByUserIDUseCase(DB),
 		NewCheckTokenUseCase:            usecase.NewCheckTokenUseCase(),
 		NewCheckRefreshTokenUseCase:     usecase.NewCheckRefreshTokenUseCase(),
+		NewCreateUserUseCase:            usecase.NewCreateUserUseCase(DB),
+		NewUpdateUserPasswordUseCase:    usecase.NewUpdateUserPasswordUseCase(DB),
 	}
 }
 
@@ -217,7 +221,7 @@ func (s *AuthService) Register(body io.ReadCloser) (output usecase.CreateUserOut
 		slog.Info("err", err)
 		return
 	}
-	output, err = usecase.NewCreateUserUseCase().Execute(input)
+	output, err = s.NewCreateUserUseCase.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -232,7 +236,7 @@ func (s *AuthService) UpdateUserPassword(body io.ReadCloser) (output usecase.Upd
 		slog.Info("err", err)
 		return
 	}
-	output, err = usecase.NewUpdateUserPasswordUseCase().Execute(input)
+	output, err = s.NewUpdateUserPasswordUseCase.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		return
