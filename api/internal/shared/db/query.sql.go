@@ -10,6 +10,46 @@ import (
 	"time"
 )
 
+const createAuth = `-- name: CreateAuth :one
+INSERT INTO auth (
+  user_id,
+  token,
+  refresh_token,
+  expires_in
+) VALUES (
+  $1, $2, $3, $4
+)
+RETURNING id, user_id, token, refresh_token, active, expires_in, created_at, updated_at
+`
+
+type CreateAuthParams struct {
+	UserID       int32  `json:"user_id"`
+	Token        string `json:"token"`
+	RefreshToken string `json:"refresh_token"`
+	ExpiresIn    int32  `json:"expires_in"`
+}
+
+func (q *Queries) CreateAuth(ctx context.Context, arg CreateAuthParams) (Auth, error) {
+	row := q.queryRow(ctx, q.createAuthStmt, createAuth,
+		arg.UserID,
+		arg.Token,
+		arg.RefreshToken,
+		arg.ExpiresIn,
+	)
+	var i Auth
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Token,
+		&i.RefreshToken,
+		&i.Active,
+		&i.ExpiresIn,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const createAvatar = `-- name: CreateAvatar :one
 INSERT INTO avatars (
   svg
@@ -112,46 +152,6 @@ func (q *Queries) CreateRolePermission(ctx context.Context, arg CreateRolePermis
 	row := q.queryRow(ctx, q.createRolePermissionStmt, createRolePermission, arg.RoleID, arg.PermissionID)
 	var i RolePermission
 	err := row.Scan(&i.ID, &i.RoleID, &i.PermissionID)
-	return i, err
-}
-
-const createToken = `-- name: CreateToken :one
-INSERT INTO auth (
-  user_id,
-  token,
-  refresh_token,
-  expires_in
-) VALUES (
-  $1, $2, $3, $4
-)
-RETURNING id, user_id, token, refresh_token, active, expires_in, created_at, updated_at
-`
-
-type CreateTokenParams struct {
-	UserID       int32  `json:"user_id"`
-	Token        string `json:"token"`
-	RefreshToken string `json:"refresh_token"`
-	ExpiresIn    int32  `json:"expires_in"`
-}
-
-func (q *Queries) CreateToken(ctx context.Context, arg CreateTokenParams) (Auth, error) {
-	row := q.queryRow(ctx, q.createTokenStmt, createToken,
-		arg.UserID,
-		arg.Token,
-		arg.RefreshToken,
-		arg.ExpiresIn,
-	)
-	var i Auth
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.Token,
-		&i.RefreshToken,
-		&i.Active,
-		&i.ExpiresIn,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
 	return i, err
 }
 
@@ -322,6 +322,27 @@ func (q *Queries) DeleteUser(ctx context.Context, id int32) (User, error) {
 		&i.Active,
 		&i.RoleID,
 		&i.AvatarID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getAuthByUser = `-- name: GetAuthByUser :one
+SELECT id, user_id, token, refresh_token, active, expires_in, created_at, updated_at FROM auth
+WHERE user_id = $1 and active is true LIMIT 1
+`
+
+func (q *Queries) GetAuthByUser(ctx context.Context, userID int32) (Auth, error) {
+	row := q.queryRow(ctx, q.getAuthByUserStmt, getAuthByUser, userID)
+	var i Auth
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Token,
+		&i.RefreshToken,
+		&i.Active,
+		&i.ExpiresIn,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -633,27 +654,6 @@ func (q *Queries) GetRoles(ctx context.Context, arg GetRolesParams) ([]Role, err
 		return nil, err
 	}
 	return items, nil
-}
-
-const getTokenByUser = `-- name: GetTokenByUser :one
-SELECT id, user_id, token, refresh_token, active, expires_in, created_at, updated_at FROM auth
-WHERE user_id = $1 and active is true LIMIT 1
-`
-
-func (q *Queries) GetTokenByUser(ctx context.Context, userID int32) (Auth, error) {
-	row := q.queryRow(ctx, q.getTokenByUserStmt, getTokenByUser, userID)
-	var i Auth
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.Token,
-		&i.RefreshToken,
-		&i.Active,
-		&i.ExpiresIn,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
 }
 
 const getUser = `-- name: GetUser :one
@@ -1234,15 +1234,15 @@ func (q *Queries) RegisterUser(ctx context.Context, arg RegisterUserParams) (Use
 	return i, err
 }
 
-const revokeTokenByUser = `-- name: RevokeTokenByUser :one
+const revokeAuthByUser = `-- name: RevokeAuthByUser :one
 UPDATE auth SET
   active = false
 WHERE user_id = $1
 RETURNING id, user_id, token, refresh_token, active, expires_in, created_at, updated_at
 `
 
-func (q *Queries) RevokeTokenByUser(ctx context.Context, userID int32) (Auth, error) {
-	row := q.queryRow(ctx, q.revokeTokenByUserStmt, revokeTokenByUser, userID)
+func (q *Queries) RevokeAuthByUser(ctx context.Context, userID int32) (Auth, error) {
+	row := q.queryRow(ctx, q.revokeAuthByUserStmt, revokeAuthByUser, userID)
 	var i Auth
 	err := row.Scan(
 		&i.ID,

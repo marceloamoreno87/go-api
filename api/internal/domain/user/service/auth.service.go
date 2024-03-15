@@ -20,16 +20,40 @@ func NewAuthService() *AuthService {
 }
 
 func (s *AuthService) Login(body io.ReadCloser) (output usecase.CreateAuthOutputDTO, err error) {
-	input := usecase.CreateAuthInputDTO{}
+	input := usecase.LoginUserInputDTO{}
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
 	}
+
+	// get user by email
+	user, err := usecase.NewGetUserByEmailUseCase().Execute(usecase.GetUserByEmailInputDTO{Email: input.Email})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	// login use case
+	logged, err := usecase.NewLoginUserUseCase().Execute(usecase.LoginUserInputDTO{
+		Name:            user.Name,
+		Email:           user.Email,
+		Password:        user.Password,
+		RoleID:          user.RoleID,
+		AvatarID:        user.AvatarID,
+		RequestPassword: input.Password,
+	})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+	// save token in DB
 	output, err = usecase.NewAuthUseCase().Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
+	// return token
+
 	slog.Info("User logged in")
 	return
 }

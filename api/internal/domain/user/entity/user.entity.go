@@ -12,18 +12,19 @@ import (
 )
 
 type User struct {
-	ID        int32                           `json:"id"`
-	Name      string                          `json:"name"`
-	Email     string                          `json:"email"`
-	Password  string                          `json:"password"`
-	Active    bool                            `json:"active"`
-	Token     string                          `json:"token"`
-	RoleID    int32                           `json:"role_id"`
-	AvatarID  int32                           `json:"avatar_id"`
-	Role      entityInterface.RoleInterface   `json:"role"`
-	Avatar    entityInterface.AvatarInterface `json:"avatar"`
-	CreatedAt time.Time                       `json:"created_at"`
-	UpdatedAt time.Time                       `json:"updated_at"`
+	ID           int32                           `json:"id"`
+	Name         string                          `json:"name"`
+	Email        string                          `json:"email"`
+	Password     string                          `json:"password"`
+	Active       bool                            `json:"active"`
+	Token        string                          `json:"token"`
+	RefreshToken string                          `json:"refresh_token"`
+	RoleID       int32                           `json:"role_id"`
+	AvatarID     int32                           `json:"avatar_id"`
+	Role         entityInterface.RoleInterface   `json:"role"`
+	Avatar       entityInterface.AvatarInterface `json:"avatar"`
+	CreatedAt    time.Time                       `json:"created_at"`
+	UpdatedAt    time.Time                       `json:"updated_at"`
 }
 
 func NewUser(name string, email string, password string, roleID int32, avatarID int32) (user entityInterface.UserInterface, err error) {
@@ -80,6 +81,9 @@ func (u *User) GenerateToken() {
 		"avatar_id": u.AvatarID,
 	}
 	u.Token = config.Jwt.Generate(claims).GetToken()
+
+	claims = map[string]interface{}{}
+	u.RefreshToken = config.Jwt.Generate(claims).GetRefreshToken()
 }
 
 func (u *User) ComparePassword(password string) (b bool) {

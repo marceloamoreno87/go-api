@@ -1,9 +1,11 @@
 package entity
 
 import (
+	"errors"
 	"time"
 
 	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
+	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
 type Auth struct {
@@ -18,8 +20,36 @@ type Auth struct {
 	User         entityInterface.UserInterface `json:"user"`
 }
 
-func NewAuth() *Auth {
-	return &Auth{}
+func NewAuth(userId int32, token string, refreshToken string) (auth entityInterface.AuthInterface, err error) {
+	newAuth := &Auth{
+		UserID:       userId,
+		Token:        token,
+		RefreshToken: refreshToken,
+	}
+
+	notify := newAuth.Validate()
+	if notify.HasErrors() {
+		return nil, errors.New(notify.Messages())
+	}
+
+	return
+}
+
+func (u *Auth) Validate() (notify notification.ErrorsInterface) {
+
+	notify = notification.New()
+
+	if u.UserID == 0 {
+		notify.AddError("User is required", "auth.entity.user_id")
+	}
+	if u.Token == "" {
+		notify.AddError("Token is required", "auth.entity.token")
+	}
+	if u.RefreshToken == "" {
+		notify.AddError("RefreshToken is required", "auth.entity.refresh_token")
+	}
+
+	return
 }
 
 func (a *Auth) SetID(id int32) {

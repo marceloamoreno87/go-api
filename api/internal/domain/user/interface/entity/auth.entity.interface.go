@@ -1,6 +1,10 @@
 package entityInterface
 
-import "time"
+import (
+	"time"
+
+	"github.com/marceloamoreno/goapi/internal/shared/notification"
+)
 
 type AuthInterface interface {
 	SetID(id int32)
@@ -19,4 +23,7 @@ type AuthInterface interface {
 	GetExpiresIn() int32
 	GetCreatedAt() time.Time
 	GetUpdatedAt() time.Time
+	GetUser() UserInterface
+	SetUser(user UserInterface)
+	Validate() notification.ErrorsInterface
 }

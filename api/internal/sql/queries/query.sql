@@ -105,11 +105,11 @@ DELETE FROM users
 WHERE id = $1
 RETURNING *;
 
--- name: GetTokenByUser :one
+-- name: GetAuthByUser :one
 SELECT * FROM auth
 WHERE user_id = $1 and active is true LIMIT 1;
 
--- name: CreateToken :one
+-- name: CreateAuth :one
 INSERT INTO auth (
   user_id,
   token,
@@ -120,7 +120,7 @@ INSERT INTO auth (
 )
 RETURNING *;
 
--- name: RevokeTokenByUser :one
+-- name: RevokeAuthByUser :one
 UPDATE auth SET
   active = false
 WHERE user_id = $1
