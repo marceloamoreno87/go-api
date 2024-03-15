@@ -9,22 +9,17 @@ import (
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
-type RolePermissionServiceInterface interface {
-	GetRolePermissions(id int32) (output usecase.GetRolePermissionsOutputDTO, err error)
-	CreateRolePermission(body io.ReadCloser) (err error)
-	UpdateRolePermission(id int32, body io.ReadCloser) (err error)
-	config.SQLCInterface
-}
-
 type RolePermissionService struct {
-	config.SQLCInterface
+	DB config.SQLCInterface
 }
 
 func NewRolePermissionService() *RolePermissionService {
-	return &RolePermissionService{}
+	return &RolePermissionService{
+		DB: config.Sqcl,
+	}
 }
 
-func (s *RolePermissionService) GetRolePermissions(id int32) (output usecase.GetRolePermissionsOutputDTO, err error) {
+func (s *RolePermissionService) GetRolePermissions(id int32) (output []usecase.GetRolePermissionsOutputDTO, err error) {
 
 	input := usecase.GetRolePermissionsInputDTO{
 		RoleID: id,
@@ -39,27 +34,28 @@ func (s *RolePermissionService) GetRolePermissions(id int32) (output usecase.Get
 	return
 }
 
-func (s *RolePermissionService) CreateRolePermission(body io.ReadCloser) (err error) {
-	s.Begin()
+func (s *RolePermissionService) CreateRolePermission(body io.ReadCloser) (output usecase.CreateRolePermissionOutputDTO, err error) {
+	s.DB.Begin()
 	input := usecase.CreateRolePermissionInputDTO{}
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
 	}
 
-	if err = usecase.NewCreateRolePermissionUseCase().Execute(input); err != nil {
-		s.Rollback()
+	output, err = usecase.NewCreateRolePermissionUseCase().Execute(input)
+	if err != nil {
+		s.DB.Rollback()
 		slog.Info("err", err)
 		return
 	}
-	s.Commit()
+	s.DB.Commit()
 	return
 
 }
 
-func (s *RolePermissionService) UpdateRolePermission(id int32, body io.ReadCloser) (err error) {
-	s.Begin()
-	input := usecase.UpdateRolePermissionInputDTO{
+func (s *RolePermissionService) DeleteRolePermission(id int32, body io.ReadCloser) (output usecase.DeleteRolePermissionOutputDTO, err error) {
+	s.DB.Begin()
+	input := usecase.DeleteRolePermissionInputDTO{
 		RoleID: id,
 	}
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
@@ -67,12 +63,13 @@ func (s *RolePermissionService) UpdateRolePermission(id int32, body io.ReadClose
 		return
 	}
 
-	if err = usecase.NewUpdateRolePermissionUseCase().Execute(input); err != nil {
-		s.Rollback()
+	output, err = usecase.NewDeleteRolePermissionUseCase().Execute(input)
+	if err != nil {
+		s.DB.Rollback()
 		slog.Info("err", err)
 		return
 	}
-	s.Commit()
-	slog.Info("Role permission updated")
+	s.DB.Commit()
+	slog.Info("Role permission deleted")
 	return
 }

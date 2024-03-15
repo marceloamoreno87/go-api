@@ -33,15 +33,23 @@ func NewCreateRoleUseCase() *CreateRoleUseCase {
 	}
 }
 
-func (uc *CreateRoleUseCase) Execute(input CreateRoleInputDTO) (err error) {
+func (uc *CreateRoleUseCase) Execute(input CreateRoleInputDTO) (output CreateRoleOutputDTO, err error) {
 	role, err := entity.NewRole(input.Name, input.InternalName, input.Description)
 	if err != nil {
 		return
 	}
 
-	if err = uc.repo.CreateRole(role); err != nil {
+	r, err := uc.repo.CreateRole(role)
+	if err != nil {
 		return
 	}
-
+	output = CreateRoleOutputDTO{
+		ID:           r.GetID(),
+		Name:         r.GetName(),
+		InternalName: r.GetInternalName(),
+		Description:  r.GetDescription(),
+		CreatedAt:    r.GetCreatedAt(),
+		UpdatedAt:    r.GetUpdatedAt(),
+	}
 	return
 }

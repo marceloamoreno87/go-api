@@ -10,15 +10,17 @@ import (
 )
 
 type PermissionRepository struct {
-	config.SQLCInterface
+	DB config.SQLCInterface
 }
 
 func NewPermissionRepository() *PermissionRepository {
-	return &PermissionRepository{}
+	return &PermissionRepository{
+		DB: config.Sqcl,
+	}
 }
 
 func (repo *PermissionRepository) CreatePermission(permission entityInterface.PermissionInterface) (output entityInterface.PermissionInterface, err error) {
-	p, err := repo.GetDbQueries().WithTx(repo.GetTx()).CreatePermission(context.Background(), db.CreatePermissionParams{
+	p, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreatePermission(context.Background(), db.CreatePermissionParams{
 		Name:         permission.GetName(),
 		InternalName: permission.GetInternalName(),
 		Description:  permission.GetDescription(),
@@ -38,7 +40,7 @@ func (repo *PermissionRepository) CreatePermission(permission entityInterface.Pe
 }
 
 func (repo *PermissionRepository) GetPermission(id int32) (output entityInterface.PermissionInterface, err error) {
-	p, err := repo.GetDbQueries().GetPermission(context.Background(), id)
+	p, err := repo.DB.GetDbQueries().GetPermission(context.Background(), id)
 	if err != nil {
 		return
 	}
@@ -54,7 +56,7 @@ func (repo *PermissionRepository) GetPermission(id int32) (output entityInterfac
 }
 
 func (repo *PermissionRepository) GetPermissions(limit int32, offset int32) (output []entityInterface.PermissionInterface, err error) {
-	p, err := repo.GetDbQueries().GetPermissions(context.Background(), db.GetPermissionsParams{
+	p, err := repo.DB.GetDbQueries().GetPermissions(context.Background(), db.GetPermissionsParams{
 		Limit:  limit,
 		Offset: offset,
 	})
@@ -75,7 +77,7 @@ func (repo *PermissionRepository) GetPermissions(limit int32, offset int32) (out
 }
 
 func (repo *PermissionRepository) UpdatePermission(permission entityInterface.PermissionInterface, id int32) (output entityInterface.PermissionInterface, err error) {
-	p, err := repo.GetDbQueries().WithTx(repo.GetTx()).UpdatePermission(context.Background(), db.UpdatePermissionParams{
+	p, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdatePermission(context.Background(), db.UpdatePermissionParams{
 		ID:           id,
 		Name:         permission.GetName(),
 		InternalName: permission.GetInternalName(),
@@ -93,7 +95,7 @@ func (repo *PermissionRepository) UpdatePermission(permission entityInterface.Pe
 }
 
 func (repo *PermissionRepository) DeletePermission(id int32) (output entityInterface.PermissionInterface, err error) {
-	p, err := repo.GetDbQueries().WithTx(repo.GetTx()).DeletePermission(context.Background(), id)
+	p, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).DeletePermission(context.Background(), id)
 	if err != nil {
 		return
 	}
@@ -109,7 +111,7 @@ func (repo *PermissionRepository) DeletePermission(id int32) (output entityInter
 }
 
 func (repo *PermissionRepository) GetPermissionByInternalName(internalName string) (output entityInterface.PermissionInterface, err error) {
-	p, err := repo.GetDbQueries().GetPermissionByInternalName(context.Background(), internalName)
+	p, err := repo.DB.GetDbQueries().GetPermissionByInternalName(context.Background(), internalName)
 	if err != nil {
 		return
 	}

@@ -11,5 +11,5 @@ type GetRolePermissionUseCaseInterface interface {
 }
 
 type UpdateRolePermissionUseCaseInterface interface {
-	Execute(input usecase.UpdateRolePermissionInputDTO) (err error)
+	Execute(input usecase.DeleteRolePermissionInputDTO) (err error)
 }

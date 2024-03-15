@@ -1,7 +1,6 @@
 package repositoryInterface
 
 import (
-	"github.com/marceloamoreno/goapi/config"
 	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
 )
 
@@ -11,5 +10,4 @@ type AvatarRepositoryInterface interface {
 	GetAvatars(limit int32, offset int32) (output []entityInterface.AvatarInterface, err error)
 	UpdateAvatar(avatar entityInterface.AvatarInterface, id int32) (output entityInterface.AvatarInterface, err error)
 	DeleteAvatar(id int32) (output entityInterface.AvatarInterface, err error)
-	config.SQLCInterface
 }

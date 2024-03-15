@@ -28,15 +28,21 @@ func NewDeleteAvatarUseCase() *DeleteAvatarUseCase {
 	}
 }
 
-func (uc *DeleteAvatarUseCase) Execute(input DeleteAvatarInputDTO) (err error) {
+func (uc *DeleteAvatarUseCase) Execute(input DeleteAvatarInputDTO) (output DeleteAvatarOutputDTO, err error) {
 	avatar, err := uc.repo.GetAvatar(input.ID)
 	if err != nil {
 		return
 	}
 
-	if err = uc.repo.DeleteAvatar(avatar.GetID()); err != nil {
+	a, err := uc.repo.DeleteAvatar(avatar.GetID())
+	if err != nil {
 		return
 	}
-
+	output = DeleteAvatarOutputDTO{
+		ID:        a.GetID(),
+		SVG:       a.GetSVG(),
+		CreatedAt: a.GetCreatedAt(),
+		UpdatedAt: a.GetUpdatedAt(),
+	}
 	return
 }

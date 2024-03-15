@@ -10,8 +10,8 @@ import (
 type RolePermission struct {
 	ID            int32
 	RoleID        int32
-	PermissionIDs []int32
 	Role          entityInterface.RoleInterface
+	PermissionIDs []int32
 	Permissions   []entityInterface.PermissionInterface
 }
 
@@ -48,11 +48,15 @@ func (r *RolePermission) GetID() int32 {
 	return r.ID
 }
 
+func (r *RolePermission) GetRoleID() (id int32) {
+	return r.RoleID
+}
+
 func (r *RolePermission) GetRole() entityInterface.RoleInterface {
 	return r.Role
 }
 
-func (r *RolePermission) GetPermissionID() (id int32) {
+func (r *RolePermission) GetRolePermissionID() (id int32) {
 	return r.ID
 }
 
@@ -64,12 +68,12 @@ func (r *RolePermission) GetPermissionIDs() []int32 {
 	return r.PermissionIDs
 }
 
-func (r *RolePermission) GetRoleID() (id int32) {
-	return r.RoleID
+func (r *RolePermission) SetRolePermissionID(id int32) {
+	r.ID = id
 }
 
-func (r *RolePermission) SetID(id int32) {
-	r.ID = id
+func (r *RolePermission) SetRoleID(roleId int32) {
+	r.RoleID = roleId
 }
 
 func (r *RolePermission) SetRole(role entityInterface.RoleInterface) {
@@ -80,14 +84,6 @@ func (r *RolePermission) SetPermissions(permissions []entityInterface.Permission
 	r.Permissions = permissions
 }
 
-func (r *RolePermission) SetPermissionID(permissionId int32) {
-	r.ID = permissionId
-}
-
 func (r *RolePermission) SetPermissionIDs(permissionId []int32) {
 	r.PermissionIDs = permissionId
-}
-
-func (r *RolePermission) SetRoleID(roleId int32) {
-	r.RoleID = roleId
 }

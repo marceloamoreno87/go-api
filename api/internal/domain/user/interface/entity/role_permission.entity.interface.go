@@ -1,19 +1,20 @@
 package entityInterface
 
-import "github.com/marceloamoreno/goapi/internal/shared/notification"
+import (
+	"github.com/marceloamoreno/goapi/internal/shared/notification"
+)
 
 type RolePermissionInterface interface {
-	Validate() (notify notification.ErrorsInterface)
+	GetID() int32
+	GetRoleID() (id int32)
 	GetRole() RoleInterface
+	GetRolePermissionID() (id int32)
 	GetPermissions() []PermissionInterface
+	GetPermissionIDs() []int32
+	SetRolePermissionID(id int32)
+	SetRoleID(roleId int32)
 	SetRole(role RoleInterface)
 	SetPermissions(permissions []PermissionInterface)
-	GetRoleID() (id int32)
-	GetPermissionID() (id int32)
-	SetRoleID(roleId int32)
-	SetPermissionID(permissionId int32)
-	GetPermissionIDs() []int32
 	SetPermissionIDs(permissionId []int32)
-	GetID() int32
-	SetID(id int32)
+	Validate() (notify notification.ErrorsInterface)
 }

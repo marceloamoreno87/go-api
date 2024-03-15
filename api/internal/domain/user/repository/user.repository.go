@@ -10,15 +10,17 @@ import (
 )
 
 type UserRepository struct {
-	config.SQLCInterface
+	DB config.SQLCInterface
 }
 
 func NewUserRepository() *UserRepository {
-	return &UserRepository{}
+	return &UserRepository{
+		DB: config.Sqcl,
+	}
 }
 
 func (repo *UserRepository) CreateUser(user entityInterface.UserInterface) (output entityInterface.UserInterface, err error) {
-	u, err := repo.GetDbQueries().WithTx(repo.GetTx()).CreateUser(context.Background(), db.CreateUserParams{
+	u, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateUser(context.Background(), db.CreateUserParams{
 		Name:     user.GetName(),
 		Email:    user.GetEmail(),
 		Password: user.GetPassword(),
@@ -44,7 +46,7 @@ func (repo *UserRepository) CreateUser(user entityInterface.UserInterface) (outp
 }
 
 func (repo *UserRepository) RegisterUser(user entityInterface.UserInterface) (output entityInterface.UserInterface, err error) {
-	u, err := repo.GetDbQueries().WithTx(repo.GetTx()).RegisterUser(context.Background(), db.RegisterUserParams{
+	u, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).RegisterUser(context.Background(), db.RegisterUserParams{
 		Name:     user.GetName(),
 		Email:    user.GetEmail(),
 		Password: user.GetPassword(),
@@ -68,7 +70,7 @@ func (repo *UserRepository) RegisterUser(user entityInterface.UserInterface) (ou
 }
 
 func (repo *UserRepository) GetUser(id int32) (output entityInterface.UserInterface, err error) {
-	u, err := repo.GetDbQueries().GetUser(context.Background(), id)
+	u, err := repo.DB.GetDbQueries().GetUser(context.Background(), id)
 	if err != nil {
 		return
 	}
@@ -87,7 +89,7 @@ func (repo *UserRepository) GetUser(id int32) (output entityInterface.UserInterf
 }
 
 func (repo *UserRepository) GetUserByEmail(email string) (output entityInterface.UserInterface, err error) {
-	u, err := repo.GetDbQueries().GetUserByEmail(context.Background(), email)
+	u, err := repo.DB.GetDbQueries().GetUserByEmail(context.Background(), email)
 	if err != nil {
 		return
 	}
@@ -106,7 +108,7 @@ func (repo *UserRepository) GetUserByEmail(email string) (output entityInterface
 }
 
 func (repo *UserRepository) GetUsers(limit int32, offset int32) (output []entityInterface.UserInterface, err error) {
-	u, err := repo.GetDbQueries().GetUsers(context.Background(), db.GetUsersParams{
+	u, err := repo.DB.GetDbQueries().GetUsers(context.Background(), db.GetUsersParams{
 		Limit:  limit,
 		Offset: offset,
 	})
@@ -130,7 +132,7 @@ func (repo *UserRepository) GetUsers(limit int32, offset int32) (output []entity
 }
 
 func (repo *UserRepository) UpdateUser(user entityInterface.UserInterface, id int32) (output entityInterface.UserInterface, err error) {
-	u, err := repo.GetDbQueries().WithTx(repo.GetTx()).UpdateUser(context.Background(), db.UpdateUserParams{
+	u, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdateUser(context.Background(), db.UpdateUserParams{
 		ID:       id,
 		Name:     user.GetName(),
 		Email:    user.GetEmail(),
@@ -156,10 +158,10 @@ func (repo *UserRepository) UpdateUser(user entityInterface.UserInterface, id in
 	return
 }
 
-func (repo *UserRepository) UpdateUserPassword(user entityInterface.UserInterface, id int32) (output entityInterface.UserInterface, err error) {
-	u, err := repo.GetDbQueries().WithTx(repo.GetTx()).UpdateUserPassword(context.Background(), db.UpdateUserPasswordParams{
+func (repo *UserRepository) UpdateUserPassword(id int32, password string) (output entityInterface.UserInterface, err error) {
+	u, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdateUserPassword(context.Background(), db.UpdateUserPasswordParams{
 		ID:       id,
-		Password: user.GetPassword(),
+		Password: password,
 	})
 	if err != nil {
 		return
@@ -179,7 +181,7 @@ func (repo *UserRepository) UpdateUserPassword(user entityInterface.UserInterfac
 }
 
 func (repo *UserRepository) DeleteUser(id int32) (output entityInterface.UserInterface, err error) {
-	u, err := repo.GetDbQueries().WithTx(repo.GetTx()).DeleteUser(context.Background(), id)
+	u, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).DeleteUser(context.Background(), id)
 	if err != nil {
 		return
 	}

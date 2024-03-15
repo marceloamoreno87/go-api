@@ -10,15 +10,17 @@ import (
 )
 
 type AuthRepository struct {
-	config.SQLCInterface
+	DB config.SQLCInterface
 }
 
 func NewAuthRepository() *AuthRepository {
-	return &AuthRepository{}
+	return &AuthRepository{
+		DB: config.Sqcl,
+	}
 }
 
 func (repo *AuthRepository) CreateToken(auth entityInterface.AuthInterface) (output entityInterface.AuthInterface, err error) {
-	a, err := repo.GetDbQueries().WithTx(repo.GetTx()).CreateToken(context.Background(), db.CreateTokenParams{
+	a, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateToken(context.Background(), db.CreateTokenParams{
 		UserID:       auth.GetUserID(),
 		Token:        auth.GetToken(),
 		RefreshToken: auth.GetRefreshToken(),
@@ -40,7 +42,7 @@ func (repo *AuthRepository) CreateToken(auth entityInterface.AuthInterface) (out
 }
 
 func (repo *AuthRepository) GetTokenByUser(auth entityInterface.AuthInterface) (output entityInterface.AuthInterface, err error) {
-	a, err := repo.GetDbQueries().GetTokenByUser(context.Background(), auth.GetUserID())
+	a, err := repo.DB.GetDbQueries().GetTokenByUser(context.Background(), auth.GetUserID())
 	if err != nil {
 		return
 	}
@@ -57,7 +59,7 @@ func (repo *AuthRepository) GetTokenByUser(auth entityInterface.AuthInterface) (
 }
 
 func (repo *AuthRepository) RevokeTokenByUser(auth entityInterface.AuthInterface) (output entityInterface.AuthInterface, err error) {
-	a, err := repo.GetDbQueries().WithTx(repo.GetTx()).RevokeTokenByUser(context.Background(), auth.GetUserID())
+	a, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).RevokeTokenByUser(context.Background(), auth.GetUserID())
 	if err != nil {
 		return
 	}

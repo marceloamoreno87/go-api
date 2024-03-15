@@ -4,23 +4,16 @@ import (
 	"log/slog"
 	"net/http"
 
+	serviceInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/service"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	_ "github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 	"github.com/marceloamoreno/goapi/internal/shared/helper"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
-type AvatarHandlerInterface interface {
-	GetAvatar(w http.ResponseWriter, r *http.Request)
-	GetAvatars(w http.ResponseWriter, r *http.Request)
-	CreateAvatar(w http.ResponseWriter, r *http.Request)
-	UpdateAvatar(w http.ResponseWriter, r *http.Request)
-	DeleteAvatar(w http.ResponseWriter, r *http.Request)
-}
-
 type AvatarHandler struct {
 	response.Responses
-	service service.AvatarServiceInterface
+	service serviceInterface.AvatarServiceInterface
 }
 
 func NewAvatarHandler() *AvatarHandler {
@@ -85,12 +78,13 @@ func (h *AvatarHandler) GetAvatars(w http.ResponseWriter, r *http.Request) {
 // @Router /role [post]
 // @Security     JWT
 func (h *AvatarHandler) CreateAvatar(w http.ResponseWriter, r *http.Request) {
-	if err := h.service.CreateAvatar(r.Body); err != nil {
+	output, err := h.service.CreateAvatar(r.Body)
+	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	h.SendResponse(w, h.NewResponse(nil))
+	h.SendResponse(w, h.NewResponse(output))
 }
 
 // UpdateRole godoc
@@ -106,12 +100,13 @@ func (h *AvatarHandler) CreateAvatar(w http.ResponseWriter, r *http.Request) {
 // @Router /Avatar/{id} [put]
 // @Security     JWT
 func (h *AvatarHandler) UpdateAvatar(w http.ResponseWriter, r *http.Request) {
-	if err := h.service.UpdateAvatar(helper.GetID(r), r.Body); err != nil {
+	output, err := h.service.UpdateAvatar(helper.GetID(r), r.Body)
+	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	h.SendResponse(w, h.NewResponse(nil))
+	h.SendResponse(w, h.NewResponse(output))
 }
 
 // DeleteAvatar godoc
@@ -127,10 +122,11 @@ func (h *AvatarHandler) UpdateAvatar(w http.ResponseWriter, r *http.Request) {
 // @Router /Avatar/{id} [delete]
 // @Security     JWT
 func (h *AvatarHandler) DeleteAvatar(w http.ResponseWriter, r *http.Request) {
-	if err := h.service.DeleteAvatar(helper.GetID(r)); err != nil {
+	output, err := h.service.DeleteAvatar(helper.GetID(r))
+	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	h.SendResponse(w, h.NewResponse(nil))
+	h.SendResponse(w, h.NewResponse(output))
 }

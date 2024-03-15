@@ -1,7 +1,6 @@
 package repositoryInterface
 
 import (
-	"github.com/marceloamoreno/goapi/config"
 	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
 )
 
@@ -12,5 +11,4 @@ type PermissionRepositoryInterface interface {
 	UpdatePermission(permission entityInterface.PermissionInterface, id int32) (output entityInterface.PermissionInterface, err error)
 	DeletePermission(id int32) (output entityInterface.PermissionInterface, err error)
 	GetPermissionByInternalName(internalName string) (output entityInterface.PermissionInterface, err error)
-	config.SQLCInterface
 }

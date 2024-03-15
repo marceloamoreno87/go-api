@@ -12,5 +12,5 @@ type UserRepositoryInterface interface {
 	UpdateUser(user entityInterface.UserInterface, id int32) (output entityInterface.UserInterface, err error)
 	DeleteUser(id int32) (output entityInterface.UserInterface, err error)
 	RegisterUser(user entityInterface.UserInterface) (output entityInterface.UserInterface, err error)
-	UpdateUserPassword(user entityInterface.UserInterface, id int32) (output entityInterface.UserInterface, err error)
+	UpdateUserPassword(id int32, password string) (output entityInterface.UserInterface, err error)
 }

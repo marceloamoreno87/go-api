@@ -11,6 +11,11 @@ type CreateRolePermissionInputDTO struct {
 	PermissionIDs []int32 `json:"permission_ids"`
 }
 
+type CreateRolePermissionOutputDTO struct {
+	ID     int32 `json:"id"`
+	RoleID int32 `json:"role_id"`
+}
+
 type CreateRolePermissionUseCase struct {
 	repo repositoryInterface.RolePermissionRepositoryInterface
 }
@@ -21,15 +26,24 @@ func NewCreateRolePermissionUseCase() *CreateRolePermissionUseCase {
 	}
 }
 
-func (uc *CreateRolePermissionUseCase) Execute(input CreateRolePermissionInputDTO) (err error) {
+func (uc *CreateRolePermissionUseCase) Execute(input CreateRolePermissionInputDTO) (output CreateRolePermissionOutputDTO, err error) {
 
 	rolePermission, err := entity.NewRolePermission(input.RoleID, input.PermissionIDs)
 	if err != nil {
 		return
 	}
 
-	if err = uc.repo.CreateRolePermission(rolePermission); err != nil {
+	rp, err := uc.repo.CreateRolePermission(rolePermission)
+	if err != nil {
 		return
 	}
+
+	for _, p := range rp {
+		output = CreateRolePermissionOutputDTO{
+			ID:     p.GetID(),
+			RoleID: p.GetRoleID(),
+		}
+	}
+
 	return
 }

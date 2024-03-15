@@ -7,7 +7,6 @@ import (
 
 func (route *Route) getRoleRoutes(router chi.Router) {
 	handler := handler.NewRoleHandler()
-
 	router.Route("/role", func(r chi.Router) {
 		r.Get("/", handler.GetRoles)
 		r.Get("/{id}", handler.GetRole)

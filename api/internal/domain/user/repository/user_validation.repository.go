@@ -10,15 +10,17 @@ import (
 )
 
 type UserValidationRepository struct {
-	config.SQLCInterface
+	DB config.SQLCInterface
 }
 
 func NewUserValidationRepository() *UserValidationRepository {
-	return &UserValidationRepository{}
+	return &UserValidationRepository{
+		DB: config.Sqcl,
+	}
 }
 
 func (repo *UserValidationRepository) GetValidationUser(id int32) (output entityInterface.UserValidationInterface, err error) {
-	uv, err := repo.GetDbQueries().GetValidationUser(context.Background(), id)
+	uv, err := repo.DB.GetDbQueries().GetValidationUser(context.Background(), id)
 	if err != nil {
 		return
 	}
@@ -36,7 +38,7 @@ func (repo *UserValidationRepository) GetValidationUser(id int32) (output entity
 }
 
 func (repo *UserValidationRepository) GetValidationUserByHash(hash string) (output entityInterface.UserValidationInterface, err error) {
-	uv, err := repo.GetDbQueries().GetValidationUserByHash(context.Background(), hash)
+	uv, err := repo.DB.GetDbQueries().GetValidationUserByHash(context.Background(), hash)
 	if err != nil {
 		return
 	}
@@ -53,7 +55,7 @@ func (repo *UserValidationRepository) GetValidationUserByHash(hash string) (outp
 }
 
 func (repo *UserValidationRepository) CreateValidationUser(userValidation entityInterface.UserValidationInterface) (output entityInterface.UserValidationInterface, err error) {
-	uv, err := repo.GetDbQueries().WithTx(repo.GetTx()).CreateValidationUser(context.Background(), db.CreateValidationUserParams{
+	uv, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateValidationUser(context.Background(), db.CreateValidationUserParams{
 		UserID:    userValidation.GetUserID(),
 		Hash:      userValidation.GetHash(),
 		ExpiresIn: userValidation.GetExpiresIn(),
@@ -74,7 +76,7 @@ func (repo *UserValidationRepository) CreateValidationUser(userValidation entity
 }
 
 func (repo *UserValidationRepository) UpdateUserValidationUsed(id int32) (output entityInterface.UserValidationInterface, err error) {
-	uv, err := repo.GetDbQueries().WithTx(repo.GetTx()).UpdateUserValidationUsed(context.Background(), id)
+	uv, err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdateUserValidationUsed(context.Background(), id)
 	if err != nil {
 		return
 	}

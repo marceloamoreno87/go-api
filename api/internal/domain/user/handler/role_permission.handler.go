@@ -4,21 +4,16 @@ import (
 	"log/slog"
 	"net/http"
 
+	serviceInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/service"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	_ "github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 	"github.com/marceloamoreno/goapi/internal/shared/helper"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
-type RolePermissionHandlerInterface interface {
-	GetRolePermissions(w http.ResponseWriter, r *http.Request)
-	CreateRolePermission(w http.ResponseWriter, r *http.Request)
-	UpdateRolePermission(w http.ResponseWriter, r *http.Request)
-}
-
 type RolePermissionHandler struct {
 	response.Responses
-	service service.RolePermissionServiceInterface
+	service serviceInterface.RolePermissionServiceInterface
 }
 
 func NewRolePermissionHandler() *RolePermissionHandler {
@@ -61,13 +56,14 @@ func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *htt
 // @Router /role/{id}/permission [post]
 // @Security     JWT
 func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *http.Request) {
-	if err := h.service.CreateRolePermission(r.Body); err != nil {
+	output, err := h.service.CreateRolePermission(r.Body)
+	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 	slog.Info("Role permission created")
-	h.SendResponse(w, h.NewResponse(nil))
+	h.SendResponse(w, h.NewResponse(output))
 
 }
 
@@ -83,11 +79,12 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 // @Failure 400 {object} response.ResponseError{}
 // @Router /role/{id}/permission [put]
 // @Security     JWT
-func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *http.Request) {
-	if err := h.service.UpdateRolePermission(helper.GetID(r), r.Body); err != nil {
+func (h *RolePermissionHandler) DeleteRolePermission(w http.ResponseWriter, r *http.Request) {
+	output, err := h.service.DeleteRolePermission(helper.GetID(r), r.Body)
+	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	h.SendResponse(w, h.NewResponse(nil))
+	h.SendResponse(w, h.NewResponse(output))
 }

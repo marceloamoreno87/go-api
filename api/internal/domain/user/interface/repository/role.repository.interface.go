@@ -1,7 +1,6 @@
 package repositoryInterface
 
 import (
-	"github.com/marceloamoreno/goapi/config"
 	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
 )
 
@@ -12,5 +11,4 @@ type RoleRepositoryInterface interface {
 	GetRoles(limit int32, offset int32) (output []entityInterface.RoleInterface, err error)
 	UpdateRole(role entityInterface.RoleInterface, id int32) (output entityInterface.RoleInterface, err error)
 	DeleteRole(id int32) (output entityInterface.RoleInterface, err error)
-	config.SQLCInterface
 }

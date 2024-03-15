@@ -4,23 +4,16 @@ import (
 	"log/slog"
 	"net/http"
 
+	serviceInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/service"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	_ "github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 	"github.com/marceloamoreno/goapi/internal/shared/helper"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
-type PermissionHandlerInterface interface {
-	GetPermission(w http.ResponseWriter, r *http.Request)
-	GetPermissions(w http.ResponseWriter, r *http.Request)
-	CreatePermission(w http.ResponseWriter, r *http.Request)
-	UpdatePermission(w http.ResponseWriter, r *http.Request)
-	DeletePermission(w http.ResponseWriter, r *http.Request)
-}
-
 type PermissionHandler struct {
 	response.Responses
-	service service.PermissionServiceInterface
+	service serviceInterface.PermissionServiceInterface
 }
 
 func NewPermissionHandler() *PermissionHandler {
@@ -85,12 +78,13 @@ func (h *PermissionHandler) GetPermissions(w http.ResponseWriter, r *http.Reques
 // @Router /role [post]
 // @Security     JWT
 func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Request) {
-	if err := h.service.CreatePermission(r.Body); err != nil {
+	output, err := h.service.CreatePermission(r.Body)
+	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	h.SendResponse(w, h.NewResponse(nil))
+	h.SendResponse(w, h.NewResponse(output))
 }
 
 // UpdateRole godoc
@@ -106,12 +100,13 @@ func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Requ
 // @Router /permission/{id} [put]
 // @Security     JWT
 func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Request) {
-	if err := h.service.UpdatePermission(helper.GetID(r), r.Body); err != nil {
+	output, err := h.service.UpdatePermission(helper.GetID(r), r.Body)
+	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	h.SendResponse(w, h.NewResponse(nil))
+	h.SendResponse(w, h.NewResponse(output))
 }
 
 // DeletePermission godoc
@@ -127,10 +122,11 @@ func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Requ
 // @Router /permission/{id} [delete]
 // @Security     JWT
 func (h *PermissionHandler) DeletePermission(w http.ResponseWriter, r *http.Request) {
-	if err := h.service.DeletePermission(helper.GetID(r)); err != nil {
+	output, err := h.service.DeletePermission(helper.GetID(r))
+	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	h.SendResponse(w, h.NewResponse(nil))
+	h.SendResponse(w, h.NewResponse(output))
 }
