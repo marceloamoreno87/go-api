@@ -10,11 +10,11 @@ import (
 )
 
 type AvatarService struct {
-	NewGetAvatarUseCase    usecaseInterface.NewGetAvatarUseCaseInterface
-	NewGetAvatarsUseCase   usecaseInterface.NewGetAvatarsUseCaseInterface
-	NewCreateAvatarUseCase usecaseInterface.NewCreateAvatarUseCaseInterface
-	NewUpdateAvatarUseCase usecaseInterface.NewUpdateAvatarUseCaseInterface
-	NewDeleteAvatarUseCase usecaseInterface.NewDeleteAvatarUseCaseInterface
+	NewGetAvatarUseCase    usecaseInterface.GetAvatarUseCaseInterface
+	NewGetAvatarsUseCase   usecaseInterface.GetAvatarsUseCaseInterface
+	NewCreateAvatarUseCase usecaseInterface.CreateAvatarUseCaseInterface
+	NewUpdateAvatarUseCase usecaseInterface.UpdateAvatarUseCaseInterface
+	NewDeleteAvatarUseCase usecaseInterface.DeleteAvatarUseCaseInterface
 }
 
 func NewAvatarService() *AvatarService {

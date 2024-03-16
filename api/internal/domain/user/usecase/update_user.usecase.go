@@ -40,7 +40,7 @@ func (uc *UpdateUserUseCase) Execute(input UpdateUserInputDTO) (output UpdateUse
 	if err != nil {
 		return
 	}
-
+	user.HashPassword()
 	user.SetAvatarID(input.AvatarID)
 	user.SetRoleID(input.RoleID)
 	err = uc.repo.UpdateUser(user, input.ID)

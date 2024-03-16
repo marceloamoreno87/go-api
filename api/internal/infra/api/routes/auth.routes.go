@@ -12,6 +12,6 @@ func (route *Route) getAuthRoutes(router chi.Router) {
 		r.Post("/login", handler.Login)
 		r.Post("/refresh", handler.RefreshToken)
 		r.Post("/register", handler.Register)
-		r.Patch("/{id}/update-password", handler.UpdateUserPassword)
+		r.Patch("/update-password", handler.UpdateUserPassword)
 	})
 }

@@ -37,6 +37,7 @@ func (uc *CreateUserUseCase) Execute(input CreateUserInputDTO) (output CreateUse
 	if err != nil {
 		return
 	}
+	user.HashPassword()
 	err = uc.repo.CreateUser(user)
 
 	output = CreateUserOutputDTO{
