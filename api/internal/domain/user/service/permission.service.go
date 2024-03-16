@@ -6,13 +6,11 @@ import (
 	"io"
 	"log/slog"
 
-	"github.com/marceloamoreno/goapi/config"
 	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type PermissionService struct {
-	DB                                    config.SQLCInterface
 	NewGetPermissionUseCase               usecaseInterface.GetPermissionUseCaseInterface
 	NewGetPermissionsUseCase              usecaseInterface.GetPermissionsUseCaseInterface
 	NewCreatePermissionUseCase            usecaseInterface.CreatePermissionUseCaseInterface
@@ -21,15 +19,14 @@ type PermissionService struct {
 	NewGetPermissionByInternalNameUseCase usecaseInterface.GetPermissionByInternalNameUseCaseInterface
 }
 
-func NewPermissionService(DB config.SQLCInterface) *PermissionService {
+func NewPermissionService() *PermissionService {
 	return &PermissionService{
-		DB:                                    DB,
-		NewGetPermissionUseCase:               usecase.NewGetPermissionUseCase(DB),
-		NewGetPermissionsUseCase:              usecase.NewGetPermissionsUseCase(DB),
-		NewCreatePermissionUseCase:            usecase.NewCreatePermissionUseCase(DB),
-		NewUpdatePermissionUseCase:            usecase.NewUpdatePermissionUseCase(DB),
-		NewDeletePermissionUseCase:            usecase.NewDeletePermissionUseCase(DB),
-		NewGetPermissionByInternalNameUseCase: usecase.NewGetPermissionByInternalNameUseCase(DB),
+		NewGetPermissionUseCase:               usecase.NewGetPermissionUseCase(),
+		NewGetPermissionsUseCase:              usecase.NewGetPermissionsUseCase(),
+		NewCreatePermissionUseCase:            usecase.NewCreatePermissionUseCase(),
+		NewUpdatePermissionUseCase:            usecase.NewUpdatePermissionUseCase(),
+		NewDeletePermissionUseCase:            usecase.NewDeletePermissionUseCase(),
+		NewGetPermissionByInternalNameUseCase: usecase.NewGetPermissionByInternalNameUseCase(),
 	}
 }
 
@@ -65,7 +62,6 @@ func (s *PermissionService) GetPermissions(limit int32, offset int32) (output []
 }
 
 func (s *PermissionService) CreatePermission(body io.ReadCloser) (output usecase.CreatePermissionOutputDTO, err error) {
-	s.DB.Begin()
 	input := usecase.CreatePermissionInputDTO{}
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
@@ -83,17 +79,14 @@ func (s *PermissionService) CreatePermission(body io.ReadCloser) (output usecase
 
 	output, err = s.NewCreatePermissionUseCase.Execute(input)
 	if err != nil {
-		s.DB.Rollback()
 		slog.Info("err", err)
 		return
 	}
-	s.DB.Commit()
 	slog.Info("Permission created")
 	return
 }
 
 func (s *PermissionService) UpdatePermission(id int32, body io.ReadCloser) (output usecase.UpdatePermissionOutputDTO, err error) {
-	s.DB.Begin()
 	input := usecase.UpdatePermissionInputDTO{
 		ID: id,
 	}
@@ -103,29 +96,23 @@ func (s *PermissionService) UpdatePermission(id int32, body io.ReadCloser) (outp
 	}
 	output, err = s.NewUpdatePermissionUseCase.Execute(input)
 	if err != nil {
-		s.DB.Rollback()
 		slog.Info("err", err)
 		return
 	}
-	s.DB.Commit()
 	slog.Info("Permission updated")
 	return
 }
 
 func (s *PermissionService) DeletePermission(id int32) (output usecase.DeletePermissionOutputDTO, err error) {
-	s.DB.Begin()
-
 	input := usecase.DeletePermissionInputDTO{
 		ID: id,
 	}
 
 	output, err = s.NewDeletePermissionUseCase.Execute(input)
 	if err != nil {
-		s.DB.Rollback()
 		slog.Info("err", err)
 		return
 	}
-	s.DB.Commit()
 	slog.Info("Permission deleted")
 	return
 }

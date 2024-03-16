@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -18,9 +17,9 @@ type DeletePermissionUseCase struct {
 	repo repositoryInterface.PermissionRepositoryInterface
 }
 
-func NewDeletePermissionUseCase(DB config.SQLCInterface) *DeletePermissionUseCase {
+func NewDeletePermissionUseCase() *DeletePermissionUseCase {
 	return &DeletePermissionUseCase{
-		repo: repository.NewPermissionRepository(DB),
+		repo: repository.NewPermissionRepository(),
 	}
 }
 

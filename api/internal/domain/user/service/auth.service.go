@@ -6,13 +6,11 @@ import (
 	"io"
 	"log/slog"
 
-	"github.com/marceloamoreno/goapi/config"
 	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type AuthService struct {
-	DB                              config.SQLCInterface
 	NewGetUserByEmailUseCase        usecaseInterface.GetUserByEmailUseCaseInterface
 	NewCreateAuthUseCase            usecaseInterface.NewCreateAuthUseCaseInterface
 	NewLoginUserUseCase             usecaseInterface.NewLoginUserUseCaseInterface
@@ -26,25 +24,24 @@ type AuthService struct {
 	NewUpdateUserPasswordUseCase    usecaseInterface.NewUpdateUserPasswordUseCaseInterface
 }
 
-func NewAuthService(DB config.SQLCInterface) *AuthService {
+func NewAuthService() *AuthService {
 	return &AuthService{
-		DB:                              DB,
-		NewGetUserByEmailUseCase:        usecase.NewGetUserByEmailUseCase(DB),
-		NewCreateAuthUseCase:            usecase.NewCreateAuthUseCase(DB),
+		NewGetUserByEmailUseCase:        usecase.NewGetUserByEmailUseCase(),
+		NewCreateAuthUseCase:            usecase.NewCreateAuthUseCase(),
 		NewLoginUserUseCase:             usecase.NewLoginUserUseCase(),
-		NewGetAuthByRefreshTokenUseCase: usecase.NewGetAuthByRefreshTokenUseCase(DB),
-		NewUpdateAuthRevokeUseCase:      usecase.NewUpdateAuthRevokeUseCase(DB),
-		NewGetAuthByTokenUseCase:        usecase.NewGetAuthByTokenUseCase(DB),
-		NewGetAuthByUserIDUseCase:       usecase.NewGetAuthByUserIDUseCase(DB),
+		NewGetAuthByRefreshTokenUseCase: usecase.NewGetAuthByRefreshTokenUseCase(),
+		NewUpdateAuthRevokeUseCase:      usecase.NewUpdateAuthRevokeUseCase(),
+		NewGetAuthByTokenUseCase:        usecase.NewGetAuthByTokenUseCase(),
+		NewGetAuthByUserIDUseCase:       usecase.NewGetAuthByUserIDUseCase(),
 		NewCheckTokenUseCase:            usecase.NewCheckTokenUseCase(),
 		NewCheckRefreshTokenUseCase:     usecase.NewCheckRefreshTokenUseCase(),
-		NewCreateUserUseCase:            usecase.NewCreateUserUseCase(DB),
-		NewUpdateUserPasswordUseCase:    usecase.NewUpdateUserPasswordUseCase(DB),
+		NewCreateUserUseCase:            usecase.NewCreateUserUseCase(),
+		NewUpdateUserPasswordUseCase:    usecase.NewUpdateUserPasswordUseCase(),
 	}
 }
 
 func (s *AuthService) Login(body io.ReadCloser) (output usecase.CreateAuthOutputDTO, err error) {
-	s.DB.Begin()
+
 	input := struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -109,7 +106,6 @@ func (s *AuthService) Login(body io.ReadCloser) (output usecase.CreateAuthOutput
 		UserID: user.ID,
 	})
 	if err != nil {
-		s.DB.Rollback()
 		slog.Info("err", err)
 		return
 	}
@@ -118,7 +114,6 @@ func (s *AuthService) Login(body io.ReadCloser) (output usecase.CreateAuthOutput
 		UserID: user.ID,
 	})
 	if err != nil {
-		s.DB.Rollback()
 		slog.Info("err", err)
 		return
 	}
@@ -131,14 +126,12 @@ func (s *AuthService) Login(body io.ReadCloser) (output usecase.CreateAuthOutput
 		TokenExpiresIn:        newToken.TokenExpiresIn,
 		RefreshTokenExpiresIn: newToken.RefreshTokenExpiresIn,
 	}
-	s.DB.Commit()
 	slog.Info("User logged in")
 	return
 }
 
 func (s *AuthService) RefreshToken(body io.ReadCloser) (output usecase.CreateAuthOutputDTO, err error) {
 
-	s.DB.Begin()
 	input := struct {
 		UserID       int32  `json:"user_id"`
 		RefreshToken string `json:"refresh_token"`
@@ -189,7 +182,6 @@ func (s *AuthService) RefreshToken(body io.ReadCloser) (output usecase.CreateAut
 		UserID: rt.UserID,
 	})
 	if err != nil {
-		s.DB.Rollback()
 		slog.Info("err", err)
 		return
 	}
@@ -198,7 +190,6 @@ func (s *AuthService) RefreshToken(body io.ReadCloser) (output usecase.CreateAut
 		UserID: rt.UserID,
 	})
 	if err != nil {
-		s.DB.Rollback()
 		slog.Info("err", err)
 		return
 	}
@@ -210,7 +201,6 @@ func (s *AuthService) RefreshToken(body io.ReadCloser) (output usecase.CreateAut
 		TokenExpiresIn:        token.TokenExpiresIn,
 		RefreshTokenExpiresIn: token.RefreshTokenExpiresIn,
 	}
-	s.DB.Commit()
 	slog.Info("Token refreshed")
 	return
 }

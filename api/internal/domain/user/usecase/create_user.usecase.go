@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -27,9 +26,9 @@ type CreateUserUseCase struct {
 	repo repositoryInterface.UserRepositoryInterface
 }
 
-func NewCreateUserUseCase(DB config.SQLCInterface) *CreateUserUseCase {
+func NewCreateUserUseCase() *CreateUserUseCase {
 	return &CreateUserUseCase{
-		repo: repository.NewUserRepository(DB),
+		repo: repository.NewUserRepository(),
 	}
 }
 

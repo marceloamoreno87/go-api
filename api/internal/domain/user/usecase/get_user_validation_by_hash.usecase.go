@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -24,9 +23,9 @@ type GetUserValidationByHashUseCase struct {
 	repo repositoryInterface.UserValidationRepositoryInterface
 }
 
-func NewGetUserValidationByHashUseCase(DB config.SQLCInterface) *GetUserValidationByHashUseCase {
+func NewGetUserValidationByHashUseCase() *GetUserValidationByHashUseCase {
 	return &GetUserValidationByHashUseCase{
-		repo: repository.NewUserValidationRepository(DB),
+		repo: repository.NewUserValidationRepository(),
 	}
 }
 

@@ -13,9 +13,9 @@ type UserValidationRepository struct {
 	DB config.SQLCInterface
 }
 
-func NewUserValidationRepository(DB config.SQLCInterface) *UserValidationRepository {
+func NewUserValidationRepository() *UserValidationRepository {
 	return &UserValidationRepository{
-		DB: DB,
+		DB: config.NewSqlc(config.DB),
 	}
 }
 
@@ -58,7 +58,7 @@ func (repo *UserValidationRepository) GetValidationUserByHash(hash string) (outp
 
 func (repo *UserValidationRepository) CreateValidationUser(userValidation entityInterface.UserValidationInterface) (err error) {
 
-	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateValidationUser(context.Background(), db.CreateValidationUserParams{
+	return repo.DB.GetDbQueries().CreateValidationUser(context.Background(), db.CreateValidationUserParams{
 		UserID:    userValidation.GetUserID(),
 		Hash:      userValidation.GetHash(),
 		ExpiresIn: userValidation.GetExpiresIn(),
@@ -67,5 +67,5 @@ func (repo *UserValidationRepository) CreateValidationUser(userValidation entity
 
 func (repo *UserValidationRepository) UpdateUserValidationUsed(id int32) (err error) {
 
-	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdateUserValidationUsed(context.Background(), id)
+	return repo.DB.GetDbQueries().UpdateUserValidationUsed(context.Background(), id)
 }

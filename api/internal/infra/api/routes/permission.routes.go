@@ -2,13 +2,11 @@ package routes
 
 import (
 	"github.com/go-chi/chi/v5"
-	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/handler"
 )
 
 func (route *Route) getPermissionRoutes(router chi.Router) {
-	DB := config.NewSqlc(config.NewDatabase())
-	handler := handler.NewPermissionHandler(DB)
+	handler := handler.NewPermissionHandler()
 
 	router.Route("/permission", func(r chi.Router) {
 		r.Get("/", handler.GetPermissions)

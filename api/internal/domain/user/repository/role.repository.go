@@ -13,15 +13,15 @@ type RoleRepository struct {
 	DB config.SQLCInterface
 }
 
-func NewRoleRepository(DB config.SQLCInterface) *RoleRepository {
+func NewRoleRepository() *RoleRepository {
 	return &RoleRepository{
-		DB: DB,
+		DB: config.NewSqlc(config.DB),
 	}
 }
 
 func (repo *RoleRepository) CreateRole(role entityInterface.RoleInterface) (err error) {
 
-	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateRole(context.Background(), db.CreateRoleParams{
+	return repo.DB.GetDbQueries().CreateRole(context.Background(), db.CreateRoleParams{
 		Name:         role.GetName(),
 		InternalName: role.GetInternalName(),
 		Description:  role.GetDescription(),
@@ -86,7 +86,7 @@ func (repo *RoleRepository) GetRoles(limit int32, offset int32) (output []entity
 
 func (repo *RoleRepository) UpdateRole(role entityInterface.RoleInterface, id int32) (err error) {
 
-	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdateRole(context.Background(), db.UpdateRoleParams{
+	return repo.DB.GetDbQueries().UpdateRole(context.Background(), db.UpdateRoleParams{
 		ID:           id,
 		Name:         role.GetName(),
 		InternalName: role.GetInternalName(),
@@ -96,5 +96,5 @@ func (repo *RoleRepository) UpdateRole(role entityInterface.RoleInterface, id in
 
 func (repo *RoleRepository) DeleteRole(id int32) (err error) {
 
-	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).DeleteRole(context.Background(), id)
+	return repo.DB.GetDbQueries().DeleteRole(context.Background(), id)
 }

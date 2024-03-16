@@ -6,13 +6,11 @@ import (
 	"io"
 	"log/slog"
 
-	"github.com/marceloamoreno/goapi/config"
 	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type UserService struct {
-	DB                           config.SQLCInterface
 	NewGetUserByEmailUseCase     usecaseInterface.GetUserByEmailUseCaseInterface
 	NewCreateUserUseCase         usecaseInterface.CreateUserUseCaseInterface
 	NewGetUserUseCase            usecaseInterface.GetUserUseCaseInterface
@@ -22,22 +20,19 @@ type UserService struct {
 	NewUpdateUserPasswordUseCase usecaseInterface.UpdateUserPasswordUseCaseInterface
 }
 
-func NewUserService(DB config.SQLCInterface) *UserService {
+func NewUserService() *UserService {
 	return &UserService{
-		DB:                           DB,
-		NewGetUserByEmailUseCase:     usecase.NewGetUserByEmailUseCase(DB),
-		NewCreateUserUseCase:         usecase.NewCreateUserUseCase(DB),
-		NewGetUserUseCase:            usecase.NewGetUserUseCase(DB),
-		NewGetUsersUseCase:           usecase.NewGetUsersUseCase(DB),
-		NewUpdateUserUseCase:         usecase.NewUpdateUserUseCase(DB),
-		NewDeleteUserUseCase:         usecase.NewDeleteUserUseCase(DB),
-		NewUpdateUserPasswordUseCase: usecase.NewUpdateUserPasswordUseCase(DB),
+		NewGetUserByEmailUseCase:     usecase.NewGetUserByEmailUseCase(),
+		NewCreateUserUseCase:         usecase.NewCreateUserUseCase(),
+		NewGetUserUseCase:            usecase.NewGetUserUseCase(),
+		NewGetUsersUseCase:           usecase.NewGetUsersUseCase(),
+		NewUpdateUserUseCase:         usecase.NewUpdateUserUseCase(),
+		NewDeleteUserUseCase:         usecase.NewDeleteUserUseCase(),
+		NewUpdateUserPasswordUseCase: usecase.NewUpdateUserPasswordUseCase(),
 	}
 }
 
 func (s *UserService) CreateUser(body io.ReadCloser) (output usecase.CreateUserOutputDTO, err error) {
-	s.DB.Begin()
-
 	input := usecase.CreateUserInputDTO{}
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
@@ -52,17 +47,14 @@ func (s *UserService) CreateUser(body io.ReadCloser) (output usecase.CreateUserO
 
 	output, err = s.NewCreateUserUseCase.Execute(input)
 	if err != nil {
-		s.DB.Rollback()
 		slog.Info("err", err)
 		return
 	}
-	s.DB.Commit()
 	slog.Info("User created")
 	return
 }
 
 func (s *UserService) GetUserById(id int32) (output usecase.GetUserOutputDTO, err error) {
-
 	input := usecase.GetUserInputDTO{
 		ID: id,
 	}
@@ -106,7 +98,6 @@ func (s *UserService) GetUsers(limit int32, offset int32) (output []usecase.GetU
 }
 
 func (s *UserService) UpdateUser(id int32, body io.ReadCloser) (output usecase.UpdateUserOutputDTO, err error) {
-	s.DB.Begin()
 	input := usecase.UpdateUserInputDTO{
 		ID: id,
 	}
@@ -116,34 +107,28 @@ func (s *UserService) UpdateUser(id int32, body io.ReadCloser) (output usecase.U
 	}
 	output, err = s.NewUpdateUserUseCase.Execute(input)
 	if err != nil {
-		s.DB.Rollback()
 		slog.Info("err", err)
 		return
 	}
-	s.DB.Commit()
 	slog.Info("User updated")
 	return
 }
 
 func (s *UserService) DeleteUser(id int32) (output usecase.DeleteUserOutputDTO, err error) {
-	s.DB.Begin()
 	input := usecase.DeleteUserInputDTO{
 		ID: id,
 	}
 
 	output, err = s.NewDeleteUserUseCase.Execute(input)
 	if err != nil {
-		s.DB.Rollback()
 		slog.Info("err", err)
 		return
 	}
-	s.DB.Commit()
 	slog.Info("User deleted")
 	return
 }
 
 func (s *UserService) UpdateUserPassword(id int32, body io.ReadCloser) (output usecase.UpdateUserPasswordOutputDTO, err error) {
-	s.DB.Begin()
 	input := usecase.UpdateUserPasswordInputDTO{
 		ID: id,
 	}
@@ -153,11 +138,9 @@ func (s *UserService) UpdateUserPassword(id int32, body io.ReadCloser) (output u
 	}
 	output, err = s.NewUpdateUserPasswordUseCase.Execute(input)
 	if err != nil {
-		s.DB.Rollback()
 		slog.Info("err", err)
 		return
 	}
-	s.DB.Commit()
 	slog.Info("User password updated")
 	return
 }

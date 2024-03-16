@@ -8,20 +8,17 @@ import (
 )
 
 type Route struct {
-	mux    config.MuxInterface
-	dbConn config.DatabaseInterface
-	jwt    config.JWTAuthInterface
+	mux config.MuxInterface
+	jwt config.JWTAuthInterface
 }
 
 func NewRoutes(
 	mux config.MuxInterface,
-	dbConn config.DatabaseInterface,
 	jwt config.JWTAuthInterface,
 ) {
 	route := &Route{
-		mux:    mux,
-		dbConn: dbConn,
-		jwt:    jwt,
+		mux: mux,
+		jwt: jwt,
 	}
 	route.mux.GetMux().Route("/api/v1", func(r chi.Router) {
 		r.Group(func(r chi.Router) {

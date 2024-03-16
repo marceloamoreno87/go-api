@@ -157,7 +157,7 @@ func TestUpdateUser(t *testing.T) {
 	}
 	defer db.Close()
 
-	config.NewDatabaseMock(db)
+	config.NewDatabaseMock()
 	repo := repository.NewUserRepository(config.DbMock)
 
 	user := &entity.User{
@@ -190,7 +190,7 @@ func TestGetUsers(t *testing.T) {
 	}
 	defer db.Close()
 
-	config.NewDatabaseMock(db)
+	config.NewDatabaseMock()
 	repo := repository.NewUserRepository(config.DbMock)
 
 	user := &entity.User{

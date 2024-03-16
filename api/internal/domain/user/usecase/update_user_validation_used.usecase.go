@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -18,9 +17,9 @@ type UpdateUserValidationUsedUseCase struct {
 	repo repositoryInterface.UserValidationRepositoryInterface
 }
 
-func NewUpdateUserValidationUsedUseCase(DB config.SQLCInterface) *UpdateUserValidationUsedUseCase {
+func NewUpdateUserValidationUsedUseCase() *UpdateUserValidationUsedUseCase {
 	return &UpdateUserValidationUsedUseCase{
-		repo: repository.NewUserValidationRepository(DB),
+		repo: repository.NewUserValidationRepository(),
 	}
 }
 

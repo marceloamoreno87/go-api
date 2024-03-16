@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -18,9 +17,9 @@ type DeleteUserUseCase struct {
 	repo repositoryInterface.UserRepositoryInterface
 }
 
-func NewDeleteUserUseCase(DB config.SQLCInterface) *DeleteUserUseCase {
+func NewDeleteUserUseCase() *DeleteUserUseCase {
 	return &DeleteUserUseCase{
-		repo: repository.NewUserRepository(DB),
+		repo: repository.NewUserRepository(),
 	}
 }
 

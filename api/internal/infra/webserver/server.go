@@ -11,20 +11,18 @@ import (
 
 type Server struct {
 	mux    config.MuxInterface
-	dbConn config.DatabaseInterface
 	jwt    config.JWTAuthInterface
 }
 
 func NewServer() *Server {
 	return &Server{
 		mux:    config.M,
-		dbConn: config.NewDatabase(),
 		jwt:    config.Jwt,
 	}
 }
 
 func (s *Server) Start() {
-	routes.NewRoutes(s.mux, s.dbConn, s.jwt)
+	routes.NewRoutes(s.mux, s.jwt)
 	port := config.Environment.GetPort()
 	slog.Info("Server started on port http://localhost:" + port + "/api/v1")
 	slog.Info("Swagger started on port http://localhost:" + port + "/api/v1/swagger/index.html")

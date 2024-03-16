@@ -3,7 +3,6 @@ package usecase
 import (
 	"time"
 
-	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -28,9 +27,9 @@ type GetUserUseCase struct {
 	repo repositoryInterface.UserRepositoryInterface
 }
 
-func NewGetUserUseCase(DB config.SQLCInterface) *GetUserUseCase {
+func NewGetUserUseCase() *GetUserUseCase {
 	return &GetUserUseCase{
-		repo: repository.NewUserRepository(DB),
+		repo: repository.NewUserRepository(),
 	}
 }
 

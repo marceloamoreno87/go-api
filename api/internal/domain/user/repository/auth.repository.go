@@ -13,15 +13,15 @@ type AuthRepository struct {
 	DB config.SQLCInterface
 }
 
-func NewAuthRepository(DB config.SQLCInterface) *AuthRepository {
+func NewAuthRepository() *AuthRepository {
 	return &AuthRepository{
-		DB: DB,
+		DB: config.NewSqlc(config.DB),
 	}
 }
 
 func (repo *AuthRepository) CreateAuth(auth entityInterface.AuthInterface) (err error) {
 
-	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateAuth(context.Background(), db.CreateAuthParams{
+	return repo.DB.GetDbQueries().CreateAuth(context.Background(), db.CreateAuthParams{
 		UserID:                auth.GetUserID(),
 		Token:                 auth.GetToken(),
 		RefreshToken:          auth.GetRefreshToken(),
@@ -51,7 +51,7 @@ func (repo *AuthRepository) GetAuthByUserID(userId int32) (output entityInterfac
 
 func (repo *AuthRepository) UpdateAuthRevokeByUserID(userId int32) (err error) {
 
-	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).UpdateAuthRevokeByUserID(context.Background(), userId)
+	return repo.DB.GetDbQueries().UpdateAuthRevokeByUserID(context.Background(), userId)
 }
 
 func (repo *AuthRepository) GetAuthByToken(userId int32, token string) (output entityInterface.AuthInterface, err error) {

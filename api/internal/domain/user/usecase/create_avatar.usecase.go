@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -19,9 +18,9 @@ type CreateAvatarUseCase struct {
 	repo repositoryInterface.AvatarRepositoryInterface
 }
 
-func NewCreateAvatarUseCase(DB config.SQLCInterface) *CreateAvatarUseCase {
+func NewCreateAvatarUseCase() *CreateAvatarUseCase {
 	return &CreateAvatarUseCase{
-		repo: repository.NewAvatarRepository(DB),
+		repo: repository.NewAvatarRepository(),
 	}
 }
 

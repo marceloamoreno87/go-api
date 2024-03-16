@@ -14,9 +14,9 @@ type RolePermissionRepository struct {
 	DB config.SQLCInterface
 }
 
-func NewRolePermissionRepository(DB config.SQLCInterface) *RolePermissionRepository {
+func NewRolePermissionRepository() *RolePermissionRepository {
 	return &RolePermissionRepository{
-		DB: DB,
+		DB: config.NewSqlc(config.DB),
 	}
 }
 
@@ -45,7 +45,7 @@ func (repo *RolePermissionRepository) CreateRolePermission(rolePermission entity
 	for _, id := range rolePermission.GetPermissionIDs() {
 		go func(permissionID int32) {
 			defer wg.Done()
-			err := repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).CreateRolePermission(context.Background(), db.CreateRolePermissionParams{
+			err := repo.DB.GetDbQueries().CreateRolePermission(context.Background(), db.CreateRolePermissionParams{
 				RoleID:       rolePermission.GetRoleID(),
 				PermissionID: permissionID,
 			})
@@ -65,5 +65,5 @@ func (repo *RolePermissionRepository) CreateRolePermission(rolePermission entity
 
 func (repo *RolePermissionRepository) DeleteRolePermission(id int32) (err error) {
 
-	return repo.DB.GetDbQueries().WithTx(repo.DB.GetTx()).DeleteRolePermission(context.Background(), id)
+	return repo.DB.GetDbQueries().DeleteRolePermission(context.Background(), id)
 }

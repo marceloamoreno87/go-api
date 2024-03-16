@@ -5,24 +5,21 @@ import (
 	"io"
 	"log/slog"
 
-	"github.com/marceloamoreno/goapi/config"
 	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type RolePermissionService struct {
-	DB                             config.SQLCInterface
 	NewGetRolePermissionsUseCase   usecaseInterface.GetRolePermissionsUseCaseInterface
 	NewCreateRolePermissionUseCase usecaseInterface.CreateRolePermissionUseCaseInterface
 	NewDeleteRolePermissionUseCase usecaseInterface.DeleteRolePermissionUseCaseInterface
 }
 
-func NewRolePermissionService(DB config.SQLCInterface) *RolePermissionService {
+func NewRolePermissionService() *RolePermissionService {
 	return &RolePermissionService{
-		DB:                             DB,
-		NewGetRolePermissionsUseCase:   usecase.NewGetRolePermissionsUseCase(DB),
-		NewCreateRolePermissionUseCase: usecase.NewCreateRolePermissionUseCase(DB),
-		NewDeleteRolePermissionUseCase: usecase.NewDeleteRolePermissionUseCase(DB),
+		NewGetRolePermissionsUseCase:   usecase.NewGetRolePermissionsUseCase(),
+		NewCreateRolePermissionUseCase: usecase.NewCreateRolePermissionUseCase(),
+		NewDeleteRolePermissionUseCase: usecase.NewDeleteRolePermissionUseCase(),
 	}
 }
 
@@ -42,7 +39,6 @@ func (s *RolePermissionService) GetRolePermissions(id int32) (output []usecase.G
 }
 
 func (s *RolePermissionService) CreateRolePermission(body io.ReadCloser) (output usecase.CreateRolePermissionOutputDTO, err error) {
-	s.DB.Begin()
 	input := usecase.CreateRolePermissionInputDTO{}
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
@@ -51,17 +47,14 @@ func (s *RolePermissionService) CreateRolePermission(body io.ReadCloser) (output
 
 	output, err = s.NewCreateRolePermissionUseCase.Execute(input)
 	if err != nil {
-		s.DB.Rollback()
 		slog.Info("err", err)
 		return
 	}
-	s.DB.Commit()
 	return
 
 }
 
 func (s *RolePermissionService) DeleteRolePermission(id int32, body io.ReadCloser) (output usecase.DeleteRolePermissionOutputDTO, err error) {
-	s.DB.Begin()
 	input := usecase.DeleteRolePermissionInputDTO{
 		RoleID: id,
 	}
@@ -72,11 +65,9 @@ func (s *RolePermissionService) DeleteRolePermission(id int32, body io.ReadClose
 
 	output, err = s.NewDeleteRolePermissionUseCase.Execute(input)
 	if err != nil {
-		s.DB.Rollback()
 		slog.Info("err", err)
 		return
 	}
-	s.DB.Commit()
 	slog.Info("Role permission deleted")
 	return
 }
