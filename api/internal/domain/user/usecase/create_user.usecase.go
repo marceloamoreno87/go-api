@@ -33,7 +33,7 @@ func NewCreateUserUseCase() *CreateUserUseCase {
 }
 
 func (uc *CreateUserUseCase) Execute(input CreateUserInputDTO) (output CreateUserOutputDTO, err error) {
-	user, err := entity.NewUser(input.Name, input.Email, input.Password, input.RoleID, input.AvatarID)
+	user, err := entity.NewUser(input.Name, input.Email, input.Password)
 	if err != nil {
 		return
 	}

@@ -24,7 +24,7 @@ func NewLoginUserUseCase() *LoginUserUseCase {
 }
 
 func (uc *LoginUserUseCase) Execute(input LoginUserInputDTO) (output LoginUserOutputDTO, err error) {
-	user, err := entity.NewUser(input.Name, input.Email, input.Password, input.RoleID, input.AvatarID)
+	user, err := entity.NewUser(input.Name, input.Email, input.Password)
 	if err != nil {
 		return
 	}

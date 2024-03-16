@@ -36,10 +36,13 @@ func NewUpdateUserUseCase() *UpdateUserUseCase {
 }
 
 func (uc *UpdateUserUseCase) Execute(input UpdateUserInputDTO) (output UpdateUserOutputDTO, err error) {
-	user, err := entity.NewUser(input.Name, input.Email, input.Password, input.RoleID, input.AvatarID)
+	user, err := entity.NewUser(input.Name, input.Email, input.Password)
 	if err != nil {
 		return
 	}
+
+	user.SetAvatarID(input.AvatarID)
+	user.SetRoleID(input.RoleID)
 	err = uc.repo.UpdateUser(user, input.ID)
 
 	output = UpdateUserOutputDTO{

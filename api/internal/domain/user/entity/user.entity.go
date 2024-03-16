@@ -22,13 +22,13 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func NewUser(name string, email string, password string, roleID int32, avatarID int32) (user entityInterface.UserInterface, err error) {
+func NewUser(name string, email string, password string) (user entityInterface.UserInterface, err error) {
 	user = &User{
 		Name:     name,
 		Email:    email,
 		Password: password,
-		RoleID:   roleID,
-		AvatarID: avatarID,
+		RoleID:   2,
+		AvatarID: 1,
 		Active:   false,
 	}
 
