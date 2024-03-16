@@ -63,7 +63,7 @@ func (s *AuthService) Login(body io.ReadCloser) (output usecase.CreateAuthOutput
 		return
 	}
 
-	valid, err := s.NewLoginUserUseCase.Execute(usecase.LoginUserInputDTO{
+	logged, err := s.NewLoginUserUseCase.Execute(usecase.LoginUserInputDTO{
 		Name:            user.Name,
 		Email:           user.Email,
 		Password:        user.Password,
@@ -76,7 +76,7 @@ func (s *AuthService) Login(body io.ReadCloser) (output usecase.CreateAuthOutput
 		return
 	}
 
-	if !valid.Valid {
+	if !logged.Valid {
 		slog.Info("Invalid user")
 		return usecase.CreateAuthOutputDTO{}, errors.New("invalid user")
 	}
