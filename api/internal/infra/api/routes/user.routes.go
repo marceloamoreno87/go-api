@@ -13,5 +13,7 @@ func (route *Route) getUserRoutes(router chi.Router) {
 		r.Post("/", handler.CreateUser)
 		r.Put("/{id}", handler.UpdateUser)
 		r.Delete("/{id}", handler.DeleteUser)
+		r.Post("/update-password", handler.UpdateUserPassword)
+
 	})
 }

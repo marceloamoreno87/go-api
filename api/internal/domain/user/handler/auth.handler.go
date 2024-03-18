@@ -81,26 +81,6 @@ func (h *AuthHandler) ForgotPassword(w http.ResponseWriter, r *http.Request) {
 	h.SendResponse(w, h.NewResponse(nil))
 }
 
-// UpdateUserPassword godoc
-// @Summary Update User Password
-// @Description Update User Password
-// @Tags Auth
-// @Accept  json
-// @Produce  json
-// @Param auth body service.RequestUpdateUserPasswordInputDTO true "User"
-// @Success 200 {object} response.Response{data=nil}
-// @Failure 400 {object} response.ResponseError{}
-// @Router /auth/update-password [post]
-func (h *AuthHandler) UpdateUserPassword(w http.ResponseWriter, r *http.Request) {
-	err := h.service.UpdateUserPassword(r.Body)
-	if err != nil {
-		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error()))
-		return
-	}
-	h.SendResponse(w, h.NewResponse(nil))
-}
-
 // VerifyUser godoc
 // @Summary Verify User
 // @Description Verify User

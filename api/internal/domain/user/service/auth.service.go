@@ -24,11 +24,6 @@ type RequestVerifyUserInputDTO struct {
 	Hash string `json:"hash"`
 }
 
-type RequestUpdateUserPasswordInputDTO struct {
-	Hash     string `json:"hash"`
-	Password string `json:"password"`
-}
-
 type RequestForgotPasswordInputDTO struct {
 	Email string `json:"email"`
 }
@@ -233,57 +228,6 @@ func (s *AuthService) VerifyUser(body io.ReadCloser) (err error) {
 
 	slog.Info("User verified")
 
-	return
-}
-
-func (s *AuthService) UpdateUserPassword(body io.ReadCloser) (err error) {
-
-	input := RequestUpdateUserPasswordInputDTO{}
-
-	if err = json.NewDecoder(body).Decode(&input); err != nil {
-		slog.Info("err", err)
-		return
-	}
-
-	userValidation, err := s.GetUserValidationByHashUseCase.Execute(usecase.GetUserValidationByHashInputDTO{
-		Hash: input.Hash,
-	})
-	if err != nil {
-		slog.Info("err", err)
-		return
-	}
-
-	user, err := s.GetUserUseCase.Execute(usecase.GetUserInputDTO{ID: userValidation.UserID})
-	if err != nil {
-		slog.Info("err", err)
-		return
-	}
-
-	_, err = s.UpdateUserPasswordUseCase.Execute(usecase.UpdateUserPasswordInputDTO{
-		ID:       user.ID,
-		Name:     user.Name,
-		Email:    user.Email,
-		Password: input.Password,
-	})
-	if err != nil {
-		slog.Info("err", err)
-		return
-	}
-
-	err = s.UpdateUserValidationUsed.Execute(usecase.UpdateUserValidationUsedInputDTO{
-		UserID: user.ID,
-	})
-	if err != nil {
-		slog.Info("err", err)
-		return
-	}
-
-	go event.NewUpdatedPasswordEmailEvent(event.UpdatedPasswordEmailEventInputDTO{
-		Email: user.Email,
-		Name:  user.Name,
-	}).Send()
-
-	slog.Info("User password updated")
 	return
 }
 

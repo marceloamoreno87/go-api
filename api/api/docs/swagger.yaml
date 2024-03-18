@@ -1,37 +1,46 @@
 basePath: /api/v1
 definitions:
-  github_com_marceloamoreno_goapi_internal_domain_user_service.RequestForgotPasswordInputDTO:
+  response.Response:
+    properties:
+      data: {}
+    type: object
+  response.ResponseError:
+    properties:
+      err:
+        type: string
+    type: object
+  service.RequestForgotPasswordInputDTO:
     properties:
       email:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_service.RequestLoginInputDTO:
+  service.RequestLoginInputDTO:
     properties:
       email:
         type: string
       password:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_service.RequestRefreshTokenInputDTO:
+  service.RequestRefreshTokenInputDTO:
     properties:
       refresh_token:
         type: string
       user_id:
         type: integer
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_service.RequestUpdateUserPasswordInputDTO:
+  service.RequestUpdateUserPasswordInputDTO:
     properties:
       hash:
         type: string
       password:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_service.RequestVerifyUserInputDTO:
+  service.RequestVerifyUserInputDTO:
     properties:
       hash:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateAuthOutputDTO:
+  usecase.CreateAuthOutputDTO:
     properties:
       active:
         type: boolean
@@ -46,12 +55,12 @@ definitions:
       user_id:
         type: integer
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateAvatarInputDTO:
+  usecase.CreateAvatarInputDTO:
     properties:
       svg:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreatePermissionInputDTO:
+  usecase.CreatePermissionInputDTO:
     properties:
       description:
         type: string
@@ -60,7 +69,7 @@ definitions:
       name:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateRoleInputDTO:
+  usecase.CreateRoleInputDTO:
     properties:
       description:
         type: string
@@ -69,7 +78,7 @@ definitions:
       name:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateRolePermissionInputDTO:
+  usecase.CreateRolePermissionInputDTO:
     properties:
       permission_ids:
         items:
@@ -78,7 +87,7 @@ definitions:
       role_id:
         type: integer
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateUserInputDTO:
+  usecase.CreateUserInputDTO:
     properties:
       avatar_id:
         type: integer
@@ -91,12 +100,12 @@ definitions:
       role_id:
         type: integer
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.DeleteRolePermissionInputDTO:
+  usecase.DeleteRolePermissionInputDTO:
     properties:
       role_id:
         type: integer
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetAvatarOutputDTO:
+  usecase.GetAvatarOutputDTO:
     properties:
       created_at:
         type: string
@@ -107,7 +116,7 @@ definitions:
       updated_at:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetAvatarsOutputDTO:
+  usecase.GetAvatarsOutputDTO:
     properties:
       created_at:
         type: string
@@ -118,7 +127,7 @@ definitions:
       updated_at:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetPermissionOutputDTO:
+  usecase.GetPermissionOutputDTO:
     properties:
       created_at:
         type: string
@@ -133,7 +142,7 @@ definitions:
       updated_at:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetPermissionsOutputDTO:
+  usecase.GetPermissionsOutputDTO:
     properties:
       created_at:
         type: string
@@ -148,7 +157,7 @@ definitions:
       updated_at:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetRoleOutputDTO:
+  usecase.GetRoleOutputDTO:
     properties:
       created_at:
         type: string
@@ -163,7 +172,7 @@ definitions:
       updated_at:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetRolePermissionsOutputDTO:
+  usecase.GetRolePermissionsOutputDTO:
     properties:
       id:
         type: integer
@@ -174,7 +183,7 @@ definitions:
       role_id:
         type: integer
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetRolesOutputDTO:
+  usecase.GetRolesOutputDTO:
     properties:
       created_at:
         type: string
@@ -189,7 +198,7 @@ definitions:
       updated_at:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetUserOutputDTO:
+  usecase.GetUserOutputDTO:
     properties:
       active:
         type: boolean
@@ -210,7 +219,7 @@ definitions:
       updated_at:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetUsersOutputDTO:
+  usecase.GetUsersOutputDTO:
     properties:
       active:
         type: boolean
@@ -231,14 +240,14 @@ definitions:
       updated_at:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdateAvatarInputDTO:
+  usecase.UpdateAvatarInputDTO:
     properties:
       id:
         type: integer
       svg:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdatePermissionInputDTO:
+  usecase.UpdatePermissionInputDTO:
     properties:
       description:
         type: string
@@ -249,7 +258,7 @@ definitions:
       name:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdateRoleInputDTO:
+  usecase.UpdateRoleInputDTO:
     properties:
       description:
         type: string
@@ -260,7 +269,7 @@ definitions:
       name:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdateUserInputDTO:
+  usecase.UpdateUserInputDTO:
     properties:
       avatar_id:
         type: integer
@@ -274,15 +283,6 @@ definitions:
         type: string
       role_id:
         type: integer
-    type: object
-  github_com_marceloamoreno_goapi_internal_shared_response.Response:
-    properties:
-      data: {}
-    type: object
-  github_com_marceloamoreno_goapi_internal_shared_response.ResponseError:
-    properties:
-      err:
-        type: string
     type: object
 host: localhost:3000
 info:
@@ -312,17 +312,17 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetAvatarsOutputDTO'
+                    $ref: '#/definitions/usecase.GetAvatarsOutputDTO'
                   type: array
               type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
       summary: Get Avatars
@@ -346,7 +346,7 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
                   type: object
@@ -354,7 +354,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - ApiKeyAuth: []
       - JWT: []
@@ -378,15 +378,15 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetAvatarOutputDTO'
+                  $ref: '#/definitions/usecase.GetAvatarOutputDTO'
               type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
       summary: Get Avatar
@@ -407,7 +407,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdateAvatarInputDTO'
+          $ref: '#/definitions/usecase.UpdateAvatarInputDTO'
       produces:
       - application/json
       responses:
@@ -415,7 +415,7 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
                   type: object
@@ -423,7 +423,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
       summary: Update Avatar
@@ -440,7 +440,7 @@ paths:
         name: auth
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_service.RequestForgotPasswordInputDTO'
+          $ref: '#/definitions/service.RequestForgotPasswordInputDTO'
       produces:
       - application/json
       responses:
@@ -448,7 +448,7 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
                   type: object
@@ -456,7 +456,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       summary: Forgot Password
       tags:
       - Auth
@@ -471,7 +471,7 @@ paths:
         name: auth
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_service.RequestLoginInputDTO'
+          $ref: '#/definitions/service.RequestLoginInputDTO'
       produces:
       - application/json
       responses:
@@ -479,15 +479,15 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateAuthOutputDTO'
+                  $ref: '#/definitions/usecase.CreateAuthOutputDTO'
               type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       summary: Get JWT
       tags:
       - Auth
@@ -502,7 +502,7 @@ paths:
         name: auth
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_service.RequestRefreshTokenInputDTO'
+          $ref: '#/definitions/service.RequestRefreshTokenInputDTO'
       produces:
       - application/json
       responses:
@@ -510,47 +510,16 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateAuthOutputDTO'
+                  $ref: '#/definitions/usecase.CreateAuthOutputDTO'
               type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       summary: Get Refresh JWT
-      tags:
-      - Auth
-  /auth/update-password:
-    post:
-      consumes:
-      - application/json
-      description: Update User Password
-      parameters:
-      - description: User
-        in: body
-        name: auth
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_service.RequestUpdateUserPasswordInputDTO'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
-            - properties:
-                data:
-                  type: object
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
-      summary: Update User Password
       tags:
       - Auth
   /auth/verify-user:
@@ -564,7 +533,7 @@ paths:
         name: auth
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_service.RequestVerifyUserInputDTO'
+          $ref: '#/definitions/service.RequestVerifyUserInputDTO'
       produces:
       - application/json
       responses:
@@ -572,7 +541,7 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
                   type: object
@@ -580,7 +549,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       summary: Verify User
       tags:
       - Auth
@@ -605,17 +574,17 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetPermissionsOutputDTO'
+                    $ref: '#/definitions/usecase.GetPermissionsOutputDTO'
                   type: array
               type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
       summary: Get Permissions
@@ -639,7 +608,7 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
                   type: object
@@ -647,7 +616,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - ApiKeyAuth: []
       - JWT: []
@@ -671,15 +640,15 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetPermissionOutputDTO'
+                  $ref: '#/definitions/usecase.GetPermissionOutputDTO'
               type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
       summary: Get Permission
@@ -700,7 +669,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdatePermissionInputDTO'
+          $ref: '#/definitions/usecase.UpdatePermissionInputDTO'
       produces:
       - application/json
       responses:
@@ -708,7 +677,7 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
                   type: object
@@ -716,7 +685,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
       summary: Update Permission
@@ -743,17 +712,17 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetRolesOutputDTO'
+                    $ref: '#/definitions/usecase.GetRolesOutputDTO'
                   type: array
               type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
       summary: Get Roles
@@ -769,7 +738,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateRoleInputDTO'
+          $ref: '#/definitions/usecase.CreateRoleInputDTO'
       produces:
       - application/json
       responses:
@@ -777,7 +746,7 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
                   type: object
@@ -785,7 +754,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
       summary: Create Role
@@ -809,7 +778,7 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
                   type: object
@@ -817,7 +786,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - ApiKeyAuth: []
       - JWT: []
@@ -841,15 +810,15 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetRoleOutputDTO'
+                  $ref: '#/definitions/usecase.GetRoleOutputDTO'
               type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
       summary: Get Role
@@ -870,7 +839,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdateRoleInputDTO'
+          $ref: '#/definitions/usecase.UpdateRoleInputDTO'
       produces:
       - application/json
       responses:
@@ -878,7 +847,7 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
                   type: object
@@ -886,7 +855,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
       summary: Update Role
@@ -910,15 +879,15 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetRolePermissionsOutputDTO'
+                  $ref: '#/definitions/usecase.GetRolePermissionsOutputDTO'
               type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
       summary: Get Role Permissions
@@ -934,7 +903,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateRolePermissionInputDTO'
+          $ref: '#/definitions/usecase.CreateRolePermissionInputDTO'
       produces:
       - application/json
       responses:
@@ -942,7 +911,7 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
                   type: object
@@ -950,7 +919,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
       summary: Create Role Permission
@@ -971,7 +940,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.DeleteRolePermissionInputDTO'
+          $ref: '#/definitions/usecase.DeleteRolePermissionInputDTO'
       produces:
       - application/json
       responses:
@@ -979,7 +948,7 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
                   type: object
@@ -987,7 +956,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
       summary: Update Role Permission
@@ -1014,17 +983,17 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetUsersOutputDTO'
+                    $ref: '#/definitions/usecase.GetUsersOutputDTO'
                   type: array
               type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
       summary: Get Users
@@ -1040,7 +1009,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateUserInputDTO'
+          $ref: '#/definitions/usecase.CreateUserInputDTO'
       produces:
       - application/json
       responses:
@@ -1048,7 +1017,7 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
                   type: object
@@ -1056,7 +1025,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
       summary: Create User
@@ -1080,7 +1049,7 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
                   type: object
@@ -1088,7 +1057,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - ApiKeyAuth: []
       - JWT: []
@@ -1112,15 +1081,15 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetUserOutputDTO'
+                  $ref: '#/definitions/usecase.GetUserOutputDTO'
               type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
       summary: Get User
@@ -1141,7 +1110,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdateUserInputDTO'
+          $ref: '#/definitions/usecase.UpdateUserInputDTO'
       produces:
       - application/json
       responses:
@@ -1149,7 +1118,7 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - $ref: '#/definitions/response.Response'
             - properties:
                 data:
                   type: object
@@ -1157,10 +1126,41 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+            $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
       summary: Update User
+      tags:
+      - User
+  /user/update-password:
+    post:
+      consumes:
+      - application/json
+      description: Update User Password
+      parameters:
+      - description: User
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/service.RequestUpdateUserPasswordInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResponseError'
+      summary: Update User Password
       tags:
       - User
 schemes:

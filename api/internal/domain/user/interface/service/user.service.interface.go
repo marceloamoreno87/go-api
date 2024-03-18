@@ -12,5 +12,6 @@ type UserServiceInterface interface {
 	GetUsers(limit int32, offset int32) (output []usecase.GetUsersOutputDTO, err error)
 	CreateUser(body io.ReadCloser) (output usecase.CreateUserOutputDTO, err error)
 	UpdateUser(id int32, body io.ReadCloser) (output usecase.UpdateUserOutputDTO, err error)
+	UpdateUserPassword(body io.ReadCloser) (err error)
 	DeleteUser(id int32) (output usecase.DeleteUserOutputDTO, err error)
 }

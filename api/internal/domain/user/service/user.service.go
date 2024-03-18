@@ -10,27 +10,36 @@ import (
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
+type RequestUpdateUserPasswordInputDTO struct {
+	Hash     string `json:"hash"`
+	Password string `json:"password"`
+}
+
 type UserService struct {
-	GetUserByEmailUseCase       usecaseInterface.GetUserByEmailUseCaseInterface
-	CreateUserUseCase           usecaseInterface.CreateUserUseCaseInterface
-	GetUserUseCase              usecaseInterface.GetUserUseCaseInterface
-	GetUsersUseCase             usecaseInterface.GetUsersUseCaseInterface
-	UpdateUserUseCase           usecaseInterface.UpdateUserUseCaseInterface
-	DeleteUserUseCase           usecaseInterface.DeleteUserUseCaseInterface
-	UpdateUserPasswordUseCase   usecaseInterface.UpdateUserPasswordUseCaseInterface
-	CreateUserValidationUseCase usecaseInterface.CreateUserValidationUseCaseInterface
+	GetUserByEmailUseCase          usecaseInterface.GetUserByEmailUseCaseInterface
+	CreateUserUseCase              usecaseInterface.CreateUserUseCaseInterface
+	GetUserUseCase                 usecaseInterface.GetUserUseCaseInterface
+	GetUsersUseCase                usecaseInterface.GetUsersUseCaseInterface
+	UpdateUserUseCase              usecaseInterface.UpdateUserUseCaseInterface
+	DeleteUserUseCase              usecaseInterface.DeleteUserUseCaseInterface
+	UpdateUserPasswordUseCase      usecaseInterface.UpdateUserPasswordUseCaseInterface
+	CreateUserValidationUseCase    usecaseInterface.CreateUserValidationUseCaseInterface
+	GetUserValidationByHashUseCase usecaseInterface.GetUserValidationByHashUseCaseInterface
+	UpdateUserValidationUsed       usecaseInterface.UpdateUserValidationUsedUseCaseInterface
 }
 
 func NewUserService() *UserService {
 	return &UserService{
-		GetUserByEmailUseCase:       usecase.NewGetUserByEmailUseCase(),
-		CreateUserUseCase:           usecase.NewCreateUserUseCase(),
-		GetUserUseCase:              usecase.NewGetUserUseCase(),
-		GetUsersUseCase:             usecase.NewGetUsersUseCase(),
-		UpdateUserUseCase:           usecase.NewUpdateUserUseCase(),
-		DeleteUserUseCase:           usecase.NewDeleteUserUseCase(),
-		UpdateUserPasswordUseCase:   usecase.NewUpdateUserPasswordUseCase(),
-		CreateUserValidationUseCase: usecase.NewCreateUserValidationUseCase(),
+		GetUserByEmailUseCase:          usecase.NewGetUserByEmailUseCase(),
+		CreateUserUseCase:              usecase.NewCreateUserUseCase(),
+		GetUserUseCase:                 usecase.NewGetUserUseCase(),
+		GetUsersUseCase:                usecase.NewGetUsersUseCase(),
+		UpdateUserUseCase:              usecase.NewUpdateUserUseCase(),
+		DeleteUserUseCase:              usecase.NewDeleteUserUseCase(),
+		UpdateUserPasswordUseCase:      usecase.NewUpdateUserPasswordUseCase(),
+		CreateUserValidationUseCase:    usecase.NewCreateUserValidationUseCase(),
+		GetUserValidationByHashUseCase: usecase.NewGetUserValidationByHashUseCase(),
+		UpdateUserValidationUsed:       usecase.NewUpdateUserValidationUsedUseCase(),
 	}
 }
 
@@ -123,6 +132,57 @@ func (s *UserService) UpdateUser(id int32, body io.ReadCloser) (output usecase.U
 		return
 	}
 	slog.Info("User updated")
+	return
+}
+
+func (s *UserService) UpdateUserPassword(body io.ReadCloser) (err error) {
+
+	input := RequestUpdateUserPasswordInputDTO{}
+
+	if err = json.NewDecoder(body).Decode(&input); err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	userValidation, err := s.GetUserValidationByHashUseCase.Execute(usecase.GetUserValidationByHashInputDTO{
+		Hash: input.Hash,
+	})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	user, err := s.GetUserUseCase.Execute(usecase.GetUserInputDTO{ID: userValidation.UserID})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	_, err = s.UpdateUserPasswordUseCase.Execute(usecase.UpdateUserPasswordInputDTO{
+		ID:       user.ID,
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: input.Password,
+	})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	err = s.UpdateUserValidationUsed.Execute(usecase.UpdateUserValidationUsedInputDTO{
+		UserID: user.ID,
+	})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	go event.NewUpdatedPasswordEmailEvent(event.UpdatedPasswordEmailEventInputDTO{
+		Email: user.Email,
+		Name:  user.Name,
+	}).Send()
+
+	slog.Info("User password updated")
 	return
 }
 

@@ -17,7 +17,7 @@ migratedown:
 	migrate -path internal/sql/migrations -database "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable" down
 
 swaggen:
-	swag init --parseDependency --parseInternal  --parseDepth 1 -g cmd/main.go -o api/docs
+	swag init -g cmd/main.go -o api/docs
 	chown -R 1000:1000 api/docs
 
 testgo:

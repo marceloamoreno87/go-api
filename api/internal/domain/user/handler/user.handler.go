@@ -109,6 +109,26 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	h.SendResponse(w, h.NewResponse(output))
 }
 
+// UpdateUserPassword godoc
+// @Summary Update User Password
+// @Description Update User Password
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param auth body service.RequestUpdateUserPasswordInputDTO true "User"
+// @Success 200 {object} response.Response{data=nil}
+// @Failure 400 {object} response.ResponseError{}
+// @Router /user/update-password [post]
+func (h *UserHandler) UpdateUserPassword(w http.ResponseWriter, r *http.Request) {
+	err := h.service.UpdateUserPassword(r.Body)
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
+	}
+	h.SendResponse(w, h.NewResponse(nil))
+}
+
 // DeleteUser godoc
 // @Summary Delete User
 // @Description Delete User
