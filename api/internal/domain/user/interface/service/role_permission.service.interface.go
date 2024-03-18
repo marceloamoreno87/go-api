@@ -9,5 +9,5 @@ import (
 type RolePermissionServiceInterface interface {
 	GetRolePermissions(id int32) (output []usecase.GetRolePermissionsOutputDTO, err error)
 	CreateRolePermission(body io.ReadCloser) (output usecase.CreateRolePermissionOutputDTO, err error)
-	DeleteRolePermission(id int32, body io.ReadCloser) (output usecase.DeleteRolePermissionOutputDTO, err error)
+	DeleteRolePermissionByRoleID(id int32, body io.ReadCloser) (output usecase.DeleteRolePermissionByRoleIDOutputDTO, err error)
 }

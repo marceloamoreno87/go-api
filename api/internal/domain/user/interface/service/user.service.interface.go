@@ -14,4 +14,6 @@ type UserServiceInterface interface {
 	UpdateUser(id int32, body io.ReadCloser) (output usecase.UpdateUserOutputDTO, err error)
 	UpdateUserPassword(body io.ReadCloser) (err error)
 	DeleteUser(id int32) (output usecase.DeleteUserOutputDTO, err error)
+	VerifyUser(body io.ReadCloser) (err error)
+	ForgotPassword(body io.ReadCloser) (err error)
 }

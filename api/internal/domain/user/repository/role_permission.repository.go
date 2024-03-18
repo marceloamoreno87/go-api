@@ -63,7 +63,7 @@ func (repo *RolePermissionRepository) CreateRolePermission(rolePermission entity
 	return
 }
 
-func (repo *RolePermissionRepository) DeleteRolePermission(id int32) (err error) {
+func (repo *RolePermissionRepository) DeleteRolePermissionByRoleID(id int32) (err error) {
 
-	return repo.DB.GetDbQueries().DeleteRolePermission(context.Background(), id)
+	return repo.DB.GetDbQueries().DeleteRolePermissionByRoleID(context.Background(), id)
 }

@@ -10,6 +10,6 @@ type CreateRolePermissionUseCaseInterface interface {
 	Execute(input usecase.CreateRolePermissionInputDTO) (output usecase.CreateRolePermissionOutputDTO, err error)
 }
 
-type DeleteRolePermissionUseCaseInterface interface {
-	Execute(input usecase.DeleteRolePermissionInputDTO) (output usecase.DeleteRolePermissionOutputDTO, err error)
+type DeleteRolePermissionByRoleIDUseCaseInterface interface {
+	Execute(input usecase.DeleteRolePermissionByRoleIDInputDTO) (output usecase.DeleteRolePermissionByRoleIDOutputDTO, err error)
 }

@@ -142,8 +142,7 @@ INSERT INTO roles (
   description
 ) VALUES (
   $1, $2, $3
-)
-;
+);
 
 -- name: UpdateRole :exec
 UPDATE roles SET
@@ -178,21 +177,18 @@ INSERT INTO permissions (
   description
 ) VALUES (
   $1, $2, $3
-)
-;
+);
 
 -- name: UpdatePermission :exec
 UPDATE permissions SET
   name = $1,
   internal_name = $2,
   description = $3
-WHERE id = $4
-;
+WHERE id = $4;
 
 -- name: DeletePermission :exec
 DELETE FROM permissions
-WHERE id = $1
-;
+WHERE id = $1;
 
 -- name: CreateRolePermission :exec
 INSERT INTO role_permissions (
@@ -200,8 +196,7 @@ INSERT INTO role_permissions (
   permission_id
 ) VALUES (
   $1, $2
-)
-;
+);
 
 -- name: GetRolePermission :many
 SELECT * FROM role_permissions
@@ -214,10 +209,9 @@ INNER JOIN roles ON role_permissions.role_id = roles.id
 WHERE role_id = $1
 ORDER BY permission_id ASC;
 
--- name: DeleteRolePermission :exec
+-- name: DeleteRolePermissionByRoleID :exec
 DELETE FROM role_permissions
-WHERE role_id = $1
-;
+WHERE role_id = $1;
 
 -- name: GetAvatar :one
 SELECT * FROM avatars
@@ -233,19 +227,16 @@ INSERT INTO avatars (
   svg
 ) VALUES (
   $1
-)
-;
+);
 
 -- name: UpdateAvatar :exec
 UPDATE avatars SET
   svg = $1
-WHERE id = $2
-;
+WHERE id = $2;
 
 -- name: DeleteAvatar :exec
 DELETE FROM avatars
-WHERE id = $1
-;
+WHERE id = $1;
 
 -- name: GetUserValidationByUserID :one
 SELECT * FROM users_validation

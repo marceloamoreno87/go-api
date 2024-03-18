@@ -10,26 +10,24 @@ import (
 )
 
 type RolePermissionService struct {
-	NewGetRolePermissionsUseCase   usecaseInterface.GetRolePermissionsUseCaseInterface
-	NewCreateRolePermissionUseCase usecaseInterface.CreateRolePermissionUseCaseInterface
-	NewDeleteRolePermissionUseCase usecaseInterface.DeleteRolePermissionUseCaseInterface
+	GetRolePermissionsUseCase           usecaseInterface.GetRolePermissionsUseCaseInterface
+	CreateRolePermissionUseCase         usecaseInterface.CreateRolePermissionUseCaseInterface
+	DeleteRolePermissionByRoleIDUseCase usecaseInterface.DeleteRolePermissionByRoleIDUseCaseInterface
 }
 
 func NewRolePermissionService() *RolePermissionService {
 	return &RolePermissionService{
-		NewGetRolePermissionsUseCase:   usecase.NewGetRolePermissionsUseCase(),
-		NewCreateRolePermissionUseCase: usecase.NewCreateRolePermissionUseCase(),
-		NewDeleteRolePermissionUseCase: usecase.NewDeleteRolePermissionUseCase(),
+		GetRolePermissionsUseCase:           usecase.NewGetRolePermissionsUseCase(),
+		CreateRolePermissionUseCase:         usecase.NewCreateRolePermissionUseCase(),
+		DeleteRolePermissionByRoleIDUseCase: usecase.NewDeleteRolePermissionByRoleIDUseCase(),
 	}
 }
 
 func (s *RolePermissionService) GetRolePermissions(id int32) (output []usecase.GetRolePermissionsOutputDTO, err error) {
-
 	input := usecase.GetRolePermissionsInputDTO{
 		RoleID: id,
 	}
-
-	output, err = s.NewGetRolePermissionsUseCase.Execute(input)
+	output, err = s.GetRolePermissionsUseCase.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -45,7 +43,7 @@ func (s *RolePermissionService) CreateRolePermission(body io.ReadCloser) (output
 		return
 	}
 
-	output, err = s.NewCreateRolePermissionUseCase.Execute(input)
+	output, err = s.CreateRolePermissionUseCase.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -54,16 +52,15 @@ func (s *RolePermissionService) CreateRolePermission(body io.ReadCloser) (output
 
 }
 
-func (s *RolePermissionService) DeleteRolePermission(id int32, body io.ReadCloser) (output usecase.DeleteRolePermissionOutputDTO, err error) {
-	input := usecase.DeleteRolePermissionInputDTO{
+func (s *RolePermissionService) DeleteRolePermissionByRoleID(id int32, body io.ReadCloser) (output usecase.DeleteRolePermissionByRoleIDOutputDTO, err error) {
+	input := usecase.DeleteRolePermissionByRoleIDInputDTO{
 		RoleID: id,
 	}
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
 	}
-
-	output, err = s.NewDeleteRolePermissionUseCase.Execute(input)
+	output, err = s.DeleteRolePermissionByRoleIDUseCase.Execute(input)
 	if err != nil {
 		slog.Info("err", err)
 		return

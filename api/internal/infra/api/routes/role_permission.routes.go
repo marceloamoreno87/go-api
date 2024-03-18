@@ -11,7 +11,7 @@ func (route *Route) getRolePermissionsRoutes(router chi.Router) {
 	router.Route("/{id}/permission", func(r chi.Router) {
 		r.Get("/", handler.GetRolePermissions)
 		r.Post("/", handler.CreateRolePermission)
-		r.Delete("/", handler.DeleteRolePermission)
+		r.Delete("/", handler.DeleteRolePermissionByRoleID)
 	})
 
 }

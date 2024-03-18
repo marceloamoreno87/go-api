@@ -54,8 +54,8 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.deleteRoleStmt, err = db.PrepareContext(ctx, deleteRole); err != nil {
 		return nil, fmt.Errorf("error preparing query DeleteRole: %w", err)
 	}
-	if q.deleteRolePermissionStmt, err = db.PrepareContext(ctx, deleteRolePermission); err != nil {
-		return nil, fmt.Errorf("error preparing query DeleteRolePermission: %w", err)
+	if q.deleteRolePermissionByRoleIDStmt, err = db.PrepareContext(ctx, deleteRolePermissionByRoleID); err != nil {
+		return nil, fmt.Errorf("error preparing query DeleteRolePermissionByRoleID: %w", err)
 	}
 	if q.deleteUserStmt, err = db.PrepareContext(ctx, deleteUser); err != nil {
 		return nil, fmt.Errorf("error preparing query DeleteUser: %w", err)
@@ -214,9 +214,9 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing deleteRoleStmt: %w", cerr)
 		}
 	}
-	if q.deleteRolePermissionStmt != nil {
-		if cerr := q.deleteRolePermissionStmt.Close(); cerr != nil {
-			err = fmt.Errorf("error closing deleteRolePermissionStmt: %w", cerr)
+	if q.deleteRolePermissionByRoleIDStmt != nil {
+		if cerr := q.deleteRolePermissionByRoleIDStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing deleteRolePermissionByRoleIDStmt: %w", cerr)
 		}
 	}
 	if q.deleteUserStmt != nil {
@@ -426,103 +426,103 @@ func (q *Queries) queryRow(ctx context.Context, stmt *sql.Stmt, query string, ar
 }
 
 type Queries struct {
-	db                              DBTX
-	tx                              *sql.Tx
-	createAuthStmt                  *sql.Stmt
-	createAvatarStmt                *sql.Stmt
-	createPermissionStmt            *sql.Stmt
-	createRoleStmt                  *sql.Stmt
-	createRolePermissionStmt        *sql.Stmt
-	createUserStmt                  *sql.Stmt
-	createUserValidationStmt        *sql.Stmt
-	deleteAvatarStmt                *sql.Stmt
-	deletePermissionStmt            *sql.Stmt
-	deleteRoleStmt                  *sql.Stmt
-	deleteRolePermissionStmt        *sql.Stmt
-	deleteUserStmt                  *sql.Stmt
-	getAuthByRefreshTokenStmt       *sql.Stmt
-	getAuthByTokenStmt              *sql.Stmt
-	getAuthByUserIDStmt             *sql.Stmt
-	getAvatarStmt                   *sql.Stmt
-	getAvatarsStmt                  *sql.Stmt
-	getPermissionStmt               *sql.Stmt
-	getPermissionByInternalNameStmt *sql.Stmt
-	getPermissionsStmt              *sql.Stmt
-	getRoleStmt                     *sql.Stmt
-	getRoleByInternalNameStmt       *sql.Stmt
-	getRolePermissionStmt           *sql.Stmt
-	getRolePermissionsByRoleStmt    *sql.Stmt
-	getRolesStmt                    *sql.Stmt
-	getUserStmt                     *sql.Stmt
-	getUserByEmailStmt              *sql.Stmt
-	getUserValidationByHashStmt     *sql.Stmt
-	getUserValidationByUserIDStmt   *sql.Stmt
-	getUserWithAvatarStmt           *sql.Stmt
-	getUserWithRoleStmt             *sql.Stmt
-	getUserWithRoleAndAvatarStmt    *sql.Stmt
-	getUserWithValidationUserStmt   *sql.Stmt
-	getUsersStmt                    *sql.Stmt
-	getUsersWithAvatarStmt          *sql.Stmt
-	getUsersWithRoleStmt            *sql.Stmt
-	getUsersWithRoleAndAvatarStmt   *sql.Stmt
-	updateAuthRevokeByUserIDStmt    *sql.Stmt
-	updateAvatarStmt                *sql.Stmt
-	updatePermissionStmt            *sql.Stmt
-	updateRoleStmt                  *sql.Stmt
-	updateUserStmt                  *sql.Stmt
-	updateUserActiveStmt            *sql.Stmt
-	updateUserPasswordStmt          *sql.Stmt
-	updateUserValidationUsedStmt    *sql.Stmt
+	db                               DBTX
+	tx                               *sql.Tx
+	createAuthStmt                   *sql.Stmt
+	createAvatarStmt                 *sql.Stmt
+	createPermissionStmt             *sql.Stmt
+	createRoleStmt                   *sql.Stmt
+	createRolePermissionStmt         *sql.Stmt
+	createUserStmt                   *sql.Stmt
+	createUserValidationStmt         *sql.Stmt
+	deleteAvatarStmt                 *sql.Stmt
+	deletePermissionStmt             *sql.Stmt
+	deleteRoleStmt                   *sql.Stmt
+	deleteRolePermissionByRoleIDStmt *sql.Stmt
+	deleteUserStmt                   *sql.Stmt
+	getAuthByRefreshTokenStmt        *sql.Stmt
+	getAuthByTokenStmt               *sql.Stmt
+	getAuthByUserIDStmt              *sql.Stmt
+	getAvatarStmt                    *sql.Stmt
+	getAvatarsStmt                   *sql.Stmt
+	getPermissionStmt                *sql.Stmt
+	getPermissionByInternalNameStmt  *sql.Stmt
+	getPermissionsStmt               *sql.Stmt
+	getRoleStmt                      *sql.Stmt
+	getRoleByInternalNameStmt        *sql.Stmt
+	getRolePermissionStmt            *sql.Stmt
+	getRolePermissionsByRoleStmt     *sql.Stmt
+	getRolesStmt                     *sql.Stmt
+	getUserStmt                      *sql.Stmt
+	getUserByEmailStmt               *sql.Stmt
+	getUserValidationByHashStmt      *sql.Stmt
+	getUserValidationByUserIDStmt    *sql.Stmt
+	getUserWithAvatarStmt            *sql.Stmt
+	getUserWithRoleStmt              *sql.Stmt
+	getUserWithRoleAndAvatarStmt     *sql.Stmt
+	getUserWithValidationUserStmt    *sql.Stmt
+	getUsersStmt                     *sql.Stmt
+	getUsersWithAvatarStmt           *sql.Stmt
+	getUsersWithRoleStmt             *sql.Stmt
+	getUsersWithRoleAndAvatarStmt    *sql.Stmt
+	updateAuthRevokeByUserIDStmt     *sql.Stmt
+	updateAvatarStmt                 *sql.Stmt
+	updatePermissionStmt             *sql.Stmt
+	updateRoleStmt                   *sql.Stmt
+	updateUserStmt                   *sql.Stmt
+	updateUserActiveStmt             *sql.Stmt
+	updateUserPasswordStmt           *sql.Stmt
+	updateUserValidationUsedStmt     *sql.Stmt
 }
 
 func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 	return &Queries{
-		db:                              tx,
-		tx:                              tx,
-		createAuthStmt:                  q.createAuthStmt,
-		createAvatarStmt:                q.createAvatarStmt,
-		createPermissionStmt:            q.createPermissionStmt,
-		createRoleStmt:                  q.createRoleStmt,
-		createRolePermissionStmt:        q.createRolePermissionStmt,
-		createUserStmt:                  q.createUserStmt,
-		createUserValidationStmt:        q.createUserValidationStmt,
-		deleteAvatarStmt:                q.deleteAvatarStmt,
-		deletePermissionStmt:            q.deletePermissionStmt,
-		deleteRoleStmt:                  q.deleteRoleStmt,
-		deleteRolePermissionStmt:        q.deleteRolePermissionStmt,
-		deleteUserStmt:                  q.deleteUserStmt,
-		getAuthByRefreshTokenStmt:       q.getAuthByRefreshTokenStmt,
-		getAuthByTokenStmt:              q.getAuthByTokenStmt,
-		getAuthByUserIDStmt:             q.getAuthByUserIDStmt,
-		getAvatarStmt:                   q.getAvatarStmt,
-		getAvatarsStmt:                  q.getAvatarsStmt,
-		getPermissionStmt:               q.getPermissionStmt,
-		getPermissionByInternalNameStmt: q.getPermissionByInternalNameStmt,
-		getPermissionsStmt:              q.getPermissionsStmt,
-		getRoleStmt:                     q.getRoleStmt,
-		getRoleByInternalNameStmt:       q.getRoleByInternalNameStmt,
-		getRolePermissionStmt:           q.getRolePermissionStmt,
-		getRolePermissionsByRoleStmt:    q.getRolePermissionsByRoleStmt,
-		getRolesStmt:                    q.getRolesStmt,
-		getUserStmt:                     q.getUserStmt,
-		getUserByEmailStmt:              q.getUserByEmailStmt,
-		getUserValidationByHashStmt:     q.getUserValidationByHashStmt,
-		getUserValidationByUserIDStmt:   q.getUserValidationByUserIDStmt,
-		getUserWithAvatarStmt:           q.getUserWithAvatarStmt,
-		getUserWithRoleStmt:             q.getUserWithRoleStmt,
-		getUserWithRoleAndAvatarStmt:    q.getUserWithRoleAndAvatarStmt,
-		getUserWithValidationUserStmt:   q.getUserWithValidationUserStmt,
-		getUsersStmt:                    q.getUsersStmt,
-		getUsersWithAvatarStmt:          q.getUsersWithAvatarStmt,
-		getUsersWithRoleStmt:            q.getUsersWithRoleStmt,
-		getUsersWithRoleAndAvatarStmt:   q.getUsersWithRoleAndAvatarStmt,
-		updateAuthRevokeByUserIDStmt:    q.updateAuthRevokeByUserIDStmt,
-		updateAvatarStmt:                q.updateAvatarStmt,
-		updatePermissionStmt:            q.updatePermissionStmt,
-		updateRoleStmt:                  q.updateRoleStmt,
-		updateUserStmt:                  q.updateUserStmt,
-		updateUserActiveStmt:            q.updateUserActiveStmt,
-		updateUserPasswordStmt:          q.updateUserPasswordStmt,
-		updateUserValidationUsedStmt:    q.updateUserValidationUsedStmt,
+		db:                               tx,
+		tx:                               tx,
+		createAuthStmt:                   q.createAuthStmt,
+		createAvatarStmt:                 q.createAvatarStmt,
+		createPermissionStmt:             q.createPermissionStmt,
+		createRoleStmt:                   q.createRoleStmt,
+		createRolePermissionStmt:         q.createRolePermissionStmt,
+		createUserStmt:                   q.createUserStmt,
+		createUserValidationStmt:         q.createUserValidationStmt,
+		deleteAvatarStmt:                 q.deleteAvatarStmt,
+		deletePermissionStmt:             q.deletePermissionStmt,
+		deleteRoleStmt:                   q.deleteRoleStmt,
+		deleteRolePermissionByRoleIDStmt: q.deleteRolePermissionByRoleIDStmt,
+		deleteUserStmt:                   q.deleteUserStmt,
+		getAuthByRefreshTokenStmt:        q.getAuthByRefreshTokenStmt,
+		getAuthByTokenStmt:               q.getAuthByTokenStmt,
+		getAuthByUserIDStmt:              q.getAuthByUserIDStmt,
+		getAvatarStmt:                    q.getAvatarStmt,
+		getAvatarsStmt:                   q.getAvatarsStmt,
+		getPermissionStmt:                q.getPermissionStmt,
+		getPermissionByInternalNameStmt:  q.getPermissionByInternalNameStmt,
+		getPermissionsStmt:               q.getPermissionsStmt,
+		getRoleStmt:                      q.getRoleStmt,
+		getRoleByInternalNameStmt:        q.getRoleByInternalNameStmt,
+		getRolePermissionStmt:            q.getRolePermissionStmt,
+		getRolePermissionsByRoleStmt:     q.getRolePermissionsByRoleStmt,
+		getRolesStmt:                     q.getRolesStmt,
+		getUserStmt:                      q.getUserStmt,
+		getUserByEmailStmt:               q.getUserByEmailStmt,
+		getUserValidationByHashStmt:      q.getUserValidationByHashStmt,
+		getUserValidationByUserIDStmt:    q.getUserValidationByUserIDStmt,
+		getUserWithAvatarStmt:            q.getUserWithAvatarStmt,
+		getUserWithRoleStmt:              q.getUserWithRoleStmt,
+		getUserWithRoleAndAvatarStmt:     q.getUserWithRoleAndAvatarStmt,
+		getUserWithValidationUserStmt:    q.getUserWithValidationUserStmt,
+		getUsersStmt:                     q.getUsersStmt,
+		getUsersWithAvatarStmt:           q.getUsersWithAvatarStmt,
+		getUsersWithRoleStmt:             q.getUsersWithRoleStmt,
+		getUsersWithRoleAndAvatarStmt:    q.getUsersWithRoleAndAvatarStmt,
+		updateAuthRevokeByUserIDStmt:     q.updateAuthRevokeByUserIDStmt,
+		updateAvatarStmt:                 q.updateAvatarStmt,
+		updatePermissionStmt:             q.updatePermissionStmt,
+		updateRoleStmt:                   q.updateRoleStmt,
+		updateUserStmt:                   q.updateUserStmt,
+		updateUserActiveStmt:             q.updateUserActiveStmt,
+		updateUserPasswordStmt:           q.updateUserPasswordStmt,
+		updateUserValidationUsedStmt:     q.updateUserValidationUsedStmt,
 	}
 }

@@ -150,3 +150,64 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 	h.SendResponse(w, h.NewResponse(output))
 }
+
+// ForgotPassword godoc
+// @Summary Forgot Password
+// @Description Forgot Password
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param user body service.RequestForgotPasswordInputDTO true "User"
+// @Success 200 {object} response.Response{data=nil}
+// @Failure 400 {object} response.ResponseError{}
+// @Router /user/forgot-password [post]
+func (h *UserHandler) ForgotPassword(w http.ResponseWriter, r *http.Request) {
+	err := h.service.ForgotPassword(r.Body)
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
+	}
+	h.SendResponse(w, h.NewResponse(nil))
+}
+
+// VerifyUser godoc
+// @Summary Verify User
+// @Description Verify User
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param user body service.RequestVerifyUserInputDTO true "User"
+// @Success 200 {object} response.Response{data=nil}
+// @Failure 400 {object} response.ResponseError{}
+// @Router /user/verify-user [post]
+func (h *UserHandler) VerifyUser(w http.ResponseWriter, r *http.Request) {
+	err := h.service.VerifyUser(r.Body)
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
+	}
+	h.SendResponse(w, h.NewResponse(nil))
+}
+
+// RegisterUser godoc
+// @Summary Register User
+// @Description Create User
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param user body usecase.CreateUserInputDTO true "User"
+// @Success 200 {object} response.Response{data=nil}
+// @Failure 400 {object} response.ResponseError{}
+// @Router /user [post]
+// @Security     JWT
+func (h *UserHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
+	output, err := h.service.CreateUser(r.Body)
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
+	}
+	h.SendResponse(w, h.NewResponse(output))
+}

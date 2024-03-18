@@ -36,7 +36,7 @@ func (route *Route) getTestVerifyUser(router chi.Router) {
 
 		// Test verify user
 		hash := chi.URLParam(r, "hash")
-		resp, err := http.Post("http://localhost:3000/api/v1/auth/verify-user", "application/json", strings.NewReader(`{"hash":"`+hash+`"}`))
+		resp, err := http.Post("http://localhost:3000/api/v1/user/verify-user", "application/json", strings.NewReader(`{"hash":"`+hash+`"}`))
 		if err != nil {
 			w.Write([]byte(err.Error()))
 			return
@@ -51,7 +51,7 @@ func (route *Route) getTestUpdatePassword(router chi.Router) {
 	router.Get("/update-password/hash/{hash}", func(w http.ResponseWriter, r *http.Request) {
 		// Test forgot password
 		hash := chi.URLParam(r, "hash")
-		resp, err := http.Post("http://localhost:3000/api/v1/auth/update-password", "application/json", strings.NewReader(`{"hash":"`+hash+`","password":"123456"}`))
+		resp, err := http.Post("http://localhost:3000/api/v1/user/update-password", "application/json", strings.NewReader(`{"hash":"`+hash+`","password":"123456"}`))
 		if err != nil {
 			w.Write([]byte(err.Error()))
 			return

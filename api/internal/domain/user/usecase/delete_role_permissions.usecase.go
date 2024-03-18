@@ -5,31 +5,31 @@ import (
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
-type DeleteRolePermissionInputDTO struct {
+type DeleteRolePermissionByRoleIDInputDTO struct {
 	RoleID int32 `json:"role_id"`
 }
 
-type DeleteRolePermissionOutputDTO struct {
+type DeleteRolePermissionByRoleIDOutputDTO struct {
 	RoleID int32 `json:"role_id"`
 }
 
-type DeleteRolePermissionUseCase struct {
+type DeleteRolePermissionByRoleIDUseCase struct {
 	repo repositoryInterface.RolePermissionRepositoryInterface
 }
 
-func NewDeleteRolePermissionUseCase() *DeleteRolePermissionUseCase {
-	return &DeleteRolePermissionUseCase{
+func NewDeleteRolePermissionByRoleIDUseCase() *DeleteRolePermissionByRoleIDUseCase {
+	return &DeleteRolePermissionByRoleIDUseCase{
 		repo: repository.NewRolePermissionRepository(),
 	}
 }
 
-func (uc *DeleteRolePermissionUseCase) Execute(input DeleteRolePermissionInputDTO) (output DeleteRolePermissionOutputDTO, err error) {
-	err = uc.repo.DeleteRolePermission(input.RoleID)
+func (uc *DeleteRolePermissionByRoleIDUseCase) Execute(input DeleteRolePermissionByRoleIDInputDTO) (output DeleteRolePermissionByRoleIDOutputDTO, err error) {
+	err = uc.repo.DeleteRolePermissionByRoleID(input.RoleID)
 	if err != nil {
 		return
 	}
 
-	output = DeleteRolePermissionOutputDTO{
+	output = DeleteRolePermissionByRoleIDOutputDTO{
 		RoleID: input.RoleID,
 	}
 

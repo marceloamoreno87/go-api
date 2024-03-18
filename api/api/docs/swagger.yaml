@@ -429,37 +429,6 @@ paths:
       summary: Update Avatar
       tags:
       - Avatar
-  /auth/forgot-password:
-    post:
-      consumes:
-      - application/json
-      description: Forgot Password
-      parameters:
-      - description: User
-        in: body
-        name: auth
-        required: true
-        schema:
-          $ref: '#/definitions/service.RequestForgotPasswordInputDTO'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  type: object
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ResponseError'
-      summary: Forgot Password
-      tags:
-      - Auth
   /auth/login:
     post:
       consumes:
@@ -520,37 +489,6 @@ paths:
           schema:
             $ref: '#/definitions/response.ResponseError'
       summary: Get Refresh JWT
-      tags:
-      - Auth
-  /auth/verify-user:
-    post:
-      consumes:
-      - application/json
-      description: Verify User
-      parameters:
-      - description: User
-        in: body
-        name: auth
-        required: true
-        schema:
-          $ref: '#/definitions/service.RequestVerifyUserInputDTO'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  type: object
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ResponseError'
-      summary: Verify User
       tags:
       - Auth
   /permission:
@@ -1028,7 +966,7 @@ paths:
             $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
-      summary: Create User
+      summary: Register User
       tags:
       - User
   /user/{id}:
@@ -1132,6 +1070,37 @@ paths:
       summary: Update User
       tags:
       - User
+  /user/forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: Forgot Password
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/service.RequestForgotPasswordInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResponseError'
+      summary: Forgot Password
+      tags:
+      - User
   /user/update-password:
     post:
       consumes:
@@ -1161,6 +1130,37 @@ paths:
           schema:
             $ref: '#/definitions/response.ResponseError'
       summary: Update User Password
+      tags:
+      - User
+  /user/verify-user:
+    post:
+      consumes:
+      - application/json
+      description: Verify User
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/service.RequestVerifyUserInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResponseError'
+      summary: Verify User
       tags:
       - User
 schemes:

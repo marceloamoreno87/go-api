@@ -19,7 +19,7 @@ type Querier interface {
 	DeleteAvatar(ctx context.Context, id int32) error
 	DeletePermission(ctx context.Context, id int32) error
 	DeleteRole(ctx context.Context, id int32) error
-	DeleteRolePermission(ctx context.Context, roleID int32) error
+	DeleteRolePermissionByRoleID(ctx context.Context, roleID int32) error
 	DeleteUser(ctx context.Context, id int32) error
 	GetAuthByRefreshToken(ctx context.Context, arg GetAuthByRefreshTokenParams) (Auth, error)
 	GetAuthByToken(ctx context.Context, arg GetAuthByTokenParams) (Auth, error)

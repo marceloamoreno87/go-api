@@ -26,6 +26,7 @@ type UserService struct {
 	CreateUserValidationUseCase    usecaseInterface.CreateUserValidationUseCaseInterface
 	GetUserValidationByHashUseCase usecaseInterface.GetUserValidationByHashUseCaseInterface
 	UpdateUserValidationUsed       usecaseInterface.UpdateUserValidationUsedUseCaseInterface
+	UpdateUserActive               usecaseInterface.UpdateUserActiveUseCaseInterface
 }
 
 func NewUserService() *UserService {
@@ -40,6 +41,7 @@ func NewUserService() *UserService {
 		CreateUserValidationUseCase:    usecase.NewCreateUserValidationUseCase(),
 		GetUserValidationByHashUseCase: usecase.NewGetUserValidationByHashUseCase(),
 		UpdateUserValidationUsed:       usecase.NewUpdateUserValidationUsedUseCase(),
+		UpdateUserActive:               usecase.NewUpdateUserActiveUseCase(),
 	}
 }
 
@@ -197,5 +199,90 @@ func (s *UserService) DeleteUser(id int32) (output usecase.DeleteUserOutputDTO, 
 		return
 	}
 	slog.Info("User deleted")
+	return
+}
+
+func (s *UserService) VerifyUser(body io.ReadCloser) (err error) {
+	input := RequestVerifyUserInputDTO{}
+
+	if err = json.NewDecoder(body).Decode(&input); err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	userValidation, err := s.GetUserValidationByHashUseCase.Execute(usecase.GetUserValidationByHashInputDTO{
+		Hash: input.Hash,
+	})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	user, err := s.GetUserUseCase.Execute(usecase.GetUserInputDTO{ID: userValidation.UserID})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	err = s.UpdateUserActive.Execute(usecase.UpdateUserActiveInputDTO{
+		ID:       user.ID,
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: user.Password,
+		Active:   true,
+	})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	err = s.UpdateUserValidationUsed.Execute(usecase.UpdateUserValidationUsedInputDTO{
+		UserID: user.ID,
+	})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	go event.NewUserVerifiedEmailEvent(
+		event.UserVerifiedEmailEventInputDTO{
+			Email: user.Email,
+			Name:  user.Name,
+		}).Send()
+
+	slog.Info("User verified")
+
+	return
+}
+
+func (s *UserService) ForgotPassword(body io.ReadCloser) (err error) {
+	input := RequestForgotPasswordInputDTO{}
+	if err = json.NewDecoder(body).Decode(&input); err != nil {
+		slog.Info("err", err)
+		return
+	}
+	user, err := s.GetUserByEmailUseCase.Execute(usecase.GetUserByEmailInputDTO{Email: input.Email})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	userValidation, err := s.CreateUserValidationUseCase.Execute(usecase.CreateUserValidationInputDTO{
+		UserID: user.ID,
+		Email:  user.Email,
+		Name:   user.Name,
+	})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	go event.NewPasswordForgotEmailEvent(event.PasswordForgotEmailEventInputDTO{
+		Email: user.Email,
+		Name:  user.Name,
+		Hash:  userValidation.Hash,
+	}).Send()
+
+	slog.Info("User forgot password")
 	return
 }

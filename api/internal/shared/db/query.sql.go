@@ -224,13 +224,13 @@ func (q *Queries) DeleteRole(ctx context.Context, id int32) error {
 	return err
 }
 
-const deleteRolePermission = `-- name: DeleteRolePermission :exec
+const deleteRolePermissionByRoleID = `-- name: DeleteRolePermissionByRoleID :exec
 DELETE FROM role_permissions
 WHERE role_id = $1
 `
 
-func (q *Queries) DeleteRolePermission(ctx context.Context, roleID int32) error {
-	_, err := q.exec(ctx, q.deleteRolePermissionStmt, deleteRolePermission, roleID)
+func (q *Queries) DeleteRolePermissionByRoleID(ctx context.Context, roleID int32) error {
+	_, err := q.exec(ctx, q.deleteRolePermissionByRoleIDStmt, deleteRolePermissionByRoleID, roleID)
 	return err
 }
 

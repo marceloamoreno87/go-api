@@ -10,11 +10,8 @@ func (route *Route) getAuthRoutes(router chi.Router) {
 	authHandler := handler.NewAuthHandler()
 	userHandler := handler.NewUserHandler()
 	router.Route("/auth", func(r chi.Router) {
-		r.Post("/register", userHandler.CreateUser)
-
+		r.Post("/register", userHandler.RegisterUser)
 		r.Post("/login", authHandler.Login)
 		r.Post("/refresh", authHandler.RefreshToken)
-		r.Post("/verify-user", authHandler.VerifyUser)
-		r.Post("/forgot-password", authHandler.ForgotPassword)
 	})
 }
