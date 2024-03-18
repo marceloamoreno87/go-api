@@ -10,6 +10,29 @@ import (
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
+type RequestLoginInputDTO struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type RequestRefreshTokenInputDTO struct {
+	UserID       int32  `json:"user_id"`
+	RefreshToken string `json:"refresh_token"`
+}
+
+type RequestVerifyUserInputDTO struct {
+	Hash string `json:"hash"`
+}
+
+type RequestUpdateUserPasswordInputDTO struct {
+	Hash     string `json:"hash"`
+	Password string `json:"password"`
+}
+
+type RequestForgotPasswordInputDTO struct {
+	Email string `json:"email"`
+}
+
 type AuthService struct {
 	GetUserUseCase                 usecaseInterface.GetUserUseCaseInterface
 	GetUserByEmailUseCase          usecaseInterface.GetUserByEmailUseCaseInterface
@@ -48,10 +71,7 @@ func NewAuthService() *AuthService {
 
 func (s *AuthService) Login(body io.ReadCloser) (output usecase.CreateAuthOutputDTO, err error) {
 
-	input := struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}{}
+	input := RequestLoginInputDTO{}
 
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
@@ -120,10 +140,7 @@ func (s *AuthService) Login(body io.ReadCloser) (output usecase.CreateAuthOutput
 }
 
 func (s *AuthService) RefreshToken(body io.ReadCloser) (output usecase.CreateAuthOutputDTO, err error) {
-	input := struct {
-		UserID       int32  `json:"user_id"`
-		RefreshToken string `json:"refresh_token"`
-	}{}
+	input := RequestRefreshTokenInputDTO{}
 
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
@@ -167,9 +184,7 @@ func (s *AuthService) RefreshToken(body io.ReadCloser) (output usecase.CreateAut
 }
 
 func (s *AuthService) VerifyUser(body io.ReadCloser) (err error) {
-	input := struct {
-		Hash string `json:"hash"`
-	}{}
+	input := RequestVerifyUserInputDTO{}
 
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
@@ -223,10 +238,7 @@ func (s *AuthService) VerifyUser(body io.ReadCloser) (err error) {
 
 func (s *AuthService) UpdateUserPassword(body io.ReadCloser) (err error) {
 
-	input := struct {
-		Hash     string `json:"hash"`
-		Password string `json:"password"`
-	}{}
+	input := RequestUpdateUserPasswordInputDTO{}
 
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
@@ -276,9 +288,7 @@ func (s *AuthService) UpdateUserPassword(body io.ReadCloser) (err error) {
 }
 
 func (s *AuthService) ForgotPassword(body io.ReadCloser) (err error) {
-	input := struct {
-		Email string `json:"email"`
-	}{}
+	input := RequestForgotPasswordInputDTO{}
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return

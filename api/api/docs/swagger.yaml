@@ -1,5 +1,51 @@
 basePath: /api/v1
 definitions:
+  github_com_marceloamoreno_goapi_internal_domain_user_service.RequestForgotPasswordInputDTO:
+    properties:
+      email:
+        type: string
+    type: object
+  github_com_marceloamoreno_goapi_internal_domain_user_service.RequestLoginInputDTO:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  github_com_marceloamoreno_goapi_internal_domain_user_service.RequestRefreshTokenInputDTO:
+    properties:
+      refresh_token:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  github_com_marceloamoreno_goapi_internal_domain_user_service.RequestUpdateUserPasswordInputDTO:
+    properties:
+      hash:
+        type: string
+      password:
+        type: string
+    type: object
+  github_com_marceloamoreno_goapi_internal_domain_user_service.RequestVerifyUserInputDTO:
+    properties:
+      hash:
+        type: string
+    type: object
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateAuthOutputDTO:
+    properties:
+      active:
+        type: boolean
+      refresh_token:
+        type: string
+      refresh_token_expires_in:
+        type: integer
+      token:
+        type: string
+      token_expires_in:
+        type: integer
+      user_id:
+        type: integer
+    type: object
   github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateAvatarInputDTO:
     properties:
       svg:
@@ -388,9 +434,29 @@ paths:
       consumes:
       - application/json
       description: Forgot Password
+      parameters:
+      - description: User
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_service.RequestForgotPasswordInputDTO'
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
       summary: Forgot Password
       tags:
       - Auth
@@ -399,9 +465,29 @@ paths:
       consumes:
       - application/json
       description: Get JWT
+      parameters:
+      - description: User
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_service.RequestLoginInputDTO'
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateAuthOutputDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
       summary: Get JWT
       tags:
       - Auth
@@ -410,9 +496,29 @@ paths:
       consumes:
       - application/json
       description: Get Refresh JWT
+      parameters:
+      - description: User
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_service.RequestRefreshTokenInputDTO'
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateAuthOutputDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
       summary: Get Refresh JWT
       tags:
       - Auth
@@ -421,9 +527,29 @@ paths:
       consumes:
       - application/json
       description: Update User Password
+      parameters:
+      - description: User
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_service.RequestUpdateUserPasswordInputDTO'
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
       summary: Update User Password
       tags:
       - Auth
@@ -432,9 +558,29 @@ paths:
       consumes:
       - application/json
       description: Verify User
+      parameters:
+      - description: User
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_service.RequestVerifyUserInputDTO'
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
       summary: Verify User
       tags:
       - Auth

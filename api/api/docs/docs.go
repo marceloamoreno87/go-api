@@ -264,7 +264,43 @@ const docTemplate = `{
                     "Auth"
                 ],
                 "summary": "Forgot Password",
-                "responses": {}
+                "parameters": [
+                    {
+                        "description": "User",
+                        "name": "auth",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_service.RequestForgotPasswordInputDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
+                        }
+                    }
+                }
             }
         },
         "/auth/login": {
@@ -280,7 +316,43 @@ const docTemplate = `{
                     "Auth"
                 ],
                 "summary": "Get JWT",
-                "responses": {}
+                "parameters": [
+                    {
+                        "description": "User",
+                        "name": "auth",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_service.RequestLoginInputDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateAuthOutputDTO"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
+                        }
+                    }
+                }
             }
         },
         "/auth/refresh": {
@@ -296,7 +368,43 @@ const docTemplate = `{
                     "Auth"
                 ],
                 "summary": "Get Refresh JWT",
-                "responses": {}
+                "parameters": [
+                    {
+                        "description": "User",
+                        "name": "auth",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_service.RequestRefreshTokenInputDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateAuthOutputDTO"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
+                        }
+                    }
+                }
             }
         },
         "/auth/update-password": {
@@ -312,7 +420,43 @@ const docTemplate = `{
                     "Auth"
                 ],
                 "summary": "Update User Password",
-                "responses": {}
+                "parameters": [
+                    {
+                        "description": "User",
+                        "name": "auth",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_service.RequestUpdateUserPasswordInputDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
+                        }
+                    }
+                }
             }
         },
         "/auth/verify-user": {
@@ -328,7 +472,43 @@ const docTemplate = `{
                     "Auth"
                 ],
                 "summary": "Verify User",
-                "responses": {}
+                "parameters": [
+                    {
+                        "description": "User",
+                        "name": "auth",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_service.RequestVerifyUserInputDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError"
+                        }
+                    }
+                }
             }
         },
         "/permission": {
@@ -1323,6 +1503,78 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "github_com_marceloamoreno_goapi_internal_domain_user_service.RequestForgotPasswordInputDTO": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_user_service.RequestLoginInputDTO": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_user_service.RequestRefreshTokenInputDTO": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_user_service.RequestUpdateUserPasswordInputDTO": {
+            "type": "object",
+            "properties": {
+                "hash": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_user_service.RequestVerifyUserInputDTO": {
+            "type": "object",
+            "properties": {
+                "hash": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateAuthOutputDTO": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean"
+                },
+                "refresh_token": {
+                    "type": "string"
+                },
+                "refresh_token_expires_in": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "token_expires_in": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateAvatarInputDTO": {
             "type": "object",
             "properties": {
