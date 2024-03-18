@@ -95,7 +95,6 @@ func (s *UserService) GetUserByEmail(email string) (output usecase.GetUserByEmai
 }
 
 func (s *UserService) GetUsers(limit int32, offset int32) (output []usecase.GetUsersOutputDTO, err error) {
-
 	input := usecase.GetUsersInputDTO{
 		Limit:  limit,
 		Offset: offset,
