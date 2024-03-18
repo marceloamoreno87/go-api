@@ -42,8 +42,8 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.createUserStmt, err = db.PrepareContext(ctx, createUser); err != nil {
 		return nil, fmt.Errorf("error preparing query CreateUser: %w", err)
 	}
-	if q.createValidationUserStmt, err = db.PrepareContext(ctx, createValidationUser); err != nil {
-		return nil, fmt.Errorf("error preparing query CreateValidationUser: %w", err)
+	if q.createUserValidationStmt, err = db.PrepareContext(ctx, createUserValidation); err != nil {
+		return nil, fmt.Errorf("error preparing query CreateUserValidation: %w", err)
 	}
 	if q.deleteAvatarStmt, err = db.PrepareContext(ctx, deleteAvatar); err != nil {
 		return nil, fmt.Errorf("error preparing query DeleteAvatar: %w", err)
@@ -194,9 +194,9 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing createUserStmt: %w", cerr)
 		}
 	}
-	if q.createValidationUserStmt != nil {
-		if cerr := q.createValidationUserStmt.Close(); cerr != nil {
-			err = fmt.Errorf("error closing createValidationUserStmt: %w", cerr)
+	if q.createUserValidationStmt != nil {
+		if cerr := q.createUserValidationStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing createUserValidationStmt: %w", cerr)
 		}
 	}
 	if q.deleteAvatarStmt != nil {
@@ -434,7 +434,7 @@ type Queries struct {
 	createRoleStmt                  *sql.Stmt
 	createRolePermissionStmt        *sql.Stmt
 	createUserStmt                  *sql.Stmt
-	createValidationUserStmt        *sql.Stmt
+	createUserValidationStmt        *sql.Stmt
 	deleteAvatarStmt                *sql.Stmt
 	deletePermissionStmt            *sql.Stmt
 	deleteRoleStmt                  *sql.Stmt
@@ -485,7 +485,7 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		createRoleStmt:                  q.createRoleStmt,
 		createRolePermissionStmt:        q.createRolePermissionStmt,
 		createUserStmt:                  q.createUserStmt,
-		createValidationUserStmt:        q.createValidationUserStmt,
+		createUserValidationStmt:        q.createUserValidationStmt,
 		deleteAvatarStmt:                q.deleteAvatarStmt,
 		deletePermissionStmt:            q.deletePermissionStmt,
 		deleteRoleStmt:                  q.deleteRoleStmt,

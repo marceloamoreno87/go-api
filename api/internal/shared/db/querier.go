@@ -15,7 +15,7 @@ type Querier interface {
 	CreateRole(ctx context.Context, arg CreateRoleParams) error
 	CreateRolePermission(ctx context.Context, arg CreateRolePermissionParams) error
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
-	CreateValidationUser(ctx context.Context, arg CreateValidationUserParams) (UsersValidation, error)
+	CreateUserValidation(ctx context.Context, arg CreateUserValidationParams) (UsersValidation, error)
 	DeleteAvatar(ctx context.Context, id int32) error
 	DeletePermission(ctx context.Context, id int32) error
 	DeleteRole(ctx context.Context, id int32) error

@@ -57,7 +57,7 @@ func (repo *UserValidationRepository) GetUserValidationByHash(hash string) (outp
 }
 
 func (repo *UserValidationRepository) CreateUserValidation(userValidation entityInterface.UserValidationInterface) (output entityInterface.UserValidationInterface, err error) {
-	newUserValidation, err := repo.DB.GetDbQueries().CreateUserValidation(context.Background(), db.CreateValidationUserParams{
+	newUserValidation, err := repo.DB.GetDbQueries().CreateUserValidation(context.Background(), db.CreateUserValidationParams{
 		UserID:    userValidation.GetUserID(),
 		Hash:      userValidation.GetHash(),
 		ExpiresIn: userValidation.GetExpiresIn(),

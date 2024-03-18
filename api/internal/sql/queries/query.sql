@@ -255,7 +255,7 @@ WHERE user_id = $1 and used is false ORDER BY id DESC LIMIT 1;
 SELECT * FROM users_validation
 WHERE hash = $1 and used is false LIMIT 1;
 
--- name: CreateValidationUser :one
+-- name: CreateUserValidation :one
 INSERT INTO users_validation (
   user_id,
   hash,

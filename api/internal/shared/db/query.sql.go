@@ -162,7 +162,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
-const createValidationUser = `-- name: CreateValidationUser :one
+const createUserValidation = `-- name: CreateUserValidation :one
 INSERT INTO users_validation (
   user_id,
   hash,
@@ -173,14 +173,14 @@ INSERT INTO users_validation (
 RETURNING id, user_id, hash, expires_in, used, created_at, updated_at
 `
 
-type CreateValidationUserParams struct {
+type CreateUserValidationParams struct {
 	UserID    int32  `json:"user_id"`
 	Hash      string `json:"hash"`
 	ExpiresIn int32  `json:"expires_in"`
 }
 
-func (q *Queries) CreateValidationUser(ctx context.Context, arg CreateValidationUserParams) (UsersValidation, error) {
-	row := q.queryRow(ctx, q.createValidationUserStmt, createValidationUser, arg.UserID, arg.Hash, arg.ExpiresIn)
+func (q *Queries) CreateUserValidation(ctx context.Context, arg CreateUserValidationParams) (UsersValidation, error) {
+	row := q.queryRow(ctx, q.createUserValidationStmt, createUserValidation, arg.UserID, arg.Hash, arg.ExpiresIn)
 	var i UsersValidation
 	err := row.Scan(
 		&i.ID,
@@ -693,7 +693,7 @@ func (q *Queries) GetUserValidationByHash(ctx context.Context, hash string) (Use
 
 const getUserValidationByUserID = `-- name: GetUserValidationByUserID :one
 SELECT id, user_id, hash, expires_in, used, created_at, updated_at FROM users_validation
-WHERE user_id = $1 ORDER BY id DESC LIMIT 1
+WHERE user_id = $1 and used is false ORDER BY id DESC LIMIT 1
 `
 
 func (q *Queries) GetUserValidationByUserID(ctx context.Context, userID int32) (UsersValidation, error) {
