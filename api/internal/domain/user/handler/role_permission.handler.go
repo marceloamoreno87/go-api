@@ -67,6 +67,28 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 
 }
 
+// UpdateRolePermission godoc
+// @Summary Update Role Permission
+// @Description Update Role Permission
+// @Tags RolePermission
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Role ID"
+// @Param user body usecase.CreateRolePermissionInputDTO true "RolePermission"
+// @Success 200 {object} response.Response{data=nil}
+// @Failure 400 {object} response.ResponseError{}
+// @Router /role/{id}/permission [put]
+// @Security     JWT
+func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *http.Request) {
+	output, err := h.service.UpdateRolePermission(helper.GetID(r), r.Body)
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
+	}
+	h.SendResponse(w, h.NewResponse(output))
+}
+
 // DeleteRolePermissionByRoleID godoc
 // @Summary Delete Role Permission By Role ID
 // @Description Update Role Permission
@@ -74,7 +96,7 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Role ID"
-// @Param user body usecase.DeleteRolePermissionInputDTO true "RolePermission"
+// @Param user body usecase.DeleteRolePermissionByRoleIDInputDTO true "RolePermission"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /role/{id}/permission [put]

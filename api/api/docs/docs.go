@@ -952,11 +952,11 @@ const docTemplate = `{
                 "tags": [
                     "RolePermission"
                 ],
-                "summary": "Update Role Permission",
+                "summary": "Delete Role Permission By Role ID",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "RolePermission ID",
+                        "description": "Role ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -967,7 +967,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/usecase.DeleteRolePermissionInputDTO"
+                            "$ref": "#/definitions/usecase.DeleteRolePermissionByRoleIDInputDTO"
                         }
                     }
                 ],
@@ -1659,7 +1659,7 @@ const docTemplate = `{
                 }
             }
         },
-        "usecase.DeleteRolePermissionInputDTO": {
+        "usecase.DeleteRolePermissionByRoleIDInputDTO": {
             "type": "object",
             "properties": {
                 "role_id": {

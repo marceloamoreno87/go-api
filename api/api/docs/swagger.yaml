@@ -100,7 +100,7 @@ definitions:
       role_id:
         type: integer
     type: object
-  usecase.DeleteRolePermissionInputDTO:
+  usecase.DeleteRolePermissionByRoleIDInputDTO:
     properties:
       role_id:
         type: integer
@@ -868,7 +868,7 @@ paths:
       - application/json
       description: Update Role Permission
       parameters:
-      - description: RolePermission ID
+      - description: Role ID
         in: path
         name: id
         required: true
@@ -878,7 +878,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/usecase.DeleteRolePermissionInputDTO'
+          $ref: '#/definitions/usecase.DeleteRolePermissionByRoleIDInputDTO'
       produces:
       - application/json
       responses:
@@ -897,7 +897,7 @@ paths:
             $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
-      summary: Update Role Permission
+      summary: Delete Role Permission By Role ID
       tags:
       - RolePermission
   /user:
