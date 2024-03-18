@@ -10,11 +10,6 @@ import (
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
-type AuthHandlerInterface interface {
-	Login(w http.ResponseWriter, r *http.Request)
-	RefreshToken(w http.ResponseWriter, r *http.Request)
-}
-
 type AuthHandler struct {
 	response.Responses
 	service serviceInterface.AuthServiceInterface
@@ -63,24 +58,24 @@ func (h *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	h.SendResponse(w, h.NewResponse(output))
 }
 
-// Register godoc
-// @Summary Register
-// @Description Register
+// ForgotPassword godoc
+// @Summary Forgot Password
+// @Description Forgot Password
 // @Tags Auth
 // @Accept  json
 // @Produce  json
-// @Param user body usecase.RegisterInputDTO true "User"
-// @Success 200 {object} response.Response{data=usecase.RegisterOutputDTO}
+// @Param user body usecase.ForgotPasswordInputDTO true "User"
+// @Success 200 {object} response.Response{data=usecase.ForgotPasswordOutputDTO}
 // @Failure 400 {object} response.ResponseError{}
-// @Router /auth/register [post]
-func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
-	output, err := h.service.Register(r.Body)
+// @Router /auth/forgot-password [post]
+func (h *AuthHandler) ForgotPassword(w http.ResponseWriter, r *http.Request) {
+	err := h.service.ForgotPassword(r.Body)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	h.SendResponse(w, h.NewResponse(output))
+	h.SendResponse(w, h.NewResponse(nil))
 }
 
 // UpdateUserPassword godoc
@@ -95,11 +90,31 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} response.ResponseError{}
 // @Router /auth/{id}/update-password [patch]
 func (h *AuthHandler) UpdateUserPassword(w http.ResponseWriter, r *http.Request) {
-	output, err := h.service.UpdateUserPassword(r.Body)
+	err := h.service.UpdateUserPassword(r.Body)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	h.SendResponse(w, h.NewResponse(output))
+	h.SendResponse(w, h.NewResponse(nil))
+}
+
+// VerifyUser godoc
+// @Summary Verify User
+// @Description Verify User
+// @Tags Auth
+// @Accept  json
+// @Produce  json
+// @Param user body usecase.VerifyUserInputDTO true "User"
+// @Success 200 {object} response.Response{data=usecase.VerifyUserOutputDTO}
+// @Failure 400 {object} response.ResponseError{}
+// @Router /auth/verify-user [post]
+func (h *AuthHandler) VerifyUser(w http.ResponseWriter, r *http.Request) {
+	err := h.service.VerifyUser(r.Body)
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
+	}
+	h.SendResponse(w, h.NewResponse(nil))
 }

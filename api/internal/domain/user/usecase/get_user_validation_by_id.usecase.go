@@ -8,11 +8,11 @@ import (
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
-type GetUserValidationByHashInputDTO struct {
-	Hash string `json:"hash"`
+type GetUserValidationByUserIDInputDTO struct {
+	UserID int32 `json:"user_id"`
 }
 
-type GetUserValidationByHashOutputDTO struct {
+type GetUserValidationByUserIDOutputDTO struct {
 	ID        int32     `json:"id"`
 	UserID    int32     `json:"user_id"`
 	Hash      string    `json:"hash"`
@@ -22,18 +22,18 @@ type GetUserValidationByHashOutputDTO struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-type GetUserValidationByHashUseCase struct {
+type GetUserValidationByUserIDUseCase struct {
 	repo repositoryInterface.UserValidationRepositoryInterface
 }
 
-func NewGetUserValidationByHashUseCase() *GetUserValidationByHashUseCase {
-	return &GetUserValidationByHashUseCase{
+func NewGetUserValidationByUserIDUseCase() *GetUserValidationByUserIDUseCase {
+	return &GetUserValidationByUserIDUseCase{
 		repo: repository.NewUserValidationRepository(),
 	}
 }
 
-func (uc *GetUserValidationByHashUseCase) Execute(input GetUserValidationByHashInputDTO) (output GetUserValidationByHashOutputDTO, err error) {
-	userValidation, err := uc.repo.GetUserValidationByHash(input.Hash)
+func (uc *GetUserValidationByUserIDUseCase) Execute(input GetUserValidationByUserIDInputDTO) (output GetUserValidationByUserIDOutputDTO, err error) {
+	userValidation, err := uc.repo.GetUserValidationByUserID(input.UserID)
 	if err != nil {
 		return
 	}
@@ -46,7 +46,7 @@ func (uc *GetUserValidationByHashUseCase) Execute(input GetUserValidationByHashI
 		return output, errors.New("hash expired")
 	}
 
-	output = GetUserValidationByHashOutputDTO{
+	output = GetUserValidationByUserIDOutputDTO{
 		ID:        userValidation.GetID(),
 		UserID:    userValidation.GetUserID(),
 		Hash:      userValidation.GetHash(),

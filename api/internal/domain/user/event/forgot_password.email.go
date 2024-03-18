@@ -31,7 +31,7 @@ func NewPasswordForgotEmailEvent(data PasswordForgotEmailEventInputDTO) *Passwor
 func (e *PasswordForgotEmailEvent) Send() {
 	e.Mail.SetTo([]string{e.Data.Email})
 	e.Mail.SetSubject("Recuperação de senha!")
-	e.Mail.SetBody("forgot_password", e.Data)
+	e.Mail.SetBody("internal/domain/user/views/forgot_password", e.Data)
 	err := e.Mail.Send()
 	if err != nil {
 		slog.Error("error sending email", err)

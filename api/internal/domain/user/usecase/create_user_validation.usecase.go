@@ -7,7 +7,9 @@ import (
 )
 
 type CreateUserValidationInputDTO struct {
-	UserID int32 `json:"user_id"`
+	UserID int32  `json:"user_id"`
+	Name   string `json:"name"`
+	Email  string `json:"email"`
 }
 
 type CreateUserValidationOutputDTO struct {
@@ -33,16 +35,16 @@ func (uc *CreateUserValidationUseCase) Execute(input CreateUserValidationInputDT
 		return
 	}
 
-	err = uc.repo.CreateValidationUser(userValidation)
+	newUserValidation, err := uc.repo.CreateUserValidation(userValidation)
 	if err != nil {
 		return
 	}
 
 	output = CreateUserValidationOutputDTO{
-		UserID:    userValidation.GetUserID(),
-		Hash:      userValidation.GetHash(),
-		ExpiresIn: userValidation.GetExpiresIn(),
-		Used:      userValidation.GetUsed(),
+		UserID:    newUserValidation.GetUserID(),
+		Hash:      newUserValidation.GetHash(),
+		ExpiresIn: newUserValidation.GetExpiresIn(),
+		Used:      newUserValidation.GetUsed(),
 	}
 
 	return

@@ -5,8 +5,8 @@ import (
 )
 
 type UserValidationRepositoryInterface interface {
-	CreateValidationUser(userValidation entityInterface.UserValidationInterface) (err error)
-	GetValidationUser(id int32) (output entityInterface.UserValidationInterface, err error)
-	GetValidationUserByHash(hash string) (output entityInterface.UserValidationInterface, err error)
+	CreateUserValidation(userValidation entityInterface.UserValidationInterface) (output entityInterface.UserValidationInterface, err error)
+	GetUserValidationByUserID(id int32) (output entityInterface.UserValidationInterface, err error)
+	GetUserValidationByHash(hash string) (output entityInterface.UserValidationInterface, err error)
 	UpdateUserValidationUsed(id int32) (err error)
 }

@@ -5,37 +5,44 @@ import (
 	"io"
 	"log/slog"
 
+	"github.com/marceloamoreno/goapi/internal/domain/user/event"
 	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type AuthService struct {
-	NewGetUserUseCase                 usecaseInterface.GetUserUseCaseInterface
-	NewGetUserByEmailUseCase          usecaseInterface.GetUserByEmailUseCaseInterface
-	NewCreateAuthUseCase              usecaseInterface.CreateAuthUseCaseInterface
-	NewLoginUserUseCase               usecaseInterface.LoginUserUseCaseInterface
-	NewGetAuthByRefreshTokenUseCase   usecaseInterface.GetAuthByRefreshTokenUseCase
-	NewUpdateAuthRevokeUseCase        usecaseInterface.UpdateAuthRevokeUseCaseInterface
-	NewGetAuthByTokenUseCase          usecaseInterface.GetAuthByTokenUseCaseInterface
-	NewGetAuthByUserIDUseCase         usecaseInterface.GetAuthByUserIDUseCaseInterface
-	NewCreateUserUseCase              usecaseInterface.CreateUserUseCaseInterface
-	NewUpdateUserPasswordUseCase      usecaseInterface.UpdateUserPasswordUseCaseInterface
-	NewGetUserValidationByHashUseCase usecaseInterface.GetUserValidationByHashUseCaseInterface
+	GetUserUseCase                 usecaseInterface.GetUserUseCaseInterface
+	GetUserByEmailUseCase          usecaseInterface.GetUserByEmailUseCaseInterface
+	CreateAuthUseCase              usecaseInterface.CreateAuthUseCaseInterface
+	LoginUserUseCase               usecaseInterface.LoginUserUseCaseInterface
+	GetAuthByRefreshTokenUseCase   usecaseInterface.GetAuthByRefreshTokenUseCase
+	UpdateAuthRevokeUseCase        usecaseInterface.UpdateAuthRevokeUseCaseInterface
+	GetAuthByTokenUseCase          usecaseInterface.GetAuthByTokenUseCaseInterface
+	GetAuthByUserIDUseCase         usecaseInterface.GetAuthByUserIDUseCaseInterface
+	CreateUserUseCase              usecaseInterface.CreateUserUseCaseInterface
+	UpdateUserPasswordUseCase      usecaseInterface.UpdateUserPasswordUseCaseInterface
+	GetUserValidationByHashUseCase usecaseInterface.GetUserValidationByHashUseCaseInterface
+	UpdateUserActive               usecaseInterface.UpdateUserActiveUseCaseInterface
+	UpdateUserValidationUsed       usecaseInterface.UpdateUserValidationUsedUseCaseInterface
+	CreateUserValidationUseCase    usecaseInterface.CreateUserValidationUseCaseInterface
 }
 
 func NewAuthService() *AuthService {
 	return &AuthService{
-		NewGetUserUseCase:                 usecase.NewGetUserUseCase(),
-		NewGetUserByEmailUseCase:          usecase.NewGetUserByEmailUseCase(),
-		NewCreateAuthUseCase:              usecase.NewCreateAuthUseCase(),
-		NewLoginUserUseCase:               usecase.NewLoginUserUseCase(),
-		NewGetAuthByRefreshTokenUseCase:   usecase.NewGetAuthByRefreshTokenUseCase(),
-		NewUpdateAuthRevokeUseCase:        usecase.NewUpdateAuthRevokeUseCase(),
-		NewGetAuthByTokenUseCase:          usecase.NewGetAuthByTokenUseCase(),
-		NewGetAuthByUserIDUseCase:         usecase.NewGetAuthByUserIDUseCase(),
-		NewCreateUserUseCase:              usecase.NewCreateUserUseCase(),
-		NewUpdateUserPasswordUseCase:      usecase.NewUpdateUserPasswordUseCase(),
-		NewGetUserValidationByHashUseCase: usecase.NewGetUserValidationByHashUseCase(),
+		GetUserUseCase:                 usecase.NewGetUserUseCase(),
+		GetUserByEmailUseCase:          usecase.NewGetUserByEmailUseCase(),
+		CreateAuthUseCase:              usecase.NewCreateAuthUseCase(),
+		LoginUserUseCase:               usecase.NewLoginUserUseCase(),
+		GetAuthByRefreshTokenUseCase:   usecase.NewGetAuthByRefreshTokenUseCase(),
+		UpdateAuthRevokeUseCase:        usecase.NewUpdateAuthRevokeUseCase(),
+		GetAuthByTokenUseCase:          usecase.NewGetAuthByTokenUseCase(),
+		GetAuthByUserIDUseCase:         usecase.NewGetAuthByUserIDUseCase(),
+		CreateUserUseCase:              usecase.NewCreateUserUseCase(),
+		UpdateUserPasswordUseCase:      usecase.NewUpdateUserPasswordUseCase(),
+		GetUserValidationByHashUseCase: usecase.NewGetUserValidationByHashUseCase(),
+		UpdateUserActive:               usecase.NewUpdateUserActiveUseCase(),
+		UpdateUserValidationUsed:       usecase.NewUpdateUserValidationUsedUseCase(),
+		CreateUserValidationUseCase:    usecase.NewCreateUserValidationUseCase(),
 	}
 }
 
@@ -51,13 +58,13 @@ func (s *AuthService) Login(body io.ReadCloser) (output usecase.CreateAuthOutput
 		return
 	}
 
-	user, err := s.NewGetUserByEmailUseCase.Execute(usecase.GetUserByEmailInputDTO{Email: input.Email})
+	user, err := s.GetUserByEmailUseCase.Execute(usecase.GetUserByEmailInputDTO{Email: input.Email})
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
 
-	_, err = s.NewLoginUserUseCase.Execute(usecase.LoginUserInputDTO{
+	_, err = s.LoginUserUseCase.Execute(usecase.LoginUserInputDTO{
 		Name:            user.Name,
 		Email:           user.Email,
 		Password:        user.Password,
@@ -70,7 +77,21 @@ func (s *AuthService) Login(body io.ReadCloser) (output usecase.CreateAuthOutput
 		return
 	}
 
-	_, err = s.NewGetAuthByUserIDUseCase.Execute(usecase.GetAuthByUserIDInputDTO{
+	auth, _ := s.GetAuthByUserIDUseCase.Execute(usecase.GetAuthByUserIDInputDTO{
+		UserID: user.ID,
+	})
+	if auth.UserID != 0 {
+		return usecase.CreateAuthOutputDTO{
+			Token:                 auth.Token,
+			RefreshToken:          auth.RefreshToken,
+			UserID:                auth.UserID,
+			Active:                auth.Active,
+			TokenExpiresIn:        auth.TokenExpiresIn,
+			RefreshTokenExpiresIn: auth.RefreshTokenExpiresIn,
+		}, nil
+	}
+
+	_, err = s.UpdateAuthRevokeUseCase.Execute(usecase.UpdateAuthRevokeInputDTO{
 		UserID: user.ID,
 	})
 	if err != nil {
@@ -78,15 +99,7 @@ func (s *AuthService) Login(body io.ReadCloser) (output usecase.CreateAuthOutput
 		return
 	}
 
-	_, err = s.NewUpdateAuthRevokeUseCase.Execute(usecase.UpdateAuthRevokeInputDTO{
-		UserID: user.ID,
-	})
-	if err != nil {
-		slog.Info("err", err)
-		return
-	}
-
-	newToken, err := s.NewCreateAuthUseCase.Execute(usecase.CreateAuthInputDTO{
+	newToken, err := s.CreateAuthUseCase.Execute(usecase.CreateAuthInputDTO{
 		UserID: user.ID,
 	})
 	if err != nil {
@@ -107,7 +120,6 @@ func (s *AuthService) Login(body io.ReadCloser) (output usecase.CreateAuthOutput
 }
 
 func (s *AuthService) RefreshToken(body io.ReadCloser) (output usecase.CreateAuthOutputDTO, err error) {
-
 	input := struct {
 		UserID       int32  `json:"user_id"`
 		RefreshToken string `json:"refresh_token"`
@@ -118,7 +130,7 @@ func (s *AuthService) RefreshToken(body io.ReadCloser) (output usecase.CreateAut
 		return
 	}
 
-	rt, err := s.NewGetAuthByRefreshTokenUseCase.Execute(usecase.GetAuthByRefreshTokenInputDTO{
+	rt, err := s.GetAuthByRefreshTokenUseCase.Execute(usecase.GetAuthByRefreshTokenInputDTO{
 		UserID:       input.UserID,
 		RefreshToken: input.RefreshToken,
 	})
@@ -127,7 +139,7 @@ func (s *AuthService) RefreshToken(body io.ReadCloser) (output usecase.CreateAut
 		return
 	}
 
-	_, err = s.NewUpdateAuthRevokeUseCase.Execute(usecase.UpdateAuthRevokeInputDTO{
+	_, err = s.UpdateAuthRevokeUseCase.Execute(usecase.UpdateAuthRevokeInputDTO{
 		UserID: rt.UserID,
 	})
 	if err != nil {
@@ -135,7 +147,7 @@ func (s *AuthService) RefreshToken(body io.ReadCloser) (output usecase.CreateAut
 		return
 	}
 
-	token, err := s.NewCreateAuthUseCase.Execute(usecase.CreateAuthInputDTO{
+	token, err := s.CreateAuthUseCase.Execute(usecase.CreateAuthInputDTO{
 		UserID: rt.UserID,
 	})
 	if err != nil {
@@ -154,22 +166,62 @@ func (s *AuthService) RefreshToken(body io.ReadCloser) (output usecase.CreateAut
 	return
 }
 
-func (s *AuthService) Register(body io.ReadCloser) (output usecase.CreateUserOutputDTO, err error) {
-	input := usecase.CreateUserInputDTO{}
+func (s *AuthService) VerifyUser(body io.ReadCloser) (err error) {
+	input := struct {
+		Hash string `json:"hash"`
+	}{}
+
 	if err = json.NewDecoder(body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
 	}
-	output, err = s.NewCreateUserUseCase.Execute(input)
+
+	userValidation, err := s.GetUserValidationByHashUseCase.Execute(usecase.GetUserValidationByHashInputDTO{
+		Hash: input.Hash,
+	})
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
-	slog.Info("User registered")
+
+	user, err := s.GetUserUseCase.Execute(usecase.GetUserInputDTO{ID: userValidation.UserID})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	err = s.UpdateUserActive.Execute(usecase.UpdateUserActiveInputDTO{
+		ID:       user.ID,
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: user.Password,
+		Active:   true,
+	})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	err = s.UpdateUserValidationUsed.Execute(usecase.UpdateUserValidationUsedInputDTO{
+		UserID: user.ID,
+	})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	go event.NewUserVerifiedEmailEvent(
+		event.UserVerifiedEmailEventInputDTO{
+			Email: user.Email,
+			Name:  user.Name,
+		}).Send()
+
+	slog.Info("User verified")
+
 	return
 }
 
-func (s *AuthService) UpdateUserPassword(body io.ReadCloser) (output usecase.UpdateUserPasswordOutputDTO, err error) {
+func (s *AuthService) UpdateUserPassword(body io.ReadCloser) (err error) {
 
 	input := struct {
 		Hash     string `json:"hash"`
@@ -181,7 +233,7 @@ func (s *AuthService) UpdateUserPassword(body io.ReadCloser) (output usecase.Upd
 		return
 	}
 
-	userValidation, err := s.NewGetUserValidationByHashUseCase.Execute(usecase.GetUserValidationByHashInputDTO{
+	userValidation, err := s.GetUserValidationByHashUseCase.Execute(usecase.GetUserValidationByHashInputDTO{
 		Hash: input.Hash,
 	})
 	if err != nil {
@@ -189,13 +241,13 @@ func (s *AuthService) UpdateUserPassword(body io.ReadCloser) (output usecase.Upd
 		return
 	}
 
-	user, err := s.NewGetUserUseCase.Execute(usecase.GetUserInputDTO{ID: userValidation.UserID})
+	user, err := s.GetUserUseCase.Execute(usecase.GetUserInputDTO{ID: userValidation.UserID})
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
 
-	output, err = s.NewUpdateUserPasswordUseCase.Execute(usecase.UpdateUserPasswordInputDTO{
+	_, err = s.UpdateUserPasswordUseCase.Execute(usecase.UpdateUserPasswordInputDTO{
 		ID:       user.ID,
 		Name:     user.Name,
 		Email:    user.Email,
@@ -205,6 +257,54 @@ func (s *AuthService) UpdateUserPassword(body io.ReadCloser) (output usecase.Upd
 		slog.Info("err", err)
 		return
 	}
+
+	err = s.UpdateUserValidationUsed.Execute(usecase.UpdateUserValidationUsedInputDTO{
+		UserID: user.ID,
+	})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	go event.NewUpdatedPasswordEmailEvent(event.UpdatedPasswordEmailEventInputDTO{
+		Email: user.Email,
+		Name:  user.Name,
+	}).Send()
+
 	slog.Info("User password updated")
+	return
+}
+
+func (s *AuthService) ForgotPassword(body io.ReadCloser) (err error) {
+	input := struct {
+		Email string `json:"email"`
+	}{}
+	if err = json.NewDecoder(body).Decode(&input); err != nil {
+		slog.Info("err", err)
+		return
+	}
+	user, err := s.GetUserByEmailUseCase.Execute(usecase.GetUserByEmailInputDTO{Email: input.Email})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	userValidation, err := s.CreateUserValidationUseCase.Execute(usecase.CreateUserValidationInputDTO{
+		UserID: user.ID,
+		Email:  user.Email,
+		Name:   user.Name,
+	})
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+
+	go event.NewPasswordForgotEmailEvent(event.PasswordForgotEmailEventInputDTO{
+		Email: user.Email,
+		Name:  user.Name,
+		Hash:  userValidation.Hash,
+	}).Send()
+
+	slog.Info("User forgot password")
 	return
 }

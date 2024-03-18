@@ -26,7 +26,7 @@ type AuthInterface interface {
 	GetCreatedAt() time.Time
 	GetUpdatedAt() time.Time
 	Validate() notification.ErrorsInterface
-	IsValidToken() bool
-	IsValidRefreshToken() bool
+	IsValidToken() (valid bool, err error)
+	IsValidRefreshToken() (valid bool, err error)
 	GenerateToken()
 }

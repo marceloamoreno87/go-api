@@ -115,7 +115,7 @@ func (q *Queries) CreateRolePermission(ctx context.Context, arg CreateRolePermis
 	return err
 }
 
-const createUser = `-- name: CreateUser :exec
+const createUser = `-- name: CreateUser :one
 INSERT INTO users (
   name,
   email,
@@ -126,6 +126,7 @@ INSERT INTO users (
 ) VALUES (
   $1, $2, $3, $4, $5, $6
 )
+RETURNING id, name, email, password, active, role_id, avatar_id, created_at, updated_at
 `
 
 type CreateUserParams struct {
@@ -137,8 +138,8 @@ type CreateUserParams struct {
 	AvatarID int32  `json:"avatar_id"`
 }
 
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
-	_, err := q.exec(ctx, q.createUserStmt, createUser,
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+	row := q.queryRow(ctx, q.createUserStmt, createUser,
 		arg.Name,
 		arg.Email,
 		arg.Password,
@@ -146,10 +147,22 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
 		arg.RoleID,
 		arg.AvatarID,
 	)
-	return err
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+		&i.Active,
+		&i.RoleID,
+		&i.AvatarID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const createValidationUser = `-- name: CreateValidationUser :exec
+const createValidationUser = `-- name: CreateValidationUser :one
 INSERT INTO users_validation (
   user_id,
   hash,
@@ -157,6 +170,7 @@ INSERT INTO users_validation (
 ) VALUES (
   $1, $2, $3
 )
+RETURNING id, user_id, hash, expires_in, used, created_at, updated_at
 `
 
 type CreateValidationUserParams struct {
@@ -165,9 +179,19 @@ type CreateValidationUserParams struct {
 	ExpiresIn int32  `json:"expires_in"`
 }
 
-func (q *Queries) CreateValidationUser(ctx context.Context, arg CreateValidationUserParams) error {
-	_, err := q.exec(ctx, q.createValidationUserStmt, createValidationUser, arg.UserID, arg.Hash, arg.ExpiresIn)
-	return err
+func (q *Queries) CreateValidationUser(ctx context.Context, arg CreateValidationUserParams) (UsersValidation, error) {
+	row := q.queryRow(ctx, q.createValidationUserStmt, createValidationUser, arg.UserID, arg.Hash, arg.ExpiresIn)
+	var i UsersValidation
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Hash,
+		&i.ExpiresIn,
+		&i.Used,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const deleteAvatar = `-- name: DeleteAvatar :exec
@@ -647,6 +671,46 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 	return i, err
 }
 
+const getUserValidationByHash = `-- name: GetUserValidationByHash :one
+SELECT id, user_id, hash, expires_in, used, created_at, updated_at FROM users_validation
+WHERE hash = $1 and used is false LIMIT 1
+`
+
+func (q *Queries) GetUserValidationByHash(ctx context.Context, hash string) (UsersValidation, error) {
+	row := q.queryRow(ctx, q.getUserValidationByHashStmt, getUserValidationByHash, hash)
+	var i UsersValidation
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Hash,
+		&i.ExpiresIn,
+		&i.Used,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getUserValidationByUserID = `-- name: GetUserValidationByUserID :one
+SELECT id, user_id, hash, expires_in, used, created_at, updated_at FROM users_validation
+WHERE user_id = $1 ORDER BY id DESC LIMIT 1
+`
+
+func (q *Queries) GetUserValidationByUserID(ctx context.Context, userID int32) (UsersValidation, error) {
+	row := q.queryRow(ctx, q.getUserValidationByUserIDStmt, getUserValidationByUserID, userID)
+	var i UsersValidation
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Hash,
+		&i.ExpiresIn,
+		&i.Used,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const getUserWithAvatar = `-- name: GetUserWithAvatar :one
 SELECT users.id, name, email, password, active, role_id, avatar_id, users.created_at, users.updated_at, avatars.id, svg, avatars.created_at, avatars.updated_at FROM users
 INNER JOIN avatars ON users.id = avatars.user_id
@@ -1098,46 +1162,6 @@ func (q *Queries) GetUsersWithRoleAndAvatar(ctx context.Context, arg GetUsersWit
 	return items, nil
 }
 
-const getValidationUser = `-- name: GetValidationUser :one
-SELECT id, user_id, hash, expires_in, used, created_at, updated_at FROM users_validation
-WHERE user_id = $1 ORDER BY id DESC LIMIT 1
-`
-
-func (q *Queries) GetValidationUser(ctx context.Context, userID int32) (UsersValidation, error) {
-	row := q.queryRow(ctx, q.getValidationUserStmt, getValidationUser, userID)
-	var i UsersValidation
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.Hash,
-		&i.ExpiresIn,
-		&i.Used,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
-const getValidationUserByHash = `-- name: GetValidationUserByHash :one
-SELECT id, user_id, hash, expires_in, used, created_at, updated_at FROM users_validation
-WHERE hash = $1 and used is false LIMIT 1
-`
-
-func (q *Queries) GetValidationUserByHash(ctx context.Context, hash string) (UsersValidation, error) {
-	row := q.queryRow(ctx, q.getValidationUserByHashStmt, getValidationUserByHash, hash)
-	var i UsersValidation
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.Hash,
-		&i.ExpiresIn,
-		&i.Used,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
 const updateAuthRevokeByUserID = `-- name: UpdateAuthRevokeByUserID :exec
 UPDATE auth SET
   active = false
@@ -1284,10 +1308,10 @@ func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPassword
 const updateUserValidationUsed = `-- name: UpdateUserValidationUsed :exec
 UPDATE users_validation SET
   used = true
-WHERE id = $1
+WHERE user_id = $1
 `
 
-func (q *Queries) UpdateUserValidationUsed(ctx context.Context, id int32) error {
-	_, err := q.exec(ctx, q.updateUserValidationUsedStmt, updateUserValidationUsed, id)
+func (q *Queries) UpdateUserValidationUsed(ctx context.Context, userID int32) error {
+	_, err := q.exec(ctx, q.updateUserValidationUsedStmt, updateUserValidationUsed, userID)
 	return err
 }

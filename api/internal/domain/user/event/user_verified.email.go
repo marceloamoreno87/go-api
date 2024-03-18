@@ -30,7 +30,7 @@ func NewUserVerifiedEmailEvent(data UserVerifiedEmailEventInputDTO) *UserVerifie
 func (e *UserVerifiedEmailEvent) Send() {
 	e.Mail.SetTo([]string{e.Data.Email})
 	e.Mail.SetSubject("Seja muito bem vindo!")
-	e.Mail.SetBody("user_verified", e.Data)
+	e.Mail.SetBody("internal/domain/user/views/user_verified", e.Data)
 	err := e.Mail.Send()
 	if err != nil {
 		slog.Error("error sending email", err)

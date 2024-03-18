@@ -69,7 +69,7 @@ func (u *UserValidation) GenerateHash() (err error) {
 }
 
 func (u *UserValidation) ValidateHashExpiresIn() bool {
-	return helper.CompareTimestamp(int64(time.Now().Unix()), int64(u.ExpiresIn))
+	return helper.CompareTimestamp(int64(u.ExpiresIn), int64(time.Now().Unix()))
 }
 
 func (u *UserValidation) GetUsed() bool {

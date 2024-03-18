@@ -6,11 +6,7 @@ import (
 )
 
 type UpdateUserValidationUsedInputDTO struct {
-	ID int32 `json:"user_id"`
-}
-
-type UpdateUserValidationUsedOutputDTO struct {
-	ID int32 `json:"user_id"`
+	UserID int32 `json:"user_id"`
 }
 
 type UpdateUserValidationUsedUseCase struct {
@@ -24,5 +20,5 @@ func NewUpdateUserValidationUsedUseCase() *UpdateUserValidationUsedUseCase {
 }
 
 func (uc *UpdateUserValidationUsedUseCase) Execute(input UpdateUserValidationUsedInputDTO) (err error) {
-	return uc.repo.UpdateUserValidationUsed(input.ID)
+	return uc.repo.UpdateUserValidationUsed(input.UserID)
 }

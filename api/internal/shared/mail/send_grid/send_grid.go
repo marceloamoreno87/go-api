@@ -52,7 +52,7 @@ func (m *SendGrid) SetSubject(subject string) {
 }
 
 func (m *SendGrid) SetBody(filename string, data any) {
-	t, err := template.ParseFiles("internal/views/" + filename + ".html")
+	t, err := template.ParseFiles(filename + ".html")
 	if err != nil {
 		log.Println(err)
 	}

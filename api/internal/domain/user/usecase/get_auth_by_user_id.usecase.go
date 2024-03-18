@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"errors"
-
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -43,8 +41,9 @@ func (uc *GetAuthByUserIDUseCase) Execute(input GetAuthByUserIDInputDTO) (output
 	}
 	a.SetToken(auth.GetToken())
 
-	if !a.IsValidToken() {
-		return GetAuthByUserIDOutputDTO{}, errors.New("invalid token")
+	_, err = a.IsValidToken()
+	if err != nil {
+		return
 	}
 
 	output = GetAuthByUserIDOutputDTO{

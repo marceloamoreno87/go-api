@@ -26,7 +26,8 @@ func NewRoutes(
 			route.getRoute(r)
 			route.getSwaggerRoutes(r)
 			route.getHealthRoutes(r)
-			route.getTestHashValidate(r)
+			route.getTestUpdatePassword(r)
+			route.getTestVerifyUser(r)
 		})
 		r.Group(func(r chi.Router) {
 			AuthMiddleware.NewMiddleware(r).AuthMiddleware(jwt.GetJwtAuth())

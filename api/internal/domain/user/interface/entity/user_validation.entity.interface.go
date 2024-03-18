@@ -14,6 +14,7 @@ type UserValidationInterface interface {
 	GetHash() string
 	GetExpiresIn() int32
 	GetCreatedAt() time.Time
+	GetUpdatedAt() time.Time
 	GetUsed() bool
 	SetID(id int32)
 	SetUserID(userID int32)

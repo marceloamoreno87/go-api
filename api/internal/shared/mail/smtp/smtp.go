@@ -46,13 +46,13 @@ func (m *Mail) SetSubject(subject string) {
 
 // TODO: Refactor
 func (m *Mail) SetBody(filename string, data any) {
-	t, err := template.ParseFiles("internal/views/" + filename + ".html")
+	t, err := template.ParseFiles(filename + ".html")
 	if err != nil {
 		log.Println(err)
 	}
 	var tpl bytes.Buffer
 	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
-	tpl.Write([]byte(fmt.Sprintf("Subject: %s \n%s\n\n", m.Subject, mimeHeaders)))
+	tpl.Write([]byte(fmt.Sprintf("From: %s \nSubject: %s \n%s\n\n", m.From, m.Subject, mimeHeaders)))
 	if err := t.Execute(&tpl, data); err != nil {
 		log.Println(err)
 	}

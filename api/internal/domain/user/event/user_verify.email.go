@@ -31,7 +31,7 @@ func NewUserVerifyEmailEvent(data UserVerifyEmailEventInputDTO) *UserVerifyEmail
 func (e *UserVerifyEmailEvent) Send() {
 	e.Mail.SetTo([]string{e.Data.Email})
 	e.Mail.SetSubject("Ative sua conta!")
-	e.Mail.SetBody("user_verify", e.Data)
+	e.Mail.SetBody("internal/domain/user/views/user_verify", e.Data)
 	err := e.Mail.Send()
 	if err != nil {
 		slog.Error("error sending email", err)

@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -32,22 +31,25 @@ func (route *Route) getHealthRoutes(router chi.Router) {
 	})
 }
 
-func (route *Route) getTestHashValidate(router chi.Router) {
-	router.Get("/hash/{hash}", func(w http.ResponseWriter, r *http.Request) {
+func (route *Route) getTestVerifyUser(router chi.Router) {
+	router.Get("/verify-user/hash/{hash}", func(w http.ResponseWriter, r *http.Request) {
 
 		// Test verify user
-		// fmt.Println("hash")
-		// hash := chi.URLParam(r, "hash")
-		// resp, err := http.Post("http://localhost:3000/api/v1/auth/verify-user", "application/json", strings.NewReader(`{"hash":"`+hash+`"}`))
-		// if err != nil {
-		// 	w.Write([]byte(err.Error()))
-		// 	return
-		// }
-		// defer resp.Body.Close()
-		// w.Write([]byte("done"))
+		hash := chi.URLParam(r, "hash")
+		resp, err := http.Post("http://localhost:3000/api/v1/auth/verify-user", "application/json", strings.NewReader(`{"hash":"`+hash+`"}`))
+		if err != nil {
+			w.Write([]byte(err.Error()))
+			return
+		}
+		defer resp.Body.Close()
+		w.Write([]byte("done"))
 
+	})
+}
+
+func (route *Route) getTestUpdatePassword(router chi.Router) {
+	router.Get("/update-password/hash/{hash}", func(w http.ResponseWriter, r *http.Request) {
 		// Test forgot password
-		fmt.Println("hash")
 		hash := chi.URLParam(r, "hash")
 		resp, err := http.Post("http://localhost:3000/api/v1/auth/update-password", "application/json", strings.NewReader(`{"hash":"`+hash+`","password":"123456"}`))
 		if err != nil {

@@ -105,6 +105,12 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getUserByEmailStmt, err = db.PrepareContext(ctx, getUserByEmail); err != nil {
 		return nil, fmt.Errorf("error preparing query GetUserByEmail: %w", err)
 	}
+	if q.getUserValidationByHashStmt, err = db.PrepareContext(ctx, getUserValidationByHash); err != nil {
+		return nil, fmt.Errorf("error preparing query GetUserValidationByHash: %w", err)
+	}
+	if q.getUserValidationByUserIDStmt, err = db.PrepareContext(ctx, getUserValidationByUserID); err != nil {
+		return nil, fmt.Errorf("error preparing query GetUserValidationByUserID: %w", err)
+	}
 	if q.getUserWithAvatarStmt, err = db.PrepareContext(ctx, getUserWithAvatar); err != nil {
 		return nil, fmt.Errorf("error preparing query GetUserWithAvatar: %w", err)
 	}
@@ -128,12 +134,6 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	}
 	if q.getUsersWithRoleAndAvatarStmt, err = db.PrepareContext(ctx, getUsersWithRoleAndAvatar); err != nil {
 		return nil, fmt.Errorf("error preparing query GetUsersWithRoleAndAvatar: %w", err)
-	}
-	if q.getValidationUserStmt, err = db.PrepareContext(ctx, getValidationUser); err != nil {
-		return nil, fmt.Errorf("error preparing query GetValidationUser: %w", err)
-	}
-	if q.getValidationUserByHashStmt, err = db.PrepareContext(ctx, getValidationUserByHash); err != nil {
-		return nil, fmt.Errorf("error preparing query GetValidationUserByHash: %w", err)
 	}
 	if q.updateAuthRevokeByUserIDStmt, err = db.PrepareContext(ctx, updateAuthRevokeByUserID); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateAuthRevokeByUserID: %w", err)
@@ -299,6 +299,16 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing getUserByEmailStmt: %w", cerr)
 		}
 	}
+	if q.getUserValidationByHashStmt != nil {
+		if cerr := q.getUserValidationByHashStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getUserValidationByHashStmt: %w", cerr)
+		}
+	}
+	if q.getUserValidationByUserIDStmt != nil {
+		if cerr := q.getUserValidationByUserIDStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getUserValidationByUserIDStmt: %w", cerr)
+		}
+	}
 	if q.getUserWithAvatarStmt != nil {
 		if cerr := q.getUserWithAvatarStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing getUserWithAvatarStmt: %w", cerr)
@@ -337,16 +347,6 @@ func (q *Queries) Close() error {
 	if q.getUsersWithRoleAndAvatarStmt != nil {
 		if cerr := q.getUsersWithRoleAndAvatarStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing getUsersWithRoleAndAvatarStmt: %w", cerr)
-		}
-	}
-	if q.getValidationUserStmt != nil {
-		if cerr := q.getValidationUserStmt.Close(); cerr != nil {
-			err = fmt.Errorf("error closing getValidationUserStmt: %w", cerr)
-		}
-	}
-	if q.getValidationUserByHashStmt != nil {
-		if cerr := q.getValidationUserByHashStmt.Close(); cerr != nil {
-			err = fmt.Errorf("error closing getValidationUserByHashStmt: %w", cerr)
 		}
 	}
 	if q.updateAuthRevokeByUserIDStmt != nil {
@@ -455,6 +455,8 @@ type Queries struct {
 	getRolesStmt                    *sql.Stmt
 	getUserStmt                     *sql.Stmt
 	getUserByEmailStmt              *sql.Stmt
+	getUserValidationByHashStmt     *sql.Stmt
+	getUserValidationByUserIDStmt   *sql.Stmt
 	getUserWithAvatarStmt           *sql.Stmt
 	getUserWithRoleStmt             *sql.Stmt
 	getUserWithRoleAndAvatarStmt    *sql.Stmt
@@ -463,8 +465,6 @@ type Queries struct {
 	getUsersWithAvatarStmt          *sql.Stmt
 	getUsersWithRoleStmt            *sql.Stmt
 	getUsersWithRoleAndAvatarStmt   *sql.Stmt
-	getValidationUserStmt           *sql.Stmt
-	getValidationUserByHashStmt     *sql.Stmt
 	updateAuthRevokeByUserIDStmt    *sql.Stmt
 	updateAvatarStmt                *sql.Stmt
 	updatePermissionStmt            *sql.Stmt
@@ -506,6 +506,8 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		getRolesStmt:                    q.getRolesStmt,
 		getUserStmt:                     q.getUserStmt,
 		getUserByEmailStmt:              q.getUserByEmailStmt,
+		getUserValidationByHashStmt:     q.getUserValidationByHashStmt,
+		getUserValidationByUserIDStmt:   q.getUserValidationByUserIDStmt,
 		getUserWithAvatarStmt:           q.getUserWithAvatarStmt,
 		getUserWithRoleStmt:             q.getUserWithRoleStmt,
 		getUserWithRoleAndAvatarStmt:    q.getUserWithRoleAndAvatarStmt,
@@ -514,8 +516,6 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		getUsersWithAvatarStmt:          q.getUsersWithAvatarStmt,
 		getUsersWithRoleStmt:            q.getUsersWithRoleStmt,
 		getUsersWithRoleAndAvatarStmt:   q.getUsersWithRoleAndAvatarStmt,
-		getValidationUserStmt:           q.getValidationUserStmt,
-		getValidationUserByHashStmt:     q.getValidationUserByHashStmt,
 		updateAuthRevokeByUserIDStmt:    q.updateAuthRevokeByUserIDStmt,
 		updateAvatarStmt:                q.updateAvatarStmt,
 		updatePermissionStmt:            q.updatePermissionStmt,

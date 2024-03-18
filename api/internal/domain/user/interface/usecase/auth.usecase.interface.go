@@ -24,3 +24,11 @@ type UpdateAuthRevokeUseCaseInterface interface {
 type GetAuthByRefreshTokenUseCase interface {
 	Execute(input usecase.GetAuthByRefreshTokenInputDTO) (output usecase.GetAuthByRefreshTokenOutputDTO, err error)
 }
+
+type UpdateUserActiveUseCaseInterface interface {
+	Execute(input usecase.UpdateUserActiveInputDTO) (err error)
+}
+
+type UpdateUserValidationUsedUseCaseInterface interface {
+	Execute(input usecase.UpdateUserValidationUsedInputDTO) (err error)
+}

@@ -56,12 +56,20 @@ func (a *Auth) Validate() (notify notification.ErrorsInterface) {
 	return
 }
 
-func (a *Auth) IsValidToken() bool {
-	return config.Jwt.Validate(a.Token)
+func (a *Auth) IsValidToken() (valid bool, err error) {
+	valid = config.Jwt.Validate(a.Token)
+	if !valid {
+		err = errors.New("invalid token")
+	}
+	return
 }
 
-func (a *Auth) IsValidRefreshToken() bool {
-	return config.Jwt.Validate(a.RefreshToken)
+func (a *Auth) IsValidRefreshToken() (valid bool, err error) {
+	valid = config.Jwt.Validate(a.RefreshToken)
+	if !valid {
+		err = errors.New("invalid refresh token")
+	}
+	return
 }
 
 func (a *Auth) GenerateToken() {

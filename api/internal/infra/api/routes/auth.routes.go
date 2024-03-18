@@ -7,11 +7,16 @@ import (
 )
 
 func (route *Route) getAuthRoutes(router chi.Router) {
-	handler := handler.NewAuthHandler()
+	authHandler := handler.NewAuthHandler()
+	userHandler := handler.NewUserHandler()
 	router.Route("/auth", func(r chi.Router) {
-		r.Post("/login", handler.Login)
-		r.Post("/refresh", handler.RefreshToken)
-		r.Post("/register", handler.Register)
-		r.Patch("/update-password", handler.UpdateUserPassword)
+		r.Post("/register", userHandler.CreateUser)
+
+		r.Post("/login", authHandler.Login)
+		r.Post("/refresh", authHandler.RefreshToken)
+		r.Post("/verify-user", authHandler.VerifyUser)
+		r.Post("/forgot-password", authHandler.ForgotPassword)
+
+		r.Post("/update-password", authHandler.UpdateUserPassword)
 	})
 }

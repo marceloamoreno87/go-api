@@ -51,7 +51,7 @@ INNER JOIN avatars ON users.id = avatars.user_id
 ORDER BY users.id ASC
 LIMIT $1 OFFSET $2;
 
--- name: CreateUser :exec
+-- name: CreateUser :one
 INSERT INTO users (
   name,
   email,
@@ -62,7 +62,7 @@ INSERT INTO users (
 ) VALUES (
   $1, $2, $3, $4, $5, $6
 )
-;
+RETURNING *;
 
 -- name: UpdateUser :exec
 UPDATE users SET
@@ -247,15 +247,15 @@ DELETE FROM avatars
 WHERE id = $1
 ;
 
--- name: GetValidationUser :one
+-- name: GetUserValidationByUserID :one
 SELECT * FROM users_validation
-WHERE user_id = $1 ORDER BY id DESC LIMIT 1;
+WHERE user_id = $1 and used is false ORDER BY id DESC LIMIT 1;
 
--- name: GetValidationUserByHash :one
+-- name: GetUserValidationByHash :one
 SELECT * FROM users_validation
 WHERE hash = $1 and used is false LIMIT 1;
 
--- name: CreateValidationUser :exec
+-- name: CreateValidationUser :one
 INSERT INTO users_validation (
   user_id,
   hash,
@@ -263,10 +263,9 @@ INSERT INTO users_validation (
 ) VALUES (
   $1, $2, $3
 )
-;
+RETURNING *;
 
 -- name: UpdateUserValidationUsed :exec
 UPDATE users_validation SET
   used = true
-WHERE id = $1
-;
+WHERE user_id = $1;

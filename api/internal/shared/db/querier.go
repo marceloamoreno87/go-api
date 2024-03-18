@@ -14,8 +14,8 @@ type Querier interface {
 	CreatePermission(ctx context.Context, arg CreatePermissionParams) error
 	CreateRole(ctx context.Context, arg CreateRoleParams) error
 	CreateRolePermission(ctx context.Context, arg CreateRolePermissionParams) error
-	CreateUser(ctx context.Context, arg CreateUserParams) error
-	CreateValidationUser(ctx context.Context, arg CreateValidationUserParams) error
+	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	CreateValidationUser(ctx context.Context, arg CreateValidationUserParams) (UsersValidation, error)
 	DeleteAvatar(ctx context.Context, id int32) error
 	DeletePermission(ctx context.Context, id int32) error
 	DeleteRole(ctx context.Context, id int32) error
@@ -36,6 +36,8 @@ type Querier interface {
 	GetRoles(ctx context.Context, arg GetRolesParams) ([]Role, error)
 	GetUser(ctx context.Context, id int32) (User, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
+	GetUserValidationByHash(ctx context.Context, hash string) (UsersValidation, error)
+	GetUserValidationByUserID(ctx context.Context, userID int32) (UsersValidation, error)
 	GetUserWithAvatar(ctx context.Context, id int32) (GetUserWithAvatarRow, error)
 	GetUserWithRole(ctx context.Context, id int32) (GetUserWithRoleRow, error)
 	GetUserWithRoleAndAvatar(ctx context.Context, id int32) (GetUserWithRoleAndAvatarRow, error)
@@ -44,8 +46,6 @@ type Querier interface {
 	GetUsersWithAvatar(ctx context.Context, arg GetUsersWithAvatarParams) ([]GetUsersWithAvatarRow, error)
 	GetUsersWithRole(ctx context.Context, arg GetUsersWithRoleParams) ([]GetUsersWithRoleRow, error)
 	GetUsersWithRoleAndAvatar(ctx context.Context, arg GetUsersWithRoleAndAvatarParams) ([]GetUsersWithRoleAndAvatarRow, error)
-	GetValidationUser(ctx context.Context, userID int32) (UsersValidation, error)
-	GetValidationUserByHash(ctx context.Context, hash string) (UsersValidation, error)
 	UpdateAuthRevokeByUserID(ctx context.Context, userID int32) error
 	UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) error
 	UpdatePermission(ctx context.Context, arg UpdatePermissionParams) error
@@ -53,7 +53,7 @@ type Querier interface {
 	UpdateUser(ctx context.Context, arg UpdateUserParams) error
 	UpdateUserActive(ctx context.Context, arg UpdateUserActiveParams) error
 	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error
-	UpdateUserValidationUsed(ctx context.Context, id int32) error
+	UpdateUserValidationUsed(ctx context.Context, userID int32) error
 }
 
 var _ Querier = (*Queries)(nil)

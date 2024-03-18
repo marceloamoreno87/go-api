@@ -29,3 +29,9 @@ type DeleteUserUseCaseInterface interface {
 type UpdateUserPasswordUseCaseInterface interface {
 	Execute(input usecase.UpdateUserPasswordInputDTO) (output usecase.UpdateUserPasswordOutputDTO, err error)
 }
+
+type CreateUserValidationUseCaseInterface interface {
+	Execute(input usecase.CreateUserValidationInputDTO) (output usecase.CreateUserValidationOutputDTO, err error)
+}
+
+

@@ -19,9 +19,9 @@ func NewUserValidationRepository() *UserValidationRepository {
 	}
 }
 
-func (repo *UserValidationRepository) GetValidationUser(id int32) (output entityInterface.UserValidationInterface, err error) {
+func (repo *UserValidationRepository) GetUserValidationByUserID(id int32) (output entityInterface.UserValidationInterface, err error) {
 
-	uv, err := repo.DB.GetDbQueries().GetValidationUser(context.Background(), id)
+	uv, err := repo.DB.GetDbQueries().GetUserValidationByUserID(context.Background(), id)
 	if err != nil {
 		return
 	}
@@ -38,9 +38,9 @@ func (repo *UserValidationRepository) GetValidationUser(id int32) (output entity
 	return
 }
 
-func (repo *UserValidationRepository) GetValidationUserByHash(hash string) (output entityInterface.UserValidationInterface, err error) {
+func (repo *UserValidationRepository) GetUserValidationByHash(hash string) (output entityInterface.UserValidationInterface, err error) {
 
-	uv, err := repo.DB.GetDbQueries().GetValidationUserByHash(context.Background(), hash)
+	uv, err := repo.DB.GetDbQueries().GetUserValidationByHash(context.Background(), hash)
 	if err != nil {
 		return
 	}
@@ -56,13 +56,26 @@ func (repo *UserValidationRepository) GetValidationUserByHash(hash string) (outp
 	return
 }
 
-func (repo *UserValidationRepository) CreateValidationUser(userValidation entityInterface.UserValidationInterface) (err error) {
-
-	return repo.DB.GetDbQueries().CreateValidationUser(context.Background(), db.CreateValidationUserParams{
+func (repo *UserValidationRepository) CreateUserValidation(userValidation entityInterface.UserValidationInterface) (output entityInterface.UserValidationInterface, err error) {
+	newUserValidation, err := repo.DB.GetDbQueries().CreateUserValidation(context.Background(), db.CreateValidationUserParams{
 		UserID:    userValidation.GetUserID(),
 		Hash:      userValidation.GetHash(),
 		ExpiresIn: userValidation.GetExpiresIn(),
 	})
+	if err != nil {
+		return
+	}
+	output = &entity.UserValidation{
+		ID:        newUserValidation.ID,
+		UserID:    newUserValidation.UserID,
+		Hash:      newUserValidation.Hash,
+		ExpiresIn: newUserValidation.ExpiresIn,
+		Used:      newUserValidation.Used,
+		CreatedAt: newUserValidation.CreatedAt,
+		UpdatedAt: newUserValidation.UpdatedAt,
+	}
+	return
+
 }
 
 func (repo *UserValidationRepository) UpdateUserValidationUsed(id int32) (err error) {

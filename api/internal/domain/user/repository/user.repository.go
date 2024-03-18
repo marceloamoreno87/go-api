@@ -19,9 +19,8 @@ func NewUserRepository() *UserRepository {
 	}
 }
 
-func (repo *UserRepository) CreateUser(user entityInterface.UserInterface) (err error) {
-
-	return repo.DB.GetDbQueries().CreateUser(context.Background(), db.CreateUserParams{
+func (repo *UserRepository) CreateUser(user entityInterface.UserInterface) (output entityInterface.UserInterface, err error) {
+	newUser, err := repo.DB.GetDbQueries().CreateUser(context.Background(), db.CreateUserParams{
 		Name:     user.GetName(),
 		Email:    user.GetEmail(),
 		Password: user.GetPassword(),
@@ -29,10 +28,24 @@ func (repo *UserRepository) CreateUser(user entityInterface.UserInterface) (err 
 		RoleID:   user.GetRoleID(),
 		AvatarID: user.GetAvatarID(),
 	})
+	if err != nil {
+		return
+	}
+	output = &entity.User{
+		ID:        newUser.ID,
+		Name:      newUser.Name,
+		Email:     newUser.Email,
+		Password:  newUser.Password,
+		Active:    newUser.Active,
+		RoleID:    newUser.RoleID,
+		AvatarID:  newUser.AvatarID,
+		CreatedAt: newUser.CreatedAt,
+		UpdatedAt: newUser.UpdatedAt,
+	}
+	return
 }
 
 func (repo *UserRepository) GetUser(id int32) (output entityInterface.UserInterface, err error) {
-
 	u, err := repo.DB.GetDbQueries().GetUser(context.Background(), id)
 	if err != nil {
 		return
@@ -52,7 +65,6 @@ func (repo *UserRepository) GetUser(id int32) (output entityInterface.UserInterf
 }
 
 func (repo *UserRepository) GetUserByEmail(email string) (output entityInterface.UserInterface, err error) {
-
 	u, err := repo.DB.GetDbQueries().GetUserByEmail(context.Background(), email)
 	if err != nil {
 		return
@@ -72,7 +84,6 @@ func (repo *UserRepository) GetUserByEmail(email string) (output entityInterface
 }
 
 func (repo *UserRepository) GetUsers(limit int32, offset int32) (output []entityInterface.UserInterface, err error) {
-
 	u, err := repo.DB.GetDbQueries().GetUsers(context.Background(), db.GetUsersParams{
 		Limit:  limit,
 		Offset: offset,
@@ -97,7 +108,6 @@ func (repo *UserRepository) GetUsers(limit int32, offset int32) (output []entity
 }
 
 func (repo *UserRepository) UpdateUser(user entityInterface.UserInterface, id int32) (err error) {
-
 	return repo.DB.GetDbQueries().UpdateUser(context.Background(), db.UpdateUserParams{
 		ID:       id,
 		Name:     user.GetName(),
@@ -110,14 +120,19 @@ func (repo *UserRepository) UpdateUser(user entityInterface.UserInterface, id in
 }
 
 func (repo *UserRepository) UpdateUserPassword(id int32, password string) (err error) {
-
 	return repo.DB.GetDbQueries().UpdateUserPassword(context.Background(), db.UpdateUserPasswordParams{
 		ID:       id,
 		Password: password,
 	})
 }
 
-func (repo *UserRepository) DeleteUser(id int32) (err error) {
+func (repo *UserRepository) UpdateUserActive(id int32, active bool) (err error) {
+	return repo.DB.GetDbQueries().UpdateUserActive(context.Background(), db.UpdateUserActiveParams{
+		ID:     id,
+		Active: active,
+	})
+}
 
+func (repo *UserRepository) DeleteUser(id int32) (err error) {
 	return repo.DB.GetDbQueries().DeleteUser(context.Background(), id)
 }
