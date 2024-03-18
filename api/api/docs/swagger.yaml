@@ -1,55 +1,11 @@
 basePath: /api/v1
 definitions:
-  github_com_marceloamoreno_goapi_internal_domain_avatar_usecase.CreateAvatarInputDTO:
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateAvatarInputDTO:
     properties:
       svg:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_avatar_usecase.GetAvatarOutputDTO:
-    properties:
-      created_at:
-        type: string
-      id:
-        type: integer
-      svg:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  github_com_marceloamoreno_goapi_internal_domain_avatar_usecase.GetAvatarsOutputDTO:
-    properties:
-      created_at:
-        type: string
-      id:
-        type: integer
-      svg:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  github_com_marceloamoreno_goapi_internal_domain_avatar_usecase.UpdateAvatarInputDTO:
-    properties:
-      id:
-        type: integer
-      svg:
-        type: string
-    type: object
-  github_com_marceloamoreno_goapi_internal_domain_permission_entity.Permission:
-    properties:
-      created_at:
-        type: string
-      description:
-        type: string
-      id:
-        type: integer
-      internal_name:
-        type: string
-      name:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  github_com_marceloamoreno_goapi_internal_domain_permission_usecase.CreatePermissionInputDTO:
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreatePermissionInputDTO:
     properties:
       description:
         type: string
@@ -58,63 +14,7 @@ definitions:
       name:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_permission_usecase.GetPermissionOutputDTO:
-    properties:
-      created_at:
-        type: string
-      description:
-        type: string
-      id:
-        type: integer
-      internal_name:
-        type: string
-      name:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  github_com_marceloamoreno_goapi_internal_domain_permission_usecase.GetPermissionsOutputDTO:
-    properties:
-      created_at:
-        type: string
-      description:
-        type: string
-      id:
-        type: integer
-      internal_name:
-        type: string
-      name:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  github_com_marceloamoreno_goapi_internal_domain_permission_usecase.UpdatePermissionInputDTO:
-    properties:
-      description:
-        type: string
-      id:
-        type: integer
-      internal_name:
-        type: string
-      name:
-        type: string
-    type: object
-  github_com_marceloamoreno_goapi_internal_domain_role_entity.Role:
-    properties:
-      created_at:
-        type: string
-      description:
-        type: string
-      id:
-        type: integer
-      internal_name:
-        type: string
-      name:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  github_com_marceloamoreno_goapi_internal_domain_role_usecase.CreateRoleInputDTO:
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateRoleInputDTO:
     properties:
       description:
         type: string
@@ -123,66 +23,7 @@ definitions:
       name:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_role_usecase.CreateRolePermissionInputDTO:
-    properties:
-      permission_ids:
-        items:
-          type: integer
-        type: array
-      role_id:
-        type: integer
-    type: object
-  github_com_marceloamoreno_goapi_internal_domain_role_usecase.GetRoleOutputDTO:
-    properties:
-      created_at:
-        type: string
-      description:
-        type: string
-      id:
-        type: integer
-      internal_name:
-        type: string
-      name:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  github_com_marceloamoreno_goapi_internal_domain_role_usecase.GetRolePermissionsOutputDTO:
-    properties:
-      permissions:
-        items:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_permission_entity.Permission'
-        type: array
-      role:
-        $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_role_entity.Role'
-    type: object
-  github_com_marceloamoreno_goapi_internal_domain_role_usecase.GetRolesOutputDTO:
-    properties:
-      created_at:
-        type: string
-      description:
-        type: string
-      id:
-        type: integer
-      internal_name:
-        type: string
-      name:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  github_com_marceloamoreno_goapi_internal_domain_role_usecase.UpdateRoleInputDTO:
-    properties:
-      description:
-        type: string
-      id:
-        type: integer
-      internal_name:
-        type: string
-      name:
-        type: string
-    type: object
-  github_com_marceloamoreno_goapi_internal_domain_role_usecase.UpdateRolePermissionInputDTO:
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateRolePermissionInputDTO:
     properties:
       permission_ids:
         items:
@@ -204,8 +45,108 @@ definitions:
       role_id:
         type: integer
     type: object
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.DeleteRolePermissionInputDTO:
+    properties:
+      role_id:
+        type: integer
+    type: object
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetAvatarOutputDTO:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      svg:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetAvatarsOutputDTO:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      svg:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetPermissionOutputDTO:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetPermissionsOutputDTO:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetRoleOutputDTO:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetRolePermissionsOutputDTO:
+    properties:
+      id:
+        type: integer
+      permission_ids:
+        items:
+          type: integer
+        type: array
+      role_id:
+        type: integer
+    type: object
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetRolesOutputDTO:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
   github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetUserOutputDTO:
     properties:
+      active:
+        type: boolean
       avatar_id:
         type: integer
       created_at:
@@ -225,6 +166,8 @@ definitions:
     type: object
   github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetUsersOutputDTO:
     properties:
+      active:
+        type: boolean
       avatar_id:
         type: integer
       created_at:
@@ -242,48 +185,33 @@ definitions:
       updated_at:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.LoginInputDTO:
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdateAvatarInputDTO:
     properties:
-      email:
-        type: string
-      password:
+      id:
+        type: integer
+      svg:
         type: string
     type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.LoginOutputDTO:
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdatePermissionInputDTO:
     properties:
-      token:
-        type: string
-    type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.RegisterInputDTO:
-    properties:
-      avatar_id:
-        type: integer
-      email:
-        type: string
-      name:
-        type: string
-      password:
-        type: string
-      role_id:
-        type: integer
-    type: object
-  github_com_marceloamoreno_goapi_internal_domain_user_usecase.RegisterOutputDTO:
-    properties:
-      avatar_id:
-        type: integer
-      created_at:
-        type: string
-      email:
+      description:
         type: string
       id:
         type: integer
+      internal_name:
+        type: string
       name:
         type: string
-      password:
+    type: object
+  github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdateRoleInputDTO:
+    properties:
+      description:
         type: string
-      role_id:
+      id:
         type: integer
-      updated_at:
+      internal_name:
+        type: string
+      name:
         type: string
     type: object
   github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdateUserInputDTO:
@@ -342,7 +270,7 @@ paths:
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_avatar_usecase.GetAvatarsOutputDTO'
+                    $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetAvatarsOutputDTO'
                   type: array
               type: object
         "400":
@@ -407,7 +335,7 @@ paths:
             - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_avatar_usecase.GetAvatarOutputDTO'
+                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetAvatarOutputDTO'
               type: object
         "400":
           description: Bad Request
@@ -433,7 +361,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_avatar_usecase.UpdateAvatarInputDTO'
+          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdateAvatarInputDTO'
       produces:
       - application/json
       responses:
@@ -455,34 +383,25 @@ paths:
       summary: Update Avatar
       tags:
       - Avatar
+  /auth/forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: Forgot Password
+      produces:
+      - application/json
+      responses: {}
+      summary: Forgot Password
+      tags:
+      - Auth
   /auth/login:
     post:
       consumes:
       - application/json
       description: Get JWT
-      parameters:
-      - description: User
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.LoginInputDTO'
       produces:
       - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.LoginOutputDTO'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
+      responses: {}
       summary: Get JWT
       tags:
       - Auth
@@ -497,35 +416,26 @@ paths:
       summary: Get Refresh JWT
       tags:
       - Auth
-  /auth/register:
+  /auth/update-password:
     post:
       consumes:
       - application/json
-      description: Register
-      parameters:
-      - description: User
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.RegisterInputDTO'
+      description: Update User Password
       produces:
       - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.RegisterOutputDTO'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.ResponseError'
-      summary: Register
+      responses: {}
+      summary: Update User Password
+      tags:
+      - Auth
+  /auth/verify-user:
+    post:
+      consumes:
+      - application/json
+      description: Verify User
+      produces:
+      - application/json
+      responses: {}
+      summary: Verify User
       tags:
       - Auth
   /permission:
@@ -553,7 +463,7 @@ paths:
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_permission_usecase.GetPermissionsOutputDTO'
+                    $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetPermissionsOutputDTO'
                   type: array
               type: object
         "400":
@@ -618,7 +528,7 @@ paths:
             - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_permission_usecase.GetPermissionOutputDTO'
+                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetPermissionOutputDTO'
               type: object
         "400":
           description: Bad Request
@@ -644,7 +554,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_permission_usecase.UpdatePermissionInputDTO'
+          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdatePermissionInputDTO'
       produces:
       - application/json
       responses:
@@ -691,7 +601,7 @@ paths:
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_role_usecase.GetRolesOutputDTO'
+                    $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetRolesOutputDTO'
                   type: array
               type: object
         "400":
@@ -713,7 +623,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_role_usecase.CreateRoleInputDTO'
+          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateRoleInputDTO'
       produces:
       - application/json
       responses:
@@ -788,7 +698,7 @@ paths:
             - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_role_usecase.GetRoleOutputDTO'
+                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetRoleOutputDTO'
               type: object
         "400":
           description: Bad Request
@@ -814,7 +724,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_role_usecase.UpdateRoleInputDTO'
+          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.UpdateRoleInputDTO'
       produces:
       - application/json
       responses:
@@ -857,7 +767,7 @@ paths:
             - $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_shared_response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_role_usecase.GetRolePermissionsOutputDTO'
+                  $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.GetRolePermissionsOutputDTO'
               type: object
         "400":
           description: Bad Request
@@ -878,7 +788,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_role_usecase.CreateRolePermissionInputDTO'
+          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.CreateRolePermissionInputDTO'
       produces:
       - application/json
       responses:
@@ -915,7 +825,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_role_usecase.UpdateRolePermissionInputDTO'
+          $ref: '#/definitions/github_com_marceloamoreno_goapi_internal_domain_user_usecase.DeleteRolePermissionInputDTO'
       produces:
       - application/json
       responses:

@@ -74,7 +74,7 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 // @Accept  json
 // @Produce  json
 // @Param id path string true "RolePermission ID"
-// @Param user body usecase.UpdateRolePermissionInputDTO true "RolePermission"
+// @Param user body usecase.DeleteRolePermissionInputDTO true "RolePermission"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /role/{id}/permission [put]

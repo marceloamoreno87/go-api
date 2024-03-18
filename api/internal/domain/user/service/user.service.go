@@ -140,20 +140,3 @@ func (s *UserService) DeleteUser(id int32) (output usecase.DeleteUserOutputDTO, 
 	slog.Info("User deleted")
 	return
 }
-
-func (s *UserService) UpdateUserPassword(id int32, body io.ReadCloser) (output usecase.UpdateUserPasswordOutputDTO, err error) {
-	input := usecase.UpdateUserPasswordInputDTO{
-		ID: id,
-	}
-	if err = json.NewDecoder(body).Decode(&input); err != nil {
-		slog.Info("err", err)
-		return
-	}
-	output, err = s.UpdateUserPasswordUseCase.Execute(input)
-	if err != nil {
-		slog.Info("err", err)
-		return
-	}
-	slog.Info("User password updated")
-	return
-}

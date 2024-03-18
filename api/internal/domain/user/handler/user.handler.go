@@ -130,23 +130,3 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 	h.SendResponse(w, h.NewResponse(output))
 }
-
-// GetUpdatePasswordUser godoc
-// @Summary Get Update Password User
-// @Description Get Update Password User
-// @Tags Auth
-// @Accept  json
-// @Produce  json
-// @Param user body usecase.UpdatePasswordUserInputDTO true "User"
-// @Success 200 {object} response.Response{data=usecase.UpdatePasswordUserOutputDTO}
-// @Failure 400 {object} response.ResponseError{}
-// @Router /auth/update-password [patch]
-func (h *UserHandler) UpdateUserPassword(w http.ResponseWriter, r *http.Request) {
-	output, err := h.service.UpdateUserPassword(helper.GetID(r), r.Body)
-	if err != nil {
-		slog.Info("err", err)
-		h.SendResponseError(w, h.NewResponseError(err.Error()))
-		return
-	}
-	h.SendResponse(w, h.NewResponse(output))
-}
