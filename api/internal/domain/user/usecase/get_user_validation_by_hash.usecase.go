@@ -35,9 +35,12 @@ func (uc *GetUserValidationByHashUseCase) Execute(input GetUserValidationByHashI
 		return
 	}
 
-	if !userValidation.ValidateHashExpiresIn() {
+	if !userValidation.GetUsed() {
 		return
 	}
 
+	if !userValidation.ValidateHashExpiresIn() {
+		return
+	}
 	return
 }

@@ -60,7 +60,7 @@ func (j *JWTAuth) Validate(token string) (b bool) {
 	if err != nil {
 		return false
 	}
-	if t.Expiration().Unix() > time.Now().Unix() {
+	if helper.CompareTimestamp(t.Expiration().Unix(), time.Now().Unix()) {
 		return true
 	}
 	return false

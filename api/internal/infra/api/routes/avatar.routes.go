@@ -13,6 +13,5 @@ func (route *Route) getAvatarRoutes(router chi.Router) {
 		r.Post("/", handler.CreateAvatar)
 		r.Put("/{id}", handler.UpdateAvatar)
 		r.Delete("/{id}", handler.DeleteAvatar)
-
 	})
 }

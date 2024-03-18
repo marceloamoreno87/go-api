@@ -1,6 +1,9 @@
 package usecase
 
 import (
+	"errors"
+	"log/slog"
+
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 )
 
@@ -29,5 +32,10 @@ func (uc *LoginUserUseCase) Execute(input LoginUserInputDTO) (output LoginUserOu
 		return
 	}
 	output.Valid = user.ComparePassword(input.RequestPassword)
+	if !output.Valid {
+		slog.Info("Invalid user")
+		return output, errors.New("invalid user")
+	}
+	output.Valid = true
 	return
 }

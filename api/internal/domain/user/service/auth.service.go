@@ -2,10 +2,8 @@ package service
 
 import (
 	"encoding/json"
-	"errors"
 	"io"
 	"log/slog"
-	"time"
 
 	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
@@ -20,8 +18,6 @@ type AuthService struct {
 	NewUpdateAuthRevokeUseCase        usecaseInterface.UpdateAuthRevokeUseCaseInterface
 	NewGetAuthByTokenUseCase          usecaseInterface.GetAuthByTokenUseCaseInterface
 	NewGetAuthByUserIDUseCase         usecaseInterface.GetAuthByUserIDUseCaseInterface
-	NewCheckTokenUseCase              usecaseInterface.CheckTokenUseCaseInterface
-	NewCheckRefreshTokenUseCase       usecaseInterface.CheckRefreshTokenUseCaseInterface
 	NewCreateUserUseCase              usecaseInterface.CreateUserUseCaseInterface
 	NewUpdateUserPasswordUseCase      usecaseInterface.UpdateUserPasswordUseCaseInterface
 	NewGetUserValidationByHashUseCase usecaseInterface.GetUserValidationByHashUseCaseInterface
@@ -37,8 +33,6 @@ func NewAuthService() *AuthService {
 		NewUpdateAuthRevokeUseCase:        usecase.NewUpdateAuthRevokeUseCase(),
 		NewGetAuthByTokenUseCase:          usecase.NewGetAuthByTokenUseCase(),
 		NewGetAuthByUserIDUseCase:         usecase.NewGetAuthByUserIDUseCase(),
-		NewCheckTokenUseCase:              usecase.NewCheckTokenUseCase(),
-		NewCheckRefreshTokenUseCase:       usecase.NewCheckRefreshTokenUseCase(),
 		NewCreateUserUseCase:              usecase.NewCreateUserUseCase(),
 		NewUpdateUserPasswordUseCase:      usecase.NewUpdateUserPasswordUseCase(),
 		NewGetUserValidationByHashUseCase: usecase.NewGetUserValidationByHashUseCase(),
@@ -56,14 +50,14 @@ func (s *AuthService) Login(body io.ReadCloser) (output usecase.CreateAuthOutput
 		slog.Info("err", err)
 		return
 	}
-	// get user by email
+
 	user, err := s.NewGetUserByEmailUseCase.Execute(usecase.GetUserByEmailInputDTO{Email: input.Email})
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
 
-	logged, err := s.NewLoginUserUseCase.Execute(usecase.LoginUserInputDTO{
+	_, err = s.NewLoginUserUseCase.Execute(usecase.LoginUserInputDTO{
 		Name:            user.Name,
 		Email:           user.Email,
 		Password:        user.Password,
@@ -76,34 +70,11 @@ func (s *AuthService) Login(body io.ReadCloser) (output usecase.CreateAuthOutput
 		return
 	}
 
-	if !logged.Valid {
-		slog.Info("Invalid user")
-		return usecase.CreateAuthOutputDTO{}, errors.New("invalid user")
-	}
-
-	// consulta se tem token valido
-	token, _ := s.NewGetAuthByUserIDUseCase.Execute(usecase.GetAuthByUserIDInputDTO{
+	_, err = s.NewGetAuthByUserIDUseCase.Execute(usecase.GetAuthByUserIDInputDTO{
 		UserID: user.ID,
-	})
-
-	check, err := s.NewCheckTokenUseCase.Execute(usecase.CheckTokenInputDTO{
-		UserID: user.ID,
-		Token:  token.Token,
 	})
 	if err != nil {
 		slog.Info("err", err)
-		return
-	}
-
-	if check.Valid {
-		output = usecase.CreateAuthOutputDTO{
-			Token:                 token.Token,
-			RefreshToken:          token.RefreshToken,
-			UserID:                token.UserID,
-			Active:                token.Active,
-			TokenExpiresIn:        token.TokenExpiresIn,
-			RefreshTokenExpiresIn: token.RefreshTokenExpiresIn,
-		}
 		return
 	}
 
@@ -147,7 +118,6 @@ func (s *AuthService) RefreshToken(body io.ReadCloser) (output usecase.CreateAut
 		return
 	}
 
-	// Consultar o refresh token e user ID no banco
 	rt, err := s.NewGetAuthByRefreshTokenUseCase.Execute(usecase.GetAuthByRefreshTokenInputDTO{
 		UserID:       input.UserID,
 		RefreshToken: input.RefreshToken,
@@ -155,32 +125,6 @@ func (s *AuthService) RefreshToken(body io.ReadCloser) (output usecase.CreateAut
 	if err != nil {
 		slog.Info("err", err)
 		return
-	}
-
-	// Validar se o token é válido - Se for válido não gera novo token
-	checkToken, err := s.NewCheckTokenUseCase.Execute(usecase.CheckTokenInputDTO{
-		UserID: rt.UserID,
-		Token:  rt.Token,
-	})
-	if err != nil {
-		slog.Info("err", err)
-		return
-	}
-	if checkToken.Valid {
-		return output, errors.New("token is valid")
-	}
-
-	checkRefreshToken, err := s.NewCheckRefreshTokenUseCase.Execute(usecase.CheckRefreshTokenInputDTO{
-		UserID:       rt.UserID,
-		RefreshToken: rt.RefreshToken,
-	})
-	if err != nil {
-		slog.Info("err", err)
-		return
-	}
-
-	if !checkRefreshToken.Valid {
-		return output, errors.New("invalid refresh token")
 	}
 
 	_, err = s.NewUpdateAuthRevokeUseCase.Execute(usecase.UpdateAuthRevokeInputDTO{
@@ -245,21 +189,12 @@ func (s *AuthService) UpdateUserPassword(body io.ReadCloser) (output usecase.Upd
 		return
 	}
 
-	if userValidation.Used {
-		return output, errors.New("hash already used")
-	}
-
-	if int64(userValidation.ExpiresIn) > time.Now().Unix() {
-		return output, errors.New("hash expired")
-	}
-
 	user, err := s.NewGetUserUseCase.Execute(usecase.GetUserInputDTO{ID: userValidation.UserID})
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
 
-	//atualizar senha
 	output, err = s.NewUpdateUserPasswordUseCase.Execute(usecase.UpdateUserPasswordInputDTO{
 		ID:       user.ID,
 		Name:     user.Name,
