@@ -96,13 +96,12 @@ func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *h
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Role ID"
-// @Param user body usecase.DeleteRolePermissionByRoleIDInputDTO true "RolePermission"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
-// @Router /role/{id}/permission [put]
+// @Router /role/{id}/permission [delete]
 // @Security     JWT
 func (h *RolePermissionHandler) DeleteRolePermissionByRoleID(w http.ResponseWriter, r *http.Request) {
-	output, err := h.service.DeleteRolePermissionByRoleID(helper.GetID(r), r.Body)
+	output, err := h.service.DeleteRolePermissionByRoleID(helper.GetID(r))
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))

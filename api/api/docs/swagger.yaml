@@ -100,11 +100,6 @@ definitions:
       role_id:
         type: integer
     type: object
-  usecase.DeleteRolePermissionByRoleIDInputDTO:
-    properties:
-      role_id:
-        type: integer
-    type: object
   usecase.GetAvatarOutputDTO:
     properties:
       created_at:
@@ -800,6 +795,37 @@ paths:
       tags:
       - Role
   /role/{id}/permission:
+    delete:
+      consumes:
+      - application/json
+      description: Update Role Permission
+      parameters:
+      - description: Role ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResponseError'
+      security:
+      - JWT: []
+      summary: Delete Role Permission By Role ID
+      tags:
+      - RolePermission
     get:
       consumes:
       - application/json
@@ -878,7 +904,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/usecase.DeleteRolePermissionByRoleIDInputDTO'
+          $ref: '#/definitions/usecase.CreateRolePermissionInputDTO'
       produces:
       - application/json
       responses:
@@ -897,7 +923,7 @@ paths:
             $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
-      summary: Delete Role Permission By Role ID
+      summary: Update Role Permission
       tags:
       - RolePermission
   /user:

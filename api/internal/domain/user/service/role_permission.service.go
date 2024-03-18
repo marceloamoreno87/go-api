@@ -51,9 +51,9 @@ func (s *RolePermissionService) CreateRolePermission(body io.ReadCloser) (output
 	return
 }
 
-func (s *RolePermissionService) UpdateRolePermission(id int32, body io.ReadCloser) (output usecase.CreateRolePermissionOutputDTO, err error) {
+func (s *RolePermissionService) UpdateRolePermission(roleId int32, body io.ReadCloser) (output usecase.CreateRolePermissionOutputDTO, err error) {
 	inputDelete := usecase.DeleteRolePermissionByRoleIDInputDTO{
-		RoleID: id,
+		RoleID: roleId,
 	}
 
 	if err = json.NewDecoder(body).Decode(&inputDelete); err != nil {
@@ -81,13 +81,9 @@ func (s *RolePermissionService) UpdateRolePermission(id int32, body io.ReadClose
 	return
 }
 
-func (s *RolePermissionService) DeleteRolePermissionByRoleID(id int32, body io.ReadCloser) (output usecase.DeleteRolePermissionByRoleIDOutputDTO, err error) {
+func (s *RolePermissionService) DeleteRolePermissionByRoleID(id int32) (output usecase.DeleteRolePermissionByRoleIDOutputDTO, err error) {
 	input := usecase.DeleteRolePermissionByRoleIDInputDTO{
 		RoleID: id,
-	}
-	if err = json.NewDecoder(body).Decode(&input); err != nil {
-		slog.Info("err", err)
-		return
 	}
 	output, err = s.DeleteRolePermissionByRoleIDUseCase.Execute(input)
 	if err != nil {

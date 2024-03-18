@@ -952,7 +952,7 @@ const docTemplate = `{
                 "tags": [
                     "RolePermission"
                 ],
-                "summary": "Delete Role Permission By Role ID",
+                "summary": "Update Role Permission",
                 "parameters": [
                     {
                         "type": "string",
@@ -967,7 +967,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/usecase.DeleteRolePermissionByRoleIDInputDTO"
+                            "$ref": "#/definitions/usecase.CreateRolePermissionInputDTO"
                         }
                     }
                 ],
@@ -1024,6 +1024,59 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/usecase.CreateRolePermissionInputDTO"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Update Role Permission",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RolePermission"
+                ],
+                "summary": "Delete Role Permission By Role ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Role ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1654,14 +1707,6 @@ const docTemplate = `{
                 "password": {
                     "type": "string"
                 },
-                "role_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "usecase.DeleteRolePermissionByRoleIDInputDTO": {
-            "type": "object",
-            "properties": {
                 "role_id": {
                     "type": "integer"
                 }
