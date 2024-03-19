@@ -383,6 +383,39 @@ paths:
       summary: Get Refresh JWT
       tags:
       - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Create User
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/request.RequestCreateUserInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResponseError'
+      security:
+      - JWT: []
+      summary: Register User
+      tags:
+      - Auth
   /avatar:
     get:
       consumes:
@@ -1221,39 +1254,6 @@ paths:
           schema:
             $ref: '#/definitions/response.ResponseError'
       summary: Forgot Password
-      tags:
-      - User
-  /user/register:
-    post:
-      consumes:
-      - application/json
-      description: Create User
-      parameters:
-      - description: User
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/request.RequestCreateUserInputDTO'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  type: object
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ResponseError'
-      security:
-      - JWT: []
-      summary: Register User
       tags:
       - User
   /user/update-password:

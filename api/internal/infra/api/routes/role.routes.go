@@ -14,6 +14,5 @@ func (route *Route) getRoleRoutes(router chi.Router) {
 		r.Put("/{id}", handler.UpdateRole)
 		r.Delete("/{id}", handler.DeleteRole)
 		route.getRolePermissionsRoutes(r)
-
 	})
 }
