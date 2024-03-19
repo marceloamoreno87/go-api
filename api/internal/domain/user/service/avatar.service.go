@@ -1,38 +1,54 @@
 package service
 
 import (
-	"encoding/json"
-	"io"
 	"log/slog"
 
 	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
+type RequestCreateAvatarInputDTO struct {
+	SVG string `json:"svg"`
+}
+
+type RequestUpdateAvatarInputDTO struct {
+	ID  int32  `json:"id"`
+	SVG string `json:"svg"`
+}
+
+type RequestGetAvatarInputDTO struct {
+	ID int32 `json:"id"`
+}
+
+type RequestGetAvatarsInputDTO struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+type RequestDeleteAvatarInputDTO struct {
+	ID int32 `json:"id"`
+}
+
 type AvatarService struct {
-	NewGetAvatarUseCase    usecaseInterface.GetAvatarUseCaseInterface
-	NewGetAvatarsUseCase   usecaseInterface.GetAvatarsUseCaseInterface
-	NewCreateAvatarUseCase usecaseInterface.CreateAvatarUseCaseInterface
-	NewUpdateAvatarUseCase usecaseInterface.UpdateAvatarUseCaseInterface
-	NewDeleteAvatarUseCase usecaseInterface.DeleteAvatarUseCaseInterface
+	GetAvatarUseCase    usecaseInterface.GetAvatarUseCaseInterface
+	GetAvatarsUseCase   usecaseInterface.GetAvatarsUseCaseInterface
+	CreateAvatarUseCase usecaseInterface.CreateAvatarUseCaseInterface
+	UpdateAvatarUseCase usecaseInterface.UpdateAvatarUseCaseInterface
+	DeleteAvatarUseCase usecaseInterface.DeleteAvatarUseCaseInterface
 }
 
 func NewAvatarService() *AvatarService {
 	return &AvatarService{
-		NewGetAvatarUseCase:    usecase.NewGetAvatarUseCase(),
-		NewGetAvatarsUseCase:   usecase.NewGetAvatarsUseCase(),
-		NewCreateAvatarUseCase: usecase.NewCreateAvatarUseCase(),
-		NewUpdateAvatarUseCase: usecase.NewUpdateAvatarUseCase(),
-		NewDeleteAvatarUseCase: usecase.NewDeleteAvatarUseCase(),
+		GetAvatarUseCase:    usecase.NewGetAvatarUseCase(),
+		GetAvatarsUseCase:   usecase.NewGetAvatarsUseCase(),
+		CreateAvatarUseCase: usecase.NewCreateAvatarUseCase(),
+		UpdateAvatarUseCase: usecase.NewUpdateAvatarUseCase(),
+		DeleteAvatarUseCase: usecase.NewDeleteAvatarUseCase(),
 	}
 }
 
-func (s *AvatarService) GetAvatar(id int32) (output usecase.GetAvatarOutputDTO, err error) {
-	input := usecase.GetAvatarInputDTO{
-		ID: id,
-	}
-
-	output, err = s.NewGetAvatarUseCase.Execute(input)
+func (s *AvatarService) GetAvatar(input RequestGetAvatarInputDTO) (output usecase.GetAvatarOutputDTO, err error) {
+	output, err = s.GetAvatarUseCase.Execute(usecase.GetAvatarInputDTO{ID: input.ID})
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -41,13 +57,8 @@ func (s *AvatarService) GetAvatar(id int32) (output usecase.GetAvatarOutputDTO, 
 	return
 }
 
-func (s *AvatarService) GetAvatars(limit int32, offset int32) (output []usecase.GetAvatarsOutputDTO, err error) {
-	input := usecase.GetAvatarsInputDTO{
-		Limit:  limit,
-		Offset: offset,
-	}
-
-	output, err = s.NewGetAvatarsUseCase.Execute(input)
+func (s *AvatarService) GetAvatars(input RequestGetAvatarsInputDTO) (output []usecase.GetAvatarsOutputDTO, err error) {
+	output, err = s.GetAvatarsUseCase.Execute(usecase.GetAvatarsInputDTO{Limit: input.Limit, Offset: input.Offset})
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -56,14 +67,8 @@ func (s *AvatarService) GetAvatars(limit int32, offset int32) (output []usecase.
 	return
 }
 
-func (s *AvatarService) CreateAvatar(body io.ReadCloser) (output usecase.CreateAvatarOutputDTO, err error) {
-	input := usecase.CreateAvatarInputDTO{}
-	if err = json.NewDecoder(body).Decode(&input); err != nil {
-		slog.Info("err", err)
-		return
-	}
-
-	output, err = s.NewCreateAvatarUseCase.Execute(input)
+func (s *AvatarService) CreateAvatar(input RequestCreateAvatarInputDTO) (output usecase.CreateAvatarOutputDTO, err error) {
+	output, err = s.CreateAvatarUseCase.Execute(usecase.CreateAvatarInputDTO{SVG: input.SVG})
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -72,15 +77,8 @@ func (s *AvatarService) CreateAvatar(body io.ReadCloser) (output usecase.CreateA
 	return
 }
 
-func (s *AvatarService) UpdateAvatar(id int32, body io.ReadCloser) (output usecase.UpdateAvatarOutputDTO, err error) {
-	input := usecase.UpdateAvatarInputDTO{
-		ID: id,
-	}
-	if err = json.NewDecoder(body).Decode(&input); err != nil {
-		slog.Info("err", err)
-		return
-	}
-	output, err = s.NewUpdateAvatarUseCase.Execute(input)
+func (s *AvatarService) UpdateAvatar(input RequestUpdateAvatarInputDTO) (output usecase.UpdateAvatarOutputDTO, err error) {
+	output, err = s.UpdateAvatarUseCase.Execute(usecase.UpdateAvatarInputDTO{ID: input.ID, SVG: input.SVG})
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -89,12 +87,8 @@ func (s *AvatarService) UpdateAvatar(id int32, body io.ReadCloser) (output useca
 	return
 }
 
-func (s *AvatarService) DeleteAvatar(id int32) (output usecase.DeleteAvatarOutputDTO, err error) {
-	input := usecase.DeleteAvatarInputDTO{
-		ID: id,
-	}
-
-	output, err = s.NewDeleteAvatarUseCase.Execute(input)
+func (s *AvatarService) DeleteAvatar(input RequestDeleteAvatarInputDTO) (output usecase.DeleteAvatarOutputDTO, err error) {
+	output, err = s.DeleteAvatarUseCase.Execute(usecase.DeleteAvatarInputDTO{ID: input.ID})
 	if err != nil {
 		slog.Info("err", err)
 		return

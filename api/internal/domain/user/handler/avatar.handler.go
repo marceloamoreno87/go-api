@@ -1,12 +1,12 @@
 package handler
 
 import (
+	"encoding/json"
 	"log/slog"
 	"net/http"
 
 	serviceInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/service"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
-	_ "github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 	"github.com/marceloamoreno/goapi/internal/shared/helper"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
@@ -31,10 +31,13 @@ func NewAvatarHandler() *AvatarHandler {
 // @Param id path string true "Avatar ID"
 // @Success 200 {object} response.Response{data=usecase.GetAvatarOutputDTO}
 // @Failure 400 {object} response.ResponseError{}
-// @Router /Avatar/{id} [get]
+// @Router /avatar/{id} [get]
 // @Security     JWT
 func (h *AvatarHandler) GetAvatar(w http.ResponseWriter, r *http.Request) {
-	output, err := h.service.GetAvatar(helper.GetID(r))
+	input := service.RequestGetAvatarInputDTO{
+		ID: helper.GetID(r),
+	}
+	output, err := h.service.GetAvatar(input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -53,11 +56,15 @@ func (h *AvatarHandler) GetAvatar(w http.ResponseWriter, r *http.Request) {
 // @Param offset query int false "Offset"
 // @Success 200 {object} response.Response{data=[]usecase.GetAvatarsOutputDTO}
 // @Failure 400 {object} response.ResponseError{}
-// @Router /Avatar [get]
+// @Router /avatar [get]
 // @Security     JWT
 func (h *AvatarHandler) GetAvatars(w http.ResponseWriter, r *http.Request) {
 	limit, offset := helper.GetLimitAndOffset(r)
-	output, err := h.service.GetAvatars(limit, offset)
+	input := service.RequestGetAvatarsInputDTO{
+		Limit:  limit,
+		Offset: offset,
+	}
+	output, err := h.service.GetAvatars(input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -66,19 +73,24 @@ func (h *AvatarHandler) GetAvatars(w http.ResponseWriter, r *http.Request) {
 	h.SendResponse(w, h.NewResponse(output))
 }
 
-// CreateRole godoc
+// CreateAvatar godoc
 // @Summary Create Avatar
 // @Description Create Avatar
 // @Tags Avatar
 // @Accept  json
 // @Produce  json
-// @Param role body usecase.CreateAvatarInputDTO true "Avatar"
+// @Param avatar body service.RequestCreateAvatarInputDTO true "Avatar"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
-// @Router /role [post]
+// @Router /avatar [post]
 // @Security     JWT
 func (h *AvatarHandler) CreateAvatar(w http.ResponseWriter, r *http.Request) {
-	output, err := h.service.CreateAvatar(r.Body)
+	input := service.RequestCreateAvatarInputDTO{}
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		slog.Info("err", err)
+		return
+	}
+	output, err := h.service.CreateAvatar(input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -87,20 +99,25 @@ func (h *AvatarHandler) CreateAvatar(w http.ResponseWriter, r *http.Request) {
 	h.SendResponse(w, h.NewResponse(output))
 }
 
-// UpdateRole godoc
+// UpdateAvatar godoc
 // @Summary Update Avatar
 // @Description Update Avatar
 // @Tags Avatar
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Avatar ID"
-// @Param role body usecase.UpdateAvatarInputDTO true "Avatar"
+// @Param avatar body service.RequestUpdateAvatarInputDTO true "Avatar"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
-// @Router /Avatar/{id} [put]
+// @Router /avatar/{id} [put]
 // @Security     JWT
 func (h *AvatarHandler) UpdateAvatar(w http.ResponseWriter, r *http.Request) {
-	output, err := h.service.UpdateAvatar(helper.GetID(r), r.Body)
+	input := service.RequestUpdateAvatarInputDTO{}
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		slog.Info("err", err)
+		return
+	}
+	output, err := h.service.UpdateAvatar(input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -118,11 +135,13 @@ func (h *AvatarHandler) UpdateAvatar(w http.ResponseWriter, r *http.Request) {
 // @Param id path string true "Avatar ID"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
-// @Security ApiKeyAuth
-// @Router /Avatar/{id} [delete]
+// @Router /avatar/{id} [delete]
 // @Security     JWT
 func (h *AvatarHandler) DeleteAvatar(w http.ResponseWriter, r *http.Request) {
-	output, err := h.service.DeleteAvatar(helper.GetID(r))
+	input := service.RequestDeleteAvatarInputDTO{
+		ID: helper.GetID(r),
+	}
+	output, err := h.service.DeleteAvatar(input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))

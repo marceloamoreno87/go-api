@@ -9,10 +9,56 @@ definitions:
       err:
         type: string
     type: object
+  service.RequestCreateAvatarInputDTO:
+    properties:
+      svg:
+        type: string
+    type: object
+  service.RequestCreatePermissionInputDTO:
+    properties:
+      description:
+        type: string
+      internal_name:
+        type: string
+      name:
+        type: string
+    type: object
+  service.RequestCreateRoleInputDTO:
+    properties:
+      description:
+        type: string
+      internal_name:
+        type: string
+      name:
+        type: string
+    type: object
+  service.RequestCreateRolePermissionInputDTO:
+    properties:
+      permission_ids:
+        items:
+          type: integer
+        type: array
+      role_id:
+        type: integer
+    type: object
+  service.RequestCreateUserInputDTO:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
   service.RequestForgotPasswordInputDTO:
     properties:
       email:
         type: string
+    type: object
+  service.RequestGetUserInputDTO:
+    properties:
+      id:
+        type: integer
     type: object
   service.RequestLoginInputDTO:
     properties:
@@ -27,6 +73,53 @@ definitions:
         type: string
       user_id:
         type: integer
+    type: object
+  service.RequestUpdateAvatarInputDTO:
+    properties:
+      id:
+        type: integer
+      svg:
+        type: string
+    type: object
+  service.RequestUpdatePermissionInputDTO:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+    type: object
+  service.RequestUpdateRoleInputDTO:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+    type: object
+  service.RequestUpdateRolePermissionInputDTO:
+    properties:
+      permission_ids:
+        items:
+          type: integer
+        type: array
+      role_id:
+        type: integer
+    type: object
+  service.RequestUpdateUserInputDTO:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
     type: object
   service.RequestUpdateUserPasswordInputDTO:
     properties:
@@ -53,51 +146,6 @@ definitions:
       token_expires_in:
         type: integer
       user_id:
-        type: integer
-    type: object
-  usecase.CreateAvatarInputDTO:
-    properties:
-      svg:
-        type: string
-    type: object
-  usecase.CreatePermissionInputDTO:
-    properties:
-      description:
-        type: string
-      internal_name:
-        type: string
-      name:
-        type: string
-    type: object
-  usecase.CreateRoleInputDTO:
-    properties:
-      description:
-        type: string
-      internal_name:
-        type: string
-      name:
-        type: string
-    type: object
-  usecase.CreateRolePermissionInputDTO:
-    properties:
-      permission_ids:
-        items:
-          type: integer
-        type: array
-      role_id:
-        type: integer
-    type: object
-  usecase.CreateUserInputDTO:
-    properties:
-      avatar_id:
-        type: integer
-      email:
-        type: string
-      name:
-        type: string
-      password:
-        type: string
-      role_id:
         type: integer
     type: object
   usecase.GetAvatarOutputDTO:
@@ -193,27 +241,6 @@ definitions:
       updated_at:
         type: string
     type: object
-  usecase.GetUserOutputDTO:
-    properties:
-      active:
-        type: boolean
-      avatar_id:
-        type: integer
-      created_at:
-        type: string
-      email:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      password:
-        type: string
-      role_id:
-        type: integer
-      updated_at:
-        type: string
-    type: object
   usecase.GetUsersOutputDTO:
     properties:
       active:
@@ -235,50 +262,6 @@ definitions:
       updated_at:
         type: string
     type: object
-  usecase.UpdateAvatarInputDTO:
-    properties:
-      id:
-        type: integer
-      svg:
-        type: string
-    type: object
-  usecase.UpdatePermissionInputDTO:
-    properties:
-      description:
-        type: string
-      id:
-        type: integer
-      internal_name:
-        type: string
-      name:
-        type: string
-    type: object
-  usecase.UpdateRoleInputDTO:
-    properties:
-      description:
-        type: string
-      id:
-        type: integer
-      internal_name:
-        type: string
-      name:
-        type: string
-    type: object
-  usecase.UpdateUserInputDTO:
-    properties:
-      avatar_id:
-        type: integer
-      email:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      password:
-        type: string
-      role_id:
-        type: integer
-    type: object
 host: localhost:3000
 info:
   contact: {}
@@ -286,144 +269,6 @@ info:
   title: GO API
   version: v1
 paths:
-  /Avatar:
-    get:
-      consumes:
-      - application/json
-      description: Get Avatars
-      parameters:
-      - description: Limit
-        in: query
-        name: limit
-        type: integer
-      - description: Offset
-        in: query
-        name: offset
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  items:
-                    $ref: '#/definitions/usecase.GetAvatarsOutputDTO'
-                  type: array
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ResponseError'
-      security:
-      - JWT: []
-      summary: Get Avatars
-      tags:
-      - Avatar
-  /Avatar/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete Avatar
-      parameters:
-      - description: Avatar ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  type: object
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ResponseError'
-      security:
-      - ApiKeyAuth: []
-      - JWT: []
-      summary: Delete Avatar
-      tags:
-      - Avatar
-    get:
-      consumes:
-      - application/json
-      description: Get Avatar
-      parameters:
-      - description: Avatar ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/usecase.GetAvatarOutputDTO'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ResponseError'
-      security:
-      - JWT: []
-      summary: Get Avatar
-      tags:
-      - Avatar
-    put:
-      consumes:
-      - application/json
-      description: Update Avatar
-      parameters:
-      - description: Avatar ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Avatar
-        in: body
-        name: role
-        required: true
-        schema:
-          $ref: '#/definitions/usecase.UpdateAvatarInputDTO'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  type: object
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ResponseError'
-      security:
-      - JWT: []
-      summary: Update Avatar
-      tags:
-      - Avatar
   /auth/login:
     post:
       consumes:
@@ -486,6 +331,175 @@ paths:
       summary: Get Refresh JWT
       tags:
       - Auth
+  /avatar:
+    get:
+      consumes:
+      - application/json
+      description: Get Avatars
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/usecase.GetAvatarsOutputDTO'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResponseError'
+      security:
+      - JWT: []
+      summary: Get Avatars
+      tags:
+      - Avatar
+    post:
+      consumes:
+      - application/json
+      description: Create Avatar
+      parameters:
+      - description: Avatar
+        in: body
+        name: avatar
+        required: true
+        schema:
+          $ref: '#/definitions/service.RequestCreateAvatarInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResponseError'
+      security:
+      - JWT: []
+      summary: Create Avatar
+      tags:
+      - Avatar
+  /avatar/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Avatar
+      parameters:
+      - description: Avatar ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResponseError'
+      security:
+      - JWT: []
+      summary: Delete Avatar
+      tags:
+      - Avatar
+    get:
+      consumes:
+      - application/json
+      description: Get Avatar
+      parameters:
+      - description: Avatar ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/usecase.GetAvatarOutputDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResponseError'
+      security:
+      - JWT: []
+      summary: Get Avatar
+      tags:
+      - Avatar
+    put:
+      consumes:
+      - application/json
+      description: Update Avatar
+      parameters:
+      - description: Avatar ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Avatar
+        in: body
+        name: avatar
+        required: true
+        schema:
+          $ref: '#/definitions/service.RequestUpdateAvatarInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResponseError'
+      security:
+      - JWT: []
+      summary: Update Avatar
+      tags:
+      - Avatar
   /permission:
     get:
       consumes:
@@ -521,6 +535,38 @@ paths:
       security:
       - JWT: []
       summary: Get Permissions
+      tags:
+      - Permission
+    post:
+      consumes:
+      - application/json
+      description: Create Permission
+      parameters:
+      - description: Permission
+        in: body
+        name: permission
+        required: true
+        schema:
+          $ref: '#/definitions/service.RequestCreatePermissionInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResponseError'
+      security:
+      - JWT: []
+      summary: Create Permission
       tags:
       - Permission
   /permission/{id}:
@@ -599,10 +645,10 @@ paths:
         type: string
       - description: Permission
         in: body
-        name: role
+        name: permission
         required: true
         schema:
-          $ref: '#/definitions/usecase.UpdatePermissionInputDTO'
+          $ref: '#/definitions/service.RequestUpdatePermissionInputDTO'
       produces:
       - application/json
       responses:
@@ -671,7 +717,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/usecase.CreateRoleInputDTO'
+          $ref: '#/definitions/service.RequestCreateRoleInputDTO'
       produces:
       - application/json
       responses:
@@ -699,7 +745,7 @@ paths:
       - application/json
       description: Delete Role
       parameters:
-      - description: User ID
+      - description: Role ID
         in: path
         name: id
         required: true
@@ -721,7 +767,6 @@ paths:
           schema:
             $ref: '#/definitions/response.ResponseError'
       security:
-      - ApiKeyAuth: []
       - JWT: []
       summary: Delete Role
       tags:
@@ -772,7 +817,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/usecase.UpdateRoleInputDTO'
+          $ref: '#/definitions/service.RequestUpdateRoleInputDTO'
       produces:
       - application/json
       responses:
@@ -798,7 +843,7 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Update Role Permission
+      description: Delete Role Permission
       parameters:
       - description: Role ID
         in: path
@@ -864,10 +909,10 @@ paths:
       parameters:
       - description: RolePermission
         in: body
-        name: user
+        name: role_permission
         required: true
         schema:
-          $ref: '#/definitions/usecase.CreateRolePermissionInputDTO'
+          $ref: '#/definitions/service.RequestCreateRolePermissionInputDTO'
       produces:
       - application/json
       responses:
@@ -901,10 +946,10 @@ paths:
         type: string
       - description: RolePermission
         in: body
-        name: user
+        name: role_permission
         required: true
         schema:
-          $ref: '#/definitions/usecase.CreateRolePermissionInputDTO'
+          $ref: '#/definitions/service.RequestUpdateRolePermissionInputDTO'
       produces:
       - application/json
       responses:
@@ -973,7 +1018,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/usecase.CreateUserInputDTO'
+          $ref: '#/definitions/service.RequestCreateUserInputDTO'
       produces:
       - application/json
       responses:
@@ -992,7 +1037,7 @@ paths:
             $ref: '#/definitions/response.ResponseError'
       security:
       - JWT: []
-      summary: Register User
+      summary: Create User
       tags:
       - User
   /user/{id}:
@@ -1023,7 +1068,6 @@ paths:
           schema:
             $ref: '#/definitions/response.ResponseError'
       security:
-      - ApiKeyAuth: []
       - JWT: []
       summary: Delete User
       tags:
@@ -1048,7 +1092,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/usecase.GetUserOutputDTO'
+                  $ref: '#/definitions/service.RequestGetUserInputDTO'
               type: object
         "400":
           description: Bad Request
@@ -1074,7 +1118,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/usecase.UpdateUserInputDTO'
+          $ref: '#/definitions/service.RequestUpdateUserInputDTO'
       produces:
       - application/json
       responses:
@@ -1127,6 +1171,39 @@ paths:
       summary: Forgot Password
       tags:
       - User
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Create User
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/service.RequestCreateUserInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ResponseError'
+      security:
+      - JWT: []
+      summary: Register User
+      tags:
+      - User
   /user/update-password:
     post:
       consumes:
@@ -1135,7 +1212,7 @@ paths:
       parameters:
       - description: User
         in: body
-        name: auth
+        name: user
         required: true
         schema:
           $ref: '#/definitions/service.RequestUpdateUserPasswordInputDTO'

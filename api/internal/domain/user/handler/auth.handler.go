@@ -1,12 +1,12 @@
 package handler
 
 import (
+	"encoding/json"
 	"log/slog"
 	"net/http"
 
 	serviceInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/service"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
-	_ "github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 )
 
@@ -32,7 +32,12 @@ func NewAuthHandler() *AuthHandler {
 // @Failure 400 {object} response.ResponseError{}
 // @Router /auth/login [post]
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
-	output, err := h.service.Login(r.Body)
+	input := service.RequestLoginInputDTO{}
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		slog.Info("err", err)
+		return
+	}
+	output, err := h.service.Login(input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -52,7 +57,12 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} response.ResponseError{}
 // @Router /auth/refresh [post]
 func (h *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	output, err := h.service.RefreshToken(r.Body)
+	input := service.RequestRefreshTokenInputDTO{}
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		slog.Info("err", err)
+		return
+	}
+	output, err := h.service.RefreshToken(input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))

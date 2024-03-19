@@ -1,19 +1,17 @@
 package serviceInterface
 
 import (
-	"io"
-
+	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type UserServiceInterface interface {
-	GetUserById(id int32) (output usecase.GetUserOutputDTO, err error)
-	GetUserByEmail(email string) (output usecase.GetUserByEmailOutputDTO, err error)
-	GetUsers(limit int32, offset int32) (output []usecase.GetUsersOutputDTO, err error)
-	CreateUser(body io.ReadCloser) (output usecase.CreateUserOutputDTO, err error)
-	UpdateUser(id int32, body io.ReadCloser) (output usecase.UpdateUserOutputDTO, err error)
-	UpdateUserPassword(body io.ReadCloser) (err error)
-	DeleteUser(id int32) (output usecase.DeleteUserOutputDTO, err error)
-	VerifyUser(body io.ReadCloser) (err error)
-	ForgotPassword(body io.ReadCloser) (err error)
+	CreateUser(input service.RequestCreateUserInputDTO) (output usecase.CreateUserOutputDTO, err error)
+	GetUser(input service.RequestGetUserInputDTO) (output usecase.GetUserOutputDTO, err error)
+	GetUsers(input service.RequestGetUsersInputDTO) (output []usecase.GetUsersOutputDTO, err error)
+	UpdateUser(input service.RequestUpdateUserInputDTO) (output usecase.UpdateUserOutputDTO, err error)
+	DeleteUser(input service.RequestDeleteUserInputDTO) (output usecase.DeleteUserOutputDTO, err error)
+	UpdateUserPassword(input service.RequestUpdateUserPasswordInputDTO) (err error)
+	ForgotPassword(input service.RequestForgotPasswordInputDTO) (err error)
+	VerifyUser(input service.RequestVerifyUserInputDTO) (err error)
 }

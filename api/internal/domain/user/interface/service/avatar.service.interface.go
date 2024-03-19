@@ -1,15 +1,14 @@
 package serviceInterface
 
 import (
-	"io"
-
+	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type AvatarServiceInterface interface {
-	GetAvatar(id int32) (output usecase.GetAvatarOutputDTO, err error)
-	GetAvatars(limit int32, offset int32) (output []usecase.GetAvatarsOutputDTO, err error)
-	CreateAvatar(body io.ReadCloser) (output usecase.CreateAvatarOutputDTO, err error)
-	UpdateAvatar(id int32, body io.ReadCloser) (output usecase.UpdateAvatarOutputDTO, err error)
-	DeleteAvatar(id int32) (output usecase.DeleteAvatarOutputDTO, err error)
+	GetAvatar(input service.RequestGetAvatarInputDTO) (output usecase.GetAvatarOutputDTO, err error)
+	GetAvatars(input service.RequestGetAvatarsInputDTO) (output []usecase.GetAvatarsOutputDTO, err error)
+	CreateAvatar(input service.RequestCreateAvatarInputDTO) (output usecase.CreateAvatarOutputDTO, err error)
+	UpdateAvatar(input service.RequestUpdateAvatarInputDTO) (output usecase.UpdateAvatarOutputDTO, err error)
+	DeleteAvatar(input service.RequestDeleteAvatarInputDTO) (output usecase.DeleteAvatarOutputDTO, err error)
 }

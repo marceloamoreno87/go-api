@@ -1,8 +1,6 @@
 package service
 
 import (
-	"encoding/json"
-	"io"
 	"log/slog"
 
 	"github.com/marceloamoreno/goapi/internal/domain/user/event"
@@ -10,9 +8,42 @@ import (
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
+type RequestVerifyUserInputDTO struct {
+	Hash string `json:"hash"`
+}
+
 type RequestUpdateUserPasswordInputDTO struct {
 	Hash     string `json:"hash"`
 	Password string `json:"password"`
+}
+
+type RequestForgotPasswordInputDTO struct {
+	Email string `json:"email"`
+}
+
+type RequestCreateUserInputDTO struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type RequestUpdateUserInputDTO struct {
+	ID    int32  `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+type RequestDeleteUserInputDTO struct {
+	ID int32 `json:"id"`
+}
+
+type RequestGetUserInputDTO struct {
+	ID int32 `json:"id"`
+}
+
+type RequestGetUsersInputDTO struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
 }
 
 type UserService struct {
@@ -45,14 +76,12 @@ func NewUserService() *UserService {
 	}
 }
 
-func (s *UserService) CreateUser(body io.ReadCloser) (output usecase.CreateUserOutputDTO, err error) {
-	input := usecase.CreateUserInputDTO{}
-	if err = json.NewDecoder(body).Decode(&input); err != nil {
-		slog.Info("err", err)
-		return
-	}
-
-	output, err = s.CreateUserUseCase.Execute(input)
+func (s *UserService) CreateUser(input RequestCreateUserInputDTO) (output usecase.CreateUserOutputDTO, err error) {
+	output, err = s.CreateUserUseCase.Execute(usecase.CreateUserInputDTO{
+		Name:     input.Name,
+		Email:    input.Email,
+		Password: input.Password,
+	})
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -78,12 +107,8 @@ func (s *UserService) CreateUser(body io.ReadCloser) (output usecase.CreateUserO
 	return
 }
 
-func (s *UserService) GetUserById(id int32) (output usecase.GetUserOutputDTO, err error) {
-	input := usecase.GetUserInputDTO{
-		ID: id,
-	}
-
-	output, err = s.GetUserUseCase.Execute(input)
+func (s *UserService) GetUser(input RequestGetUserInputDTO) (output usecase.GetUserOutputDTO, err error) {
+	output, err = s.GetUserUseCase.Execute(usecase.GetUserInputDTO{ID: input.ID})
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -92,26 +117,11 @@ func (s *UserService) GetUserById(id int32) (output usecase.GetUserOutputDTO, er
 	return
 }
 
-func (s *UserService) GetUserByEmail(email string) (output usecase.GetUserByEmailOutputDTO, err error) {
-	input := usecase.GetUserByEmailInputDTO{
-		Email: email,
-	}
-	output, err = s.GetUserByEmailUseCase.Execute(input)
-	if err != nil {
-		slog.Info("err", err)
-		return
-	}
-	slog.Info("User found")
-	return
-}
-
-func (s *UserService) GetUsers(limit int32, offset int32) (output []usecase.GetUsersOutputDTO, err error) {
-	input := usecase.GetUsersInputDTO{
-		Limit:  limit,
-		Offset: offset,
-	}
-
-	output, err = s.GetUsersUseCase.Execute(input)
+func (s *UserService) GetUsers(input RequestGetUsersInputDTO) (output []usecase.GetUsersOutputDTO, err error) {
+	output, err = s.GetUsersUseCase.Execute(usecase.GetUsersInputDTO{
+		Limit:  input.Limit,
+		Offset: input.Offset,
+	})
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -120,15 +130,11 @@ func (s *UserService) GetUsers(limit int32, offset int32) (output []usecase.GetU
 	return
 }
 
-func (s *UserService) UpdateUser(id int32, body io.ReadCloser) (output usecase.UpdateUserOutputDTO, err error) {
-	input := usecase.UpdateUserInputDTO{
-		ID: id,
-	}
-	if err = json.NewDecoder(body).Decode(&input); err != nil {
-		slog.Info("err", err)
-		return
-	}
-	output, err = s.UpdateUserUseCase.Execute(input)
+func (s *UserService) UpdateUser(input RequestUpdateUserInputDTO) (output usecase.UpdateUserOutputDTO, err error) {
+	output, err = s.UpdateUserUseCase.Execute(usecase.UpdateUserInputDTO{
+		Name:  input.Name,
+		Email: input.Email,
+	})
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -137,15 +143,7 @@ func (s *UserService) UpdateUser(id int32, body io.ReadCloser) (output usecase.U
 	return
 }
 
-func (s *UserService) UpdateUserPassword(body io.ReadCloser) (err error) {
-
-	input := RequestUpdateUserPasswordInputDTO{}
-
-	if err = json.NewDecoder(body).Decode(&input); err != nil {
-		slog.Info("err", err)
-		return
-	}
-
+func (s *UserService) UpdateUserPassword(input RequestUpdateUserPasswordInputDTO) (err error) {
 	userValidation, err := s.GetUserValidationByHashUseCase.Execute(usecase.GetUserValidationByHashInputDTO{
 		Hash: input.Hash,
 	})
@@ -188,12 +186,8 @@ func (s *UserService) UpdateUserPassword(body io.ReadCloser) (err error) {
 	return
 }
 
-func (s *UserService) DeleteUser(id int32) (output usecase.DeleteUserOutputDTO, err error) {
-	input := usecase.DeleteUserInputDTO{
-		ID: id,
-	}
-
-	output, err = s.DeleteUserUseCase.Execute(input)
+func (s *UserService) DeleteUser(input RequestDeleteUserInputDTO) (output usecase.DeleteUserOutputDTO, err error) {
+	output, err = s.DeleteUserUseCase.Execute(usecase.DeleteUserInputDTO{ID: input.ID})
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -202,14 +196,7 @@ func (s *UserService) DeleteUser(id int32) (output usecase.DeleteUserOutputDTO, 
 	return
 }
 
-func (s *UserService) VerifyUser(body io.ReadCloser) (err error) {
-	input := RequestVerifyUserInputDTO{}
-
-	if err = json.NewDecoder(body).Decode(&input); err != nil {
-		slog.Info("err", err)
-		return
-	}
-
+func (s *UserService) VerifyUser(input RequestVerifyUserInputDTO) (err error) {
 	userValidation, err := s.GetUserValidationByHashUseCase.Execute(usecase.GetUserValidationByHashInputDTO{
 		Hash: input.Hash,
 	})
@@ -255,12 +242,7 @@ func (s *UserService) VerifyUser(body io.ReadCloser) (err error) {
 	return
 }
 
-func (s *UserService) ForgotPassword(body io.ReadCloser) (err error) {
-	input := RequestForgotPasswordInputDTO{}
-	if err = json.NewDecoder(body).Decode(&input); err != nil {
-		slog.Info("err", err)
-		return
-	}
+func (s *UserService) ForgotPassword(input RequestForgotPasswordInputDTO) (err error) {
 	user, err := s.GetUserByEmailUseCase.Execute(usecase.GetUserByEmailInputDTO{Email: input.Email})
 	if err != nil {
 		slog.Info("err", err)
