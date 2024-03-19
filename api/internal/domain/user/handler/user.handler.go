@@ -256,13 +256,13 @@ func (h *UserHandler) VerifyUser(w http.ResponseWriter, r *http.Request) {
 // RegisterUser godoc
 // @Summary Register User
 // @Description Create User
-// @Tags Auth
+// @Tags User
 // @Accept  json
 // @Produce  json
 // @Param user body request.RequestCreateUserInputDTO true "User"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
-// @Router /auth/register [post]
+// @Router /user/register [post]
 // @Security     JWT
 func (h *UserHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	input := request.RequestCreateUserInputDTO{}
