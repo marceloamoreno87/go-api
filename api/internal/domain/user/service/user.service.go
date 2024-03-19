@@ -201,7 +201,6 @@ func (s *UserService) VerifyUser(input request.RequestVerifyUserInputDTO) (err e
 		}).Send()
 
 	slog.Info("User verified")
-
 	return
 }
 
