@@ -262,7 +262,7 @@ func (h *UserHandler) VerifyUser(w http.ResponseWriter, r *http.Request) {
 // @Param user body request.RequestCreateUserInputDTO true "User"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
-// @Router /user/register [post]
+// @Router /auth/register [post]
 // @Security     JWT
 func (h *UserHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	input := request.RequestCreateUserInputDTO{}
