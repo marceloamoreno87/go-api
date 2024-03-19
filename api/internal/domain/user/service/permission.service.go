@@ -5,34 +5,9 @@ import (
 	"log/slog"
 
 	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
+	"github.com/marceloamoreno/goapi/internal/domain/user/request"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
-
-type RequestGetPermissionInputDTO struct {
-	ID int32 `json:"id"`
-}
-
-type RequestGetPermissionsInputDTO struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
-}
-
-type RequestCreatePermissionInputDTO struct {
-	Name         string `json:"name"`
-	InternalName string `json:"internal_name"`
-	Description  string `json:"description"`
-}
-
-type RequestUpdatePermissionInputDTO struct {
-	ID           int32  `json:"id"`
-	Name         string `json:"name"`
-	InternalName string `json:"internal_name"`
-	Description  string `json:"description"`
-}
-
-type RequestDeletePermissionInputDTO struct {
-	ID int32 `json:"id"`
-}
 
 type PermissionService struct {
 	NewGetPermissionUseCase               usecaseInterface.GetPermissionUseCaseInterface
@@ -54,7 +29,7 @@ func NewPermissionService() *PermissionService {
 	}
 }
 
-func (s *PermissionService) GetPermission(input RequestGetPermissionInputDTO) (output usecase.GetPermissionOutputDTO, err error) {
+func (s *PermissionService) GetPermission(input request.RequestGetPermissionInputDTO) (output usecase.GetPermissionOutputDTO, err error) {
 	output, err = s.NewGetPermissionUseCase.Execute(usecase.GetPermissionInputDTO{ID: input.ID})
 	if err != nil {
 		slog.Info("err", err)
@@ -64,7 +39,7 @@ func (s *PermissionService) GetPermission(input RequestGetPermissionInputDTO) (o
 	return
 }
 
-func (s *PermissionService) GetPermissions(input RequestGetPermissionsInputDTO) (output []usecase.GetPermissionsOutputDTO, err error) {
+func (s *PermissionService) GetPermissions(input request.RequestGetPermissionsInputDTO) (output []usecase.GetPermissionsOutputDTO, err error) {
 	output, err = s.NewGetPermissionsUseCase.Execute(usecase.GetPermissionsInputDTO{Limit: input.Limit, Offset: input.Offset})
 	if err != nil {
 		slog.Info("err", err)
@@ -74,7 +49,7 @@ func (s *PermissionService) GetPermissions(input RequestGetPermissionsInputDTO) 
 	return
 }
 
-func (s *PermissionService) CreatePermission(input RequestCreatePermissionInputDTO) (output usecase.CreatePermissionOutputDTO, err error) {
+func (s *PermissionService) CreatePermission(input request.RequestCreatePermissionInputDTO) (output usecase.CreatePermissionOutputDTO, err error) {
 	check, _ := s.NewGetPermissionByInternalNameUseCase.Execute(usecase.GetPermissionByInternalNameInputDTO{
 		InternalName: input.InternalName,
 	})
@@ -97,7 +72,7 @@ func (s *PermissionService) CreatePermission(input RequestCreatePermissionInputD
 	return
 }
 
-func (s *PermissionService) UpdatePermission(input RequestUpdatePermissionInputDTO) (output usecase.UpdatePermissionOutputDTO, err error) {
+func (s *PermissionService) UpdatePermission(input request.RequestUpdatePermissionInputDTO) (output usecase.UpdatePermissionOutputDTO, err error) {
 	output, err = s.NewUpdatePermissionUseCase.Execute(usecase.UpdatePermissionInputDTO{
 		ID:           input.ID,
 		Name:         input.Name,
@@ -112,7 +87,7 @@ func (s *PermissionService) UpdatePermission(input RequestUpdatePermissionInputD
 	return
 }
 
-func (s *PermissionService) DeletePermission(input RequestDeletePermissionInputDTO) (output usecase.DeletePermissionOutputDTO, err error) {
+func (s *PermissionService) DeletePermission(input request.RequestDeletePermissionInputDTO) (output usecase.DeletePermissionOutputDTO, err error) {
 	output, err = s.NewDeletePermissionUseCase.Execute(usecase.DeletePermissionInputDTO{ID: input.ID})
 	if err != nil {
 		slog.Info("err", err)

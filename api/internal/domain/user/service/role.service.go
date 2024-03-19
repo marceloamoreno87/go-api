@@ -5,34 +5,9 @@ import (
 	"log/slog"
 
 	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
+	"github.com/marceloamoreno/goapi/internal/domain/user/request"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
-
-type RequestCreateRoleInputDTO struct {
-	Name         string `json:"name"`
-	InternalName string `json:"internal_name"`
-	Description  string `json:"description"`
-}
-
-type RequestGetRoleInputDTO struct {
-	ID int32 `json:"id"`
-}
-
-type RequestGetRolesInputDTO struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
-}
-
-type RequestUpdateRoleInputDTO struct {
-	ID           int32  `json:"id"`
-	Name         string `json:"name"`
-	InternalName string `json:"internal_name"`
-	Description  string `json:"description"`
-}
-
-type RequestDeleteRoleInputDTO struct {
-	ID int32 `json:"id"`
-}
 
 type RoleService struct {
 	NewGetRoleUseCase               usecaseInterface.GetRoleUseCaseInterface
@@ -54,7 +29,7 @@ func NewRoleService() *RoleService {
 	}
 }
 
-func (s *RoleService) GetRole(input RequestGetRoleInputDTO) (output usecase.GetRoleOutputDTO, err error) {
+func (s *RoleService) GetRole(input request.RequestGetRoleInputDTO) (output usecase.GetRoleOutputDTO, err error) {
 	output, err = s.NewGetRoleUseCase.Execute(usecase.GetRoleInputDTO{ID: input.ID})
 	if err != nil {
 		slog.Info("err", err)
@@ -64,7 +39,7 @@ func (s *RoleService) GetRole(input RequestGetRoleInputDTO) (output usecase.GetR
 	return
 }
 
-func (s *RoleService) GetRoles(input RequestGetRolesInputDTO) (output []usecase.GetRolesOutputDTO, err error) {
+func (s *RoleService) GetRoles(input request.RequestGetRolesInputDTO) (output []usecase.GetRolesOutputDTO, err error) {
 	output, err = s.NewGetRolesUseCase.Execute(usecase.GetRolesInputDTO{Limit: input.Limit, Offset: input.Offset})
 	if err != nil {
 		slog.Info("err", err)
@@ -74,7 +49,7 @@ func (s *RoleService) GetRoles(input RequestGetRolesInputDTO) (output []usecase.
 	return
 }
 
-func (s *RoleService) CreateRole(input RequestCreateRoleInputDTO) (output usecase.CreateRoleOutputDTO, err error) {
+func (s *RoleService) CreateRole(input request.RequestCreateRoleInputDTO) (output usecase.CreateRoleOutputDTO, err error) {
 	check, _ := s.NewGetRoleByInternalNameUseCase.Execute(usecase.GetRoleByInternalNameInputDTO{InternalName: input.InternalName})
 	if check.ID != 0 {
 		slog.Info("role already exists")
@@ -93,7 +68,7 @@ func (s *RoleService) CreateRole(input RequestCreateRoleInputDTO) (output usecas
 	return
 }
 
-func (s *RoleService) UpdateRole(input RequestUpdateRoleInputDTO) (output usecase.UpdateRoleOutputDTO, err error) {
+func (s *RoleService) UpdateRole(input request.RequestUpdateRoleInputDTO) (output usecase.UpdateRoleOutputDTO, err error) {
 	output, err = s.NewUpdateRoleUseCase.Execute(usecase.UpdateRoleInputDTO{
 		ID:           input.ID,
 		Name:         input.Name,
@@ -108,7 +83,7 @@ func (s *RoleService) UpdateRole(input RequestUpdateRoleInputDTO) (output usecas
 	return
 }
 
-func (s *RoleService) DeleteRole(input RequestDeleteRoleInputDTO) (output usecase.DeleteRoleOutputDTO, err error) {
+func (s *RoleService) DeleteRole(input request.RequestDeleteRoleInputDTO) (output usecase.DeleteRoleOutputDTO, err error) {
 	output, err = s.NewDeleteRoleUseCase.Execute(usecase.DeleteRoleInputDTO{ID: input.ID})
 	if err != nil {
 		slog.Info("err", err)

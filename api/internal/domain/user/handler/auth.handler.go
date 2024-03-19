@@ -6,8 +6,10 @@ import (
 	"net/http"
 
 	serviceInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/service"
+	"github.com/marceloamoreno/goapi/internal/domain/user/request"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
+	"github.com/marceloamoreno/goapi/internal/shared/validate"
 )
 
 type AuthHandler struct {
@@ -27,14 +29,20 @@ func NewAuthHandler() *AuthHandler {
 // @Tags Auth
 // @Accept  json
 // @Produce  json
-// @Param auth body service.RequestLoginInputDTO true "User"
+// @Param auth body request.RequestLoginInputDTO true "User"
 // @Success 200 {object} response.Response{data=usecase.CreateAuthOutputDTO}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /auth/login [post]
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
-	input := service.RequestLoginInputDTO{}
+	input := request.RequestLoginInputDTO{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
+		return
+	}
+	err := validate.NewValidator(input).Validate()
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 	output, err := h.service.Login(input)
@@ -52,14 +60,21 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 // @Tags Auth
 // @Accept  json
 // @Produce  json
-// @Param auth body service.RequestRefreshTokenInputDTO true "User"
+// @Param auth body request.RequestRefreshTokenInputDTO true "User"
 // @Success 200 {object} response.Response{data=usecase.CreateAuthOutputDTO}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /auth/refresh [post]
 func (h *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	input := service.RequestRefreshTokenInputDTO{}
+	input := request.RequestRefreshTokenInputDTO{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
+	}
+	err := validate.NewValidator(input).Validate()
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 	output, err := h.service.RefreshToken(input)

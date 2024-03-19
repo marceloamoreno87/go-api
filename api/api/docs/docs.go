@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.RequestLoginInputDTO"
+                            "$ref": "#/definitions/request.RequestLoginInputDTO"
                         }
                     }
                 ],
@@ -87,7 +87,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.RequestRefreshTokenInputDTO"
+                            "$ref": "#/definitions/request.RequestRefreshTokenInputDTO"
                         }
                     }
                 ],
@@ -205,7 +205,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.RequestCreateAvatarInputDTO"
+                            "$ref": "#/definitions/request.RequestCreateAvatarInputDTO"
                         }
                     }
                 ],
@@ -322,7 +322,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.RequestUpdateAvatarInputDTO"
+                            "$ref": "#/definitions/request.RequestUpdateAvatarInputDTO"
                         }
                     }
                 ],
@@ -493,7 +493,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.RequestCreatePermissionInputDTO"
+                            "$ref": "#/definitions/request.RequestCreatePermissionInputDTO"
                         }
                     }
                 ],
@@ -610,7 +610,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.RequestUpdatePermissionInputDTO"
+                            "$ref": "#/definitions/request.RequestUpdatePermissionInputDTO"
                         }
                     }
                 ],
@@ -784,7 +784,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.RequestCreateRoleInputDTO"
+                            "$ref": "#/definitions/request.RequestCreateRoleInputDTO"
                         }
                     }
                 ],
@@ -901,7 +901,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.RequestUpdateRoleInputDTO"
+                            "$ref": "#/definitions/request.RequestUpdateRoleInputDTO"
                         }
                     }
                 ],
@@ -1071,7 +1071,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.RequestUpdateRolePermissionInputDTO"
+                            "$ref": "#/definitions/request.RequestUpdateRolePermissionInputDTO"
                         }
                     }
                 ],
@@ -1126,7 +1126,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.RequestCreateRolePermissionInputDTO"
+                            "$ref": "#/definitions/request.RequestCreateRolePermissionInputDTO"
                         }
                     }
                 ],
@@ -1297,7 +1297,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.RequestCreateUserInputDTO"
+                            "$ref": "#/definitions/request.RequestCreateUserInputDTO"
                         }
                     }
                 ],
@@ -1349,7 +1349,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.RequestForgotPasswordInputDTO"
+                            "$ref": "#/definitions/request.RequestForgotPasswordInputDTO"
                         }
                     }
                 ],
@@ -1406,7 +1406,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.RequestCreateUserInputDTO"
+                            "$ref": "#/definitions/request.RequestCreateUserInputDTO"
                         }
                     }
                 ],
@@ -1458,7 +1458,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.RequestUpdateUserPasswordInputDTO"
+                            "$ref": "#/definitions/request.RequestUpdateUserPasswordInputDTO"
                         }
                     }
                 ],
@@ -1510,7 +1510,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.RequestVerifyUserInputDTO"
+                            "$ref": "#/definitions/request.RequestVerifyUserInputDTO"
                         }
                     }
                 ],
@@ -1581,7 +1581,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/service.RequestGetUserInputDTO"
+                                            "$ref": "#/definitions/request.RequestGetUserInputDTO"
                                         }
                                     }
                                 }
@@ -1627,7 +1627,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.RequestUpdateUserInputDTO"
+                            "$ref": "#/definitions/request.RequestUpdateUserInputDTO"
                         }
                     }
                 ],
@@ -1714,6 +1714,268 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "request.RequestCreateAvatarInputDTO": {
+            "type": "object",
+            "required": [
+                "svg"
+            ],
+            "properties": {
+                "svg": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.RequestCreatePermissionInputDTO": {
+            "type": "object",
+            "required": [
+                "description",
+                "internal_name",
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.RequestCreateRoleInputDTO": {
+            "type": "object",
+            "required": [
+                "description",
+                "internal_name",
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.RequestCreateRolePermissionInputDTO": {
+            "type": "object",
+            "required": [
+                "permission_ids",
+                "role_id"
+            ],
+            "properties": {
+                "permission_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request.RequestCreateUserInputDTO": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.RequestForgotPasswordInputDTO": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.RequestGetUserInputDTO": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request.RequestLoginInputDTO": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.RequestRefreshTokenInputDTO": {
+            "type": "object",
+            "required": [
+                "refresh_token",
+                "user_id"
+            ],
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request.RequestUpdateAvatarInputDTO": {
+            "type": "object",
+            "required": [
+                "id",
+                "svg"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "svg": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.RequestUpdatePermissionInputDTO": {
+            "type": "object",
+            "required": [
+                "description",
+                "id",
+                "internal_name",
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.RequestUpdateRoleInputDTO": {
+            "type": "object",
+            "required": [
+                "description",
+                "id",
+                "internal_name",
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.RequestUpdateRolePermissionInputDTO": {
+            "type": "object",
+            "required": [
+                "permission_ids",
+                "role_id"
+            ],
+            "properties": {
+                "permission_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request.RequestUpdateUserInputDTO": {
+            "type": "object",
+            "required": [
+                "email",
+                "id",
+                "name"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.RequestUpdateUserPasswordInputDTO": {
+            "type": "object",
+            "required": [
+                "hash",
+                "password"
+            ],
+            "properties": {
+                "hash": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.RequestVerifyUserInputDTO": {
+            "type": "object",
+            "required": [
+                "hash"
+            ],
+            "properties": {
+                "hash": {
+                    "type": "string"
+                }
+            }
+        },
         "response.Response": {
             "type": "object",
             "properties": {
@@ -1724,200 +1986,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "err": {
-                    "type": "string"
-                }
-            }
-        },
-        "service.RequestCreateAvatarInputDTO": {
-            "type": "object",
-            "properties": {
-                "svg": {
-                    "type": "string"
-                }
-            }
-        },
-        "service.RequestCreatePermissionInputDTO": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "internal_name": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "service.RequestCreateRoleInputDTO": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "internal_name": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "service.RequestCreateRolePermissionInputDTO": {
-            "type": "object",
-            "properties": {
-                "permission_ids": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "role_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "service.RequestCreateUserInputDTO": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "service.RequestForgotPasswordInputDTO": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                }
-            }
-        },
-        "service.RequestGetUserInputDTO": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "service.RequestLoginInputDTO": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "service.RequestRefreshTokenInputDTO": {
-            "type": "object",
-            "properties": {
-                "refresh_token": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "service.RequestUpdateAvatarInputDTO": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "svg": {
-                    "type": "string"
-                }
-            }
-        },
-        "service.RequestUpdatePermissionInputDTO": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "internal_name": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "service.RequestUpdateRoleInputDTO": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "internal_name": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "service.RequestUpdateRolePermissionInputDTO": {
-            "type": "object",
-            "properties": {
-                "permission_ids": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "role_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "service.RequestUpdateUserInputDTO": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "service.RequestUpdateUserPasswordInputDTO": {
-            "type": "object",
-            "properties": {
-                "hash": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "service.RequestVerifyUserInputDTO": {
-            "type": "object",
-            "properties": {
-                "hash": {
                     "type": "string"
                 }
             }

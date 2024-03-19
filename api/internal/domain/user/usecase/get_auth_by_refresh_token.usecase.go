@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"errors"
+
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -42,13 +44,12 @@ func (uc *GetAuthByRefreshTokenUseCase) Execute(input GetAuthByRefreshTokenInput
 	}
 	a.SetToken(auth.GetToken())
 
-	_, err = a.IsValidToken()
-	if err != nil {
-		return
+	if valid, _ := a.IsValidToken(); valid {
+		return output, errors.New("token is valid")
 	}
-	_, err = a.IsValidRefreshToken()
-	if err != nil {
-		return
+
+	if valid, _ := a.IsValidRefreshToken(); !valid {
+		return output, errors.New("invalid refresh token")
 	}
 
 	output = GetAuthByRefreshTokenOutputDTO{

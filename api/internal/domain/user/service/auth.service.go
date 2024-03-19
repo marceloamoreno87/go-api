@@ -4,18 +4,9 @@ import (
 	"log/slog"
 
 	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
+	"github.com/marceloamoreno/goapi/internal/domain/user/request"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
-
-type RequestLoginInputDTO struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-type RequestRefreshTokenInputDTO struct {
-	UserID       int32  `json:"user_id"`
-	RefreshToken string `json:"refresh_token"`
-}
 
 type AuthService struct {
 	GetUserUseCase                 usecaseInterface.GetUserUseCaseInterface
@@ -53,7 +44,7 @@ func NewAuthService() *AuthService {
 	}
 }
 
-func (s *AuthService) Login(input RequestLoginInputDTO) (output usecase.CreateAuthOutputDTO, err error) {
+func (s *AuthService) Login(input request.RequestLoginInputDTO) (output usecase.CreateAuthOutputDTO, err error) {
 	user, err := s.GetUserByEmailUseCase.Execute(usecase.GetUserByEmailInputDTO{Email: input.Email})
 	if err != nil {
 		slog.Info("err", err)
@@ -115,7 +106,7 @@ func (s *AuthService) Login(input RequestLoginInputDTO) (output usecase.CreateAu
 	return
 }
 
-func (s *AuthService) RefreshToken(input RequestRefreshTokenInputDTO) (output usecase.CreateAuthOutputDTO, err error) {
+func (s *AuthService) RefreshToken(input request.RequestRefreshTokenInputDTO) (output usecase.CreateAuthOutputDTO, err error) {
 	rt, err := s.GetAuthByRefreshTokenUseCase.Execute(usecase.GetAuthByRefreshTokenInputDTO{
 		UserID:       input.UserID,
 		RefreshToken: input.RefreshToken,

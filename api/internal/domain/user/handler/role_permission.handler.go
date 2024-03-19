@@ -6,9 +6,11 @@ import (
 	"net/http"
 
 	serviceInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/service"
+	"github.com/marceloamoreno/goapi/internal/domain/user/request"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	"github.com/marceloamoreno/goapi/internal/shared/helper"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
+	"github.com/marceloamoreno/goapi/internal/shared/validate"
 )
 
 type RolePermissionHandler struct {
@@ -34,8 +36,14 @@ func NewRolePermissionHandler() *RolePermissionHandler {
 // @Router /role/{id}/permission [get]
 // @Security     JWT
 func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *http.Request) {
-	input := service.RequestGetRolePermissionInputDTO{
+	input := request.RequestGetRolePermissionInputDTO{
 		RoleID: helper.GetID(r),
+	}
+	err := validate.NewValidator(input).Validate()
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
 	}
 	output, err := h.service.GetRolePermissions(input)
 	if err != nil {
@@ -53,17 +61,23 @@ func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *htt
 // @Tags RolePermission
 // @Accept  json
 // @Produce  json
-// @Param role_permission body service.RequestCreateRolePermissionInputDTO true "RolePermission"
+// @Param role_permission body request.RequestCreateRolePermissionInputDTO true "RolePermission"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /role/{id}/permission [post]
 // @Security     JWT
 func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *http.Request) {
-	input := service.RequestCreateRolePermissionInputDTO{
+	input := request.RequestCreateRolePermissionInputDTO{
 		RoleID: helper.GetID(r),
 	}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
+		return
+	}
+	err := validate.NewValidator(input).Validate()
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 	output, err := h.service.CreateRolePermission(input)
@@ -84,17 +98,23 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Role ID"
-// @Param role_permission body service.RequestUpdateRolePermissionInputDTO true "RolePermission"
+// @Param role_permission body request.RequestUpdateRolePermissionInputDTO true "RolePermission"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /role/{id}/permission [put]
 // @Security     JWT
 func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *http.Request) {
-	input := service.RequestUpdateRolePermissionInputDTO{
+	input := request.RequestUpdateRolePermissionInputDTO{
 		RoleID: helper.GetID(r),
 	}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
+		return
+	}
+	err := validate.NewValidator(input).Validate()
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 	output, err := h.service.UpdateRolePermission(input)
@@ -118,8 +138,14 @@ func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *h
 // @Router /role/{id}/permission [delete]
 // @Security     JWT
 func (h *RolePermissionHandler) DeleteRolePermissionByRoleID(w http.ResponseWriter, r *http.Request) {
-	input := service.RequestDeleteRolePermissionByRoleIDInputDTO{
+	input := request.RequestDeleteRolePermissionByRoleIDInputDTO{
 		RoleID: helper.GetID(r),
+	}
+	err := validate.NewValidator(input).Validate()
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
 	}
 	output, err := h.service.DeleteRolePermissionByRoleID(input)
 	if err != nil {

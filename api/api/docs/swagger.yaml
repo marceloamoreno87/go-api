@@ -1,5 +1,181 @@
 basePath: /api/v1
 definitions:
+  request.RequestCreateAvatarInputDTO:
+    properties:
+      svg:
+        type: string
+    required:
+    - svg
+    type: object
+  request.RequestCreatePermissionInputDTO:
+    properties:
+      description:
+        type: string
+      internal_name:
+        type: string
+      name:
+        type: string
+    required:
+    - description
+    - internal_name
+    - name
+    type: object
+  request.RequestCreateRoleInputDTO:
+    properties:
+      description:
+        type: string
+      internal_name:
+        type: string
+      name:
+        type: string
+    required:
+    - description
+    - internal_name
+    - name
+    type: object
+  request.RequestCreateRolePermissionInputDTO:
+    properties:
+      permission_ids:
+        items:
+          type: integer
+        type: array
+      role_id:
+        type: integer
+    required:
+    - permission_ids
+    - role_id
+    type: object
+  request.RequestCreateUserInputDTO:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  request.RequestForgotPasswordInputDTO:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  request.RequestGetUserInputDTO:
+    properties:
+      id:
+        type: integer
+    required:
+    - id
+    type: object
+  request.RequestLoginInputDTO:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  request.RequestRefreshTokenInputDTO:
+    properties:
+      refresh_token:
+        type: string
+      user_id:
+        type: integer
+    required:
+    - refresh_token
+    - user_id
+    type: object
+  request.RequestUpdateAvatarInputDTO:
+    properties:
+      id:
+        type: integer
+      svg:
+        type: string
+    required:
+    - id
+    - svg
+    type: object
+  request.RequestUpdatePermissionInputDTO:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+    required:
+    - description
+    - id
+    - internal_name
+    - name
+    type: object
+  request.RequestUpdateRoleInputDTO:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+    required:
+    - description
+    - id
+    - internal_name
+    - name
+    type: object
+  request.RequestUpdateRolePermissionInputDTO:
+    properties:
+      permission_ids:
+        items:
+          type: integer
+        type: array
+      role_id:
+        type: integer
+    required:
+    - permission_ids
+    - role_id
+    type: object
+  request.RequestUpdateUserInputDTO:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - email
+    - id
+    - name
+    type: object
+  request.RequestUpdateUserPasswordInputDTO:
+    properties:
+      hash:
+        type: string
+      password:
+        type: string
+    required:
+    - hash
+    - password
+    type: object
+  request.RequestVerifyUserInputDTO:
+    properties:
+      hash:
+        type: string
+    required:
+    - hash
+    type: object
   response.Response:
     properties:
       data: {}
@@ -7,130 +183,6 @@ definitions:
   response.ResponseError:
     properties:
       err:
-        type: string
-    type: object
-  service.RequestCreateAvatarInputDTO:
-    properties:
-      svg:
-        type: string
-    type: object
-  service.RequestCreatePermissionInputDTO:
-    properties:
-      description:
-        type: string
-      internal_name:
-        type: string
-      name:
-        type: string
-    type: object
-  service.RequestCreateRoleInputDTO:
-    properties:
-      description:
-        type: string
-      internal_name:
-        type: string
-      name:
-        type: string
-    type: object
-  service.RequestCreateRolePermissionInputDTO:
-    properties:
-      permission_ids:
-        items:
-          type: integer
-        type: array
-      role_id:
-        type: integer
-    type: object
-  service.RequestCreateUserInputDTO:
-    properties:
-      email:
-        type: string
-      name:
-        type: string
-      password:
-        type: string
-    type: object
-  service.RequestForgotPasswordInputDTO:
-    properties:
-      email:
-        type: string
-    type: object
-  service.RequestGetUserInputDTO:
-    properties:
-      id:
-        type: integer
-    type: object
-  service.RequestLoginInputDTO:
-    properties:
-      email:
-        type: string
-      password:
-        type: string
-    type: object
-  service.RequestRefreshTokenInputDTO:
-    properties:
-      refresh_token:
-        type: string
-      user_id:
-        type: integer
-    type: object
-  service.RequestUpdateAvatarInputDTO:
-    properties:
-      id:
-        type: integer
-      svg:
-        type: string
-    type: object
-  service.RequestUpdatePermissionInputDTO:
-    properties:
-      description:
-        type: string
-      id:
-        type: integer
-      internal_name:
-        type: string
-      name:
-        type: string
-    type: object
-  service.RequestUpdateRoleInputDTO:
-    properties:
-      description:
-        type: string
-      id:
-        type: integer
-      internal_name:
-        type: string
-      name:
-        type: string
-    type: object
-  service.RequestUpdateRolePermissionInputDTO:
-    properties:
-      permission_ids:
-        items:
-          type: integer
-        type: array
-      role_id:
-        type: integer
-    type: object
-  service.RequestUpdateUserInputDTO:
-    properties:
-      email:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-    type: object
-  service.RequestUpdateUserPasswordInputDTO:
-    properties:
-      hash:
-        type: string
-      password:
-        type: string
-    type: object
-  service.RequestVerifyUserInputDTO:
-    properties:
-      hash:
         type: string
     type: object
   usecase.CreateAuthOutputDTO:
@@ -280,7 +332,7 @@ paths:
         name: auth
         required: true
         schema:
-          $ref: '#/definitions/service.RequestLoginInputDTO'
+          $ref: '#/definitions/request.RequestLoginInputDTO'
       produces:
       - application/json
       responses:
@@ -311,7 +363,7 @@ paths:
         name: auth
         required: true
         schema:
-          $ref: '#/definitions/service.RequestRefreshTokenInputDTO'
+          $ref: '#/definitions/request.RequestRefreshTokenInputDTO'
       produces:
       - application/json
       responses:
@@ -378,7 +430,7 @@ paths:
         name: avatar
         required: true
         schema:
-          $ref: '#/definitions/service.RequestCreateAvatarInputDTO'
+          $ref: '#/definitions/request.RequestCreateAvatarInputDTO'
       produces:
       - application/json
       responses:
@@ -478,7 +530,7 @@ paths:
         name: avatar
         required: true
         schema:
-          $ref: '#/definitions/service.RequestUpdateAvatarInputDTO'
+          $ref: '#/definitions/request.RequestUpdateAvatarInputDTO'
       produces:
       - application/json
       responses:
@@ -547,7 +599,7 @@ paths:
         name: permission
         required: true
         schema:
-          $ref: '#/definitions/service.RequestCreatePermissionInputDTO'
+          $ref: '#/definitions/request.RequestCreatePermissionInputDTO'
       produces:
       - application/json
       responses:
@@ -648,7 +700,7 @@ paths:
         name: permission
         required: true
         schema:
-          $ref: '#/definitions/service.RequestUpdatePermissionInputDTO'
+          $ref: '#/definitions/request.RequestUpdatePermissionInputDTO'
       produces:
       - application/json
       responses:
@@ -717,7 +769,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/service.RequestCreateRoleInputDTO'
+          $ref: '#/definitions/request.RequestCreateRoleInputDTO'
       produces:
       - application/json
       responses:
@@ -817,7 +869,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/service.RequestUpdateRoleInputDTO'
+          $ref: '#/definitions/request.RequestUpdateRoleInputDTO'
       produces:
       - application/json
       responses:
@@ -912,7 +964,7 @@ paths:
         name: role_permission
         required: true
         schema:
-          $ref: '#/definitions/service.RequestCreateRolePermissionInputDTO'
+          $ref: '#/definitions/request.RequestCreateRolePermissionInputDTO'
       produces:
       - application/json
       responses:
@@ -949,7 +1001,7 @@ paths:
         name: role_permission
         required: true
         schema:
-          $ref: '#/definitions/service.RequestUpdateRolePermissionInputDTO'
+          $ref: '#/definitions/request.RequestUpdateRolePermissionInputDTO'
       produces:
       - application/json
       responses:
@@ -1018,7 +1070,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/service.RequestCreateUserInputDTO'
+          $ref: '#/definitions/request.RequestCreateUserInputDTO'
       produces:
       - application/json
       responses:
@@ -1092,7 +1144,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/service.RequestGetUserInputDTO'
+                  $ref: '#/definitions/request.RequestGetUserInputDTO'
               type: object
         "400":
           description: Bad Request
@@ -1118,7 +1170,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/service.RequestUpdateUserInputDTO'
+          $ref: '#/definitions/request.RequestUpdateUserInputDTO'
       produces:
       - application/json
       responses:
@@ -1151,7 +1203,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/service.RequestForgotPasswordInputDTO'
+          $ref: '#/definitions/request.RequestForgotPasswordInputDTO'
       produces:
       - application/json
       responses:
@@ -1182,7 +1234,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/service.RequestCreateUserInputDTO'
+          $ref: '#/definitions/request.RequestCreateUserInputDTO'
       produces:
       - application/json
       responses:
@@ -1215,7 +1267,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/service.RequestUpdateUserPasswordInputDTO'
+          $ref: '#/definitions/request.RequestUpdateUserPasswordInputDTO'
       produces:
       - application/json
       responses:
@@ -1246,7 +1298,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/service.RequestVerifyUserInputDTO'
+          $ref: '#/definitions/request.RequestVerifyUserInputDTO'
       produces:
       - application/json
       responses:

@@ -6,9 +6,11 @@ import (
 	"net/http"
 
 	serviceInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/service"
+	"github.com/marceloamoreno/goapi/internal/domain/user/request"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	"github.com/marceloamoreno/goapi/internal/shared/helper"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
+	"github.com/marceloamoreno/goapi/internal/shared/validate"
 )
 
 type PermissionHandler struct {
@@ -34,8 +36,14 @@ func NewPermissionHandler() *PermissionHandler {
 // @Router /permission/{id} [get]
 // @Security     JWT
 func (h *PermissionHandler) GetPermission(w http.ResponseWriter, r *http.Request) {
-	input := service.RequestGetPermissionInputDTO{
+	input := request.RequestGetPermissionInputDTO{
 		ID: helper.GetID(r),
+	}
+	err := validate.NewValidator(input).Validate()
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
 	}
 	output, err := h.service.GetPermission(input)
 	if err != nil {
@@ -60,9 +68,15 @@ func (h *PermissionHandler) GetPermission(w http.ResponseWriter, r *http.Request
 // @Security     JWT
 func (h *PermissionHandler) GetPermissions(w http.ResponseWriter, r *http.Request) {
 	limit, offset := helper.GetLimitAndOffset(r)
-	input := service.RequestGetPermissionsInputDTO{
+	input := request.RequestGetPermissionsInputDTO{
 		Limit:  limit,
 		Offset: offset,
+	}
+	err := validate.NewValidator(input).Validate()
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
 	}
 	output, err := h.service.GetPermissions(input)
 	if err != nil {
@@ -79,15 +93,21 @@ func (h *PermissionHandler) GetPermissions(w http.ResponseWriter, r *http.Reques
 // @Tags Permission
 // @Accept  json
 // @Produce  json
-// @Param permission body service.RequestCreatePermissionInputDTO true "Permission"
+// @Param permission body request.RequestCreatePermissionInputDTO true "Permission"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /permission [post]
 // @Security     JWT
 func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Request) {
-	input := service.RequestCreatePermissionInputDTO{}
+	input := request.RequestCreatePermissionInputDTO{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
+		return
+	}
+	err := validate.NewValidator(input).Validate()
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 	output, err := h.service.CreatePermission(input)
@@ -106,17 +126,23 @@ func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Requ
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Permission ID"
-// @Param permission body service.RequestUpdatePermissionInputDTO true "Permission"
+// @Param permission body request.RequestUpdatePermissionInputDTO true "Permission"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /permission/{id} [put]
 // @Security     JWT
 func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Request) {
-	input := service.RequestUpdatePermissionInputDTO{
+	input := request.RequestUpdatePermissionInputDTO{
 		ID: helper.GetID(r),
 	}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
+		return
+	}
+	err := validate.NewValidator(input).Validate()
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 	output, err := h.service.UpdatePermission(input)
@@ -141,8 +167,14 @@ func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Requ
 // @Router /permission/{id} [delete]
 // @Security     JWT
 func (h *PermissionHandler) DeletePermission(w http.ResponseWriter, r *http.Request) {
-	input := service.RequestDeletePermissionInputDTO{
+	input := request.RequestDeletePermissionInputDTO{
 		ID: helper.GetID(r),
+	}
+	err := validate.NewValidator(input).Validate()
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
 	}
 	output, err := h.service.DeletePermission(input)
 	if err != nil {

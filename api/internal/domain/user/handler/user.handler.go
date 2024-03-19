@@ -6,9 +6,11 @@ import (
 	"net/http"
 
 	serviceInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/service"
+	"github.com/marceloamoreno/goapi/internal/domain/user/request"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	"github.com/marceloamoreno/goapi/internal/shared/helper"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
+	"github.com/marceloamoreno/goapi/internal/shared/validate"
 )
 
 type UserHandler struct {
@@ -28,18 +30,23 @@ func NewUserHandler() *UserHandler {
 // @Tags User
 // @Accept  json
 // @Produce  json
-// @Param user body service.RequestCreateUserInputDTO true "User"
+// @Param user body request.RequestCreateUserInputDTO true "User"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /user [post]
 // @Security     JWT
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
-	input := service.RequestCreateUserInputDTO{}
+	input := request.RequestCreateUserInputDTO{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
 	}
-
+	err := validate.NewValidator(input).Validate()
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
+	}
 	output, err := h.service.CreateUser(input)
 	if err != nil {
 		slog.Info("err", err)
@@ -56,15 +63,20 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "User ID"
-// @Success 200 {object} response.Response{data=service.RequestGetUserInputDTO}
+// @Success 200 {object} response.Response{data=request.RequestGetUserInputDTO}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /user/{id} [get]
 // @Security     JWT
 func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
-	input := service.RequestGetUserInputDTO{
+	input := request.RequestGetUserInputDTO{
 		ID: helper.GetID(r),
 	}
-
+	err := validate.NewValidator(input).Validate()
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
+	}
 	output, err := h.service.GetUser(input)
 	if err != nil {
 		slog.Info("err", err)
@@ -88,11 +100,16 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 // @Security     JWT
 func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	limit, offset := helper.GetLimitAndOffset(r)
-	input := service.RequestGetUsersInputDTO{
+	input := request.RequestGetUsersInputDTO{
 		Limit:  limit,
 		Offset: offset,
 	}
-
+	err := validate.NewValidator(input).Validate()
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
+		return
+	}
 	output, err := h.service.GetUsers(input)
 	if err != nil {
 		slog.Info("err", err)
@@ -109,17 +126,23 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "User ID"
-// @Param user body service.RequestUpdateUserInputDTO true "User"
+// @Param user body request.RequestUpdateUserInputDTO true "User"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /user/{id} [put]
 // @Security     JWT
 func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	input := service.RequestUpdateUserInputDTO{
+	input := request.RequestUpdateUserInputDTO{
 		ID: helper.GetID(r),
 	}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
+		return
+	}
+	err := validate.NewValidator(input).Validate()
+	if err != nil {
+		slog.Info("err", err)
+		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
 	output, err := h.service.UpdateUser(input)
@@ -137,12 +160,12 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 // @Tags User
 // @Accept  json
 // @Produce  json
-// @Param user body service.RequestUpdateUserPasswordInputDTO true "User"
+// @Param user body request.RequestUpdateUserPasswordInputDTO true "User"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /user/update-password [post]
 func (h *UserHandler) UpdateUserPassword(w http.ResponseWriter, r *http.Request) {
-	input := service.RequestUpdateUserPasswordInputDTO{}
+	input := request.RequestUpdateUserPasswordInputDTO{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
@@ -168,7 +191,7 @@ func (h *UserHandler) UpdateUserPassword(w http.ResponseWriter, r *http.Request)
 // @Router /user/{id} [delete]
 // @Security     JWT
 func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	input := service.RequestDeleteUserInputDTO{
+	input := request.RequestDeleteUserInputDTO{
 		ID: helper.GetID(r),
 	}
 	output, err := h.service.DeleteUser(input)
@@ -186,12 +209,12 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 // @Tags User
 // @Accept  json
 // @Produce  json
-// @Param user body service.RequestForgotPasswordInputDTO true "User"
+// @Param user body request.RequestForgotPasswordInputDTO true "User"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /user/forgot-password [post]
 func (h *UserHandler) ForgotPassword(w http.ResponseWriter, r *http.Request) {
-	input := service.RequestForgotPasswordInputDTO{}
+	input := request.RequestForgotPasswordInputDTO{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
@@ -211,12 +234,12 @@ func (h *UserHandler) ForgotPassword(w http.ResponseWriter, r *http.Request) {
 // @Tags User
 // @Accept  json
 // @Produce  json
-// @Param user body service.RequestVerifyUserInputDTO true "User"
+// @Param user body request.RequestVerifyUserInputDTO true "User"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /user/verify-user [post]
 func (h *UserHandler) VerifyUser(w http.ResponseWriter, r *http.Request) {
-	input := service.RequestVerifyUserInputDTO{}
+	input := request.RequestVerifyUserInputDTO{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
@@ -236,13 +259,13 @@ func (h *UserHandler) VerifyUser(w http.ResponseWriter, r *http.Request) {
 // @Tags User
 // @Accept  json
 // @Produce  json
-// @Param user body service.RequestCreateUserInputDTO true "User"
+// @Param user body request.RequestCreateUserInputDTO true "User"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /user/register [post]
 // @Security     JWT
 func (h *UserHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
-	input := service.RequestCreateUserInputDTO{}
+	input := request.RequestCreateUserInputDTO{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
