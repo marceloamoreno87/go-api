@@ -1,39 +1,39 @@
 package request
 
-type RequestVerifyUserInputDTO struct {
+type RequestVerifyUser struct {
 	Hash string `json:"hash" validate:"required"`
 }
 
-type RequestUpdateUserPasswordInputDTO struct {
+type RequestUpdateUserPassword struct {
 	Hash     string `json:"hash" validate:"required"`
 	Password string `json:"password" validate:"required"`
 }
 
-type RequestForgotPasswordInputDTO struct {
+type RequestForgotPassword struct {
 	Email string `json:"email" validate:"required"`
 }
 
-type RequestCreateUserInputDTO struct {
+type RequestCreateUser struct {
 	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"email,required"`
 	Password string `json:"password" validate:"required"`
 }
 
-type RequestUpdateUserInputDTO struct {
+type RequestUpdateUser struct {
 	ID    int32  `json:"id" validate:"number,required"`
 	Name  string `json:"name" validate:"required"`
 	Email string `json:"email" validate:"email,required"`
 }
 
-type RequestDeleteUserInputDTO struct {
+type RequestDeleteUser struct {
 	ID int32 `json:"id" validate:"number,required"`
 }
 
-type RequestGetUserInputDTO struct {
+type RequestGetUser struct {
 	ID int32 `json:"id" validate:"number,required"`
 }
 
-type RequestGetUsersInputDTO struct {
+type RequestGetUsers struct {
 	Limit  int32 `json:"limit" validate:"number,required"`
 	Offset int32 `json:"offset" validate:"number,required"`
 }

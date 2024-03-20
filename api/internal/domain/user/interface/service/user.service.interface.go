@@ -6,12 +6,12 @@ import (
 )
 
 type UserServiceInterface interface {
-	CreateUser(input request.RequestCreateUserInputDTO) (output usecase.CreateUserOutputDTO, err error)
-	GetUser(input request.RequestGetUserInputDTO) (output usecase.GetUserOutputDTO, err error)
-	GetUsers(input request.RequestGetUsersInputDTO) (output []usecase.GetUsersOutputDTO, err error)
-	UpdateUser(input request.RequestUpdateUserInputDTO) (output usecase.UpdateUserOutputDTO, err error)
-	DeleteUser(input request.RequestDeleteUserInputDTO) (output usecase.DeleteUserOutputDTO, err error)
-	UpdateUserPassword(input request.RequestUpdateUserPasswordInputDTO) (err error)
-	ForgotPassword(input request.RequestForgotPasswordInputDTO) (err error)
-	VerifyUser(input request.RequestVerifyUserInputDTO) (err error)
+	CreateUser(input request.RequestCreateUser) (output usecase.CreateUserOutputDTO, err error)
+	GetUser(input request.RequestGetUser) (output usecase.GetUserOutputDTO, err error)
+	GetUsers(input request.RequestGetUsers) (output []usecase.GetUsersOutputDTO, err error)
+	UpdateUser(input request.RequestUpdateUser) (output usecase.UpdateUserOutputDTO, err error)
+	DeleteUser(input request.RequestDeleteUser) (output usecase.DeleteUserOutputDTO, err error)
+	UpdateUserPassword(input request.RequestUpdateUserPassword) (err error)
+	ForgotPassword(input request.RequestForgotPassword) (err error)
+	VerifyUser(input request.RequestVerifyUser) (err error)
 }

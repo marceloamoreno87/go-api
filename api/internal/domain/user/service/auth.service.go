@@ -44,7 +44,7 @@ func NewAuthService() *AuthService {
 	}
 }
 
-func (s *AuthService) Login(input request.RequestLoginInputDTO) (output usecase.CreateAuthOutputDTO, err error) {
+func (s *AuthService) Login(input request.RequestLogin) (output usecase.CreateAuthOutputDTO, err error) {
 	user, err := s.GetUserByEmailUseCase.Execute(usecase.GetUserByEmailInputDTO{Email: input.Email})
 	if err != nil {
 		slog.Info("err", err)
@@ -106,7 +106,7 @@ func (s *AuthService) Login(input request.RequestLoginInputDTO) (output usecase.
 	return
 }
 
-func (s *AuthService) RefreshToken(input request.RequestRefreshTokenInputDTO) (output usecase.CreateAuthOutputDTO, err error) {
+func (s *AuthService) RefreshToken(input request.RequestRefreshToken) (output usecase.CreateAuthOutputDTO, err error) {
 	rt, err := s.GetAuthByRefreshTokenUseCase.Execute(usecase.GetAuthByRefreshTokenInputDTO{
 		UserID:       input.UserID,
 		RefreshToken: input.RefreshToken,

@@ -36,7 +36,7 @@ func NewPermissionHandler() *PermissionHandler {
 // @Router /permission/{id} [get]
 // @Security     JWT
 func (h *PermissionHandler) GetPermission(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestGetPermissionInputDTO{
+	input := request.RequestGetPermission{
 		ID: helper.GetID(r),
 	}
 	err := validate.NewValidator(input).Validate()
@@ -68,7 +68,7 @@ func (h *PermissionHandler) GetPermission(w http.ResponseWriter, r *http.Request
 // @Security     JWT
 func (h *PermissionHandler) GetPermissions(w http.ResponseWriter, r *http.Request) {
 	limit, offset := helper.GetLimitAndOffset(r)
-	input := request.RequestGetPermissionsInputDTO{
+	input := request.RequestGetPermissions{
 		Limit:  limit,
 		Offset: offset,
 	}
@@ -93,13 +93,13 @@ func (h *PermissionHandler) GetPermissions(w http.ResponseWriter, r *http.Reques
 // @Tags Permission
 // @Accept  json
 // @Produce  json
-// @Param permission body request.RequestCreatePermissionInputDTO true "Permission"
+// @Param permission body request.RequestCreatePermission true "Permission"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /permission [post]
 // @Security     JWT
 func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestCreatePermissionInputDTO{}
+	input := request.RequestCreatePermission{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
@@ -126,13 +126,13 @@ func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Requ
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Permission ID"
-// @Param permission body request.RequestUpdatePermissionInputDTO true "Permission"
+// @Param permission body request.RequestUpdatePermission true "Permission"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /permission/{id} [put]
 // @Security     JWT
 func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestUpdatePermissionInputDTO{
+	input := request.RequestUpdatePermission{
 		ID: helper.GetID(r),
 	}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
@@ -167,7 +167,7 @@ func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Requ
 // @Router /permission/{id} [delete]
 // @Security     JWT
 func (h *PermissionHandler) DeletePermission(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestDeletePermissionInputDTO{
+	input := request.RequestDeletePermission{
 		ID: helper.GetID(r),
 	}
 	err := validate.NewValidator(input).Validate()

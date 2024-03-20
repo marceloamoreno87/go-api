@@ -6,6 +6,6 @@ import (
 )
 
 type AuthServiceInterface interface {
-	Login(input request.RequestLoginInputDTO) (output usecase.CreateAuthOutputDTO, err error)
-	RefreshToken(input request.RequestRefreshTokenInputDTO) (output usecase.CreateAuthOutputDTO, err error)
+	Login(input request.RequestLogin) (output usecase.CreateAuthOutputDTO, err error)
+	RefreshToken(input request.RequestRefreshToken) (output usecase.CreateAuthOutputDTO, err error)
 }

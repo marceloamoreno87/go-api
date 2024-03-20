@@ -30,13 +30,13 @@ func NewUserHandler() *UserHandler {
 // @Tags User
 // @Accept  json
 // @Produce  json
-// @Param user body request.RequestCreateUserInputDTO true "User"
+// @Param user body request.RequestCreateUser true "User"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /user [post]
 // @Security     JWT
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestCreateUserInputDTO{}
+	input := request.RequestCreateUser{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
@@ -63,12 +63,12 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "User ID"
-// @Success 200 {object} response.Response{data=request.RequestGetUserInputDTO}
+// @Success 200 {object} response.Response{data=request.RequestGetUser}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /user/{id} [get]
 // @Security     JWT
 func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestGetUserInputDTO{
+	input := request.RequestGetUser{
 		ID: helper.GetID(r),
 	}
 	err := validate.NewValidator(input).Validate()
@@ -100,7 +100,7 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 // @Security     JWT
 func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	limit, offset := helper.GetLimitAndOffset(r)
-	input := request.RequestGetUsersInputDTO{
+	input := request.RequestGetUsers{
 		Limit:  limit,
 		Offset: offset,
 	}
@@ -126,13 +126,13 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "User ID"
-// @Param user body request.RequestUpdateUserInputDTO true "User"
+// @Param user body request.RequestUpdateUser true "User"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /user/{id} [put]
 // @Security     JWT
 func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestUpdateUserInputDTO{
+	input := request.RequestUpdateUser{
 		ID: helper.GetID(r),
 	}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
@@ -160,12 +160,12 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 // @Tags User
 // @Accept  json
 // @Produce  json
-// @Param user body request.RequestUpdateUserPasswordInputDTO true "User"
+// @Param user body request.RequestUpdateUserPassword true "User"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /user/update-password [post]
 func (h *UserHandler) UpdateUserPassword(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestUpdateUserPasswordInputDTO{}
+	input := request.RequestUpdateUserPassword{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
@@ -191,7 +191,7 @@ func (h *UserHandler) UpdateUserPassword(w http.ResponseWriter, r *http.Request)
 // @Router /user/{id} [delete]
 // @Security     JWT
 func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestDeleteUserInputDTO{
+	input := request.RequestDeleteUser{
 		ID: helper.GetID(r),
 	}
 	output, err := h.service.DeleteUser(input)
@@ -209,12 +209,12 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 // @Tags User
 // @Accept  json
 // @Produce  json
-// @Param user body request.RequestForgotPasswordInputDTO true "User"
+// @Param user body request.RequestForgotPassword true "User"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /user/forgot-password [post]
 func (h *UserHandler) ForgotPassword(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestForgotPasswordInputDTO{}
+	input := request.RequestForgotPassword{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
@@ -234,12 +234,12 @@ func (h *UserHandler) ForgotPassword(w http.ResponseWriter, r *http.Request) {
 // @Tags User
 // @Accept  json
 // @Produce  json
-// @Param user body request.RequestVerifyUserInputDTO true "User"
+// @Param user body request.RequestVerifyUser true "User"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /user/verify-user [post]
 func (h *UserHandler) VerifyUser(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestVerifyUserInputDTO{}
+	input := request.RequestVerifyUser{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
@@ -259,13 +259,13 @@ func (h *UserHandler) VerifyUser(w http.ResponseWriter, r *http.Request) {
 // @Tags User
 // @Accept  json
 // @Produce  json
-// @Param user body request.RequestCreateUserInputDTO true "User"
+// @Param user body request.RequestCreateUser true "User"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /auth/register [post]
 // @Security     JWT
 func (h *UserHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestCreateUserInputDTO{}
+	input := request.RequestCreateUser{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return

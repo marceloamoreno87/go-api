@@ -39,7 +39,7 @@ func NewUserService() *UserService {
 	}
 }
 
-func (s *UserService) CreateUser(input request.RequestCreateUserInputDTO) (output usecase.CreateUserOutputDTO, err error) {
+func (s *UserService) CreateUser(input request.RequestCreateUser) (output usecase.CreateUserOutputDTO, err error) {
 	output, err = s.CreateUserUseCase.Execute(usecase.CreateUserInputDTO{
 		Name:     input.Name,
 		Email:    input.Email,
@@ -70,7 +70,7 @@ func (s *UserService) CreateUser(input request.RequestCreateUserInputDTO) (outpu
 	return
 }
 
-func (s *UserService) GetUser(input request.RequestGetUserInputDTO) (output usecase.GetUserOutputDTO, err error) {
+func (s *UserService) GetUser(input request.RequestGetUser) (output usecase.GetUserOutputDTO, err error) {
 	output, err = s.GetUserUseCase.Execute(usecase.GetUserInputDTO{ID: input.ID})
 	if err != nil {
 		slog.Info("err", err)
@@ -80,7 +80,7 @@ func (s *UserService) GetUser(input request.RequestGetUserInputDTO) (output usec
 	return
 }
 
-func (s *UserService) GetUsers(input request.RequestGetUsersInputDTO) (output []usecase.GetUsersOutputDTO, err error) {
+func (s *UserService) GetUsers(input request.RequestGetUsers) (output []usecase.GetUsersOutputDTO, err error) {
 	output, err = s.GetUsersUseCase.Execute(usecase.GetUsersInputDTO{
 		Limit:  input.Limit,
 		Offset: input.Offset,
@@ -93,7 +93,7 @@ func (s *UserService) GetUsers(input request.RequestGetUsersInputDTO) (output []
 	return
 }
 
-func (s *UserService) UpdateUser(input request.RequestUpdateUserInputDTO) (output usecase.UpdateUserOutputDTO, err error) {
+func (s *UserService) UpdateUser(input request.RequestUpdateUser) (output usecase.UpdateUserOutputDTO, err error) {
 	output, err = s.UpdateUserUseCase.Execute(usecase.UpdateUserInputDTO{
 		Name:  input.Name,
 		Email: input.Email,
@@ -106,7 +106,7 @@ func (s *UserService) UpdateUser(input request.RequestUpdateUserInputDTO) (outpu
 	return
 }
 
-func (s *UserService) UpdateUserPassword(input request.RequestUpdateUserPasswordInputDTO) (err error) {
+func (s *UserService) UpdateUserPassword(input request.RequestUpdateUserPassword) (err error) {
 	userValidation, err := s.GetUserValidationByHashUseCase.Execute(usecase.GetUserValidationByHashInputDTO{
 		Hash: input.Hash,
 	})
@@ -149,7 +149,7 @@ func (s *UserService) UpdateUserPassword(input request.RequestUpdateUserPassword
 	return
 }
 
-func (s *UserService) DeleteUser(input request.RequestDeleteUserInputDTO) (output usecase.DeleteUserOutputDTO, err error) {
+func (s *UserService) DeleteUser(input request.RequestDeleteUser) (output usecase.DeleteUserOutputDTO, err error) {
 	output, err = s.DeleteUserUseCase.Execute(usecase.DeleteUserInputDTO{ID: input.ID})
 	if err != nil {
 		slog.Info("err", err)
@@ -159,7 +159,7 @@ func (s *UserService) DeleteUser(input request.RequestDeleteUserInputDTO) (outpu
 	return
 }
 
-func (s *UserService) VerifyUser(input request.RequestVerifyUserInputDTO) (err error) {
+func (s *UserService) VerifyUser(input request.RequestVerifyUser) (err error) {
 	userValidation, err := s.GetUserValidationByHashUseCase.Execute(usecase.GetUserValidationByHashInputDTO{
 		Hash: input.Hash,
 	})
@@ -204,7 +204,7 @@ func (s *UserService) VerifyUser(input request.RequestVerifyUserInputDTO) (err e
 	return
 }
 
-func (s *UserService) ForgotPassword(input request.RequestForgotPasswordInputDTO) (err error) {
+func (s *UserService) ForgotPassword(input request.RequestForgotPassword) (err error) {
 	user, err := s.GetUserByEmailUseCase.Execute(usecase.GetUserByEmailInputDTO{Email: input.Email})
 	if err != nil {
 		slog.Info("err", err)

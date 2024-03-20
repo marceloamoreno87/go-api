@@ -6,9 +6,9 @@ import (
 )
 
 type RoleServiceInterface interface {
-	GetRole(input request.RequestGetRoleInputDTO) (output usecase.GetRoleOutputDTO, err error)
-	GetRoles(input request.RequestGetRolesInputDTO) (output []usecase.GetRolesOutputDTO, err error)
-	CreateRole(input request.RequestCreateRoleInputDTO) (output usecase.CreateRoleOutputDTO, err error)
-	UpdateRole(input request.RequestUpdateRoleInputDTO) (output usecase.UpdateRoleOutputDTO, err error)
-	DeleteRole(input request.RequestDeleteRoleInputDTO) (output usecase.DeleteRoleOutputDTO, err error)
+	GetRole(input request.RequestGetRole) (output usecase.GetRoleOutputDTO, err error)
+	GetRoles(input request.RequestGetRoles) (output []usecase.GetRolesOutputDTO, err error)
+	CreateRole(input request.RequestCreateRole) (output usecase.CreateRoleOutputDTO, err error)
+	UpdateRole(input request.RequestUpdateRole) (output usecase.UpdateRoleOutputDTO, err error)
+	DeleteRole(input request.RequestDeleteRole) (output usecase.DeleteRoleOutputDTO, err error)
 }

@@ -36,7 +36,7 @@ func NewRoleHandler() *RoleHandler {
 // @Router /role/{id} [get]
 // @Security     JWT
 func (h *RoleHandler) GetRole(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestGetRoleInputDTO{
+	input := request.RequestGetRole{
 		ID: helper.GetID(r),
 	}
 	err := validate.NewValidator(input).Validate()
@@ -68,7 +68,7 @@ func (h *RoleHandler) GetRole(w http.ResponseWriter, r *http.Request) {
 // @Security     JWT
 func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
 	limit, offset := helper.GetLimitAndOffset(r)
-	input := request.RequestGetRolesInputDTO{
+	input := request.RequestGetRoles{
 		Limit:  limit,
 		Offset: offset,
 	}
@@ -93,13 +93,13 @@ func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
 // @Tags Role
 // @Accept  json
 // @Produce  json
-// @Param role body request.RequestCreateRoleInputDTO true "Role"
+// @Param role body request.RequestCreateRole true "Role"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /role [post]
 // @Security     JWT
 func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestCreateRoleInputDTO{}
+	input := request.RequestCreateRole{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
@@ -126,13 +126,13 @@ func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Role ID"
-// @Param role body request.RequestUpdateRoleInputDTO true "Role"
+// @Param role body request.RequestUpdateRole true "Role"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /role/{id} [put]
 // @Security     JWT
 func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestUpdateRoleInputDTO{
+	input := request.RequestUpdateRole{
 		ID: helper.GetID(r),
 	}
 	err := validate.NewValidator(input).Validate()
@@ -162,7 +162,7 @@ func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
 // @Router /role/{id} [delete]
 // @Security     JWT
 func (h *RoleHandler) DeleteRole(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestDeleteRoleInputDTO{
+	input := request.RequestDeleteRole{
 		ID: helper.GetID(r),
 	}
 	err := validate.NewValidator(input).Validate()

@@ -6,9 +6,9 @@ import (
 )
 
 type PermissionServiceInterface interface {
-	GetPermission(input request.RequestGetPermissionInputDTO) (output usecase.GetPermissionOutputDTO, err error)
-	GetPermissions(input request.RequestGetPermissionsInputDTO) (output []usecase.GetPermissionsOutputDTO, err error)
-	CreatePermission(input request.RequestCreatePermissionInputDTO) (output usecase.CreatePermissionOutputDTO, err error)
-	UpdatePermission(input request.RequestUpdatePermissionInputDTO) (output usecase.UpdatePermissionOutputDTO, err error)
-	DeletePermission(input request.RequestDeletePermissionInputDTO) (output usecase.DeletePermissionOutputDTO, err error)
+	GetPermission(input request.RequestGetPermission) (output usecase.GetPermissionOutputDTO, err error)
+	GetPermissions(input request.RequestGetPermissions) (output []usecase.GetPermissionsOutputDTO, err error)
+	CreatePermission(input request.RequestCreatePermission) (output usecase.CreatePermissionOutputDTO, err error)
+	UpdatePermission(input request.RequestUpdatePermission) (output usecase.UpdatePermissionOutputDTO, err error)
+	DeletePermission(input request.RequestDeletePermission) (output usecase.DeletePermissionOutputDTO, err error)
 }

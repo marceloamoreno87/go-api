@@ -36,7 +36,7 @@ func NewRolePermissionHandler() *RolePermissionHandler {
 // @Router /role/{id}/permission [get]
 // @Security     JWT
 func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestGetRolePermissionInputDTO{
+	input := request.RequestGetRolePermission{
 		RoleID: helper.GetID(r),
 	}
 	err := validate.NewValidator(input).Validate()
@@ -61,13 +61,13 @@ func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *htt
 // @Tags RolePermission
 // @Accept  json
 // @Produce  json
-// @Param role_permission body request.RequestCreateRolePermissionInputDTO true "RolePermission"
+// @Param role_permission body request.RequestCreateRolePermission true "RolePermission"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /role/{id}/permission [post]
 // @Security     JWT
 func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestCreateRolePermissionInputDTO{
+	input := request.RequestCreateRolePermission{
 		RoleID: helper.GetID(r),
 	}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
@@ -98,13 +98,13 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Role ID"
-// @Param role_permission body request.RequestUpdateRolePermissionInputDTO true "RolePermission"
+// @Param role_permission body request.RequestUpdateRolePermission true "RolePermission"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /role/{id}/permission [put]
 // @Security     JWT
 func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestUpdateRolePermissionInputDTO{
+	input := request.RequestUpdateRolePermission{
 		RoleID: helper.GetID(r),
 	}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
@@ -138,7 +138,7 @@ func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *h
 // @Router /role/{id}/permission [delete]
 // @Security     JWT
 func (h *RolePermissionHandler) DeleteRolePermissionByRoleID(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestDeleteRolePermissionByRoleIDInputDTO{
+	input := request.RequestDeleteRolePermissionByRoleID{
 		RoleID: helper.GetID(r),
 	}
 	err := validate.NewValidator(input).Validate()

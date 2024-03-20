@@ -35,7 +35,7 @@ func NewAvatarHandler() *AvatarHandler {
 // @Router /avatar/{id} [get]
 // @Security     JWT
 func (h *AvatarHandler) GetAvatar(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestGetAvatarInputDTO{
+	input := request.RequestGetAvatar{
 		ID: helper.GetID(r),
 	}
 	output, err := h.service.GetAvatar(input)
@@ -61,7 +61,7 @@ func (h *AvatarHandler) GetAvatar(w http.ResponseWriter, r *http.Request) {
 // @Security     JWT
 func (h *AvatarHandler) GetAvatars(w http.ResponseWriter, r *http.Request) {
 	limit, offset := helper.GetLimitAndOffset(r)
-	input := request.RequestGetAvatarsInputDTO{
+	input := request.RequestGetAvatars{
 		Limit:  limit,
 		Offset: offset,
 	}
@@ -80,13 +80,13 @@ func (h *AvatarHandler) GetAvatars(w http.ResponseWriter, r *http.Request) {
 // @Tags Avatar
 // @Accept  json
 // @Produce  json
-// @Param avatar body request.RequestCreateAvatarInputDTO true "Avatar"
+// @Param avatar body request.RequestCreateAvatar true "Avatar"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /avatar [post]
 // @Security     JWT
 func (h *AvatarHandler) CreateAvatar(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestCreateAvatarInputDTO{}
+	input := request.RequestCreateAvatar{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
@@ -107,13 +107,13 @@ func (h *AvatarHandler) CreateAvatar(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Avatar ID"
-// @Param avatar body request.RequestUpdateAvatarInputDTO true "Avatar"
+// @Param avatar body request.RequestUpdateAvatar true "Avatar"
 // @Success 200 {object} response.Response{data=nil}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /avatar/{id} [put]
 // @Security     JWT
 func (h *AvatarHandler) UpdateAvatar(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestUpdateAvatarInputDTO{}
+	input := request.RequestUpdateAvatar{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
@@ -139,7 +139,7 @@ func (h *AvatarHandler) UpdateAvatar(w http.ResponseWriter, r *http.Request) {
 // @Router /avatar/{id} [delete]
 // @Security     JWT
 func (h *AvatarHandler) DeleteAvatar(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestDeleteAvatarInputDTO{
+	input := request.RequestDeleteAvatar{
 		ID: helper.GetID(r),
 	}
 	output, err := h.service.DeleteAvatar(input)

@@ -29,12 +29,12 @@ func NewAuthHandler() *AuthHandler {
 // @Tags Auth
 // @Accept  json
 // @Produce  json
-// @Param auth body request.RequestLoginInputDTO true "User"
+// @Param auth body request.RequestLogin true "User"
 // @Success 200 {object} response.Response{data=usecase.CreateAuthOutputDTO}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /auth/login [post]
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestLoginInputDTO{}
+	input := request.RequestLogin{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
@@ -60,12 +60,12 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 // @Tags Auth
 // @Accept  json
 // @Produce  json
-// @Param auth body request.RequestRefreshTokenInputDTO true "User"
+// @Param auth body request.RequestRefreshToken true "User"
 // @Success 200 {object} response.Response{data=usecase.CreateAuthOutputDTO}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /auth/refresh [post]
 func (h *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestRefreshTokenInputDTO{}
+	input := request.RequestRefreshToken{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))

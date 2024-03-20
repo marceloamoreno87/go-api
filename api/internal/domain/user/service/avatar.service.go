@@ -26,7 +26,7 @@ func NewAvatarService() *AvatarService {
 	}
 }
 
-func (s *AvatarService) GetAvatar(input request.RequestGetAvatarInputDTO) (output usecase.GetAvatarOutputDTO, err error) {
+func (s *AvatarService) GetAvatar(input request.RequestGetAvatar) (output usecase.GetAvatarOutputDTO, err error) {
 	output, err = s.GetAvatarUseCase.Execute(usecase.GetAvatarInputDTO{ID: input.ID})
 	if err != nil {
 		slog.Info("err", err)
@@ -36,7 +36,7 @@ func (s *AvatarService) GetAvatar(input request.RequestGetAvatarInputDTO) (outpu
 	return
 }
 
-func (s *AvatarService) GetAvatars(input request.RequestGetAvatarsInputDTO) (output []usecase.GetAvatarsOutputDTO, err error) {
+func (s *AvatarService) GetAvatars(input request.RequestGetAvatars) (output []usecase.GetAvatarsOutputDTO, err error) {
 	output, err = s.GetAvatarsUseCase.Execute(usecase.GetAvatarsInputDTO{Limit: input.Limit, Offset: input.Offset})
 	if err != nil {
 		slog.Info("err", err)
@@ -46,7 +46,7 @@ func (s *AvatarService) GetAvatars(input request.RequestGetAvatarsInputDTO) (out
 	return
 }
 
-func (s *AvatarService) CreateAvatar(input request.RequestCreateAvatarInputDTO) (output usecase.CreateAvatarOutputDTO, err error) {
+func (s *AvatarService) CreateAvatar(input request.RequestCreateAvatar) (output usecase.CreateAvatarOutputDTO, err error) {
 	output, err = s.CreateAvatarUseCase.Execute(usecase.CreateAvatarInputDTO{SVG: input.SVG})
 	if err != nil {
 		slog.Info("err", err)
@@ -56,7 +56,7 @@ func (s *AvatarService) CreateAvatar(input request.RequestCreateAvatarInputDTO) 
 	return
 }
 
-func (s *AvatarService) UpdateAvatar(input request.RequestUpdateAvatarInputDTO) (output usecase.UpdateAvatarOutputDTO, err error) {
+func (s *AvatarService) UpdateAvatar(input request.RequestUpdateAvatar) (output usecase.UpdateAvatarOutputDTO, err error) {
 	output, err = s.UpdateAvatarUseCase.Execute(usecase.UpdateAvatarInputDTO{ID: input.ID, SVG: input.SVG})
 	if err != nil {
 		slog.Info("err", err)
@@ -66,7 +66,7 @@ func (s *AvatarService) UpdateAvatar(input request.RequestUpdateAvatarInputDTO) 
 	return
 }
 
-func (s *AvatarService) DeleteAvatar(input request.RequestDeleteAvatarInputDTO) (output usecase.DeleteAvatarOutputDTO, err error) {
+func (s *AvatarService) DeleteAvatar(input request.RequestDeleteAvatar) (output usecase.DeleteAvatarOutputDTO, err error) {
 	output, err = s.DeleteAvatarUseCase.Execute(usecase.DeleteAvatarInputDTO{ID: input.ID})
 	if err != nil {
 		slog.Info("err", err)
