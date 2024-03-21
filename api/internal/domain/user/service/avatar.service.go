@@ -55,14 +55,14 @@ func (s *AvatarService) GetAvatars(ctx context.Context, input request.RequestGet
 
 func (s *AvatarService) CreateAvatar(ctx context.Context, input request.RequestCreateAvatar) (output usecase.CreateAvatarOutputDTO, err error) {
 	s.db.SetCtx(ctx)
-	s.db.Begin()
+	// s.db.Begin()
 	output, err = s.CreateAvatarUseCase.Execute(usecase.CreateAvatarInputDTO{SVG: input.SVG})
 	if err != nil {
-		s.db.Rollback()
+		// s.db.Rollback()
 		slog.Info("err", err)
 		return
 	}
-	s.db.Commit()
+	// s.db.Commit()
 	slog.Info("Avatar created")
 	return
 }

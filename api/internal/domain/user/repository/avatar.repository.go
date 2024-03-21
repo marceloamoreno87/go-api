@@ -13,12 +13,13 @@ type AvatarRepository struct {
 
 func NewAvatarRepository(db config.SQLCInterface) *AvatarRepository {
 	return &AvatarRepository{
-		db: config.NewSqlc(config.DB),
+		db: db,
 	}
 }
 
 func (repo *AvatarRepository) CreateAvatar(avatar entityInterface.AvatarInterface) (err error) {
-	return repo.db.GetDbQueries().WithTx(repo.db.GetTx()).CreateAvatar(repo.db.GetCtx(), avatar.GetSVG())
+	err = repo.db.GetDbQueries().CreateAvatar(repo.db.GetCtx(), avatar.GetSVG())
+	return
 }
 
 func (repo *AvatarRepository) GetAvatar(id int32) (output entityInterface.AvatarInterface, err error) {
