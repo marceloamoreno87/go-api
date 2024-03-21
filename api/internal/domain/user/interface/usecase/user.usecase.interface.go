@@ -1,6 +1,8 @@
 package usecaseInterface
 
-import "github.com/marceloamoreno/goapi/internal/domain/user/usecase"
+import (
+	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
+)
 
 type GetUserByEmailUseCaseInterface interface {
 	Execute(input usecase.GetUserByEmailInputDTO) (output usecase.GetUserByEmailOutputDTO, err error)
@@ -33,5 +35,3 @@ type UpdateUserPasswordUseCaseInterface interface {
 type CreateUserValidationUseCaseInterface interface {
 	Execute(input usecase.CreateUserValidationInputDTO) (output usecase.CreateUserValidationOutputDTO, err error)
 }
-
-

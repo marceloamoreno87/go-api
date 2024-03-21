@@ -19,8 +19,21 @@ func NewAvatarRepository() *AvatarRepository {
 	}
 }
 
-func (repo *AvatarRepository) CreateAvatar(avatar entityInterface.AvatarInterface) (err error) {
-	return repo.DB.GetDbQueries().CreateAvatar(context.Background(), avatar.GetSVG())
+func (repo *AvatarRepository) CreateAvatar(ctx context.Context, avatar entityInterface.AvatarInterface) (err error) {
+	tx, err := repo.DB.GetDbConn().Begin()
+	if err != nil {
+		return
+	}
+	err = repo.DB.GetDbQueries().WithTx(tx).CreateAvatar(ctx, avatar.GetSVG())
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+	}
+	return
 }
 
 func (repo *AvatarRepository) GetAvatar(id int32) (output entityInterface.AvatarInterface, err error) {

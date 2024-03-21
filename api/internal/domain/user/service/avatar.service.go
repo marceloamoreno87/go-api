@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"log/slog"
 
 	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
@@ -46,8 +47,8 @@ func (s *AvatarService) GetAvatars(input request.RequestGetAvatars) (output []us
 	return
 }
 
-func (s *AvatarService) CreateAvatar(input request.RequestCreateAvatar) (output usecase.CreateAvatarOutputDTO, err error) {
-	output, err = s.CreateAvatarUseCase.Execute(usecase.CreateAvatarInputDTO{SVG: input.SVG})
+func (s *AvatarService) CreateAvatar(ctx context.Context, input request.RequestCreateAvatar) (output usecase.CreateAvatarOutputDTO, err error) {
+	output, err = s.CreateAvatarUseCase.Execute(ctx, usecase.CreateAvatarInputDTO{SVG: input.SVG})
 	if err != nil {
 		slog.Info("err", err)
 		return

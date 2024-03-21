@@ -1,6 +1,8 @@
 package usecaseInterface
 
-import "github.com/marceloamoreno/goapi/internal/domain/user/usecase"
+import (
+	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
+)
 
 type CreateAuthUseCaseInterface interface {
 	Execute(input usecase.CreateAuthInputDTO) (output usecase.CreateAuthOutputDTO, err error)

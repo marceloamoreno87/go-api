@@ -20,7 +20,6 @@ func NewAuthRepository() *AuthRepository {
 }
 
 func (repo *AuthRepository) CreateAuth(auth entityInterface.AuthInterface) (err error) {
-
 	return repo.DB.GetDbQueries().CreateAuth(context.Background(), db.CreateAuthParams{
 		UserID:                auth.GetUserID(),
 		Token:                 auth.GetToken(),
@@ -31,7 +30,6 @@ func (repo *AuthRepository) CreateAuth(auth entityInterface.AuthInterface) (err 
 }
 
 func (repo *AuthRepository) GetAuthByUserID(userId int32) (output entityInterface.AuthInterface, err error) {
-
 	a, err := repo.DB.GetDbQueries().GetAuthByUserID(context.Background(), userId)
 	if err != nil {
 		return
@@ -50,12 +48,10 @@ func (repo *AuthRepository) GetAuthByUserID(userId int32) (output entityInterfac
 }
 
 func (repo *AuthRepository) UpdateAuthRevokeByUserID(userId int32) (err error) {
-
 	return repo.DB.GetDbQueries().UpdateAuthRevokeByUserID(context.Background(), userId)
 }
 
 func (repo *AuthRepository) GetAuthByToken(userId int32, token string) (output entityInterface.AuthInterface, err error) {
-
 	a, err := repo.DB.GetDbQueries().GetAuthByToken(context.Background(), db.GetAuthByTokenParams{
 		Token:  token,
 		UserID: userId,
@@ -77,7 +73,6 @@ func (repo *AuthRepository) GetAuthByToken(userId int32, token string) (output e
 }
 
 func (repo *AuthRepository) GetAuthByRefreshToken(userId int32, refreshToken string) (output entityInterface.AuthInterface, err error) {
-
 	a, err := repo.DB.GetDbQueries().GetAuthByRefreshToken(context.Background(), db.GetAuthByRefreshTokenParams{
 		RefreshToken: refreshToken,
 		UserID:       userId,

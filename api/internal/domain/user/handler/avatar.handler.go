@@ -91,7 +91,7 @@ func (h *AvatarHandler) CreateAvatar(w http.ResponseWriter, r *http.Request) {
 		slog.Info("err", err)
 		return
 	}
-	output, err := h.service.CreateAvatar(input)
+	output, err := h.service.CreateAvatar(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
