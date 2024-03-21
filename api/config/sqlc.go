@@ -12,11 +12,7 @@ type SQLCInterface interface {
 	GetDbQueries() *db.Queries
 	GetDbConn() *sql.DB
 	GetTx() *sql.Tx
-	Begin()
-	Rollback()
-	Commit()
-	SetCtx(ctx context.Context)
-	GetCtx() context.Context
+	SetTx(tx *sql.Tx)
 }
 
 type SQLC struct {
@@ -47,22 +43,6 @@ func (t *SQLC) GetTx() *sql.Tx {
 	return t.tx
 }
 
-func (t *SQLC) Begin() {
-	t.tx, _ = t.dbConn.Begin()
-}
-
-func (t *SQLC) Rollback() {
-	t.tx.Rollback()
-}
-
-func (t *SQLC) Commit() {
-	t.tx.Commit()
-}
-
-func (t *SQLC) SetCtx(ctx context.Context) {
-	t.ctx = ctx
-}
-
-func (t *SQLC) GetCtx() context.Context {
-	return t.ctx
+func (t *SQLC) SetTx(tx *sql.Tx) {
+	t.tx = tx
 }

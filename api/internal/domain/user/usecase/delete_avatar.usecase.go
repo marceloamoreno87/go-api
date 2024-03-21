@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"context"
+
 	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -24,8 +26,8 @@ func NewDeleteAvatarUseCase(db config.SQLCInterface) *DeleteAvatarUseCase {
 	}
 }
 
-func (uc *DeleteAvatarUseCase) Execute(input DeleteAvatarInputDTO) (output DeleteAvatarOutputDTO, err error) {
-	err = uc.repo.DeleteAvatar(input.ID)
+func (uc *DeleteAvatarUseCase) Execute(ctx context.Context, input DeleteAvatarInputDTO) (output DeleteAvatarOutputDTO, err error) {
+	err = uc.repo.DeleteAvatar(ctx, input.ID)
 	output = DeleteAvatarOutputDTO{
 		ID: input.ID,
 	}

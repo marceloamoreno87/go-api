@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"context"
+
 	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
@@ -27,13 +29,13 @@ func NewUpdateAvatarUseCase(db config.SQLCInterface) *UpdateAvatarUseCase {
 	}
 }
 
-func (uc *UpdateAvatarUseCase) Execute(input UpdateAvatarInputDTO) (output UpdateAvatarOutputDTO, err error) {
+func (uc *UpdateAvatarUseCase) Execute(ctx context.Context, input UpdateAvatarInputDTO) (output UpdateAvatarOutputDTO, err error) {
 	avatar, err := entity.NewAvatar(input.SVG)
 	if err != nil {
 		return
 	}
 
-	err = uc.repo.UpdateAvatar(avatar, input.ID)
+	err = uc.repo.UpdateAvatar(ctx, avatar, input.ID)
 	output = UpdateAvatarOutputDTO{
 		ID:  avatar.GetID(),
 		SVG: avatar.GetSVG(),

@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"time"
 
 	"github.com/marceloamoreno/goapi/config"
@@ -29,8 +30,8 @@ func NewGetAvatarUseCase(db config.SQLCInterface) *GetAvatarUseCase {
 	}
 }
 
-func (uc *GetAvatarUseCase) Execute(input GetAvatarInputDTO) (output GetAvatarOutputDTO, err error) {
-	avatar, err := uc.repo.GetAvatar(input.ID)
+func (uc *GetAvatarUseCase) Execute(ctx context.Context, input GetAvatarInputDTO) (output GetAvatarOutputDTO, err error) {
+	avatar, err := uc.repo.GetAvatar(ctx, input.ID)
 	if err != nil {
 		return
 	}

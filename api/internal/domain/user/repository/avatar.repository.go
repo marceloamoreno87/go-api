@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"context"
+
 	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
@@ -17,13 +19,13 @@ func NewAvatarRepository(db config.SQLCInterface) *AvatarRepository {
 	}
 }
 
-func (repo *AvatarRepository) CreateAvatar(avatar entityInterface.AvatarInterface) (err error) {
-	err = repo.db.GetDbQueries().CreateAvatar(repo.db.GetCtx(), avatar.GetSVG())
+func (repo *AvatarRepository) CreateAvatar(ctx context.Context, avatar entityInterface.AvatarInterface) (err error) {
+	err = repo.db.GetDbQueries().WithTx(repo.db.GetTx()).CreateAvatar(ctx, avatar.GetSVG())
 	return
 }
 
-func (repo *AvatarRepository) GetAvatar(id int32) (output entityInterface.AvatarInterface, err error) {
-	a, err := repo.db.GetDbQueries().GetAvatar(repo.db.GetCtx(), id)
+func (repo *AvatarRepository) GetAvatar(ctx context.Context, id int32) (output entityInterface.AvatarInterface, err error) {
+	a, err := repo.db.GetDbQueries().GetAvatar(ctx, id)
 	if err != nil {
 		return
 	}
@@ -34,8 +36,8 @@ func (repo *AvatarRepository) GetAvatar(id int32) (output entityInterface.Avatar
 	return
 }
 
-func (repo *AvatarRepository) GetAvatars(limit int32, offset int32) (output []entityInterface.AvatarInterface, err error) {
-	a, err := repo.db.GetDbQueries().GetAvatars(repo.db.GetCtx(), db.GetAvatarsParams{
+func (repo *AvatarRepository) GetAvatars(ctx context.Context, limit int32, offset int32) (output []entityInterface.AvatarInterface, err error) {
+	a, err := repo.db.GetDbQueries().GetAvatars(ctx, db.GetAvatarsParams{
 		Limit:  limit,
 		Offset: offset,
 	})
@@ -51,13 +53,13 @@ func (repo *AvatarRepository) GetAvatars(limit int32, offset int32) (output []en
 	return
 }
 
-func (repo *AvatarRepository) UpdateAvatar(avatar entityInterface.AvatarInterface, id int32) (err error) {
-	return repo.db.GetDbQueries().WithTx(repo.db.GetTx()).UpdateAvatar(repo.db.GetCtx(), db.UpdateAvatarParams{
+func (repo *AvatarRepository) UpdateAvatar(ctx context.Context, avatar entityInterface.AvatarInterface, id int32) (err error) {
+	return repo.db.GetDbQueries().WithTx(repo.db.GetTx()).UpdateAvatar(ctx, db.UpdateAvatarParams{
 		ID:  id,
 		Svg: avatar.GetSVG(),
 	})
 }
 
-func (repo *AvatarRepository) DeleteAvatar(id int32) (err error) {
-	return repo.db.GetDbQueries().WithTx(repo.db.GetTx()).DeleteAvatar(repo.db.GetCtx(), id)
+func (repo *AvatarRepository) DeleteAvatar(ctx context.Context, id int32) (err error) {
+	return repo.db.GetDbQueries().WithTx(repo.db.GetTx()).DeleteAvatar(ctx, id)
 }
