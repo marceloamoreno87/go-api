@@ -38,7 +38,7 @@ func (h *AvatarHandler) GetAvatar(w http.ResponseWriter, r *http.Request) {
 	input := request.RequestGetAvatar{
 		ID: helper.GetID(r),
 	}
-	output, err := h.service.GetAvatar(input)
+	output, err := h.service.GetAvatar(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -65,7 +65,7 @@ func (h *AvatarHandler) GetAvatars(w http.ResponseWriter, r *http.Request) {
 		Limit:  limit,
 		Offset: offset,
 	}
-	output, err := h.service.GetAvatars(input)
+	output, err := h.service.GetAvatars(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -118,7 +118,7 @@ func (h *AvatarHandler) UpdateAvatar(w http.ResponseWriter, r *http.Request) {
 		slog.Info("err", err)
 		return
 	}
-	output, err := h.service.UpdateAvatar(input)
+	output, err := h.service.UpdateAvatar(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -142,7 +142,7 @@ func (h *AvatarHandler) DeleteAvatar(w http.ResponseWriter, r *http.Request) {
 	input := request.RequestDeleteAvatar{
 		ID: helper.GetID(r),
 	}
-	output, err := h.service.DeleteAvatar(input)
+	output, err := h.service.DeleteAvatar(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))

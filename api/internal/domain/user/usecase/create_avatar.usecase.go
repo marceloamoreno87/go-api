@@ -1,8 +1,7 @@
 package usecase
 
 import (
-	"context"
-
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -20,19 +19,19 @@ type CreateAvatarUseCase struct {
 	repo repositoryInterface.AvatarRepositoryInterface
 }
 
-func NewCreateAvatarUseCase() *CreateAvatarUseCase {
+func NewCreateAvatarUseCase(db config.SQLCInterface) *CreateAvatarUseCase {
 	return &CreateAvatarUseCase{
-		repo: repository.NewAvatarRepository(),
+		repo: repository.NewAvatarRepository(db),
 	}
 }
 
-func (uc *CreateAvatarUseCase) Execute(ctx context.Context, input CreateAvatarInputDTO) (output CreateAvatarOutputDTO, err error) {
+func (uc *CreateAvatarUseCase) Execute(input CreateAvatarInputDTO) (output CreateAvatarOutputDTO, err error) {
 	avatar, err := entity.NewAvatar(input.SVG)
 	if err != nil {
 		return
 	}
 
-	err = uc.repo.CreateAvatar(ctx, avatar)
+	err = uc.repo.CreateAvatar(avatar)
 
 	output = CreateAvatarOutputDTO{
 		SVG: avatar.GetSVG(),

@@ -8,9 +8,9 @@ import (
 )
 
 type AvatarServiceInterface interface {
-	GetAvatar(input request.RequestGetAvatar) (output usecase.GetAvatarOutputDTO, err error)
-	GetAvatars(input request.RequestGetAvatars) (output []usecase.GetAvatarsOutputDTO, err error)
+	GetAvatar(ctx context.Context, input request.RequestGetAvatar) (output usecase.GetAvatarOutputDTO, err error)
+	GetAvatars(ctx context.Context, input request.RequestGetAvatars) (output []usecase.GetAvatarsOutputDTO, err error)
 	CreateAvatar(ctx context.Context, input request.RequestCreateAvatar) (output usecase.CreateAvatarOutputDTO, err error)
-	UpdateAvatar(input request.RequestUpdateAvatar) (output usecase.UpdateAvatarOutputDTO, err error)
-	DeleteAvatar(input request.RequestDeleteAvatar) (output usecase.DeleteAvatarOutputDTO, err error)
+	UpdateAvatar(ctx context.Context, input request.RequestUpdateAvatar) (output usecase.UpdateAvatarOutputDTO, err error)
+	DeleteAvatar(ctx context.Context, input request.RequestDeleteAvatar) (output usecase.DeleteAvatarOutputDTO, err error)
 }

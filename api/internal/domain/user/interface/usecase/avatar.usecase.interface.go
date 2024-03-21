@@ -1,8 +1,6 @@
 package usecaseInterface
 
 import (
-	"context"
-
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
@@ -15,7 +13,7 @@ type GetAvatarsUseCaseInterface interface {
 }
 
 type CreateAvatarUseCaseInterface interface {
-	Execute(ctx context.Context, input usecase.CreateAvatarInputDTO) (output usecase.CreateAvatarOutputDTO, err error)
+	Execute(input usecase.CreateAvatarInputDTO) (output usecase.CreateAvatarOutputDTO, err error)
 }
 
 type UpdateAvatarUseCaseInterface interface {

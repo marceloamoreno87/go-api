@@ -4,7 +4,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	_ "github.com/marceloamoreno/goapi/api/docs"
 	"github.com/marceloamoreno/goapi/config"
-	AuthMiddleware "github.com/marceloamoreno/goapi/internal/domain/user/middleware"
+	// AuthMiddleware "github.com/marceloamoreno/goapi/internal/domain/user/middleware"
 )
 
 type Route struct {
@@ -30,7 +30,7 @@ func NewRoutes(
 			route.getTestVerifyUser(r)
 		})
 		r.Group(func(r chi.Router) {
-			AuthMiddleware.NewMiddleware(r).AuthMiddleware(jwt.GetJwtAuth())
+			// AuthMiddleware.NewMiddleware(r).AuthMiddleware(jwt.GetJwtAuth())
 			route.getUserRoutes(r)
 			route.getRoleRoutes(r)
 			route.getPermissionRoutes(r)
