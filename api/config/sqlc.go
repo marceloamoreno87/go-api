@@ -1,7 +1,6 @@
 package config
 
 import (
-	"context"
 	"database/sql"
 
 	_ "github.com/lib/pq"
@@ -19,7 +18,6 @@ type SQLC struct {
 	dbConn    *sql.DB
 	dbQueries *db.Queries
 	tx        *sql.Tx
-	ctx       context.Context
 }
 
 func NewSqlc(DB DatabaseInterface) SQLCInterface {
@@ -27,7 +25,6 @@ func NewSqlc(DB DatabaseInterface) SQLCInterface {
 		dbConn:    DB.GetDbConn(),
 		dbQueries: db.New(DB.GetDbConn()),
 		tx:        nil,
-		ctx:       nil,
 	}
 }
 
