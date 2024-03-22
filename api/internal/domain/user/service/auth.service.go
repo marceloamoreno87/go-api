@@ -93,7 +93,11 @@ func (s *AuthService) Login(ctx context.Context, input request.RequestLogin) (ou
 		UserID: user.ID,
 	})
 	if err != nil {
-		tx.Rollback()
+		errtx := tx.Rollback()
+		if errtx != nil {
+			slog.Info("errtx", errtx)
+			return
+		}
 		slog.Info("err", err)
 		return
 	}
@@ -102,7 +106,11 @@ func (s *AuthService) Login(ctx context.Context, input request.RequestLogin) (ou
 		UserID: user.ID,
 	})
 	if err != nil {
-		tx.Rollback()
+		errtx := tx.Rollback()
+		if errtx != nil {
+			slog.Info("errtx", errtx)
+			return
+		}
 		slog.Info("err", err)
 		return
 	}
@@ -115,7 +123,11 @@ func (s *AuthService) Login(ctx context.Context, input request.RequestLogin) (ou
 		TokenExpiresIn:        newToken.TokenExpiresIn,
 		RefreshTokenExpiresIn: newToken.RefreshTokenExpiresIn,
 	}
-	tx.Commit()
+	errtx := tx.Commit()
+	if errtx != nil {
+		slog.Info("errtx", errtx)
+		return
+	}
 	slog.Info("User logged in")
 	return
 }
@@ -140,7 +152,11 @@ func (s *AuthService) RefreshToken(ctx context.Context, input request.RequestRef
 		UserID: rt.UserID,
 	})
 	if err != nil {
-		tx.Rollback()
+		errtx := tx.Rollback()
+		if errtx != nil {
+			slog.Info("errtx", errtx)
+			return
+		}
 		slog.Info("err", err)
 		return
 	}
@@ -149,7 +165,11 @@ func (s *AuthService) RefreshToken(ctx context.Context, input request.RequestRef
 		UserID: rt.UserID,
 	})
 	if err != nil {
-		tx.Rollback()
+		errtx := tx.Rollback()
+		if errtx != nil {
+			slog.Info("errtx", errtx)
+			return
+		}
 		slog.Info("err", err)
 		return
 	}
@@ -161,7 +181,11 @@ func (s *AuthService) RefreshToken(ctx context.Context, input request.RequestRef
 		TokenExpiresIn:        token.TokenExpiresIn,
 		RefreshTokenExpiresIn: token.RefreshTokenExpiresIn,
 	}
-	tx.Commit()
+	errtx := tx.Commit()
+	if errtx != nil {
+		slog.Info("errtx", errtx)
+		return
+	}
 	slog.Info("Token refreshed")
 	return
 }

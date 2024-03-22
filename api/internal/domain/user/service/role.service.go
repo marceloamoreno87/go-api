@@ -72,11 +72,19 @@ func (s *RoleService) CreateRole(ctx context.Context, input request.RequestCreat
 		Description:  input.Description,
 	})
 	if err != nil {
-		tx.Rollback()
+		errtx := tx.Rollback()
+		if errtx != nil {
+			slog.Info("errtx", errtx)
+			return
+		}
 		slog.Info("err", err)
 		return
 	}
-	tx.Commit()
+	errtx := tx.Commit()
+	if errtx != nil {
+		slog.Info("errtx", errtx)
+		return
+	}
 	slog.Info("Role created")
 	return
 }
@@ -95,11 +103,19 @@ func (s *RoleService) UpdateRole(ctx context.Context, input request.RequestUpdat
 		Description:  input.Description,
 	})
 	if err != nil {
-		tx.Rollback()
+		errtx := tx.Rollback()
+		if errtx != nil {
+			slog.Info("errtx", errtx)
+			return
+		}
 		slog.Info("err", err)
 		return
 	}
-	tx.Commit()
+	errtx := tx.Commit()
+	if errtx != nil {
+		slog.Info("errtx", errtx)
+		return
+	}
 	slog.Info("Role updated")
 	return
 }
@@ -113,11 +129,19 @@ func (s *RoleService) DeleteRole(ctx context.Context, input request.RequestDelet
 	s.db.SetTx(tx)
 	output, err = s.NewDeleteRoleUseCase.Execute(ctx, usecase.DeleteRoleInputDTO{ID: input.ID})
 	if err != nil {
-		tx.Rollback()
+		errtx := tx.Rollback()
+		if errtx != nil {
+			slog.Info("errtx", errtx)
+			return
+		}
 		slog.Info("err", err)
 		return
 	}
-	tx.Commit()
+	errtx := tx.Commit()
+	if errtx != nil {
+		slog.Info("errtx", errtx)
+		return
+	}
 	slog.Info("Role deleted")
 	return
 }

@@ -49,11 +49,19 @@ func (s *RolePermissionService) CreateRolePermission(ctx context.Context, input 
 		PermissionIDs: input.PermissionIDs,
 	})
 	if err != nil {
-		tx.Rollback()
+		errtx := tx.Rollback()
+		if errtx != nil {
+			slog.Info("errtx", errtx)
+			return
+		}
 		slog.Info("err", err)
 		return
 	}
-	tx.Commit()
+	errtx := tx.Commit()
+	if errtx != nil {
+		slog.Info("errtx", errtx)
+		return
+	}
 	slog.Info("Role permission created")
 	return
 }
@@ -67,7 +75,11 @@ func (s *RolePermissionService) UpdateRolePermission(ctx context.Context, input 
 	s.db.SetTx(tx)
 	_, err = s.DeleteRolePermissionByRoleIDUseCase.Execute(ctx, usecase.DeleteRolePermissionByRoleIDInputDTO{RoleID: input.RoleID})
 	if err != nil {
-		tx.Rollback()
+		errtx := tx.Rollback()
+		if errtx != nil {
+			slog.Info("errtx", errtx)
+			return
+		}
 		slog.Info("err", err)
 		return
 	}
@@ -77,11 +89,19 @@ func (s *RolePermissionService) UpdateRolePermission(ctx context.Context, input 
 		PermissionIDs: input.PermissionIDs,
 	})
 	if err != nil {
-		tx.Rollback()
+		errtx := tx.Rollback()
+		if errtx != nil {
+			slog.Info("errtx", errtx)
+			return
+		}
 		slog.Info("err", err)
 		return
 	}
-	tx.Commit()
+	errtx := tx.Commit()
+	if errtx != nil {
+		slog.Info("errtx", errtx)
+		return
+	}
 	slog.Info("Role permission updated")
 	return
 }
@@ -95,11 +115,19 @@ func (s *RolePermissionService) DeleteRolePermissionByRoleID(ctx context.Context
 	s.db.SetTx(tx)
 	output, err = s.DeleteRolePermissionByRoleIDUseCase.Execute(ctx, usecase.DeleteRolePermissionByRoleIDInputDTO{RoleID: input.RoleID})
 	if err != nil {
-		tx.Rollback()
+		errtx := tx.Rollback()
+		if errtx != nil {
+			slog.Info("errtx", errtx)
+			return
+		}
 		slog.Info("err", err)
 		return
 	}
-	tx.Commit()
+	errtx := tx.Commit()
+	if errtx != nil {
+		slog.Info("errtx", errtx)
+		return
+	}
 	slog.Info("Role permission deleted")
 	return
 }

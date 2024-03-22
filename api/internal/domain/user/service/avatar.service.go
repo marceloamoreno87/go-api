@@ -60,11 +60,19 @@ func (s *AvatarService) CreateAvatar(ctx context.Context, input request.RequestC
 	s.db.SetTx(tx)
 	output, err = s.CreateAvatarUseCase.Execute(ctx, usecase.CreateAvatarInputDTO{SVG: input.SVG})
 	if err != nil {
-		tx.Rollback()
+		errtx := tx.Rollback()
+		if errtx != nil {
+			slog.Info("errtx", errtx)
+			return
+		}
 		slog.Info("err", err)
 		return
 	}
-	tx.Commit()
+	errtx := tx.Commit()
+	if errtx != nil {
+		slog.Info("errtx", errtx)
+		return
+	}
 	slog.Info("Avatar created")
 	return
 }
@@ -78,11 +86,19 @@ func (s *AvatarService) UpdateAvatar(ctx context.Context, input request.RequestU
 	s.db.SetTx(tx)
 	output, err = s.UpdateAvatarUseCase.Execute(ctx, usecase.UpdateAvatarInputDTO{ID: input.ID, SVG: input.SVG})
 	if err != nil {
-		tx.Rollback()
+		errtx := tx.Rollback()
+		if errtx != nil {
+			slog.Info("errtx", errtx)
+			return
+		}
 		slog.Info("err", err)
 		return
 	}
-	tx.Commit()
+	errtx := tx.Commit()
+	if errtx != nil {
+		slog.Info("errtx", errtx)
+		return
+	}
 	slog.Info("Avatar updated")
 	return
 }
@@ -96,11 +112,19 @@ func (s *AvatarService) DeleteAvatar(ctx context.Context, input request.RequestD
 	s.db.SetTx(tx)
 	output, err = s.DeleteAvatarUseCase.Execute(ctx, usecase.DeleteAvatarInputDTO{ID: input.ID})
 	if err != nil {
-		tx.Rollback()
+		errtx := tx.Rollback()
+		if errtx != nil {
+			slog.Info("errtx", errtx)
+			return
+		}
 		slog.Info("err", err)
 		return
 	}
-	tx.Commit()
+	errtx := tx.Commit()
+	if errtx != nil {
+		slog.Info("errtx", errtx)
+		return
+	}
 	slog.Info("Avatar deleted")
 	return
 }

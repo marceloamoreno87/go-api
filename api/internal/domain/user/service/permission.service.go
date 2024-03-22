@@ -76,11 +76,19 @@ func (s *PermissionService) CreatePermission(ctx context.Context, input request.
 		Description:  input.Description,
 	})
 	if err != nil {
-		tx.Rollback()
+		errtx := tx.Rollback()
+		if errtx != nil {
+			slog.Info("errtx", errtx)
+			return
+		}
 		slog.Info("err", err)
 		return
 	}
-	tx.Commit()
+	errtx := tx.Commit()
+	if errtx != nil {
+		slog.Info("errtx", errtx)
+		return
+	}
 	slog.Info("Permission created")
 	return
 }
@@ -99,11 +107,19 @@ func (s *PermissionService) UpdatePermission(ctx context.Context, input request.
 		Description:  input.Description,
 	})
 	if err != nil {
-		tx.Rollback()
+		errtx := tx.Rollback()
+		if errtx != nil {
+			slog.Info("errtx", errtx)
+			return
+		}
 		slog.Info("err", err)
 		return
 	}
-	tx.Commit()
+	errtx := tx.Commit()
+	if errtx != nil {
+		slog.Info("errtx", errtx)
+		return
+	}
 	slog.Info("Permission updated")
 	return
 }
@@ -117,11 +133,19 @@ func (s *PermissionService) DeletePermission(ctx context.Context, input request.
 	s.db.SetTx(tx)
 	output, err = s.NewDeletePermissionUseCase.Execute(ctx, usecase.DeletePermissionInputDTO{ID: input.ID})
 	if err != nil {
-		tx.Rollback()
+		errtx := tx.Rollback()
+		if errtx != nil {
+			slog.Info("errtx", errtx)
+			return
+		}
 		slog.Info("err", err)
 		return
 	}
-	tx.Commit()
+	errtx := tx.Commit()
+	if errtx != nil {
+		slog.Info("errtx", errtx)
+		return
+	}
 	slog.Info("Permission deleted")
 	return
 }
