@@ -38,20 +38,36 @@ func (s *RolePermissionService) GetRolePermissions(ctx context.Context, input re
 }
 
 func (s *RolePermissionService) CreateRolePermission(ctx context.Context, input request.RequestCreateRolePermission) (output usecase.CreateRolePermissionOutputDTO, err error) {
+	tx, err := s.db.GetDbConn().Begin()
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+	s.db.SetTx(tx)
 	output, err = s.CreateRolePermissionUseCase.Execute(ctx, usecase.CreateRolePermissionInputDTO{
 		RoleID:        input.RoleID,
 		PermissionIDs: input.PermissionIDs,
 	})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
+	tx.Commit()
+	slog.Info("Role permission created")
 	return
 }
 
 func (s *RolePermissionService) UpdateRolePermission(ctx context.Context, input request.RequestUpdateRolePermission) (output usecase.CreateRolePermissionOutputDTO, err error) {
+	tx, err := s.db.GetDbConn().Begin()
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+	s.db.SetTx(tx)
 	_, err = s.DeleteRolePermissionByRoleIDUseCase.Execute(ctx, usecase.DeleteRolePermissionByRoleIDInputDTO{RoleID: input.RoleID})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
@@ -61,19 +77,29 @@ func (s *RolePermissionService) UpdateRolePermission(ctx context.Context, input 
 		PermissionIDs: input.PermissionIDs,
 	})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
-
+	tx.Commit()
+	slog.Info("Role permission updated")
 	return
 }
 
 func (s *RolePermissionService) DeleteRolePermissionByRoleID(ctx context.Context, input request.RequestDeleteRolePermissionByRoleID) (output usecase.DeleteRolePermissionByRoleIDOutputDTO, err error) {
-	output, err = s.DeleteRolePermissionByRoleIDUseCase.Execute(ctx, usecase.DeleteRolePermissionByRoleIDInputDTO{RoleID: input.RoleID})
+	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
+	s.db.SetTx(tx)
+	output, err = s.DeleteRolePermissionByRoleIDUseCase.Execute(ctx, usecase.DeleteRolePermissionByRoleIDInputDTO{RoleID: input.RoleID})
+	if err != nil {
+		tx.Rollback()
+		slog.Info("err", err)
+		return
+	}
+	tx.Commit()
 	slog.Info("Role permission deleted")
 	return
 }

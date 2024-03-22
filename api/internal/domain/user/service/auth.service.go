@@ -50,6 +50,12 @@ func NewAuthService() *AuthService {
 }
 
 func (s *AuthService) Login(ctx context.Context, input request.RequestLogin) (output usecase.CreateAuthOutputDTO, err error) {
+	tx, err := s.db.GetDbConn().Begin()
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+	s.db.SetTx(tx)
 	user, err := s.GetUserByEmailUseCase.Execute(ctx, usecase.GetUserByEmailInputDTO{Email: input.Email})
 	if err != nil {
 		slog.Info("err", err)
@@ -87,6 +93,7 @@ func (s *AuthService) Login(ctx context.Context, input request.RequestLogin) (ou
 		UserID: user.ID,
 	})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
@@ -95,6 +102,7 @@ func (s *AuthService) Login(ctx context.Context, input request.RequestLogin) (ou
 		UserID: user.ID,
 	})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
@@ -107,11 +115,18 @@ func (s *AuthService) Login(ctx context.Context, input request.RequestLogin) (ou
 		TokenExpiresIn:        newToken.TokenExpiresIn,
 		RefreshTokenExpiresIn: newToken.RefreshTokenExpiresIn,
 	}
+	tx.Commit()
 	slog.Info("User logged in")
 	return
 }
 
 func (s *AuthService) RefreshToken(ctx context.Context, input request.RequestRefreshToken) (output usecase.CreateAuthOutputDTO, err error) {
+	tx, err := s.db.GetDbConn().Begin()
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+	s.db.SetTx(tx)
 	rt, err := s.GetAuthByRefreshTokenUseCase.Execute(ctx, usecase.GetAuthByRefreshTokenInputDTO{
 		UserID:       input.UserID,
 		RefreshToken: input.RefreshToken,
@@ -125,6 +140,7 @@ func (s *AuthService) RefreshToken(ctx context.Context, input request.RequestRef
 		UserID: rt.UserID,
 	})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
@@ -133,6 +149,7 @@ func (s *AuthService) RefreshToken(ctx context.Context, input request.RequestRef
 		UserID: rt.UserID,
 	})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
@@ -144,6 +161,7 @@ func (s *AuthService) RefreshToken(ctx context.Context, input request.RequestRef
 		TokenExpiresIn:        token.TokenExpiresIn,
 		RefreshTokenExpiresIn: token.RefreshTokenExpiresIn,
 	}
+	tx.Commit()
 	slog.Info("Token refreshed")
 	return
 }

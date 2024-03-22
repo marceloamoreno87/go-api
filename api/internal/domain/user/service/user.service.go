@@ -45,12 +45,19 @@ func NewUserService() *UserService {
 }
 
 func (s *UserService) CreateUser(ctx context.Context, input request.RequestCreateUser) (output usecase.CreateUserOutputDTO, err error) {
+	tx, err := s.db.GetDbConn().Begin()
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+	s.db.SetTx(tx)
 	output, err = s.CreateUserUseCase.Execute(ctx, usecase.CreateUserInputDTO{
 		Name:     input.Name,
 		Email:    input.Email,
 		Password: input.Password,
 	})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
@@ -61,6 +68,7 @@ func (s *UserService) CreateUser(ctx context.Context, input request.RequestCreat
 		Email:  output.Email,
 	})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
@@ -71,6 +79,7 @@ func (s *UserService) CreateUser(ctx context.Context, input request.RequestCreat
 		Hash:  newUserValidation.Hash,
 	}).Send()
 
+	tx.Commit()
 	slog.Info("User created")
 	return
 }
@@ -99,19 +108,33 @@ func (s *UserService) GetUsers(ctx context.Context, input request.RequestGetUser
 }
 
 func (s *UserService) UpdateUser(ctx context.Context, input request.RequestUpdateUser) (output usecase.UpdateUserOutputDTO, err error) {
+	tx, err := s.db.GetDbConn().Begin()
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+	s.db.SetTx(tx)
 	output, err = s.UpdateUserUseCase.Execute(ctx, usecase.UpdateUserInputDTO{
 		Name:  input.Name,
 		Email: input.Email,
 	})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
+	tx.Commit()
 	slog.Info("User updated")
 	return
 }
 
 func (s *UserService) UpdateUserPassword(ctx context.Context, input request.RequestUpdateUserPassword) (err error) {
+	tx, err := s.db.GetDbConn().Begin()
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+	s.db.SetTx(tx)
 	userValidation, err := s.GetUserValidationByHashUseCase.Execute(ctx, usecase.GetUserValidationByHashInputDTO{
 		Hash: input.Hash,
 	})
@@ -133,6 +156,7 @@ func (s *UserService) UpdateUserPassword(ctx context.Context, input request.Requ
 		Password: input.Password,
 	})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
@@ -141,6 +165,7 @@ func (s *UserService) UpdateUserPassword(ctx context.Context, input request.Requ
 		UserID: user.ID,
 	})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
@@ -150,21 +175,36 @@ func (s *UserService) UpdateUserPassword(ctx context.Context, input request.Requ
 		Name:  user.Name,
 	}).Send()
 
+	tx.Commit()
 	slog.Info("User password updated")
 	return
 }
 
 func (s *UserService) DeleteUser(ctx context.Context, input request.RequestDeleteUser) (output usecase.DeleteUserOutputDTO, err error) {
-	output, err = s.DeleteUserUseCase.Execute(ctx, usecase.DeleteUserInputDTO{ID: input.ID})
+	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
+	s.db.SetTx(tx)
+	output, err = s.DeleteUserUseCase.Execute(ctx, usecase.DeleteUserInputDTO{ID: input.ID})
+	if err != nil {
+		tx.Rollback()
+		slog.Info("err", err)
+		return
+	}
+	tx.Commit()
 	slog.Info("User deleted")
 	return
 }
 
 func (s *UserService) VerifyUser(ctx context.Context, input request.RequestVerifyUser) (err error) {
+	tx, err := s.db.GetDbConn().Begin()
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+	s.db.SetTx(tx)
 	userValidation, err := s.GetUserValidationByHashUseCase.Execute(ctx, usecase.GetUserValidationByHashInputDTO{
 		Hash: input.Hash,
 	})
@@ -187,6 +227,7 @@ func (s *UserService) VerifyUser(ctx context.Context, input request.RequestVerif
 		Active:   true,
 	})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
@@ -195,6 +236,7 @@ func (s *UserService) VerifyUser(ctx context.Context, input request.RequestVerif
 		UserID: user.ID,
 	})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
@@ -205,11 +247,18 @@ func (s *UserService) VerifyUser(ctx context.Context, input request.RequestVerif
 			Name:  user.Name,
 		}).Send()
 
+	tx.Commit()
 	slog.Info("User verified")
 	return
 }
 
 func (s *UserService) ForgotPassword(ctx context.Context, input request.RequestForgotPassword) (err error) {
+	tx, err := s.db.GetDbConn().Begin()
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+	s.db.SetTx(tx)
 	user, err := s.GetUserByEmailUseCase.Execute(ctx, usecase.GetUserByEmailInputDTO{Email: input.Email})
 	if err != nil {
 		slog.Info("err", err)
@@ -222,6 +271,7 @@ func (s *UserService) ForgotPassword(ctx context.Context, input request.RequestF
 		Name:   user.Name,
 	})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
@@ -232,6 +282,7 @@ func (s *UserService) ForgotPassword(ctx context.Context, input request.RequestF
 		Hash:  userValidation.Hash,
 	}).Send()
 
+	tx.Commit()
 	slog.Info("User forgot password")
 	return
 }

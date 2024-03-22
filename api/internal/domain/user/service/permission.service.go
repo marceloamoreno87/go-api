@@ -55,6 +55,12 @@ func (s *PermissionService) GetPermissions(ctx context.Context, input request.Re
 }
 
 func (s *PermissionService) CreatePermission(ctx context.Context, input request.RequestCreatePermission) (output usecase.CreatePermissionOutputDTO, err error) {
+	tx, err := s.db.GetDbConn().Begin()
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+	s.db.SetTx(tx)
 	check, _ := s.NewGetPermissionByInternalNameUseCase.Execute(ctx, usecase.GetPermissionByInternalNameInputDTO{
 		InternalName: input.InternalName,
 	})
@@ -70,14 +76,22 @@ func (s *PermissionService) CreatePermission(ctx context.Context, input request.
 		Description:  input.Description,
 	})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
+	tx.Commit()
 	slog.Info("Permission created")
 	return
 }
 
 func (s *PermissionService) UpdatePermission(ctx context.Context, input request.RequestUpdatePermission) (output usecase.UpdatePermissionOutputDTO, err error) {
+	tx, err := s.db.GetDbConn().Begin()
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+	s.db.SetTx(tx)
 	output, err = s.NewUpdatePermissionUseCase.Execute(ctx, usecase.UpdatePermissionInputDTO{
 		ID:           input.ID,
 		Name:         input.Name,
@@ -85,19 +99,29 @@ func (s *PermissionService) UpdatePermission(ctx context.Context, input request.
 		Description:  input.Description,
 	})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
+	tx.Commit()
 	slog.Info("Permission updated")
 	return
 }
 
 func (s *PermissionService) DeletePermission(ctx context.Context, input request.RequestDeletePermission) (output usecase.DeletePermissionOutputDTO, err error) {
-	output, err = s.NewDeletePermissionUseCase.Execute(ctx, usecase.DeletePermissionInputDTO{ID: input.ID})
+	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
+	s.db.SetTx(tx)
+	output, err = s.NewDeletePermissionUseCase.Execute(ctx, usecase.DeletePermissionInputDTO{ID: input.ID})
+	if err != nil {
+		tx.Rollback()
+		slog.Info("err", err)
+		return
+	}
+	tx.Commit()
 	slog.Info("Permission deleted")
 	return
 }

@@ -55,6 +55,12 @@ func (s *RoleService) GetRoles(ctx context.Context, input request.RequestGetRole
 }
 
 func (s *RoleService) CreateRole(ctx context.Context, input request.RequestCreateRole) (output usecase.CreateRoleOutputDTO, err error) {
+	tx, err := s.db.GetDbConn().Begin()
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+	s.db.SetTx(tx)
 	check, _ := s.NewGetRoleByInternalNameUseCase.Execute(ctx, usecase.GetRoleByInternalNameInputDTO{InternalName: input.InternalName})
 	if check.ID != 0 {
 		slog.Info("role already exists")
@@ -66,14 +72,22 @@ func (s *RoleService) CreateRole(ctx context.Context, input request.RequestCreat
 		Description:  input.Description,
 	})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
+	tx.Commit()
 	slog.Info("Role created")
 	return
 }
 
 func (s *RoleService) UpdateRole(ctx context.Context, input request.RequestUpdateRole) (output usecase.UpdateRoleOutputDTO, err error) {
+	tx, err := s.db.GetDbConn().Begin()
+	if err != nil {
+		slog.Info("err", err)
+		return
+	}
+	s.db.SetTx(tx)
 	output, err = s.NewUpdateRoleUseCase.Execute(ctx, usecase.UpdateRoleInputDTO{
 		ID:           input.ID,
 		Name:         input.Name,
@@ -81,19 +95,29 @@ func (s *RoleService) UpdateRole(ctx context.Context, input request.RequestUpdat
 		Description:  input.Description,
 	})
 	if err != nil {
+		tx.Rollback()
 		slog.Info("err", err)
 		return
 	}
+	tx.Commit()
 	slog.Info("Role updated")
 	return
 }
 
 func (s *RoleService) DeleteRole(ctx context.Context, input request.RequestDeleteRole) (output usecase.DeleteRoleOutputDTO, err error) {
-	output, err = s.NewDeleteRoleUseCase.Execute(ctx, usecase.DeleteRoleInputDTO{ID: input.ID})
+	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
+	s.db.SetTx(tx)
+	output, err = s.NewDeleteRoleUseCase.Execute(ctx, usecase.DeleteRoleInputDTO{ID: input.ID})
+	if err != nil {
+		tx.Rollback()
+		slog.Info("err", err)
+		return
+	}
+	tx.Commit()
 	slog.Info("Role deleted")
 	return
 }

@@ -70,21 +70,37 @@ func (s *AvatarService) CreateAvatar(ctx context.Context, input request.RequestC
 }
 
 func (s *AvatarService) UpdateAvatar(ctx context.Context, input request.RequestUpdateAvatar) (output usecase.UpdateAvatarOutputDTO, err error) {
-	output, err = s.UpdateAvatarUseCase.Execute(ctx, usecase.UpdateAvatarInputDTO{ID: input.ID, SVG: input.SVG})
+	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
+	s.db.SetTx(tx)
+	output, err = s.UpdateAvatarUseCase.Execute(ctx, usecase.UpdateAvatarInputDTO{ID: input.ID, SVG: input.SVG})
+	if err != nil {
+		tx.Rollback()
+		slog.Info("err", err)
+		return
+	}
+	tx.Commit()
 	slog.Info("Avatar updated")
 	return
 }
 
 func (s *AvatarService) DeleteAvatar(ctx context.Context, input request.RequestDeleteAvatar) (output usecase.DeleteAvatarOutputDTO, err error) {
-	output, err = s.DeleteAvatarUseCase.Execute(ctx, usecase.DeleteAvatarInputDTO{ID: input.ID})
+	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
+	s.db.SetTx(tx)
+	output, err = s.DeleteAvatarUseCase.Execute(ctx, usecase.DeleteAvatarInputDTO{ID: input.ID})
+	if err != nil {
+		tx.Rollback()
+		slog.Info("err", err)
+		return
+	}
+	tx.Commit()
 	slog.Info("Avatar deleted")
 	return
 }
