@@ -1,9 +1,11 @@
 package usecase
 
 import (
+	"context"
 	"errors"
 	"time"
 
+	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -26,14 +28,14 @@ type GetUserValidationByHashUseCase struct {
 	repo repositoryInterface.UserValidationRepositoryInterface
 }
 
-func NewGetUserValidationByHashUseCase() *GetUserValidationByHashUseCase {
+func NewGetUserValidationByHashUseCase(db config.SQLCInterface) *GetUserValidationByHashUseCase {
 	return &GetUserValidationByHashUseCase{
-		repo: repository.NewUserValidationRepository(),
+		repo: repository.NewUserValidationRepository(db),
 	}
 }
 
-func (uc *GetUserValidationByHashUseCase) Execute(input GetUserValidationByHashInputDTO) (output GetUserValidationByHashOutputDTO, err error) {
-	userValidation, err := uc.repo.GetUserValidationByHash(input.Hash)
+func (uc *GetUserValidationByHashUseCase) Execute(ctx context.Context, input GetUserValidationByHashInputDTO) (output GetUserValidationByHashOutputDTO, err error) {
+	userValidation, err := uc.repo.GetUserValidationByHash(ctx, input.Hash)
 	if err != nil {
 		return
 	}

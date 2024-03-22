@@ -1,6 +1,9 @@
 package usecase
 
 import (
+	"context"
+
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -23,19 +26,19 @@ type CreateUserValidationUseCase struct {
 	repo repositoryInterface.UserValidationRepositoryInterface
 }
 
-func NewCreateUserValidationUseCase() *CreateUserValidationUseCase {
+func NewCreateUserValidationUseCase(db config.SQLCInterface) *CreateUserValidationUseCase {
 	return &CreateUserValidationUseCase{
-		repo: repository.NewUserValidationRepository(),
+		repo: repository.NewUserValidationRepository(db),
 	}
 }
 
-func (uc *CreateUserValidationUseCase) Execute(input CreateUserValidationInputDTO) (output CreateUserValidationOutputDTO, err error) {
+func (uc *CreateUserValidationUseCase) Execute(ctx context.Context, input CreateUserValidationInputDTO) (output CreateUserValidationOutputDTO, err error) {
 	userValidation, err := entity.NewUserValidation(input.UserID)
 	if err != nil {
 		return
 	}
 
-	newUserValidation, err := uc.repo.CreateUserValidation(userValidation)
+	newUserValidation, err := uc.repo.CreateUserValidation(ctx, userValidation)
 	if err != nil {
 		return
 	}

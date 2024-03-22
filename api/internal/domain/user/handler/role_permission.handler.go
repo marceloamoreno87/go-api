@@ -45,7 +45,7 @@ func (h *RolePermissionHandler) GetRolePermissions(w http.ResponseWriter, r *htt
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.GetRolePermissions(input)
+	output, err := h.service.GetRolePermissions(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -80,7 +80,7 @@ func (h *RolePermissionHandler) CreateRolePermission(w http.ResponseWriter, r *h
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.CreateRolePermission(input)
+	output, err := h.service.CreateRolePermission(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -117,7 +117,7 @@ func (h *RolePermissionHandler) UpdateRolePermission(w http.ResponseWriter, r *h
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.UpdateRolePermission(input)
+	output, err := h.service.UpdateRolePermission(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -147,7 +147,7 @@ func (h *RolePermissionHandler) DeleteRolePermissionByRoleID(w http.ResponseWrit
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.DeleteRolePermissionByRoleID(input)
+	output, err := h.service.DeleteRolePermissionByRoleID(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))

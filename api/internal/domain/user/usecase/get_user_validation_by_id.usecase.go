@@ -1,9 +1,11 @@
 package usecase
 
 import (
+	"context"
 	"errors"
 	"time"
 
+	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -26,14 +28,14 @@ type GetUserValidationByUserIDUseCase struct {
 	repo repositoryInterface.UserValidationRepositoryInterface
 }
 
-func NewGetUserValidationByUserIDUseCase() *GetUserValidationByUserIDUseCase {
+func NewGetUserValidationByUserIDUseCase(db config.SQLCInterface) *GetUserValidationByUserIDUseCase {
 	return &GetUserValidationByUserIDUseCase{
-		repo: repository.NewUserValidationRepository(),
+		repo: repository.NewUserValidationRepository(db),
 	}
 }
 
-func (uc *GetUserValidationByUserIDUseCase) Execute(input GetUserValidationByUserIDInputDTO) (output GetUserValidationByUserIDOutputDTO, err error) {
-	userValidation, err := uc.repo.GetUserValidationByUserID(input.UserID)
+func (uc *GetUserValidationByUserIDUseCase) Execute(ctx context.Context, input GetUserValidationByUserIDInputDTO) (output GetUserValidationByUserIDOutputDTO, err error) {
+	userValidation, err := uc.repo.GetUserValidationByUserID(ctx, input.UserID)
 	if err != nil {
 		return
 	}

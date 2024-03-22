@@ -1,6 +1,9 @@
 package usecase
 
 import (
+	"context"
+
+	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -13,12 +16,12 @@ type UpdateUserValidationUsedUseCase struct {
 	repo repositoryInterface.UserValidationRepositoryInterface
 }
 
-func NewUpdateUserValidationUsedUseCase() *UpdateUserValidationUsedUseCase {
+func NewUpdateUserValidationUsedUseCase(db config.SQLCInterface) *UpdateUserValidationUsedUseCase {
 	return &UpdateUserValidationUsedUseCase{
-		repo: repository.NewUserValidationRepository(),
+		repo: repository.NewUserValidationRepository(db),
 	}
 }
 
-func (uc *UpdateUserValidationUsedUseCase) Execute(input UpdateUserValidationUsedInputDTO) (err error) {
-	return uc.repo.UpdateUserValidationUsed(input.UserID)
+func (uc *UpdateUserValidationUsedUseCase) Execute(ctx context.Context, input UpdateUserValidationUsedInputDTO) (err error) {
+	return uc.repo.UpdateUserValidationUsed(ctx, input.UserID)
 }

@@ -1,6 +1,9 @@
 package usecase
 
 import (
+	"context"
+
+	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -17,14 +20,14 @@ type UpdateAuthRevokeUseCase struct {
 	repo repositoryInterface.AuthRepositoryInterface
 }
 
-func NewUpdateAuthRevokeUseCase() *UpdateAuthRevokeUseCase {
+func NewUpdateAuthRevokeUseCase(db config.SQLCInterface) *UpdateAuthRevokeUseCase {
 	return &UpdateAuthRevokeUseCase{
-		repo: repository.NewAuthRepository(),
+		repo: repository.NewAuthRepository(db),
 	}
 }
 
-func (uc *UpdateAuthRevokeUseCase) Execute(input UpdateAuthRevokeInputDTO) (output UpdateAuthRevokeOutputDTO, err error) {
-	err = uc.repo.UpdateAuthRevokeByUserID(input.UserID)
+func (uc *UpdateAuthRevokeUseCase) Execute(ctx context.Context, input UpdateAuthRevokeInputDTO) (output UpdateAuthRevokeOutputDTO, err error) {
+	err = uc.repo.UpdateAuthRevokeByUserID(ctx, input.UserID)
 	if err != nil {
 		return
 	}

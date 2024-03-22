@@ -1,29 +1,34 @@
 package service
 
 import (
+	"context"
 	"log/slog"
 
+	"github.com/marceloamoreno/goapi/config"
 	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/request"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type RolePermissionService struct {
+	db                                  config.SQLCInterface
 	GetRolePermissionsUseCase           usecaseInterface.GetRolePermissionsUseCaseInterface
 	CreateRolePermissionUseCase         usecaseInterface.CreateRolePermissionUseCaseInterface
 	DeleteRolePermissionByRoleIDUseCase usecaseInterface.DeleteRolePermissionByRoleIDUseCaseInterface
 }
 
 func NewRolePermissionService() *RolePermissionService {
+	db := config.NewSqlc(config.DB)
 	return &RolePermissionService{
-		GetRolePermissionsUseCase:           usecase.NewGetRolePermissionsUseCase(),
-		CreateRolePermissionUseCase:         usecase.NewCreateRolePermissionUseCase(),
-		DeleteRolePermissionByRoleIDUseCase: usecase.NewDeleteRolePermissionByRoleIDUseCase(),
+		db:                                  db,
+		GetRolePermissionsUseCase:           usecase.NewGetRolePermissionsUseCase(db),
+		CreateRolePermissionUseCase:         usecase.NewCreateRolePermissionUseCase(db),
+		DeleteRolePermissionByRoleIDUseCase: usecase.NewDeleteRolePermissionByRoleIDUseCase(db),
 	}
 }
 
-func (s *RolePermissionService) GetRolePermissions(input request.RequestGetRolePermission) (output []usecase.GetRolePermissionsOutputDTO, err error) {
-	output, err = s.GetRolePermissionsUseCase.Execute(usecase.GetRolePermissionsInputDTO{RoleID: input.RoleID})
+func (s *RolePermissionService) GetRolePermissions(ctx context.Context, input request.RequestGetRolePermission) (output []usecase.GetRolePermissionsOutputDTO, err error) {
+	output, err = s.GetRolePermissionsUseCase.Execute(ctx, usecase.GetRolePermissionsInputDTO{RoleID: input.RoleID})
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -32,8 +37,8 @@ func (s *RolePermissionService) GetRolePermissions(input request.RequestGetRoleP
 	return
 }
 
-func (s *RolePermissionService) CreateRolePermission(input request.RequestCreateRolePermission) (output usecase.CreateRolePermissionOutputDTO, err error) {
-	output, err = s.CreateRolePermissionUseCase.Execute(usecase.CreateRolePermissionInputDTO{
+func (s *RolePermissionService) CreateRolePermission(ctx context.Context, input request.RequestCreateRolePermission) (output usecase.CreateRolePermissionOutputDTO, err error) {
+	output, err = s.CreateRolePermissionUseCase.Execute(ctx, usecase.CreateRolePermissionInputDTO{
 		RoleID:        input.RoleID,
 		PermissionIDs: input.PermissionIDs,
 	})
@@ -44,14 +49,14 @@ func (s *RolePermissionService) CreateRolePermission(input request.RequestCreate
 	return
 }
 
-func (s *RolePermissionService) UpdateRolePermission(input request.RequestUpdateRolePermission) (output usecase.CreateRolePermissionOutputDTO, err error) {
-	_, err = s.DeleteRolePermissionByRoleIDUseCase.Execute(usecase.DeleteRolePermissionByRoleIDInputDTO{RoleID: input.RoleID})
+func (s *RolePermissionService) UpdateRolePermission(ctx context.Context, input request.RequestUpdateRolePermission) (output usecase.CreateRolePermissionOutputDTO, err error) {
+	_, err = s.DeleteRolePermissionByRoleIDUseCase.Execute(ctx, usecase.DeleteRolePermissionByRoleIDInputDTO{RoleID: input.RoleID})
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
 
-	output, err = s.CreateRolePermissionUseCase.Execute(usecase.CreateRolePermissionInputDTO{
+	output, err = s.CreateRolePermissionUseCase.Execute(ctx, usecase.CreateRolePermissionInputDTO{
 		RoleID:        input.RoleID,
 		PermissionIDs: input.PermissionIDs,
 	})
@@ -63,8 +68,8 @@ func (s *RolePermissionService) UpdateRolePermission(input request.RequestUpdate
 	return
 }
 
-func (s *RolePermissionService) DeleteRolePermissionByRoleID(input request.RequestDeleteRolePermissionByRoleID) (output usecase.DeleteRolePermissionByRoleIDOutputDTO, err error) {
-	output, err = s.DeleteRolePermissionByRoleIDUseCase.Execute(usecase.DeleteRolePermissionByRoleIDInputDTO{RoleID: input.RoleID})
+func (s *RolePermissionService) DeleteRolePermissionByRoleID(ctx context.Context, input request.RequestDeleteRolePermissionByRoleID) (output usecase.DeleteRolePermissionByRoleIDOutputDTO, err error) {
+	output, err = s.DeleteRolePermissionByRoleIDUseCase.Execute(ctx, usecase.DeleteRolePermissionByRoleIDInputDTO{RoleID: input.RoleID})
 	if err != nil {
 		slog.Info("err", err)
 		return

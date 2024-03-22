@@ -1,6 +1,9 @@
 package usecase
 
 import (
+	"context"
+
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -23,19 +26,19 @@ type CreateAuthUseCase struct {
 	repo repositoryInterface.AuthRepositoryInterface
 }
 
-func NewCreateAuthUseCase() *CreateAuthUseCase {
+func NewCreateAuthUseCase(db config.SQLCInterface) *CreateAuthUseCase {
 	return &CreateAuthUseCase{
-		repo: repository.NewAuthRepository(),
+		repo: repository.NewAuthRepository(db),
 	}
 }
 
-func (uc *CreateAuthUseCase) Execute(input CreateAuthInputDTO) (output CreateAuthOutputDTO, err error) {
+func (uc *CreateAuthUseCase) Execute(ctx context.Context, input CreateAuthInputDTO) (output CreateAuthOutputDTO, err error) {
 	auth, err := entity.NewAuth(input.UserID)
 	if err != nil {
 		return
 	}
 
-	err = uc.repo.CreateAuth(auth)
+	err = uc.repo.CreateAuth(ctx, auth)
 	if err != nil {
 		return
 	}

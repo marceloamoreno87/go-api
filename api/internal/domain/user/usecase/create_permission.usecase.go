@@ -1,6 +1,9 @@
 package usecase
 
 import (
+	"context"
+
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -22,19 +25,19 @@ type CreatePermissionUseCase struct {
 	repo repositoryInterface.PermissionRepositoryInterface
 }
 
-func NewCreatePermissionUseCase() *CreatePermissionUseCase {
+func NewCreatePermissionUseCase(db config.SQLCInterface) *CreatePermissionUseCase {
 	return &CreatePermissionUseCase{
-		repo: repository.NewPermissionRepository(),
+		repo: repository.NewPermissionRepository(db),
 	}
 }
 
-func (uc *CreatePermissionUseCase) Execute(input CreatePermissionInputDTO) (output CreatePermissionOutputDTO, err error) {
+func (uc *CreatePermissionUseCase) Execute(ctx context.Context, input CreatePermissionInputDTO) (output CreatePermissionOutputDTO, err error) {
 	permission, err := entity.NewPermission(input.Name, input.InternalName, input.Description)
 	if err != nil {
 		return
 	}
 
-	err = uc.repo.CreatePermission(permission)
+	err = uc.repo.CreatePermission(ctx, permission)
 
 	output = CreatePermissionOutputDTO{
 		Name:         permission.GetName(),

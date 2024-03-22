@@ -10,17 +10,17 @@ import (
 )
 
 type AuthRepository struct {
-	DB config.SQLCInterface
+	db config.SQLCInterface
 }
 
-func NewAuthRepository() *AuthRepository {
+func NewAuthRepository(db config.SQLCInterface) *AuthRepository {
 	return &AuthRepository{
-		DB: config.NewSqlc(config.DB),
+		db: db,
 	}
 }
 
-func (repo *AuthRepository) CreateAuth(auth entityInterface.AuthInterface) (err error) {
-	return repo.DB.GetDbQueries().CreateAuth(context.Background(), db.CreateAuthParams{
+func (repo *AuthRepository) CreateAuth(ctx context.Context, auth entityInterface.AuthInterface) (err error) {
+	return repo.db.GetDbQueries().WithTx(repo.db.GetTx()).CreateAuth(ctx, db.CreateAuthParams{
 		UserID:                auth.GetUserID(),
 		Token:                 auth.GetToken(),
 		RefreshToken:          auth.GetRefreshToken(),
@@ -29,8 +29,8 @@ func (repo *AuthRepository) CreateAuth(auth entityInterface.AuthInterface) (err 
 	})
 }
 
-func (repo *AuthRepository) GetAuthByUserID(userId int32) (output entityInterface.AuthInterface, err error) {
-	a, err := repo.DB.GetDbQueries().GetAuthByUserID(context.Background(), userId)
+func (repo *AuthRepository) GetAuthByUserID(ctx context.Context, userId int32) (output entityInterface.AuthInterface, err error) {
+	a, err := repo.db.GetDbQueries().GetAuthByUserID(ctx, userId)
 	if err != nil {
 		return
 	}
@@ -47,12 +47,12 @@ func (repo *AuthRepository) GetAuthByUserID(userId int32) (output entityInterfac
 	return
 }
 
-func (repo *AuthRepository) UpdateAuthRevokeByUserID(userId int32) (err error) {
-	return repo.DB.GetDbQueries().UpdateAuthRevokeByUserID(context.Background(), userId)
+func (repo *AuthRepository) UpdateAuthRevokeByUserID(ctx context.Context, userId int32) (err error) {
+	return repo.db.GetDbQueries().WithTx(repo.db.GetTx()).UpdateAuthRevokeByUserID(ctx, userId)
 }
 
-func (repo *AuthRepository) GetAuthByToken(userId int32, token string) (output entityInterface.AuthInterface, err error) {
-	a, err := repo.DB.GetDbQueries().GetAuthByToken(context.Background(), db.GetAuthByTokenParams{
+func (repo *AuthRepository) GetAuthByToken(ctx context.Context, userId int32, token string) (output entityInterface.AuthInterface, err error) {
+	a, err := repo.db.GetDbQueries().GetAuthByToken(ctx, db.GetAuthByTokenParams{
 		Token:  token,
 		UserID: userId,
 	})
@@ -72,8 +72,8 @@ func (repo *AuthRepository) GetAuthByToken(userId int32, token string) (output e
 	return
 }
 
-func (repo *AuthRepository) GetAuthByRefreshToken(userId int32, refreshToken string) (output entityInterface.AuthInterface, err error) {
-	a, err := repo.DB.GetDbQueries().GetAuthByRefreshToken(context.Background(), db.GetAuthByRefreshTokenParams{
+func (repo *AuthRepository) GetAuthByRefreshToken(ctx context.Context, userId int32, refreshToken string) (output entityInterface.AuthInterface, err error) {
+	a, err := repo.db.GetDbQueries().GetAuthByRefreshToken(ctx, db.GetAuthByRefreshTokenParams{
 		RefreshToken: refreshToken,
 		UserID:       userId,
 	})

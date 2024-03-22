@@ -1,6 +1,9 @@
 package usecase
 
 import (
+	"context"
+
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -29,13 +32,13 @@ type UpdateUserUseCase struct {
 	repo repositoryInterface.UserRepositoryInterface
 }
 
-func NewUpdateUserUseCase() *UpdateUserUseCase {
+func NewUpdateUserUseCase(db config.SQLCInterface) *UpdateUserUseCase {
 	return &UpdateUserUseCase{
-		repo: repository.NewUserRepository(),
+		repo: repository.NewUserRepository(db),
 	}
 }
 
-func (uc *UpdateUserUseCase) Execute(input UpdateUserInputDTO) (output UpdateUserOutputDTO, err error) {
+func (uc *UpdateUserUseCase) Execute(ctx context.Context, input UpdateUserInputDTO) (output UpdateUserOutputDTO, err error) {
 	user, err := entity.NewUser(input.Name, input.Email, input.Password)
 	if err != nil {
 		return
@@ -43,7 +46,7 @@ func (uc *UpdateUserUseCase) Execute(input UpdateUserInputDTO) (output UpdateUse
 	user.HashPassword()
 	user.SetAvatarID(input.AvatarID)
 	user.SetRoleID(input.RoleID)
-	err = uc.repo.UpdateUser(user, input.ID)
+	err = uc.repo.UpdateUser(ctx, user, input.ID)
 
 	output = UpdateUserOutputDTO{
 		ID:       user.GetID(),

@@ -45,7 +45,7 @@ func (h *RoleHandler) GetRole(w http.ResponseWriter, r *http.Request) {
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.GetRole(input)
+	output, err := h.service.GetRole(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -78,7 +78,7 @@ func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.GetRoles(input)
+	output, err := h.service.GetRoles(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -110,7 +110,7 @@ func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.CreateRole(input)
+	output, err := h.service.CreateRole(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -141,7 +141,7 @@ func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.UpdateRole(input)
+	output, err := h.service.UpdateRole(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -171,7 +171,7 @@ func (h *RoleHandler) DeleteRole(w http.ResponseWriter, r *http.Request) {
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.DeleteRole(input)
+	output, err := h.service.DeleteRole(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))

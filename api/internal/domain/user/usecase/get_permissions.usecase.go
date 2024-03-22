@@ -1,8 +1,10 @@
 package usecase
 
 import (
+	"context"
 	"time"
 
+	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -25,14 +27,14 @@ type GetPermissionsUseCase struct {
 	repo repositoryInterface.PermissionRepositoryInterface
 }
 
-func NewGetPermissionsUseCase() *GetPermissionsUseCase {
+func NewGetPermissionsUseCase(db config.SQLCInterface) *GetPermissionsUseCase {
 	return &GetPermissionsUseCase{
-		repo: repository.NewPermissionRepository(),
+		repo: repository.NewPermissionRepository(db),
 	}
 }
 
-func (uc *GetPermissionsUseCase) Execute(input GetPermissionsInputDTO) (output []GetPermissionsOutputDTO, err error) {
-	permissions, err := uc.repo.GetPermissions(input.Limit, input.Offset)
+func (uc *GetPermissionsUseCase) Execute(ctx context.Context, input GetPermissionsInputDTO) (output []GetPermissionsOutputDTO, err error) {
+	permissions, err := uc.repo.GetPermissions(ctx, input.Limit, input.Offset)
 	if err != nil {
 		return
 	}

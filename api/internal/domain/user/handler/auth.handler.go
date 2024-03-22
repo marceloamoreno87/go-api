@@ -45,7 +45,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.Login(input)
+	output, err := h.service.Login(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -77,7 +77,7 @@ func (h *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.RefreshToken(input)
+	output, err := h.service.RefreshToken(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))

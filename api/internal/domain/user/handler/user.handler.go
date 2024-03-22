@@ -47,7 +47,7 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.CreateUser(input)
+	output, err := h.service.CreateUser(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -77,7 +77,7 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.GetUser(input)
+	output, err := h.service.GetUser(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -110,7 +110,7 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.GetUsers(input)
+	output, err := h.service.GetUsers(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -145,7 +145,7 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.UpdateUser(input)
+	output, err := h.service.UpdateUser(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -170,7 +170,7 @@ func (h *UserHandler) UpdateUserPassword(w http.ResponseWriter, r *http.Request)
 		slog.Info("err", err)
 		return
 	}
-	err := h.service.UpdateUserPassword(input)
+	err := h.service.UpdateUserPassword(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -194,7 +194,7 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	input := request.RequestDeleteUser{
 		ID: helper.GetID(r),
 	}
-	output, err := h.service.DeleteUser(input)
+	output, err := h.service.DeleteUser(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -219,7 +219,7 @@ func (h *UserHandler) ForgotPassword(w http.ResponseWriter, r *http.Request) {
 		slog.Info("err", err)
 		return
 	}
-	err := h.service.ForgotPassword(input)
+	err := h.service.ForgotPassword(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -244,7 +244,7 @@ func (h *UserHandler) VerifyUser(w http.ResponseWriter, r *http.Request) {
 		slog.Info("err", err)
 		return
 	}
-	err := h.service.VerifyUser(input)
+	err := h.service.VerifyUser(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -270,7 +270,7 @@ func (h *UserHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 		slog.Info("err", err)
 		return
 	}
-	output, err := h.service.CreateUser(input)
+	output, err := h.service.CreateUser(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))

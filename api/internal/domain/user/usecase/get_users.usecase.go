@@ -1,8 +1,10 @@
 package usecase
 
 import (
+	"context"
 	"time"
 
+	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -28,14 +30,14 @@ type GetUsersUseCase struct {
 	repo repositoryInterface.UserRepositoryInterface
 }
 
-func NewGetUsersUseCase() *GetUsersUseCase {
+func NewGetUsersUseCase(db config.SQLCInterface) *GetUsersUseCase {
 	return &GetUsersUseCase{
-		repo: repository.NewUserRepository(),
+		repo: repository.NewUserRepository(db),
 	}
 }
 
-func (uc *GetUsersUseCase) Execute(input GetUsersInputDTO) (output []GetUsersOutputDTO, err error) {
-	users, err := uc.repo.GetUsers(input.Limit, input.Offset)
+func (uc *GetUsersUseCase) Execute(ctx context.Context, input GetUsersInputDTO) (output []GetUsersOutputDTO, err error) {
+	users, err := uc.repo.GetUsers(ctx, input.Limit, input.Offset)
 	if err != nil {
 		return
 	}

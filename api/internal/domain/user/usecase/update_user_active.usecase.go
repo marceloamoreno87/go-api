@@ -1,6 +1,9 @@
 package usecase
 
 import (
+	"context"
+
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -21,13 +24,13 @@ type UpdateUserActiveUseCase struct {
 	repo repositoryInterface.UserRepositoryInterface
 }
 
-func NewUpdateUserActiveUseCase() *UpdateUserActiveUseCase {
+func NewUpdateUserActiveUseCase(db config.SQLCInterface) *UpdateUserActiveUseCase {
 	return &UpdateUserActiveUseCase{
-		repo: repository.NewUserRepository(),
+		repo: repository.NewUserRepository(db),
 	}
 }
 
-func (uc *UpdateUserActiveUseCase) Execute(input UpdateUserActiveInputDTO) (err error) {
+func (uc *UpdateUserActiveUseCase) Execute(ctx context.Context, input UpdateUserActiveInputDTO) (err error) {
 	user, err := entity.NewUser(input.Name, input.Email, input.Password)
 	if err != nil {
 		return
@@ -35,7 +38,7 @@ func (uc *UpdateUserActiveUseCase) Execute(input UpdateUserActiveInputDTO) (err 
 	user.SetID(input.ID)
 	user.SetActive(input.Active)
 
-	err = uc.repo.UpdateUserActive(user.GetID(), user.GetActive())
+	err = uc.repo.UpdateUserActive(ctx, user.GetID(), user.GetActive())
 
 	return
 }

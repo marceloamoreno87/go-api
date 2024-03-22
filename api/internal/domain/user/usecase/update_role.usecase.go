@@ -1,6 +1,9 @@
 package usecase
 
 import (
+	"context"
+
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -24,18 +27,18 @@ type UpdateRoleUseCase struct {
 	repo repositoryInterface.RoleRepositoryInterface
 }
 
-func NewUpdateRoleUseCase() *UpdateRoleUseCase {
+func NewUpdateRoleUseCase(db config.SQLCInterface) *UpdateRoleUseCase {
 	return &UpdateRoleUseCase{
-		repo: repository.NewRoleRepository(),
+		repo: repository.NewRoleRepository(db),
 	}
 }
 
-func (uc *UpdateRoleUseCase) Execute(input UpdateRoleInputDTO) (output UpdateRoleOutputDTO, err error) {
+func (uc *UpdateRoleUseCase) Execute(ctx context.Context, input UpdateRoleInputDTO) (output UpdateRoleOutputDTO, err error) {
 	role, err := entity.NewRole(input.Name, input.InternalName, input.Description)
 	if err != nil {
 		return
 	}
-	err = uc.repo.UpdateRole(role, input.ID)
+	err = uc.repo.UpdateRole(ctx, role, input.ID)
 
 	output = UpdateRoleOutputDTO{
 		ID:           role.GetID(),

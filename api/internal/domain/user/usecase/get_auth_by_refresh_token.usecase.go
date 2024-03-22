@@ -1,8 +1,10 @@
 package usecase
 
 import (
+	"context"
 	"errors"
 
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -26,14 +28,14 @@ type GetAuthByRefreshTokenUseCase struct {
 	repo repositoryInterface.AuthRepositoryInterface
 }
 
-func NewGetAuthByRefreshTokenUseCase() *GetAuthByRefreshTokenUseCase {
+func NewGetAuthByRefreshTokenUseCase(db config.SQLCInterface) *GetAuthByRefreshTokenUseCase {
 	return &GetAuthByRefreshTokenUseCase{
-		repo: repository.NewAuthRepository(),
+		repo: repository.NewAuthRepository(db),
 	}
 }
 
-func (uc *GetAuthByRefreshTokenUseCase) Execute(input GetAuthByRefreshTokenInputDTO) (output GetAuthByRefreshTokenOutputDTO, err error) {
-	auth, err := uc.repo.GetAuthByRefreshToken(input.UserID, input.RefreshToken)
+func (uc *GetAuthByRefreshTokenUseCase) Execute(ctx context.Context, input GetAuthByRefreshTokenInputDTO) (output GetAuthByRefreshTokenOutputDTO, err error) {
+	auth, err := uc.repo.GetAuthByRefreshToken(ctx, input.UserID, input.RefreshToken)
 	if err != nil {
 		return
 	}

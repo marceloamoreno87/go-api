@@ -1,8 +1,10 @@
 package usecase
 
 import (
+	"context"
 	"time"
 
+	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -24,15 +26,15 @@ type GetRoleByInternalNameUseCase struct {
 	repo repositoryInterface.RoleRepositoryInterface
 }
 
-func NewGetRoleByInternalNameUseCase() *GetRoleByInternalNameUseCase {
+func NewGetRoleByInternalNameUseCase(db config.SQLCInterface) *GetRoleByInternalNameUseCase {
 	return &GetRoleByInternalNameUseCase{
-		repo: repository.NewRoleRepository(),
+		repo: repository.NewRoleRepository(db),
 	}
 }
 
-func (uc *GetRoleByInternalNameUseCase) Execute(input GetRoleByInternalNameInputDTO) (output GetRoleByInternalNameOutputDTO, err error) {
+func (uc *GetRoleByInternalNameUseCase) Execute(ctx context.Context, input GetRoleByInternalNameInputDTO) (output GetRoleByInternalNameOutputDTO, err error) {
 
-	role, err := uc.repo.GetRoleByInternalName(input.InternalName)
+	role, err := uc.repo.GetRoleByInternalName(ctx, input.InternalName)
 	if err != nil {
 		return
 	}

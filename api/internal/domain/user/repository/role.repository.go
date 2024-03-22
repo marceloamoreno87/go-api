@@ -10,27 +10,27 @@ import (
 )
 
 type RoleRepository struct {
-	DB config.SQLCInterface
+	db config.SQLCInterface
 }
 
-func NewRoleRepository() *RoleRepository {
+func NewRoleRepository(db config.SQLCInterface) *RoleRepository {
 	return &RoleRepository{
-		DB: config.NewSqlc(config.DB),
+		db: db,
 	}
 }
 
-func (repo *RoleRepository) CreateRole(role entityInterface.RoleInterface) (err error) {
+func (repo *RoleRepository) CreateRole(ctx context.Context, role entityInterface.RoleInterface) (err error) {
 
-	return repo.DB.GetDbQueries().CreateRole(context.Background(), db.CreateRoleParams{
+	return repo.db.GetDbQueries().WithTx(repo.db.GetTx()).CreateRole(ctx, db.CreateRoleParams{
 		Name:         role.GetName(),
 		InternalName: role.GetInternalName(),
 		Description:  role.GetDescription(),
 	})
 }
 
-func (repo *RoleRepository) GetRole(id int32) (output entityInterface.RoleInterface, err error) {
+func (repo *RoleRepository) GetRole(ctx context.Context, id int32) (output entityInterface.RoleInterface, err error) {
 
-	r, err := repo.DB.GetDbQueries().GetRole(context.Background(), id)
+	r, err := repo.db.GetDbQueries().GetRole(ctx, id)
 	if err != nil {
 		return
 	}
@@ -45,9 +45,9 @@ func (repo *RoleRepository) GetRole(id int32) (output entityInterface.RoleInterf
 	return
 }
 
-func (repo *RoleRepository) GetRoleByInternalName(internalName string) (output entityInterface.RoleInterface, err error) {
+func (repo *RoleRepository) GetRoleByInternalName(ctx context.Context, internalName string) (output entityInterface.RoleInterface, err error) {
 
-	r, err := repo.DB.GetDbQueries().GetRoleByInternalName(context.Background(), internalName)
+	r, err := repo.db.GetDbQueries().GetRoleByInternalName(ctx, internalName)
 	if err != nil {
 		return
 	}
@@ -62,9 +62,9 @@ func (repo *RoleRepository) GetRoleByInternalName(internalName string) (output e
 	return
 }
 
-func (repo *RoleRepository) GetRoles(limit int32, offset int32) (output []entityInterface.RoleInterface, err error) {
+func (repo *RoleRepository) GetRoles(ctx context.Context, limit int32, offset int32) (output []entityInterface.RoleInterface, err error) {
 
-	r, err := repo.DB.GetDbQueries().GetRoles(context.Background(), db.GetRolesParams{
+	r, err := repo.db.GetDbQueries().GetRoles(ctx, db.GetRolesParams{
 		Limit:  limit,
 		Offset: offset,
 	})
@@ -84,9 +84,9 @@ func (repo *RoleRepository) GetRoles(limit int32, offset int32) (output []entity
 	return
 }
 
-func (repo *RoleRepository) UpdateRole(role entityInterface.RoleInterface, id int32) (err error) {
+func (repo *RoleRepository) UpdateRole(ctx context.Context, role entityInterface.RoleInterface, id int32) (err error) {
 
-	return repo.DB.GetDbQueries().UpdateRole(context.Background(), db.UpdateRoleParams{
+	return repo.db.GetDbQueries().WithTx(repo.db.GetTx()).UpdateRole(ctx, db.UpdateRoleParams{
 		ID:           id,
 		Name:         role.GetName(),
 		InternalName: role.GetInternalName(),
@@ -94,7 +94,6 @@ func (repo *RoleRepository) UpdateRole(role entityInterface.RoleInterface, id in
 	})
 }
 
-func (repo *RoleRepository) DeleteRole(id int32) (err error) {
-
-	return repo.DB.GetDbQueries().DeleteRole(context.Background(), id)
+func (repo *RoleRepository) DeleteRole(ctx context.Context, id int32) (err error) {
+	return repo.db.GetDbQueries().WithTx(repo.db.GetTx()).DeleteRole(ctx, id)
 }

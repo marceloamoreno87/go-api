@@ -1,8 +1,10 @@
 package usecase
 
 import (
+	"context"
 	"errors"
 
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -29,25 +31,25 @@ type CreateUserUseCase struct {
 	repo repositoryInterface.UserRepositoryInterface
 }
 
-func NewCreateUserUseCase() *CreateUserUseCase {
+func NewCreateUserUseCase(db config.SQLCInterface) *CreateUserUseCase {
 	return &CreateUserUseCase{
-		repo: repository.NewUserRepository(),
+		repo: repository.NewUserRepository(db),
 	}
 }
 
-func (uc *CreateUserUseCase) Execute(input CreateUserInputDTO) (output CreateUserOutputDTO, err error) {
+func (uc *CreateUserUseCase) Execute(ctx context.Context, input CreateUserInputDTO) (output CreateUserOutputDTO, err error) {
 	user, err := entity.NewUser(input.Name, input.Email, input.Password)
 	if err != nil {
 		return
 	}
 
-	check, _ := uc.repo.GetUserByEmail(user.GetEmail())
+	check, _ := uc.repo.GetUserByEmail(ctx, user.GetEmail())
 	if check != nil && check.GetID() != 0 {
 		return output, errors.New("user already exists")
 	}
 
 	user.HashPassword()
-	newUser, err := uc.repo.CreateUser(user)
+	newUser, err := uc.repo.CreateUser(ctx, user)
 	if err != nil {
 		return
 	}

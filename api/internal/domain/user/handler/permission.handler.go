@@ -45,7 +45,7 @@ func (h *PermissionHandler) GetPermission(w http.ResponseWriter, r *http.Request
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.GetPermission(input)
+	output, err := h.service.GetPermission(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -78,7 +78,7 @@ func (h *PermissionHandler) GetPermissions(w http.ResponseWriter, r *http.Reques
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.GetPermissions(input)
+	output, err := h.service.GetPermissions(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -110,7 +110,7 @@ func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Requ
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.CreatePermission(input)
+	output, err := h.service.CreatePermission(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -145,7 +145,7 @@ func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Requ
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.UpdatePermission(input)
+	output, err := h.service.UpdatePermission(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
@@ -176,7 +176,7 @@ func (h *PermissionHandler) DeletePermission(w http.ResponseWriter, r *http.Requ
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
 		return
 	}
-	output, err := h.service.DeletePermission(input)
+	output, err := h.service.DeletePermission(r.Context(), input)
 	if err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))

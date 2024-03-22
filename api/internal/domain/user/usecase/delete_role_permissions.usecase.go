@@ -1,8 +1,10 @@
 package usecase
 
 import (
+	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
+	"golang.org/x/net/context"
 )
 
 type DeleteRolePermissionByRoleIDInputDTO struct {
@@ -17,14 +19,14 @@ type DeleteRolePermissionByRoleIDUseCase struct {
 	repo repositoryInterface.RolePermissionRepositoryInterface
 }
 
-func NewDeleteRolePermissionByRoleIDUseCase() *DeleteRolePermissionByRoleIDUseCase {
+func NewDeleteRolePermissionByRoleIDUseCase(db config.SQLCInterface) *DeleteRolePermissionByRoleIDUseCase {
 	return &DeleteRolePermissionByRoleIDUseCase{
-		repo: repository.NewRolePermissionRepository(),
+		repo: repository.NewRolePermissionRepository(db),
 	}
 }
 
-func (uc *DeleteRolePermissionByRoleIDUseCase) Execute(input DeleteRolePermissionByRoleIDInputDTO) (output DeleteRolePermissionByRoleIDOutputDTO, err error) {
-	err = uc.repo.DeleteRolePermissionByRoleID(input.RoleID)
+func (uc *DeleteRolePermissionByRoleIDUseCase) Execute(ctx context.Context, input DeleteRolePermissionByRoleIDInputDTO) (output DeleteRolePermissionByRoleIDOutputDTO, err error) {
+	err = uc.repo.DeleteRolePermissionByRoleID(ctx, input.RoleID)
 	if err != nil {
 		return
 	}

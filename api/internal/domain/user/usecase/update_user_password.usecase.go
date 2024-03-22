@@ -1,6 +1,9 @@
 package usecase
 
 import (
+	"context"
+
+	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
@@ -24,13 +27,13 @@ type UpdateUserPasswordUseCase struct {
 	repo repositoryInterface.UserRepositoryInterface
 }
 
-func NewUpdateUserPasswordUseCase() *UpdateUserPasswordUseCase {
+func NewUpdateUserPasswordUseCase(db config.SQLCInterface) *UpdateUserPasswordUseCase {
 	return &UpdateUserPasswordUseCase{
-		repo: repository.NewUserRepository(),
+		repo: repository.NewUserRepository(db),
 	}
 }
 
-func (uc *UpdateUserPasswordUseCase) Execute(input UpdateUserPasswordInputDTO) (output UpdateUserPasswordOutputDTO, err error) {
+func (uc *UpdateUserPasswordUseCase) Execute(ctx context.Context, input UpdateUserPasswordInputDTO) (output UpdateUserPasswordOutputDTO, err error) {
 
 	user, err := entity.NewUser(input.Name, input.Email, input.Password)
 	if err != nil {
@@ -39,7 +42,7 @@ func (uc *UpdateUserPasswordUseCase) Execute(input UpdateUserPasswordInputDTO) (
 	user.SetID(input.ID)
 	user.HashPassword()
 
-	err = uc.repo.UpdateUserPassword(user.GetID(), user.GetPassword())
+	err = uc.repo.UpdateUserPassword(ctx, user.GetID(), user.GetPassword())
 	output = UpdateUserPasswordOutputDTO{
 		ID:       input.ID,
 		Password: input.Password,

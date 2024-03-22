@@ -1,8 +1,10 @@
 package usecase
 
 import (
+	"context"
 	"time"
 
+	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -27,14 +29,14 @@ type GetUserByEmailUseCase struct {
 	repo repositoryInterface.UserRepositoryInterface
 }
 
-func NewGetUserByEmailUseCase() *GetUserByEmailUseCase {
+func NewGetUserByEmailUseCase(db config.SQLCInterface) *GetUserByEmailUseCase {
 	return &GetUserByEmailUseCase{
-		repo: repository.NewUserRepository(),
+		repo: repository.NewUserRepository(db),
 	}
 }
 
-func (uc *GetUserByEmailUseCase) Execute(input GetUserByEmailInputDTO) (output GetUserByEmailOutputDTO, err error) {
-	user, err := uc.repo.GetUserByEmail(input.Email)
+func (uc *GetUserByEmailUseCase) Execute(ctx context.Context, input GetUserByEmailInputDTO) (output GetUserByEmailOutputDTO, err error) {
+	user, err := uc.repo.GetUserByEmail(ctx, input.Email)
 	if err != nil {
 		return
 	}

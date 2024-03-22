@@ -1,14 +1,17 @@
 package service
 
 import (
+	"context"
 	"log/slog"
 
+	"github.com/marceloamoreno/goapi/config"
 	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/request"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type AuthService struct {
+	db                             config.SQLCInterface
 	GetUserUseCase                 usecaseInterface.GetUserUseCaseInterface
 	GetUserByEmailUseCase          usecaseInterface.GetUserByEmailUseCaseInterface
 	CreateAuthUseCase              usecaseInterface.CreateAuthUseCaseInterface
@@ -26,26 +29,28 @@ type AuthService struct {
 }
 
 func NewAuthService() *AuthService {
+	db := config.NewSqlc(config.DB)
 	return &AuthService{
-		GetUserUseCase:                 usecase.NewGetUserUseCase(),
-		GetUserByEmailUseCase:          usecase.NewGetUserByEmailUseCase(),
-		CreateAuthUseCase:              usecase.NewCreateAuthUseCase(),
+		db:                             db,
+		GetUserUseCase:                 usecase.NewGetUserUseCase(db),
+		GetUserByEmailUseCase:          usecase.NewGetUserByEmailUseCase(db),
+		CreateAuthUseCase:              usecase.NewCreateAuthUseCase(db),
 		LoginUserUseCase:               usecase.NewLoginUserUseCase(),
-		GetAuthByRefreshTokenUseCase:   usecase.NewGetAuthByRefreshTokenUseCase(),
-		UpdateAuthRevokeUseCase:        usecase.NewUpdateAuthRevokeUseCase(),
-		GetAuthByTokenUseCase:          usecase.NewGetAuthByTokenUseCase(),
-		GetAuthByUserIDUseCase:         usecase.NewGetAuthByUserIDUseCase(),
-		CreateUserUseCase:              usecase.NewCreateUserUseCase(),
-		UpdateUserPasswordUseCase:      usecase.NewUpdateUserPasswordUseCase(),
-		GetUserValidationByHashUseCase: usecase.NewGetUserValidationByHashUseCase(),
-		UpdateUserActive:               usecase.NewUpdateUserActiveUseCase(),
-		UpdateUserValidationUsed:       usecase.NewUpdateUserValidationUsedUseCase(),
-		CreateUserValidationUseCase:    usecase.NewCreateUserValidationUseCase(),
+		GetAuthByRefreshTokenUseCase:   usecase.NewGetAuthByRefreshTokenUseCase(db),
+		UpdateAuthRevokeUseCase:        usecase.NewUpdateAuthRevokeUseCase(db),
+		GetAuthByTokenUseCase:          usecase.NewGetAuthByTokenUseCase(db),
+		GetAuthByUserIDUseCase:         usecase.NewGetAuthByUserIDUseCase(db),
+		CreateUserUseCase:              usecase.NewCreateUserUseCase(db),
+		UpdateUserPasswordUseCase:      usecase.NewUpdateUserPasswordUseCase(db),
+		GetUserValidationByHashUseCase: usecase.NewGetUserValidationByHashUseCase(db),
+		UpdateUserActive:               usecase.NewUpdateUserActiveUseCase(db),
+		UpdateUserValidationUsed:       usecase.NewUpdateUserValidationUsedUseCase(db),
+		CreateUserValidationUseCase:    usecase.NewCreateUserValidationUseCase(db),
 	}
 }
 
-func (s *AuthService) Login(input request.RequestLogin) (output usecase.CreateAuthOutputDTO, err error) {
-	user, err := s.GetUserByEmailUseCase.Execute(usecase.GetUserByEmailInputDTO{Email: input.Email})
+func (s *AuthService) Login(ctx context.Context, input request.RequestLogin) (output usecase.CreateAuthOutputDTO, err error) {
+	user, err := s.GetUserByEmailUseCase.Execute(ctx, usecase.GetUserByEmailInputDTO{Email: input.Email})
 	if err != nil {
 		slog.Info("err", err)
 		return
@@ -64,7 +69,7 @@ func (s *AuthService) Login(input request.RequestLogin) (output usecase.CreateAu
 		return
 	}
 
-	auth, _ := s.GetAuthByUserIDUseCase.Execute(usecase.GetAuthByUserIDInputDTO{
+	auth, _ := s.GetAuthByUserIDUseCase.Execute(ctx, usecase.GetAuthByUserIDInputDTO{
 		UserID: user.ID,
 	})
 	if auth.UserID != 0 {
@@ -78,7 +83,7 @@ func (s *AuthService) Login(input request.RequestLogin) (output usecase.CreateAu
 		}, nil
 	}
 
-	_, err = s.UpdateAuthRevokeUseCase.Execute(usecase.UpdateAuthRevokeInputDTO{
+	_, err = s.UpdateAuthRevokeUseCase.Execute(ctx, usecase.UpdateAuthRevokeInputDTO{
 		UserID: user.ID,
 	})
 	if err != nil {
@@ -86,7 +91,7 @@ func (s *AuthService) Login(input request.RequestLogin) (output usecase.CreateAu
 		return
 	}
 
-	newToken, err := s.CreateAuthUseCase.Execute(usecase.CreateAuthInputDTO{
+	newToken, err := s.CreateAuthUseCase.Execute(ctx, usecase.CreateAuthInputDTO{
 		UserID: user.ID,
 	})
 	if err != nil {
@@ -106,8 +111,8 @@ func (s *AuthService) Login(input request.RequestLogin) (output usecase.CreateAu
 	return
 }
 
-func (s *AuthService) RefreshToken(input request.RequestRefreshToken) (output usecase.CreateAuthOutputDTO, err error) {
-	rt, err := s.GetAuthByRefreshTokenUseCase.Execute(usecase.GetAuthByRefreshTokenInputDTO{
+func (s *AuthService) RefreshToken(ctx context.Context, input request.RequestRefreshToken) (output usecase.CreateAuthOutputDTO, err error) {
+	rt, err := s.GetAuthByRefreshTokenUseCase.Execute(ctx, usecase.GetAuthByRefreshTokenInputDTO{
 		UserID:       input.UserID,
 		RefreshToken: input.RefreshToken,
 	})
@@ -116,7 +121,7 @@ func (s *AuthService) RefreshToken(input request.RequestRefreshToken) (output us
 		return
 	}
 
-	_, err = s.UpdateAuthRevokeUseCase.Execute(usecase.UpdateAuthRevokeInputDTO{
+	_, err = s.UpdateAuthRevokeUseCase.Execute(ctx, usecase.UpdateAuthRevokeInputDTO{
 		UserID: rt.UserID,
 	})
 	if err != nil {
@@ -124,7 +129,7 @@ func (s *AuthService) RefreshToken(input request.RequestRefreshToken) (output us
 		return
 	}
 
-	token, err := s.CreateAuthUseCase.Execute(usecase.CreateAuthInputDTO{
+	token, err := s.CreateAuthUseCase.Execute(ctx, usecase.CreateAuthInputDTO{
 		UserID: rt.UserID,
 	})
 	if err != nil {

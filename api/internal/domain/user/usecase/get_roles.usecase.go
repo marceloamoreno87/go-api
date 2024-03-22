@@ -1,8 +1,10 @@
 package usecase
 
 import (
+	"context"
 	"time"
 
+	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -25,15 +27,15 @@ type GetRolesUseCase struct {
 	repo repositoryInterface.RoleRepositoryInterface
 }
 
-func NewGetRolesUseCase() *GetRolesUseCase {
+func NewGetRolesUseCase(db config.SQLCInterface) *GetRolesUseCase {
 	return &GetRolesUseCase{
-		repo: repository.NewRoleRepository(),
+		repo: repository.NewRoleRepository(db),
 	}
 }
 
-func (uc *GetRolesUseCase) Execute(input GetRolesInputDTO) (output []GetRolesOutputDTO, err error) {
+func (uc *GetRolesUseCase) Execute(ctx context.Context, input GetRolesInputDTO) (output []GetRolesOutputDTO, err error) {
 
-	roles, err := uc.repo.GetRoles(input.Limit, input.Offset)
+	roles, err := uc.repo.GetRoles(ctx, input.Limit, input.Offset)
 	if err != nil {
 		return
 	}

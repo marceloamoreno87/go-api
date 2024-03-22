@@ -10,18 +10,17 @@ import (
 )
 
 type UserValidationRepository struct {
-	DB config.SQLCInterface
+	db config.SQLCInterface
 }
 
-func NewUserValidationRepository() *UserValidationRepository {
+func NewUserValidationRepository(db config.SQLCInterface) *UserValidationRepository {
 	return &UserValidationRepository{
-		DB: config.NewSqlc(config.DB),
+		db: db,
 	}
 }
 
-func (repo *UserValidationRepository) GetUserValidationByUserID(id int32) (output entityInterface.UserValidationInterface, err error) {
-
-	uv, err := repo.DB.GetDbQueries().GetUserValidationByUserID(context.Background(), id)
+func (repo *UserValidationRepository) GetUserValidationByUserID(ctx context.Context, id int32) (output entityInterface.UserValidationInterface, err error) {
+	uv, err := repo.db.GetDbQueries().GetUserValidationByUserID(ctx, id)
 	if err != nil {
 		return
 	}
@@ -38,9 +37,8 @@ func (repo *UserValidationRepository) GetUserValidationByUserID(id int32) (outpu
 	return
 }
 
-func (repo *UserValidationRepository) GetUserValidationByHash(hash string) (output entityInterface.UserValidationInterface, err error) {
-
-	uv, err := repo.DB.GetDbQueries().GetUserValidationByHash(context.Background(), hash)
+func (repo *UserValidationRepository) GetUserValidationByHash(ctx context.Context, hash string) (output entityInterface.UserValidationInterface, err error) {
+	uv, err := repo.db.GetDbQueries().GetUserValidationByHash(ctx, hash)
 	if err != nil {
 		return
 	}
@@ -56,8 +54,8 @@ func (repo *UserValidationRepository) GetUserValidationByHash(hash string) (outp
 	return
 }
 
-func (repo *UserValidationRepository) CreateUserValidation(userValidation entityInterface.UserValidationInterface) (output entityInterface.UserValidationInterface, err error) {
-	newUserValidation, err := repo.DB.GetDbQueries().CreateUserValidation(context.Background(), db.CreateUserValidationParams{
+func (repo *UserValidationRepository) CreateUserValidation(ctx context.Context, userValidation entityInterface.UserValidationInterface) (output entityInterface.UserValidationInterface, err error) {
+	newUserValidation, err := repo.db.GetDbQueries().WithTx(repo.db.GetTx()).CreateUserValidation(ctx, db.CreateUserValidationParams{
 		UserID:    userValidation.GetUserID(),
 		Hash:      userValidation.GetHash(),
 		ExpiresIn: userValidation.GetExpiresIn(),
@@ -78,7 +76,6 @@ func (repo *UserValidationRepository) CreateUserValidation(userValidation entity
 
 }
 
-func (repo *UserValidationRepository) UpdateUserValidationUsed(id int32) (err error) {
-
-	return repo.DB.GetDbQueries().UpdateUserValidationUsed(context.Background(), id)
+func (repo *UserValidationRepository) UpdateUserValidationUsed(ctx context.Context, id int32) (err error) {
+	return repo.db.GetDbQueries().WithTx(repo.db.GetTx()).UpdateUserValidationUsed(ctx, id)
 }

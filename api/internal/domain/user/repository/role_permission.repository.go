@@ -11,18 +11,17 @@ import (
 )
 
 type RolePermissionRepository struct {
-	DB config.SQLCInterface
+	db config.SQLCInterface
 }
 
-func NewRolePermissionRepository() *RolePermissionRepository {
+func NewRolePermissionRepository(db config.SQLCInterface) *RolePermissionRepository {
 	return &RolePermissionRepository{
-		DB: config.NewSqlc(config.DB),
+		db: db,
 	}
 }
 
-func (repo *RolePermissionRepository) GetRolePermissionsByRole(id int32) (output []entityInterface.RolePermissionInterface, err error) {
-
-	rp, err := repo.DB.GetDbQueries().GetRolePermissionsByRole(context.Background(), id)
+func (repo *RolePermissionRepository) GetRolePermissionsByRole(ctx context.Context, id int32) (output []entityInterface.RolePermissionInterface, err error) {
+	rp, err := repo.db.GetDbQueries().GetRolePermissionsByRole(ctx, id)
 	if err != nil {
 		return
 	}
@@ -36,8 +35,7 @@ func (repo *RolePermissionRepository) GetRolePermissionsByRole(id int32) (output
 	return
 }
 
-func (repo *RolePermissionRepository) CreateRolePermission(rolePermission entityInterface.RolePermissionInterface) (err error) {
-
+func (repo *RolePermissionRepository) CreateRolePermission(ctx context.Context, rolePermission entityInterface.RolePermissionInterface) (err error) {
 	errCh := make(chan error, len(rolePermission.GetPermissionIDs()))
 	var wg sync.WaitGroup
 	wg.Add(len(rolePermission.GetPermissionIDs()))
@@ -45,7 +43,7 @@ func (repo *RolePermissionRepository) CreateRolePermission(rolePermission entity
 	for _, id := range rolePermission.GetPermissionIDs() {
 		go func(permissionID int32) {
 			defer wg.Done()
-			err := repo.DB.GetDbQueries().CreateRolePermission(context.Background(), db.CreateRolePermissionParams{
+			err := repo.db.GetDbQueries().WithTx(repo.db.GetTx()).CreateRolePermission(ctx, db.CreateRolePermissionParams{
 				RoleID:       rolePermission.GetRoleID(),
 				PermissionID: permissionID,
 			})
@@ -63,7 +61,6 @@ func (repo *RolePermissionRepository) CreateRolePermission(rolePermission entity
 	return
 }
 
-func (repo *RolePermissionRepository) DeleteRolePermissionByRoleID(id int32) (err error) {
-
-	return repo.DB.GetDbQueries().DeleteRolePermissionByRoleID(context.Background(), id)
+func (repo *RolePermissionRepository) DeleteRolePermissionByRoleID(ctx context.Context, id int32) (err error) {
+	return repo.db.GetDbQueries().WithTx(repo.db.GetTx()).DeleteRolePermissionByRoleID(ctx, id)
 }

@@ -1,6 +1,9 @@
 package usecase
 
 import (
+	"context"
+
+	"github.com/marceloamoreno/goapi/config"
 	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
@@ -23,14 +26,14 @@ type GetAuthByTokenUseCase struct {
 	repo repositoryInterface.AuthRepositoryInterface
 }
 
-func NewGetAuthByTokenUseCase() *GetAuthByTokenUseCase {
+func NewGetAuthByTokenUseCase(db config.SQLCInterface) *GetAuthByTokenUseCase {
 	return &GetAuthByTokenUseCase{
-		repo: repository.NewAuthRepository(),
+		repo: repository.NewAuthRepository(db),
 	}
 }
 
-func (uc *GetAuthByTokenUseCase) Execute(input GetAuthByTokenInputDTO) (output GetAuthByTokenOutputDTO, err error) {
-	auth, err := uc.repo.GetAuthByToken(input.ID, input.Token)
+func (uc *GetAuthByTokenUseCase) Execute(ctx context.Context, input GetAuthByTokenInputDTO) (output GetAuthByTokenOutputDTO, err error) {
+	auth, err := uc.repo.GetAuthByToken(ctx, input.ID, input.Token)
 	if err != nil {
 		return
 	}
