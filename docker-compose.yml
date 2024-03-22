@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
 
   api:
@@ -12,8 +10,8 @@ services:
     depends_on:
       - db
     ports:
-      - 3000:3000
-      - 4000:4000
+      - ${DOCKER_API_PORT}:${DOCKER_API_PORT}
+      - ${DOCKER_API_DEBUG_PORT}:${DOCKER_API_DEBUG_PORT}
     volumes:
       - ./api/:/api
     networks:
@@ -29,7 +27,7 @@ services:
       POSTGRES_DB: ${DOCKER_DB_NAME}
       POSTGRES_USER: ${DOCKER_DB_USER}
     ports:
-    - ${DOCKER_DB_PORT}:5432
+    - ${DOCKER_DB_PORT}:${DOCKER_DB_PORT}
     networks:
       - net
   
@@ -39,6 +37,14 @@ services:
     ports:
       - 1025:1025
       - 8025:8025
+    networks:
+      - net
+
+  jaeger:
+    container_name: jaeger
+    image: jaegertracing/all-in-one
+    ports:
+      - ${DOCKER_JAEGER_PORT}:${DOCKER_JAEGER_PORT}
     networks:
       - net
 
