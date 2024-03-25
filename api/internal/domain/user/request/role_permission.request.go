@@ -1,19 +1,19 @@
 package request
 
-type RequestCreateRolePermission struct {
+type CreateRolePermissionRequest struct {
 	RoleID        int32   `json:"role_id" validate:"number,required"`
 	PermissionIDs []int32 `json:"permission_ids" validate:"required"`
 }
 
-type RequestGetRolePermission struct {
+type GetRolePermissionRequest struct {
 	RoleID int32 `json:"role_id" validate:"number,required"`
 }
 
-type RequestDeleteRolePermissionByRoleID struct {
+type DeleteRolePermissionByRoleIDRequest struct {
 	RoleID int32 `json:"role_id" validate:"number,required"`
 }
 
-type RequestUpdateRolePermission struct {
+type UpdateRolePermissionRequest struct {
 	RoleID        int32   `json:"role_id" validate:"number,required"`
 	PermissionIDs []int32 `json:"permission_ids" validate:"required"`
 }

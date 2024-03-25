@@ -1,23 +1,23 @@
 package request
 
-type RequestCreateAvatar struct {
+type CreateAvatarRequest struct {
 	SVG string `json:"svg" validate:"required"`
 }
 
-type RequestUpdateAvatar struct {
+type UpdateAvatarRequest struct {
 	ID  int32  `json:"id" validate:"number,required"`
 	SVG string `json:"svg" validate:"required"`
 }
 
-type RequestGetAvatar struct {
+type GetAvatarRequest struct {
 	ID int32 `json:"id" validate:"number,required"`
 }
 
-type RequestGetAvatars struct {
+type GetAvatarsRequest struct {
 	Limit  int32 `json:"limit" validate:"number,required"`
 	Offset int32 `json:"offset" validate:"number,required"`
 }
 
-type RequestDeleteAvatar struct {
+type DeleteAvatarRequest struct {
 	ID int32 `json:"id" validate:"number,required"`
 }

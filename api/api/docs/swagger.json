@@ -32,7 +32,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestLogin"
+                            "$ref": "#/definitions/request.LoginRequest"
                         }
                     }
                 ],
@@ -84,7 +84,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestRefreshToken"
+                            "$ref": "#/definitions/request.RefreshTokenRequest"
                         }
                     }
                 ],
@@ -1819,7 +1819,7 @@
                 }
             }
         },
-        "request.RequestLogin": {
+        "request.LoginRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -1834,7 +1834,7 @@
                 }
             }
         },
-        "request.RequestRefreshToken": {
+        "request.RefreshTokenRequest": {
             "type": "object",
             "required": [
                 "refresh_token",

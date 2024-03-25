@@ -30,12 +30,12 @@ func NewAvatarHandler() *AvatarHandler {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Avatar ID"
-// @Success 200 {object} response.Response{data=response.ResponseGetAvatar}
+// @Success 200 {object} response.Response{data=response.GetAvatarResponse}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /avatar/{id} [get]
 // @Security     JWT
 func (h *AvatarHandler) GetAvatar(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestGetAvatar{
+	input := request.GetAvatarRequest{
 		ID: helper.GetID(r),
 	}
 	output, err := h.service.GetAvatar(r.Context(), input)
@@ -55,13 +55,13 @@ func (h *AvatarHandler) GetAvatar(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param limit query int false "Limit"
 // @Param offset query int false "Offset"
-// @Success 200 {object} response.Response{data=[]response.ResponseGetAvatar}
+// @Success 200 {object} response.Response{data=[]response.GetAvatarResponse}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /avatar [get]
 // @Security     JWT
 func (h *AvatarHandler) GetAvatars(w http.ResponseWriter, r *http.Request) {
 	limit, offset := helper.GetLimitAndOffset(r)
-	input := request.RequestGetAvatars{
+	input := request.GetAvatarsRequest{
 		Limit:  limit,
 		Offset: offset,
 	}
@@ -80,13 +80,13 @@ func (h *AvatarHandler) GetAvatars(w http.ResponseWriter, r *http.Request) {
 // @Tags Avatar
 // @Accept  json
 // @Produce  json
-// @Param avatar body request.RequestCreateAvatar true "Avatar"
-// @Success 200 {object} response.Response{data=response.ResponseCreateAvatar}
+// @Param avatar body request.CreateAvatarRequest true "Avatar"
+// @Success 200 {object} response.Response{data=response.CreateAvatarResponse}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /avatar [post]
 // @Security     JWT
 func (h *AvatarHandler) CreateAvatar(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestCreateAvatar{}
+	input := request.CreateAvatarRequest{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
@@ -107,13 +107,13 @@ func (h *AvatarHandler) CreateAvatar(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Avatar ID"
-// @Param avatar body request.RequestUpdateAvatar true "Avatar"
-// @Success 200 {object} response.Response{data=response.ResponseUpdateAvatar}
+// @Param avatar body request.UpdateAvatarRequest true "Avatar"
+// @Success 200 {object} response.Response{data=response.UpdateAvatarResponse}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /avatar/{id} [put]
 // @Security     JWT
 func (h *AvatarHandler) UpdateAvatar(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestUpdateAvatar{}
+	input := request.UpdateAvatarRequest{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
@@ -134,12 +134,12 @@ func (h *AvatarHandler) UpdateAvatar(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Avatar ID"
-// @Success 200 {object} response.Response{data=response.ResponseDeleteAvatar}
+// @Success 200 {object} response.Response{data=response.DeleteAvatarResponse}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /avatar/{id} [delete]
 // @Security     JWT
 func (h *AvatarHandler) DeleteAvatar(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestDeleteAvatar{
+	input := request.DeleteAvatarRequest{
 		ID: helper.GetID(r),
 	}
 	output, err := h.service.DeleteAvatar(r.Context(), input)

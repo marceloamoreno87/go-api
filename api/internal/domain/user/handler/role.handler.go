@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/marceloamoreno/goapi/internal/domain/user/request"
+	_ "github.com/marceloamoreno/goapi/internal/domain/user/response"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	"github.com/marceloamoreno/goapi/internal/shared/helper"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
@@ -30,12 +31,12 @@ func NewRoleHandler() *RoleHandler {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Role ID"
-// @Success 200 {object} response.Response{data=usecase.GetRoleOutputDTO}
+// @Success 200 {object} response.Response{data=response.GetRoleResponse}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /role/{id} [get]
 // @Security     JWT
 func (h *RoleHandler) GetRole(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestGetRole{
+	input := request.GetRoleRequest{
 		ID: helper.GetID(r),
 	}
 	err := validate.NewValidator(input).Validate()
@@ -61,13 +62,13 @@ func (h *RoleHandler) GetRole(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param limit query int false "Limit"
 // @Param offset query int false "Offset"
-// @Success 200 {object} response.Response{data=[]usecase.GetRolesOutputDTO}
+// @Success 200 {object} response.Response{data=[]response.GetRolesResponse}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /role [get]
 // @Security     JWT
 func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
 	limit, offset := helper.GetLimitAndOffset(r)
-	input := request.RequestGetRoles{
+	input := request.GetRolesRequest{
 		Limit:  limit,
 		Offset: offset,
 	}
@@ -92,13 +93,13 @@ func (h *RoleHandler) GetRoles(w http.ResponseWriter, r *http.Request) {
 // @Tags Role
 // @Accept  json
 // @Produce  json
-// @Param role body request.RequestCreateRole true "Role"
-// @Success 200 {object} response.Response{data=nil}
+// @Param role body request.CreateRoleRequest true "Role"
+// @Success 200 {object} response.Response{data=response.CreateRoleResponse}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /role [post]
 // @Security     JWT
 func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestCreateRole{}
+	input := request.CreateRoleRequest{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
@@ -125,13 +126,13 @@ func (h *RoleHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Role ID"
-// @Param role body request.RequestUpdateRole true "Role"
-// @Success 200 {object} response.Response{data=nil}
+// @Param role body request.UpdateRoleRequest true "Role"
+// @Success 200 {object} response.Response{data=response.UpdateRoleResponse}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /role/{id} [put]
 // @Security     JWT
 func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestUpdateRole{
+	input := request.UpdateRoleRequest{
 		ID: helper.GetID(r),
 	}
 	err := validate.NewValidator(input).Validate()
@@ -156,12 +157,12 @@ func (h *RoleHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Role ID"
-// @Success 200 {object} response.Response{data=nil}
+// @Success 200 {object} response.Response{data=response.DeleteRoleResponse}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /role/{id} [delete]
 // @Security     JWT
 func (h *RoleHandler) DeleteRole(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestDeleteRole{
+	input := request.DeleteRoleRequest{
 		ID: helper.GetID(r),
 	}
 	err := validate.NewValidator(input).Validate()

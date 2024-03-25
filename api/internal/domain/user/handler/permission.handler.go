@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/marceloamoreno/goapi/internal/domain/user/request"
+	_ "github.com/marceloamoreno/goapi/internal/domain/user/response"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	"github.com/marceloamoreno/goapi/internal/shared/helper"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
@@ -30,12 +31,12 @@ func NewPermissionHandler() *PermissionHandler {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Permission ID"
-// @Success 200 {object} response.Response{data=usecase.GetPermissionOutputDTO}
+// @Success 200 {object} response.Response{data=response.GetPermissionResponse}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /permission/{id} [get]
 // @Security     JWT
 func (h *PermissionHandler) GetPermission(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestGetPermission{
+	input := request.GetPermissionRequest{
 		ID: helper.GetID(r),
 	}
 	err := validate.NewValidator(input).Validate()
@@ -61,13 +62,13 @@ func (h *PermissionHandler) GetPermission(w http.ResponseWriter, r *http.Request
 // @Produce  json
 // @Param limit query int false "Limit"
 // @Param offset query int false "Offset"
-// @Success 200 {object} response.Response{data=[]usecase.GetPermissionsOutputDTO}
+// @Success 200 {object} response.Response{data=[]response.GetPermissionsResponse}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /permission [get]
 // @Security     JWT
 func (h *PermissionHandler) GetPermissions(w http.ResponseWriter, r *http.Request) {
 	limit, offset := helper.GetLimitAndOffset(r)
-	input := request.RequestGetPermissions{
+	input := request.GetPermissionsRequest{
 		Limit:  limit,
 		Offset: offset,
 	}
@@ -92,13 +93,13 @@ func (h *PermissionHandler) GetPermissions(w http.ResponseWriter, r *http.Reques
 // @Tags Permission
 // @Accept  json
 // @Produce  json
-// @Param permission body request.RequestCreatePermission true "Permission"
-// @Success 200 {object} response.Response{data=nil}
+// @Param permission body request.CreatePermissionRequest true "Permission"
+// @Success 200 {object} response.Response{data=response.CreatePermissionResponse}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /permission [post]
 // @Security     JWT
 func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestCreatePermission{}
+	input := request.CreatePermissionRequest{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
@@ -125,13 +126,13 @@ func (h *PermissionHandler) CreatePermission(w http.ResponseWriter, r *http.Requ
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Permission ID"
-// @Param permission body request.RequestUpdatePermission true "Permission"
-// @Success 200 {object} response.Response{data=nil}
+// @Param permission body request.UpdatePermissionRequest true "Permission"
+// @Success 200 {object} response.Response{data=response.UpdatePermissionResponse}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /permission/{id} [put]
 // @Security     JWT
 func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestUpdatePermission{
+	input := request.UpdatePermissionRequest{
 		ID: helper.GetID(r),
 	}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
@@ -160,13 +161,13 @@ func (h *PermissionHandler) UpdatePermission(w http.ResponseWriter, r *http.Requ
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Permission ID"
-// @Success 200 {object} response.Response{data=nil}
+// @Success 200 {object} response.Response{data=response.DeletePermissionResponse}
 // @Failure 400 {object} response.ResponseError{}
 // @Security ApiKeyAuth
 // @Router /permission/{id} [delete]
 // @Security     JWT
 func (h *PermissionHandler) DeletePermission(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestDeletePermission{
+	input := request.DeletePermissionRequest{
 		ID: helper.GetID(r),
 	}
 	err := validate.NewValidator(input).Validate()

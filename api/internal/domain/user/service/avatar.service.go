@@ -31,13 +31,13 @@ func NewAvatarService() *AvatarService {
 	}
 }
 
-func (s *AvatarService) GetAvatar(ctx context.Context, input request.RequestGetAvatar) (output response.ResponseGetAvatar, err error) {
+func (s *AvatarService) GetAvatar(ctx context.Context, input request.GetAvatarRequest) (output response.GetAvatarResponse, err error) {
 	avatar, err := s.GetAvatarUseCase.Execute(ctx, usecase.GetAvatarInputDTO{ID: input.ID})
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
-	output = response.ResponseGetAvatar{
+	output = response.GetAvatarResponse{
 		ID:  avatar.ID,
 		SVG: avatar.SVG,
 	}
@@ -45,14 +45,14 @@ func (s *AvatarService) GetAvatar(ctx context.Context, input request.RequestGetA
 	return
 }
 
-func (s *AvatarService) GetAvatars(ctx context.Context, input request.RequestGetAvatars) (output []response.ResponseGetAvatar, err error) {
+func (s *AvatarService) GetAvatars(ctx context.Context, input request.GetAvatarsRequest) (output []response.GetAvatarResponse, err error) {
 	avatars, err := s.GetAvatarsUseCase.Execute(ctx, usecase.GetAvatarsInputDTO{Limit: input.Limit, Offset: input.Offset})
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
 	for _, avatar := range avatars {
-		output = append(output, response.ResponseGetAvatar{
+		output = append(output, response.GetAvatarResponse{
 			ID:  avatar.ID,
 			SVG: avatar.SVG,
 		})
@@ -61,7 +61,7 @@ func (s *AvatarService) GetAvatars(ctx context.Context, input request.RequestGet
 	return
 }
 
-func (s *AvatarService) CreateAvatar(ctx context.Context, input request.RequestCreateAvatar) (output response.ResponseCreateAvatar, err error) {
+func (s *AvatarService) CreateAvatar(ctx context.Context, input request.CreateAvatarRequest) (output response.CreateAvatarResponse, err error) {
 	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)
@@ -83,14 +83,14 @@ func (s *AvatarService) CreateAvatar(ctx context.Context, input request.RequestC
 		slog.Info("errtx", errtx)
 		return
 	}
-	output = response.ResponseCreateAvatar{
+	output = response.CreateAvatarResponse{
 		SVG: created.SVG,
 	}
 	slog.Info("Avatar created")
 	return
 }
 
-func (s *AvatarService) UpdateAvatar(ctx context.Context, input request.RequestUpdateAvatar) (output response.ResponseUpdateAvatar, err error) {
+func (s *AvatarService) UpdateAvatar(ctx context.Context, input request.UpdateAvatarRequest) (output response.UpdateAvatarResponse, err error) {
 	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)
@@ -112,7 +112,7 @@ func (s *AvatarService) UpdateAvatar(ctx context.Context, input request.RequestU
 		slog.Info("errtx", errtx)
 		return
 	}
-	output = response.ResponseUpdateAvatar{
+	output = response.UpdateAvatarResponse{
 		ID:  updated.ID,
 		SVG: updated.SVG,
 	}
@@ -120,7 +120,7 @@ func (s *AvatarService) UpdateAvatar(ctx context.Context, input request.RequestU
 	return
 }
 
-func (s *AvatarService) DeleteAvatar(ctx context.Context, input request.RequestDeleteAvatar) (output response.ResponseDeleteAvatar, err error) {
+func (s *AvatarService) DeleteAvatar(ctx context.Context, input request.DeleteAvatarRequest) (output response.DeleteAvatarResponse, err error) {
 	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)
@@ -142,7 +142,7 @@ func (s *AvatarService) DeleteAvatar(ctx context.Context, input request.RequestD
 		slog.Info("errtx", errtx)
 		return
 	}
-	output = response.ResponseDeleteAvatar{
+	output = response.DeleteAvatarResponse{
 		ID: deleted.ID,
 	}
 	slog.Info("Avatar deleted")

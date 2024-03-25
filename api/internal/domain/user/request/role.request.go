@@ -1,27 +1,27 @@
 package request
 
-type RequestCreateRole struct {
+type CreateRoleRequest struct {
 	Name         string `json:"name" validate:"required"`
 	InternalName string `json:"internal_name" validate:"required"`
 	Description  string `json:"description" validate:"required"`
 }
 
-type RequestGetRole struct {
+type GetRoleRequest struct {
 	ID int32 `json:"id" validate:"number,required"`
 }
 
-type RequestGetRoles struct {
+type GetRolesRequest struct {
 	Limit  int32 `json:"limit" validate:"number,required"`
 	Offset int32 `json:"offset" validate:"number,required"`
 }
 
-type RequestUpdateRole struct {
+type UpdateRoleRequest struct {
 	ID           int32  `json:"id" validate:"number,required"`
 	Name         string `json:"name" validate:"required"`
 	InternalName string `json:"internal_name" validate:"required"`
 	Description  string `json:"description" validate:"required"`
 }
 
-type RequestDeleteRole struct {
+type DeleteRoleRequest struct {
 	ID int32 `json:"id" validate:"number,required"`
 }

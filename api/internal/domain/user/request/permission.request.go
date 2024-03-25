@@ -1,27 +1,27 @@
 package request
 
-type RequestGetPermission struct {
+type GetPermissionRequest struct {
 	ID int32 `json:"id" validate:"number,required"`
 }
 
-type RequestGetPermissions struct {
+type GetPermissionsRequest struct {
 	Limit  int32 `json:"limit" validate:"number,required"`
 	Offset int32 `json:"offset" validate:"number,required"`
 }
 
-type RequestCreatePermission struct {
+type CreatePermissionRequest struct {
 	Name         string `json:"name" validate:"required"`
 	InternalName string `json:"internal_name" validate:"required"`
 	Description  string `json:"description" validate:"required"`
 }
 
-type RequestUpdatePermission struct {
+type UpdatePermissionRequest struct {
 	ID           int32  `json:"id" validate:"number,required"`
 	Name         string `json:"name" validate:"required"`
 	InternalName string `json:"internal_name" validate:"required"`
 	Description  string `json:"description" validate:"required"`
 }
 
-type RequestDeletePermission struct {
+type DeletePermissionRequest struct {
 	ID int32 `json:"id" validate:"number,required"`
 }

@@ -1,39 +1,39 @@
 package request
 
-type RequestVerifyUser struct {
+type VerifyUserRequest struct {
 	Hash string `json:"hash" validate:"required"`
 }
 
-type RequestUpdateUserPassword struct {
+type UpdateUserPasswordRequest struct {
 	Hash     string `json:"hash" validate:"required"`
 	Password string `json:"password" validate:"required"`
 }
 
-type RequestForgotPassword struct {
+type ForgotPasswordRequest struct {
 	Email string `json:"email" validate:"required"`
 }
 
-type RequestCreateUser struct {
+type CreateUserRequest struct {
 	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"email,required"`
 	Password string `json:"password" validate:"required"`
 }
 
-type RequestUpdateUser struct {
+type UpdateUserRequest struct {
 	ID    int32  `json:"id" validate:"number,required"`
 	Name  string `json:"name" validate:"required"`
 	Email string `json:"email" validate:"email,required"`
 }
 
-type RequestDeleteUser struct {
+type DeleteUserRequest struct {
 	ID int32 `json:"id" validate:"number,required"`
 }
 
-type RequestGetUser struct {
+type GetUserRequest struct {
 	ID int32 `json:"id" validate:"number,required"`
 }
 
-type RequestGetUsers struct {
+type GetUsersRequest struct {
 	Limit  int32 `json:"limit" validate:"number,required"`
 	Offset int32 `json:"offset" validate:"number,required"`
 }

@@ -1,24 +1,25 @@
 package response
 
-type ResponseGetAvatar struct {
+type GetAvatarResponse struct {
 	ID  int32  `json:"id"`
 	SVG string `json:"svg"`
 }
 
-type ResponseGetAvatars struct {
+type GetAvatarsResponse struct {
 	ID  int32  `json:"id"`
 	SVG string `json:"svg"`
 }
 
-type ResponseCreateAvatar struct {
-	SVG string `json:"svg"`
-}
-
-type ResponseUpdateAvatar struct {
+type CreateAvatarResponse struct {
 	ID  int32  `json:"id"`
 	SVG string `json:"svg"`
 }
 
-type ResponseDeleteAvatar struct {
+type UpdateAvatarResponse struct {
+	ID  int32  `json:"id"`
+	SVG string `json:"svg"`
+}
+
+type DeleteAvatarResponse struct {
 	ID int32 `json:"id"`
 }

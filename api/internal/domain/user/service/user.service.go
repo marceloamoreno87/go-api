@@ -7,6 +7,7 @@ import (
 	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/event"
 	"github.com/marceloamoreno/goapi/internal/domain/user/request"
+	"github.com/marceloamoreno/goapi/internal/domain/user/response"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
@@ -43,14 +44,14 @@ func NewUserService() *UserService {
 	}
 }
 
-func (s *UserService) CreateUser(ctx context.Context, input request.RequestCreateUser) (output usecase.CreateUserOutputDTO, err error) {
+func (s *UserService) CreateUser(ctx context.Context, input request.CreateUserRequest) (output response.CreateUserResponse, err error) {
 	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
 	s.db.SetTx(tx)
-	output, err = s.CreateUserUseCase.Execute(ctx, usecase.CreateUserInputDTO{
+	created, err := s.CreateUserUseCase.Execute(ctx, usecase.CreateUserInputDTO{
 		Name:     input.Name,
 		Email:    input.Email,
 		Password: input.Password,
@@ -91,22 +92,36 @@ func (s *UserService) CreateUser(ctx context.Context, input request.RequestCreat
 		slog.Info("errtx", errtx)
 		return
 	}
+	output = response.CreateUserResponse{
+		ID:       created.ID,
+		Name:     created.Name,
+		Email:    created.Email,
+		AvatarID: created.AvatarID,
+		RoleID:   created.RoleID,
+	}
 	slog.Info("User created")
 	return
 }
 
-func (s *UserService) GetUser(ctx context.Context, input request.RequestGetUser) (output usecase.GetUserOutputDTO, err error) {
-	output, err = s.GetUserUseCase.Execute(ctx, usecase.GetUserInputDTO{ID: input.ID})
+func (s *UserService) GetUser(ctx context.Context, input request.GetUserRequest) (output response.GetUserResponse, err error) {
+	user, err := s.GetUserUseCase.Execute(ctx, usecase.GetUserInputDTO{ID: input.ID})
 	if err != nil {
 		slog.Info("err", err)
 		return
+	}
+	output = response.GetUserResponse{
+		ID:       user.ID,
+		Name:     user.Name,
+		Email:    user.Email,
+		AvatarID: user.AvatarID,
+		RoleID:   user.RoleID,
 	}
 	slog.Info("User found")
 	return
 }
 
-func (s *UserService) GetUsers(ctx context.Context, input request.RequestGetUsers) (output []usecase.GetUsersOutputDTO, err error) {
-	output, err = s.GetUsersUseCase.Execute(ctx, usecase.GetUsersInputDTO{
+func (s *UserService) GetUsers(ctx context.Context, input request.GetUsersRequest) (output []response.GetUsersResponse, err error) {
+	users, err := s.GetUsersUseCase.Execute(ctx, usecase.GetUsersInputDTO{
 		Limit:  input.Limit,
 		Offset: input.Offset,
 	})
@@ -114,18 +129,27 @@ func (s *UserService) GetUsers(ctx context.Context, input request.RequestGetUser
 		slog.Info("err", err)
 		return
 	}
+	for _, user := range users {
+		output = append(output, response.GetUsersResponse{
+			ID:       user.ID,
+			Name:     user.Name,
+			Email:    user.Email,
+			AvatarID: user.AvatarID,
+			RoleID:   user.RoleID,
+		})
+	}
 	slog.Info("Users found")
 	return
 }
 
-func (s *UserService) UpdateUser(ctx context.Context, input request.RequestUpdateUser) (output usecase.UpdateUserOutputDTO, err error) {
+func (s *UserService) UpdateUser(ctx context.Context, input request.UpdateUserRequest) (output response.UpdateUserResponse, err error) {
 	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
 	s.db.SetTx(tx)
-	output, err = s.UpdateUserUseCase.Execute(ctx, usecase.UpdateUserInputDTO{
+	updated, err := s.UpdateUserUseCase.Execute(ctx, usecase.UpdateUserInputDTO{
 		Name:  input.Name,
 		Email: input.Email,
 	})
@@ -143,11 +167,18 @@ func (s *UserService) UpdateUser(ctx context.Context, input request.RequestUpdat
 		slog.Info("errtx", errtx)
 		return
 	}
+	output = response.UpdateUserResponse{
+		ID:       updated.ID,
+		Name:     updated.Name,
+		Email:    updated.Email,
+		AvatarID: updated.AvatarID,
+		RoleID:   updated.RoleID,
+	}
 	slog.Info("User updated")
 	return
 }
 
-func (s *UserService) UpdateUserPassword(ctx context.Context, input request.RequestUpdateUserPassword) (err error) {
+func (s *UserService) UpdateUserPassword(ctx context.Context, input request.UpdateUserPasswordRequest) (err error) {
 	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)
@@ -211,14 +242,14 @@ func (s *UserService) UpdateUserPassword(ctx context.Context, input request.Requ
 	return
 }
 
-func (s *UserService) DeleteUser(ctx context.Context, input request.RequestDeleteUser) (output usecase.DeleteUserOutputDTO, err error) {
+func (s *UserService) DeleteUser(ctx context.Context, input request.DeleteUserRequest) (output response.DeleteUserResponse, err error) {
 	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)
 		return
 	}
 	s.db.SetTx(tx)
-	output, err = s.DeleteUserUseCase.Execute(ctx, usecase.DeleteUserInputDTO{ID: input.ID})
+	deleted, err := s.DeleteUserUseCase.Execute(ctx, usecase.DeleteUserInputDTO{ID: input.ID})
 	if err != nil {
 		errtx := tx.Rollback()
 		if errtx != nil {
@@ -233,11 +264,14 @@ func (s *UserService) DeleteUser(ctx context.Context, input request.RequestDelet
 		slog.Info("errtx", errtx)
 		return
 	}
+	output = response.DeleteUserResponse{
+		ID: deleted.ID,
+	}
 	slog.Info("User deleted")
 	return
 }
 
-func (s *UserService) VerifyUser(ctx context.Context, input request.RequestVerifyUser) (err error) {
+func (s *UserService) VerifyUser(ctx context.Context, input request.VerifyUserRequest) (err error) {
 	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)
@@ -303,7 +337,7 @@ func (s *UserService) VerifyUser(ctx context.Context, input request.RequestVerif
 	return
 }
 
-func (s *UserService) ForgotPassword(ctx context.Context, input request.RequestForgotPassword) (err error) {
+func (s *UserService) ForgotPassword(ctx context.Context, input request.ForgotPasswordRequest) (err error) {
 	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)

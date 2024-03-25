@@ -49,7 +49,7 @@ func NewAuthService() *AuthService {
 	}
 }
 
-func (s *AuthService) Login(ctx context.Context, input request.RequestLogin) (output response.ResponseLogin, err error) {
+func (s *AuthService) Login(ctx context.Context, input request.LoginRequest) (output response.LoginResponse, err error) {
 	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)
@@ -79,7 +79,7 @@ func (s *AuthService) Login(ctx context.Context, input request.RequestLogin) (ou
 		UserID: user.ID,
 	})
 	if auth.UserID != 0 {
-		return response.ResponseLogin{
+		return response.LoginResponse{
 			Token:                 auth.Token,
 			RefreshToken:          auth.RefreshToken,
 			UserID:                auth.UserID,
@@ -115,7 +115,7 @@ func (s *AuthService) Login(ctx context.Context, input request.RequestLogin) (ou
 		return
 	}
 
-	output = response.ResponseLogin{
+	output = response.LoginResponse{
 		Token:                 newToken.Token,
 		RefreshToken:          newToken.RefreshToken,
 		UserID:                newToken.UserID,
@@ -132,7 +132,7 @@ func (s *AuthService) Login(ctx context.Context, input request.RequestLogin) (ou
 	return
 }
 
-func (s *AuthService) RefreshToken(ctx context.Context, input request.RequestRefreshToken) (output response.ResponseRefreshToken, err error) {
+func (s *AuthService) RefreshToken(ctx context.Context, input request.RefreshTokenRequest) (output response.RefreshTokenResponse, err error) {
 	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)
@@ -173,7 +173,7 @@ func (s *AuthService) RefreshToken(ctx context.Context, input request.RequestRef
 		slog.Info("err", err)
 		return
 	}
-	output = response.ResponseRefreshToken{
+	output = response.RefreshTokenResponse{
 		Token:                 token.Token,
 		RefreshToken:          token.RefreshToken,
 		UserID:                token.UserID,

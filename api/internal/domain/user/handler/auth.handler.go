@@ -29,12 +29,12 @@ func NewAuthHandler() *AuthHandler {
 // @Tags Auth
 // @Accept  json
 // @Produce  json
-// @Param auth body request.RequestLogin true "User"
-// @Success 200 {object} response.Response{data=response.ResponseLogin}
+// @Param auth body request.LoginRequest true "User"
+// @Success 200 {object} response.Response{data=response.LoginResponse}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /auth/login [post]
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestLogin{}
+	input := request.LoginRequest{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		return
@@ -60,12 +60,12 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 // @Tags Auth
 // @Accept  json
 // @Produce  json
-// @Param auth body request.RequestRefreshToken true "User"
-// @Success 200 {object} response.Response{data=response.ResponseRefreshToken}
+// @Param auth body request.RefreshTokenRequest true "User"
+// @Success 200 {object} response.Response{data=response.RefreshTokenResponse}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /auth/refresh [post]
 func (h *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	input := request.RequestRefreshToken{}
+	input := request.RefreshTokenRequest{}
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		slog.Info("err", err)
 		h.SendResponseError(w, h.NewResponseError(err.Error()))
