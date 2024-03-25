@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/marceloamoreno/goapi/internal/domain/user/request"
+	_ "github.com/marceloamoreno/goapi/internal/domain/user/response"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
 	"github.com/marceloamoreno/goapi/internal/shared/validate"
@@ -29,7 +30,7 @@ func NewAuthHandler() *AuthHandler {
 // @Accept  json
 // @Produce  json
 // @Param auth body request.RequestLogin true "User"
-// @Success 200 {object} response.Response{data=usecase.CreateAuthOutputDTO}
+// @Success 200 {object} response.Response{data=response.ResponseLogin}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /auth/login [post]
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
@@ -60,7 +61,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param auth body request.RequestRefreshToken true "User"
-// @Success 200 {object} response.Response{data=usecase.CreateAuthOutputDTO}
+// @Success 200 {object} response.Response{data=response.ResponseRefreshToken}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /auth/refresh [post]
 func (h *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {

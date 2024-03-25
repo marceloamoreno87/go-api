@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestLoginInputDTO"
+                            "$ref": "#/definitions/request.RequestLogin"
                         }
                     }
                 ],
@@ -51,7 +51,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/usecase.CreateAuthOutputDTO"
+                                            "$ref": "#/definitions/response.ResponseLogin"
                                         }
                                     }
                                 }
@@ -87,7 +87,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestRefreshTokenInputDTO"
+                            "$ref": "#/definitions/request.RequestRefreshToken"
                         }
                     }
                 ],
@@ -103,7 +103,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/usecase.CreateAuthOutputDTO"
+                                            "$ref": "#/definitions/response.ResponseRefreshToken"
                                         }
                                     }
                                 }
@@ -144,7 +144,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestCreateUserInputDTO"
+                            "$ref": "#/definitions/request.RequestCreateUser"
                         }
                     }
                 ],
@@ -222,7 +222,7 @@ const docTemplate = `{
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/usecase.GetAvatarsOutputDTO"
+                                                "$ref": "#/definitions/response.ResponseGetAvatar"
                                             }
                                         }
                                     }
@@ -262,7 +262,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestCreateAvatarInputDTO"
+                            "$ref": "#/definitions/request.RequestCreateAvatar"
                         }
                     }
                 ],
@@ -278,7 +278,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.ResponseCreateAvatar"
                                         }
                                     }
                                 }
@@ -333,7 +333,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/usecase.GetAvatarOutputDTO"
+                                            "$ref": "#/definitions/response.ResponseGetAvatar"
                                         }
                                     }
                                 }
@@ -379,7 +379,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestUpdateAvatarInputDTO"
+                            "$ref": "#/definitions/request.RequestUpdateAvatar"
                         }
                     }
                 ],
@@ -395,7 +395,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.ResponseUpdateAvatar"
                                         }
                                     }
                                 }
@@ -448,7 +448,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.ResponseDeleteAvatar"
                                         }
                                     }
                                 }
@@ -550,7 +550,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestCreatePermissionInputDTO"
+                            "$ref": "#/definitions/request.RequestCreatePermission"
                         }
                     }
                 ],
@@ -667,7 +667,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestUpdatePermissionInputDTO"
+                            "$ref": "#/definitions/request.RequestUpdatePermission"
                         }
                     }
                 ],
@@ -841,7 +841,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestCreateRoleInputDTO"
+                            "$ref": "#/definitions/request.RequestCreateRole"
                         }
                     }
                 ],
@@ -958,7 +958,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestUpdateRoleInputDTO"
+                            "$ref": "#/definitions/request.RequestUpdateRole"
                         }
                     }
                 ],
@@ -1128,7 +1128,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestUpdateRolePermissionInputDTO"
+                            "$ref": "#/definitions/request.RequestUpdateRolePermission"
                         }
                     }
                 ],
@@ -1183,7 +1183,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestCreateRolePermissionInputDTO"
+                            "$ref": "#/definitions/request.RequestCreateRolePermission"
                         }
                     }
                 ],
@@ -1354,7 +1354,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestCreateUserInputDTO"
+                            "$ref": "#/definitions/request.RequestCreateUser"
                         }
                     }
                 ],
@@ -1406,7 +1406,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestForgotPasswordInputDTO"
+                            "$ref": "#/definitions/request.RequestForgotPassword"
                         }
                     }
                 ],
@@ -1458,7 +1458,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestUpdateUserPasswordInputDTO"
+                            "$ref": "#/definitions/request.RequestUpdateUserPassword"
                         }
                     }
                 ],
@@ -1510,7 +1510,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestVerifyUserInputDTO"
+                            "$ref": "#/definitions/request.RequestVerifyUser"
                         }
                     }
                 ],
@@ -1581,7 +1581,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/request.RequestGetUserInputDTO"
+                                            "$ref": "#/definitions/request.RequestGetUser"
                                         }
                                     }
                                 }
@@ -1627,7 +1627,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestUpdateUserInputDTO"
+                            "$ref": "#/definitions/request.RequestUpdateUser"
                         }
                     }
                 ],
@@ -1714,7 +1714,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "request.RequestCreateAvatarInputDTO": {
+        "request.RequestCreateAvatar": {
             "type": "object",
             "required": [
                 "svg"
@@ -1725,7 +1725,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.RequestCreatePermissionInputDTO": {
+        "request.RequestCreatePermission": {
             "type": "object",
             "required": [
                 "description",
@@ -1744,7 +1744,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.RequestCreateRoleInputDTO": {
+        "request.RequestCreateRole": {
             "type": "object",
             "required": [
                 "description",
@@ -1763,7 +1763,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.RequestCreateRolePermissionInputDTO": {
+        "request.RequestCreateRolePermission": {
             "type": "object",
             "required": [
                 "permission_ids",
@@ -1781,7 +1781,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.RequestCreateUserInputDTO": {
+        "request.RequestCreateUser": {
             "type": "object",
             "required": [
                 "email",
@@ -1800,7 +1800,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.RequestForgotPasswordInputDTO": {
+        "request.RequestForgotPassword": {
             "type": "object",
             "required": [
                 "email"
@@ -1811,7 +1811,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.RequestGetUserInputDTO": {
+        "request.RequestGetUser": {
             "type": "object",
             "required": [
                 "id"
@@ -1822,7 +1822,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.RequestLoginInputDTO": {
+        "request.RequestLogin": {
             "type": "object",
             "required": [
                 "email",
@@ -1837,7 +1837,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.RequestRefreshTokenInputDTO": {
+        "request.RequestRefreshToken": {
             "type": "object",
             "required": [
                 "refresh_token",
@@ -1852,7 +1852,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.RequestUpdateAvatarInputDTO": {
+        "request.RequestUpdateAvatar": {
             "type": "object",
             "required": [
                 "id",
@@ -1867,7 +1867,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.RequestUpdatePermissionInputDTO": {
+        "request.RequestUpdatePermission": {
             "type": "object",
             "required": [
                 "description",
@@ -1890,7 +1890,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.RequestUpdateRoleInputDTO": {
+        "request.RequestUpdateRole": {
             "type": "object",
             "required": [
                 "description",
@@ -1913,7 +1913,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.RequestUpdateRolePermissionInputDTO": {
+        "request.RequestUpdateRolePermission": {
             "type": "object",
             "required": [
                 "permission_ids",
@@ -1931,7 +1931,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.RequestUpdateUserInputDTO": {
+        "request.RequestUpdateUser": {
             "type": "object",
             "required": [
                 "email",
@@ -1950,7 +1950,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.RequestUpdateUserPasswordInputDTO": {
+        "request.RequestUpdateUserPassword": {
             "type": "object",
             "required": [
                 "hash",
@@ -1965,7 +1965,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.RequestVerifyUserInputDTO": {
+        "request.RequestVerifyUser": {
             "type": "object",
             "required": [
                 "hash"
@@ -1982,6 +1982,22 @@ const docTemplate = `{
                 "data": {}
             }
         },
+        "response.ResponseCreateAvatar": {
+            "type": "object",
+            "properties": {
+                "svg": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.ResponseDeleteAvatar": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "response.ResponseError": {
             "type": "object",
             "properties": {
@@ -1990,7 +2006,18 @@ const docTemplate = `{
                 }
             }
         },
-        "usecase.CreateAuthOutputDTO": {
+        "response.ResponseGetAvatar": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "svg": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.ResponseLogin": {
             "type": "object",
             "properties": {
                 "active": {
@@ -2013,36 +2040,36 @@ const docTemplate = `{
                 }
             }
         },
-        "usecase.GetAvatarOutputDTO": {
+        "response.ResponseRefreshToken": {
             "type": "object",
             "properties": {
-                "created_at": {
+                "active": {
+                    "type": "boolean"
+                },
+                "refresh_token": {
                     "type": "string"
                 },
-                "id": {
+                "refresh_token_expires_in": {
                     "type": "integer"
                 },
-                "svg": {
+                "token": {
                     "type": "string"
                 },
-                "updated_at": {
-                    "type": "string"
+                "token_expires_in": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },
-        "usecase.GetAvatarsOutputDTO": {
+        "response.ResponseUpdateAvatar": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
                 "svg": {
-                    "type": "string"
-                },
-                "updated_at": {
                     "type": "string"
                 }
             }

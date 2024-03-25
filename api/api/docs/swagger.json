@@ -32,7 +32,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestLoginInputDTO"
+                            "$ref": "#/definitions/request.RequestLogin"
                         }
                     }
                 ],
@@ -48,7 +48,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/usecase.CreateAuthOutputDTO"
+                                            "$ref": "#/definitions/response.ResponseLogin"
                                         }
                                     }
                                 }
@@ -84,7 +84,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestRefreshTokenInputDTO"
+                            "$ref": "#/definitions/request.RequestRefreshToken"
                         }
                     }
                 ],
@@ -100,7 +100,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/usecase.CreateAuthOutputDTO"
+                                            "$ref": "#/definitions/response.ResponseRefreshToken"
                                         }
                                     }
                                 }
@@ -141,7 +141,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestCreateUserInputDTO"
+                            "$ref": "#/definitions/request.RequestCreateUser"
                         }
                     }
                 ],
@@ -219,7 +219,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/usecase.GetAvatarsOutputDTO"
+                                                "$ref": "#/definitions/response.ResponseGetAvatar"
                                             }
                                         }
                                     }
@@ -259,7 +259,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestCreateAvatarInputDTO"
+                            "$ref": "#/definitions/request.RequestCreateAvatar"
                         }
                     }
                 ],
@@ -275,7 +275,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.ResponseCreateAvatar"
                                         }
                                     }
                                 }
@@ -330,7 +330,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/usecase.GetAvatarOutputDTO"
+                                            "$ref": "#/definitions/response.ResponseGetAvatar"
                                         }
                                     }
                                 }
@@ -376,7 +376,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestUpdateAvatarInputDTO"
+                            "$ref": "#/definitions/request.RequestUpdateAvatar"
                         }
                     }
                 ],
@@ -392,7 +392,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.ResponseUpdateAvatar"
                                         }
                                     }
                                 }
@@ -445,7 +445,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.ResponseDeleteAvatar"
                                         }
                                     }
                                 }
@@ -547,7 +547,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestCreatePermissionInputDTO"
+                            "$ref": "#/definitions/request.RequestCreatePermission"
                         }
                     }
                 ],
@@ -664,7 +664,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestUpdatePermissionInputDTO"
+                            "$ref": "#/definitions/request.RequestUpdatePermission"
                         }
                     }
                 ],
@@ -838,7 +838,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestCreateRoleInputDTO"
+                            "$ref": "#/definitions/request.RequestCreateRole"
                         }
                     }
                 ],
@@ -955,7 +955,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestUpdateRoleInputDTO"
+                            "$ref": "#/definitions/request.RequestUpdateRole"
                         }
                     }
                 ],
@@ -1125,7 +1125,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestUpdateRolePermissionInputDTO"
+                            "$ref": "#/definitions/request.RequestUpdateRolePermission"
                         }
                     }
                 ],
@@ -1180,7 +1180,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestCreateRolePermissionInputDTO"
+                            "$ref": "#/definitions/request.RequestCreateRolePermission"
                         }
                     }
                 ],
@@ -1351,7 +1351,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestCreateUserInputDTO"
+                            "$ref": "#/definitions/request.RequestCreateUser"
                         }
                     }
                 ],
@@ -1403,7 +1403,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestForgotPasswordInputDTO"
+                            "$ref": "#/definitions/request.RequestForgotPassword"
                         }
                     }
                 ],
@@ -1455,7 +1455,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestUpdateUserPasswordInputDTO"
+                            "$ref": "#/definitions/request.RequestUpdateUserPassword"
                         }
                     }
                 ],
@@ -1507,7 +1507,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestVerifyUserInputDTO"
+                            "$ref": "#/definitions/request.RequestVerifyUser"
                         }
                     }
                 ],
@@ -1578,7 +1578,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/request.RequestGetUserInputDTO"
+                                            "$ref": "#/definitions/request.RequestGetUser"
                                         }
                                     }
                                 }
@@ -1624,7 +1624,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestUpdateUserInputDTO"
+                            "$ref": "#/definitions/request.RequestUpdateUser"
                         }
                     }
                 ],
@@ -1711,7 +1711,7 @@
         }
     },
     "definitions": {
-        "request.RequestCreateAvatarInputDTO": {
+        "request.RequestCreateAvatar": {
             "type": "object",
             "required": [
                 "svg"
@@ -1722,7 +1722,7 @@
                 }
             }
         },
-        "request.RequestCreatePermissionInputDTO": {
+        "request.RequestCreatePermission": {
             "type": "object",
             "required": [
                 "description",
@@ -1741,7 +1741,7 @@
                 }
             }
         },
-        "request.RequestCreateRoleInputDTO": {
+        "request.RequestCreateRole": {
             "type": "object",
             "required": [
                 "description",
@@ -1760,7 +1760,7 @@
                 }
             }
         },
-        "request.RequestCreateRolePermissionInputDTO": {
+        "request.RequestCreateRolePermission": {
             "type": "object",
             "required": [
                 "permission_ids",
@@ -1778,7 +1778,7 @@
                 }
             }
         },
-        "request.RequestCreateUserInputDTO": {
+        "request.RequestCreateUser": {
             "type": "object",
             "required": [
                 "email",
@@ -1797,7 +1797,7 @@
                 }
             }
         },
-        "request.RequestForgotPasswordInputDTO": {
+        "request.RequestForgotPassword": {
             "type": "object",
             "required": [
                 "email"
@@ -1808,7 +1808,7 @@
                 }
             }
         },
-        "request.RequestGetUserInputDTO": {
+        "request.RequestGetUser": {
             "type": "object",
             "required": [
                 "id"
@@ -1819,7 +1819,7 @@
                 }
             }
         },
-        "request.RequestLoginInputDTO": {
+        "request.RequestLogin": {
             "type": "object",
             "required": [
                 "email",
@@ -1834,7 +1834,7 @@
                 }
             }
         },
-        "request.RequestRefreshTokenInputDTO": {
+        "request.RequestRefreshToken": {
             "type": "object",
             "required": [
                 "refresh_token",
@@ -1849,7 +1849,7 @@
                 }
             }
         },
-        "request.RequestUpdateAvatarInputDTO": {
+        "request.RequestUpdateAvatar": {
             "type": "object",
             "required": [
                 "id",
@@ -1864,7 +1864,7 @@
                 }
             }
         },
-        "request.RequestUpdatePermissionInputDTO": {
+        "request.RequestUpdatePermission": {
             "type": "object",
             "required": [
                 "description",
@@ -1887,7 +1887,7 @@
                 }
             }
         },
-        "request.RequestUpdateRoleInputDTO": {
+        "request.RequestUpdateRole": {
             "type": "object",
             "required": [
                 "description",
@@ -1910,7 +1910,7 @@
                 }
             }
         },
-        "request.RequestUpdateRolePermissionInputDTO": {
+        "request.RequestUpdateRolePermission": {
             "type": "object",
             "required": [
                 "permission_ids",
@@ -1928,7 +1928,7 @@
                 }
             }
         },
-        "request.RequestUpdateUserInputDTO": {
+        "request.RequestUpdateUser": {
             "type": "object",
             "required": [
                 "email",
@@ -1947,7 +1947,7 @@
                 }
             }
         },
-        "request.RequestUpdateUserPasswordInputDTO": {
+        "request.RequestUpdateUserPassword": {
             "type": "object",
             "required": [
                 "hash",
@@ -1962,7 +1962,7 @@
                 }
             }
         },
-        "request.RequestVerifyUserInputDTO": {
+        "request.RequestVerifyUser": {
             "type": "object",
             "required": [
                 "hash"
@@ -1979,6 +1979,22 @@
                 "data": {}
             }
         },
+        "response.ResponseCreateAvatar": {
+            "type": "object",
+            "properties": {
+                "svg": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.ResponseDeleteAvatar": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "response.ResponseError": {
             "type": "object",
             "properties": {
@@ -1987,7 +2003,18 @@
                 }
             }
         },
-        "usecase.CreateAuthOutputDTO": {
+        "response.ResponseGetAvatar": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "svg": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.ResponseLogin": {
             "type": "object",
             "properties": {
                 "active": {
@@ -2010,36 +2037,36 @@
                 }
             }
         },
-        "usecase.GetAvatarOutputDTO": {
+        "response.ResponseRefreshToken": {
             "type": "object",
             "properties": {
-                "created_at": {
+                "active": {
+                    "type": "boolean"
+                },
+                "refresh_token": {
                     "type": "string"
                 },
-                "id": {
+                "refresh_token_expires_in": {
                     "type": "integer"
                 },
-                "svg": {
+                "token": {
                     "type": "string"
                 },
-                "updated_at": {
-                    "type": "string"
+                "token_expires_in": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },
-        "usecase.GetAvatarsOutputDTO": {
+        "response.ResponseUpdateAvatar": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
                 "svg": {
-                    "type": "string"
-                },
-                "updated_at": {
                     "type": "string"
                 }
             }

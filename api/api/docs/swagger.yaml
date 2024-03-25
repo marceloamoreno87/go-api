@@ -1,13 +1,13 @@
 basePath: /api/v1
 definitions:
-  request.RequestCreateAvatarInputDTO:
+  request.RequestCreateAvatar:
     properties:
       svg:
         type: string
     required:
     - svg
     type: object
-  request.RequestCreatePermissionInputDTO:
+  request.RequestCreatePermission:
     properties:
       description:
         type: string
@@ -20,7 +20,7 @@ definitions:
     - internal_name
     - name
     type: object
-  request.RequestCreateRoleInputDTO:
+  request.RequestCreateRole:
     properties:
       description:
         type: string
@@ -33,7 +33,7 @@ definitions:
     - internal_name
     - name
     type: object
-  request.RequestCreateRolePermissionInputDTO:
+  request.RequestCreateRolePermission:
     properties:
       permission_ids:
         items:
@@ -45,7 +45,7 @@ definitions:
     - permission_ids
     - role_id
     type: object
-  request.RequestCreateUserInputDTO:
+  request.RequestCreateUser:
     properties:
       email:
         type: string
@@ -58,21 +58,21 @@ definitions:
     - name
     - password
     type: object
-  request.RequestForgotPasswordInputDTO:
+  request.RequestForgotPassword:
     properties:
       email:
         type: string
     required:
     - email
     type: object
-  request.RequestGetUserInputDTO:
+  request.RequestGetUser:
     properties:
       id:
         type: integer
     required:
     - id
     type: object
-  request.RequestLoginInputDTO:
+  request.RequestLogin:
     properties:
       email:
         type: string
@@ -82,7 +82,7 @@ definitions:
     - email
     - password
     type: object
-  request.RequestRefreshTokenInputDTO:
+  request.RequestRefreshToken:
     properties:
       refresh_token:
         type: string
@@ -92,7 +92,7 @@ definitions:
     - refresh_token
     - user_id
     type: object
-  request.RequestUpdateAvatarInputDTO:
+  request.RequestUpdateAvatar:
     properties:
       id:
         type: integer
@@ -102,7 +102,7 @@ definitions:
     - id
     - svg
     type: object
-  request.RequestUpdatePermissionInputDTO:
+  request.RequestUpdatePermission:
     properties:
       description:
         type: string
@@ -118,7 +118,7 @@ definitions:
     - internal_name
     - name
     type: object
-  request.RequestUpdateRoleInputDTO:
+  request.RequestUpdateRole:
     properties:
       description:
         type: string
@@ -134,7 +134,7 @@ definitions:
     - internal_name
     - name
     type: object
-  request.RequestUpdateRolePermissionInputDTO:
+  request.RequestUpdateRolePermission:
     properties:
       permission_ids:
         items:
@@ -146,7 +146,7 @@ definitions:
     - permission_ids
     - role_id
     type: object
-  request.RequestUpdateUserInputDTO:
+  request.RequestUpdateUser:
     properties:
       email:
         type: string
@@ -159,7 +159,7 @@ definitions:
     - id
     - name
     type: object
-  request.RequestUpdateUserPasswordInputDTO:
+  request.RequestUpdateUserPassword:
     properties:
       hash:
         type: string
@@ -169,7 +169,7 @@ definitions:
     - hash
     - password
     type: object
-  request.RequestVerifyUserInputDTO:
+  request.RequestVerifyUser:
     properties:
       hash:
         type: string
@@ -180,12 +180,29 @@ definitions:
     properties:
       data: {}
     type: object
+  response.ResponseCreateAvatar:
+    properties:
+      svg:
+        type: string
+    type: object
+  response.ResponseDeleteAvatar:
+    properties:
+      id:
+        type: integer
+    type: object
   response.ResponseError:
     properties:
       err:
         type: string
     type: object
-  usecase.CreateAuthOutputDTO:
+  response.ResponseGetAvatar:
+    properties:
+      id:
+        type: integer
+      svg:
+        type: string
+    type: object
+  response.ResponseLogin:
     properties:
       active:
         type: boolean
@@ -200,26 +217,26 @@ definitions:
       user_id:
         type: integer
     type: object
-  usecase.GetAvatarOutputDTO:
+  response.ResponseRefreshToken:
     properties:
-      created_at:
+      active:
+        type: boolean
+      refresh_token:
         type: string
-      id:
+      refresh_token_expires_in:
         type: integer
-      svg:
+      token:
         type: string
-      updated_at:
-        type: string
+      token_expires_in:
+        type: integer
+      user_id:
+        type: integer
     type: object
-  usecase.GetAvatarsOutputDTO:
+  response.ResponseUpdateAvatar:
     properties:
-      created_at:
-        type: string
       id:
         type: integer
       svg:
-        type: string
-      updated_at:
         type: string
     type: object
   usecase.GetPermissionOutputDTO:
@@ -332,7 +349,7 @@ paths:
         name: auth
         required: true
         schema:
-          $ref: '#/definitions/request.RequestLoginInputDTO'
+          $ref: '#/definitions/request.RequestLogin'
       produces:
       - application/json
       responses:
@@ -343,7 +360,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/usecase.CreateAuthOutputDTO'
+                  $ref: '#/definitions/response.ResponseLogin'
               type: object
         "400":
           description: Bad Request
@@ -363,7 +380,7 @@ paths:
         name: auth
         required: true
         schema:
-          $ref: '#/definitions/request.RequestRefreshTokenInputDTO'
+          $ref: '#/definitions/request.RequestRefreshToken'
       produces:
       - application/json
       responses:
@@ -374,7 +391,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/usecase.CreateAuthOutputDTO'
+                  $ref: '#/definitions/response.ResponseRefreshToken'
               type: object
         "400":
           description: Bad Request
@@ -394,7 +411,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/request.RequestCreateUserInputDTO'
+          $ref: '#/definitions/request.RequestCreateUser'
       produces:
       - application/json
       responses:
@@ -441,7 +458,7 @@ paths:
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/usecase.GetAvatarsOutputDTO'
+                    $ref: '#/definitions/response.ResponseGetAvatar'
                   type: array
               type: object
         "400":
@@ -463,7 +480,7 @@ paths:
         name: avatar
         required: true
         schema:
-          $ref: '#/definitions/request.RequestCreateAvatarInputDTO'
+          $ref: '#/definitions/request.RequestCreateAvatar'
       produces:
       - application/json
       responses:
@@ -474,7 +491,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.ResponseCreateAvatar'
               type: object
         "400":
           description: Bad Request
@@ -506,7 +523,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.ResponseDeleteAvatar'
               type: object
         "400":
           description: Bad Request
@@ -537,7 +554,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/usecase.GetAvatarOutputDTO'
+                  $ref: '#/definitions/response.ResponseGetAvatar'
               type: object
         "400":
           description: Bad Request
@@ -563,7 +580,7 @@ paths:
         name: avatar
         required: true
         schema:
-          $ref: '#/definitions/request.RequestUpdateAvatarInputDTO'
+          $ref: '#/definitions/request.RequestUpdateAvatar'
       produces:
       - application/json
       responses:
@@ -574,7 +591,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.ResponseUpdateAvatar'
               type: object
         "400":
           description: Bad Request
@@ -632,7 +649,7 @@ paths:
         name: permission
         required: true
         schema:
-          $ref: '#/definitions/request.RequestCreatePermissionInputDTO'
+          $ref: '#/definitions/request.RequestCreatePermission'
       produces:
       - application/json
       responses:
@@ -733,7 +750,7 @@ paths:
         name: permission
         required: true
         schema:
-          $ref: '#/definitions/request.RequestUpdatePermissionInputDTO'
+          $ref: '#/definitions/request.RequestUpdatePermission'
       produces:
       - application/json
       responses:
@@ -802,7 +819,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/request.RequestCreateRoleInputDTO'
+          $ref: '#/definitions/request.RequestCreateRole'
       produces:
       - application/json
       responses:
@@ -902,7 +919,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/request.RequestUpdateRoleInputDTO'
+          $ref: '#/definitions/request.RequestUpdateRole'
       produces:
       - application/json
       responses:
@@ -997,7 +1014,7 @@ paths:
         name: role_permission
         required: true
         schema:
-          $ref: '#/definitions/request.RequestCreateRolePermissionInputDTO'
+          $ref: '#/definitions/request.RequestCreateRolePermission'
       produces:
       - application/json
       responses:
@@ -1034,7 +1051,7 @@ paths:
         name: role_permission
         required: true
         schema:
-          $ref: '#/definitions/request.RequestUpdateRolePermissionInputDTO'
+          $ref: '#/definitions/request.RequestUpdateRolePermission'
       produces:
       - application/json
       responses:
@@ -1103,7 +1120,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/request.RequestCreateUserInputDTO'
+          $ref: '#/definitions/request.RequestCreateUser'
       produces:
       - application/json
       responses:
@@ -1177,7 +1194,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/request.RequestGetUserInputDTO'
+                  $ref: '#/definitions/request.RequestGetUser'
               type: object
         "400":
           description: Bad Request
@@ -1203,7 +1220,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/request.RequestUpdateUserInputDTO'
+          $ref: '#/definitions/request.RequestUpdateUser'
       produces:
       - application/json
       responses:
@@ -1236,7 +1253,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/request.RequestForgotPasswordInputDTO'
+          $ref: '#/definitions/request.RequestForgotPassword'
       produces:
       - application/json
       responses:
@@ -1267,7 +1284,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/request.RequestUpdateUserPasswordInputDTO'
+          $ref: '#/definitions/request.RequestUpdateUserPassword'
       produces:
       - application/json
       responses:
@@ -1298,7 +1315,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/request.RequestVerifyUserInputDTO'
+          $ref: '#/definitions/request.RequestVerifyUser'
       produces:
       - application/json
       responses:

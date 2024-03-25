@@ -6,6 +6,7 @@ import (
 
 	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/request"
+	"github.com/marceloamoreno/goapi/internal/domain/user/response"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
@@ -48,7 +49,7 @@ func NewAuthService() *AuthService {
 	}
 }
 
-func (s *AuthService) Login(ctx context.Context, input request.RequestLogin) (output usecase.CreateAuthOutputDTO, err error) {
+func (s *AuthService) Login(ctx context.Context, input request.RequestLogin) (output response.ResponseLogin, err error) {
 	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)
@@ -78,7 +79,7 @@ func (s *AuthService) Login(ctx context.Context, input request.RequestLogin) (ou
 		UserID: user.ID,
 	})
 	if auth.UserID != 0 {
-		return usecase.CreateAuthOutputDTO{
+		return response.ResponseLogin{
 			Token:                 auth.Token,
 			RefreshToken:          auth.RefreshToken,
 			UserID:                auth.UserID,
@@ -114,7 +115,7 @@ func (s *AuthService) Login(ctx context.Context, input request.RequestLogin) (ou
 		return
 	}
 
-	output = usecase.CreateAuthOutputDTO{
+	output = response.ResponseLogin{
 		Token:                 newToken.Token,
 		RefreshToken:          newToken.RefreshToken,
 		UserID:                newToken.UserID,
@@ -131,7 +132,7 @@ func (s *AuthService) Login(ctx context.Context, input request.RequestLogin) (ou
 	return
 }
 
-func (s *AuthService) RefreshToken(ctx context.Context, input request.RequestRefreshToken) (output usecase.CreateAuthOutputDTO, err error) {
+func (s *AuthService) RefreshToken(ctx context.Context, input request.RequestRefreshToken) (output response.ResponseRefreshToken, err error) {
 	tx, err := s.db.GetDbConn().Begin()
 	if err != nil {
 		slog.Info("err", err)
@@ -172,7 +173,7 @@ func (s *AuthService) RefreshToken(ctx context.Context, input request.RequestRef
 		slog.Info("err", err)
 		return
 	}
-	output = usecase.CreateAuthOutputDTO{
+	output = response.ResponseRefreshToken{
 		Token:                 token.Token,
 		RefreshToken:          token.RefreshToken,
 		UserID:                token.UserID,

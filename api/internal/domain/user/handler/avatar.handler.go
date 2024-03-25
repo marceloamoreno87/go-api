@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/marceloamoreno/goapi/internal/domain/user/request"
+	_ "github.com/marceloamoreno/goapi/internal/domain/user/response"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	"github.com/marceloamoreno/goapi/internal/shared/helper"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
@@ -29,7 +30,7 @@ func NewAvatarHandler() *AvatarHandler {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Avatar ID"
-// @Success 200 {object} response.Response{data=usecase.GetAvatarOutputDTO}
+// @Success 200 {object} response.Response{data=response.ResponseGetAvatar}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /avatar/{id} [get]
 // @Security     JWT
@@ -54,7 +55,7 @@ func (h *AvatarHandler) GetAvatar(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param limit query int false "Limit"
 // @Param offset query int false "Offset"
-// @Success 200 {object} response.Response{data=[]usecase.GetAvatarsOutputDTO}
+// @Success 200 {object} response.Response{data=[]response.ResponseGetAvatar}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /avatar [get]
 // @Security     JWT
@@ -80,7 +81,7 @@ func (h *AvatarHandler) GetAvatars(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param avatar body request.RequestCreateAvatar true "Avatar"
-// @Success 200 {object} response.Response{data=nil}
+// @Success 200 {object} response.Response{data=response.ResponseCreateAvatar}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /avatar [post]
 // @Security     JWT
@@ -107,7 +108,7 @@ func (h *AvatarHandler) CreateAvatar(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param id path string true "Avatar ID"
 // @Param avatar body request.RequestUpdateAvatar true "Avatar"
-// @Success 200 {object} response.Response{data=nil}
+// @Success 200 {object} response.Response{data=response.ResponseUpdateAvatar}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /avatar/{id} [put]
 // @Security     JWT
@@ -133,7 +134,7 @@ func (h *AvatarHandler) UpdateAvatar(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Avatar ID"
-// @Success 200 {object} response.Response{data=nil}
+// @Success 200 {object} response.Response{data=response.ResponseDeleteAvatar}
 // @Failure 400 {object} response.ResponseError{}
 // @Router /avatar/{id} [delete]
 // @Security     JWT
