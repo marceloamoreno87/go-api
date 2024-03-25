@@ -5,7 +5,6 @@ import (
 	"net/mail"
 	"time"
 
-	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -22,7 +21,7 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func NewUser(name string, email string, password string) (user entityInterface.UserInterface, err error) {
+func NewUser(name string, email string, password string) (user *User, err error) {
 	user = &User{
 		Name:     name,
 		Email:    email,

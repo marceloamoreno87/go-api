@@ -5,25 +5,24 @@ import (
 	"log/slog"
 
 	"github.com/marceloamoreno/goapi/config"
-	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/request"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type RolePermissionService struct {
 	db                                  config.SQLCInterface
-	GetRolePermissionsUseCase           usecaseInterface.GetRolePermissionsUseCaseInterface
-	CreateRolePermissionUseCase         usecaseInterface.CreateRolePermissionUseCaseInterface
-	DeleteRolePermissionByRoleIDUseCase usecaseInterface.DeleteRolePermissionByRoleIDUseCaseInterface
+	GetRolePermissionsUseCase           usecase.GetRolePermissionsUseCase
+	CreateRolePermissionUseCase         usecase.CreateRolePermissionUseCase
+	DeleteRolePermissionByRoleIDUseCase usecase.DeleteRolePermissionByRoleIDUseCase
 }
 
 func NewRolePermissionService() *RolePermissionService {
 	db := config.NewSqlc(config.DB)
 	return &RolePermissionService{
 		db:                                  db,
-		GetRolePermissionsUseCase:           usecase.NewGetRolePermissionsUseCase(db),
-		CreateRolePermissionUseCase:         usecase.NewCreateRolePermissionUseCase(db),
-		DeleteRolePermissionByRoleIDUseCase: usecase.NewDeleteRolePermissionByRoleIDUseCase(db),
+		GetRolePermissionsUseCase:           *usecase.NewGetRolePermissionsUseCase(db),
+		CreateRolePermissionUseCase:         *usecase.NewCreateRolePermissionUseCase(db),
+		DeleteRolePermissionByRoleIDUseCase: *usecase.NewDeleteRolePermissionByRoleIDUseCase(db),
 	}
 }
 

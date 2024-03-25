@@ -5,7 +5,6 @@ import (
 	"log/slog"
 	"net/http"
 
-	serviceInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/service"
 	"github.com/marceloamoreno/goapi/internal/domain/user/request"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	"github.com/marceloamoreno/goapi/internal/shared/helper"
@@ -15,12 +14,12 @@ import (
 
 type RolePermissionHandler struct {
 	response.Responses
-	service serviceInterface.RolePermissionServiceInterface
+	service service.RolePermissionService
 }
 
 func NewRolePermissionHandler() *RolePermissionHandler {
 	return &RolePermissionHandler{
-		service: service.NewRolePermissionService(),
+		service: *service.NewRolePermissionService(),
 	}
 }
 

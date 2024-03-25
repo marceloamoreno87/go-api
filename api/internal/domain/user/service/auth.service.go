@@ -5,47 +5,46 @@ import (
 	"log/slog"
 
 	"github.com/marceloamoreno/goapi/config"
-	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/request"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type AuthService struct {
 	db                             config.SQLCInterface
-	GetUserUseCase                 usecaseInterface.GetUserUseCaseInterface
-	GetUserByEmailUseCase          usecaseInterface.GetUserByEmailUseCaseInterface
-	CreateAuthUseCase              usecaseInterface.CreateAuthUseCaseInterface
-	LoginUserUseCase               usecaseInterface.LoginUserUseCaseInterface
-	GetAuthByRefreshTokenUseCase   usecaseInterface.GetAuthByRefreshTokenUseCase
-	UpdateAuthRevokeUseCase        usecaseInterface.UpdateAuthRevokeUseCaseInterface
-	GetAuthByTokenUseCase          usecaseInterface.GetAuthByTokenUseCaseInterface
-	GetAuthByUserIDUseCase         usecaseInterface.GetAuthByUserIDUseCaseInterface
-	CreateUserUseCase              usecaseInterface.CreateUserUseCaseInterface
-	UpdateUserPasswordUseCase      usecaseInterface.UpdateUserPasswordUseCaseInterface
-	GetUserValidationByHashUseCase usecaseInterface.GetUserValidationByHashUseCaseInterface
-	UpdateUserActive               usecaseInterface.UpdateUserActiveUseCaseInterface
-	UpdateUserValidationUsed       usecaseInterface.UpdateUserValidationUsedUseCaseInterface
-	CreateUserValidationUseCase    usecaseInterface.CreateUserValidationUseCaseInterface
+	GetUserUseCase                 usecase.GetUserUseCase
+	GetUserByEmailUseCase          usecase.GetUserByEmailUseCase
+	CreateAuthUseCase              usecase.CreateAuthUseCase
+	LoginUserUseCase               usecase.LoginUserUseCase
+	GetAuthByRefreshTokenUseCase   usecase.GetAuthByRefreshTokenUseCase
+	UpdateAuthRevokeUseCase        usecase.UpdateAuthRevokeUseCase
+	GetAuthByTokenUseCase          usecase.GetAuthByTokenUseCase
+	GetAuthByUserIDUseCase         usecase.GetAuthByUserIDUseCase
+	CreateUserUseCase              usecase.CreateUserUseCase
+	UpdateUserPasswordUseCase      usecase.UpdateUserPasswordUseCase
+	GetUserValidationByHashUseCase usecase.GetUserValidationByHashUseCase
+	UpdateUserActive               usecase.UpdateUserActiveUseCase
+	UpdateUserValidationUsed       usecase.UpdateUserValidationUsedUseCase
+	CreateUserValidationUseCase    usecase.CreateUserValidationUseCase
 }
 
 func NewAuthService() *AuthService {
 	db := config.NewSqlc(config.DB)
 	return &AuthService{
 		db:                             db,
-		GetUserUseCase:                 usecase.NewGetUserUseCase(db),
-		GetUserByEmailUseCase:          usecase.NewGetUserByEmailUseCase(db),
-		CreateAuthUseCase:              usecase.NewCreateAuthUseCase(db),
-		LoginUserUseCase:               usecase.NewLoginUserUseCase(),
-		GetAuthByRefreshTokenUseCase:   usecase.NewGetAuthByRefreshTokenUseCase(db),
-		UpdateAuthRevokeUseCase:        usecase.NewUpdateAuthRevokeUseCase(db),
-		GetAuthByTokenUseCase:          usecase.NewGetAuthByTokenUseCase(db),
-		GetAuthByUserIDUseCase:         usecase.NewGetAuthByUserIDUseCase(db),
-		CreateUserUseCase:              usecase.NewCreateUserUseCase(db),
-		UpdateUserPasswordUseCase:      usecase.NewUpdateUserPasswordUseCase(db),
-		GetUserValidationByHashUseCase: usecase.NewGetUserValidationByHashUseCase(db),
-		UpdateUserActive:               usecase.NewUpdateUserActiveUseCase(db),
-		UpdateUserValidationUsed:       usecase.NewUpdateUserValidationUsedUseCase(db),
-		CreateUserValidationUseCase:    usecase.NewCreateUserValidationUseCase(db),
+		GetUserUseCase:                 *usecase.NewGetUserUseCase(db),
+		GetUserByEmailUseCase:          *usecase.NewGetUserByEmailUseCase(db),
+		CreateAuthUseCase:              *usecase.NewCreateAuthUseCase(db),
+		LoginUserUseCase:               *usecase.NewLoginUserUseCase(),
+		GetAuthByRefreshTokenUseCase:   *usecase.NewGetAuthByRefreshTokenUseCase(db),
+		UpdateAuthRevokeUseCase:        *usecase.NewUpdateAuthRevokeUseCase(db),
+		GetAuthByTokenUseCase:          *usecase.NewGetAuthByTokenUseCase(db),
+		GetAuthByUserIDUseCase:         *usecase.NewGetAuthByUserIDUseCase(db),
+		CreateUserUseCase:              *usecase.NewCreateUserUseCase(db),
+		UpdateUserPasswordUseCase:      *usecase.NewUpdateUserPasswordUseCase(db),
+		GetUserValidationByHashUseCase: *usecase.NewGetUserValidationByHashUseCase(db),
+		UpdateUserActive:               *usecase.NewUpdateUserActiveUseCase(db),
+		UpdateUserValidationUsed:       *usecase.NewUpdateUserValidationUsedUseCase(db),
+		CreateUserValidationUseCase:    *usecase.NewCreateUserValidationUseCase(db),
 	}
 }
 

@@ -5,9 +5,19 @@ import (
 
 	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
-	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/db"
 )
+
+type Userrepository interface {
+	CreateUser(ctx context.Context, user *entity.User) (output *entity.User, err error)
+	GetUser(ctx context.Context, id int32) (output *entity.User, err error)
+	GetUserByEmail(ctx context.Context, email string) (output *entity.User, err error)
+	GetUsers(ctx context.Context, limit int32, offset int32) (output []*entity.User, err error)
+	UpdateUser(ctx context.Context, user *entity.User, id int32) (ouerr error)
+	DeleteUser(ctx context.Context, id int32) (err error)
+	UpdateUserPassword(ctx context.Context, id int32, password string) (err error)
+	UpdateUserActive(ctx context.Context, id int32, active bool) (err error)
+}
 
 type UserRepository struct {
 	db config.SQLCInterface
@@ -19,7 +29,7 @@ func NewUserRepository(db config.SQLCInterface) *UserRepository {
 	}
 }
 
-func (repo *UserRepository) CreateUser(ctx context.Context, user entityInterface.UserInterface) (output entityInterface.UserInterface, err error) {
+func (repo *UserRepository) CreateUser(ctx context.Context, user *entity.User) (output *entity.User, err error) {
 	newUser, err := repo.db.GetDbQueries().WithTx(repo.db.GetTx()).CreateUser(ctx, db.CreateUserParams{
 		Name:     user.GetName(),
 		Email:    user.GetEmail(),
@@ -45,7 +55,7 @@ func (repo *UserRepository) CreateUser(ctx context.Context, user entityInterface
 	return
 }
 
-func (repo *UserRepository) GetUser(ctx context.Context, id int32) (output entityInterface.UserInterface, err error) {
+func (repo *UserRepository) GetUser(ctx context.Context, id int32) (output *entity.User, err error) {
 	u, err := repo.db.GetDbQueries().GetUser(ctx, id)
 	if err != nil {
 		return
@@ -64,7 +74,7 @@ func (repo *UserRepository) GetUser(ctx context.Context, id int32) (output entit
 	return
 }
 
-func (repo *UserRepository) GetUserByEmail(ctx context.Context, email string) (output entityInterface.UserInterface, err error) {
+func (repo *UserRepository) GetUserByEmail(ctx context.Context, email string) (output *entity.User, err error) {
 	u, err := repo.db.GetDbQueries().GetUserByEmail(ctx, email)
 	if err != nil {
 		return
@@ -83,7 +93,7 @@ func (repo *UserRepository) GetUserByEmail(ctx context.Context, email string) (o
 	return
 }
 
-func (repo *UserRepository) GetUsers(ctx context.Context, limit int32, offset int32) (output []entityInterface.UserInterface, err error) {
+func (repo *UserRepository) GetUsers(ctx context.Context, limit int32, offset int32) (output []*entity.User, err error) {
 	u, err := repo.db.GetDbQueries().GetUsers(ctx, db.GetUsersParams{
 		Limit:  limit,
 		Offset: offset,
@@ -107,7 +117,7 @@ func (repo *UserRepository) GetUsers(ctx context.Context, limit int32, offset in
 	return
 }
 
-func (repo *UserRepository) UpdateUser(ctx context.Context, user entityInterface.UserInterface, id int32) (err error) {
+func (repo *UserRepository) UpdateUser(ctx context.Context, user *entity.User, id int32) (err error) {
 	return repo.db.GetDbQueries().WithTx(repo.db.GetTx()).UpdateUser(ctx, db.UpdateUserParams{
 		ID:       id,
 		Name:     user.GetName(),

@@ -4,7 +4,6 @@ import (
 	"errors"
 	"time"
 
-	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
@@ -15,7 +14,7 @@ type Avatar struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func NewAvatar(SVG string) (avatar entityInterface.AvatarInterface, err error) {
+func NewAvatar(SVG string) (avatar *Avatar, err error) {
 	avatar = &Avatar{
 		SVG: SVG,
 	}

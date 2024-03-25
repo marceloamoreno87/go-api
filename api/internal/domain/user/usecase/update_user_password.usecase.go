@@ -5,7 +5,6 @@ import (
 
 	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
-	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -24,7 +23,7 @@ type UpdateUserPasswordOutputDTO struct {
 }
 
 type UpdateUserPasswordUseCase struct {
-	repo repositoryInterface.UserRepositoryInterface
+	repo repository.Userrepository
 }
 
 func NewUpdateUserPasswordUseCase(db config.SQLCInterface) *UpdateUserPasswordUseCase {

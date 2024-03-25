@@ -5,29 +5,28 @@ import (
 	"log/slog"
 
 	"github.com/marceloamoreno/goapi/config"
-	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/request"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type AvatarService struct {
 	db                  config.SQLCInterface
-	GetAvatarUseCase    usecaseInterface.GetAvatarUseCaseInterface
-	GetAvatarsUseCase   usecaseInterface.GetAvatarsUseCaseInterface
-	CreateAvatarUseCase usecaseInterface.CreateAvatarUseCaseInterface
-	UpdateAvatarUseCase usecaseInterface.UpdateAvatarUseCaseInterface
-	DeleteAvatarUseCase usecaseInterface.DeleteAvatarUseCaseInterface
+	GetAvatarUseCase    usecase.GetAvatarUseCase
+	GetAvatarsUseCase   usecase.GetAvatarsUseCase
+	CreateAvatarUseCase usecase.CreateAvatarUseCase
+	UpdateAvatarUseCase usecase.UpdateAvatarUseCase
+	DeleteAvatarUseCase usecase.DeleteAvatarUseCase
 }
 
 func NewAvatarService() *AvatarService {
 	db := config.NewSqlc(config.DB)
 	return &AvatarService{
 		db:                  db,
-		GetAvatarUseCase:    usecase.NewGetAvatarUseCase(db),
-		GetAvatarsUseCase:   usecase.NewGetAvatarsUseCase(db),
-		CreateAvatarUseCase: usecase.NewCreateAvatarUseCase(db),
-		UpdateAvatarUseCase: usecase.NewUpdateAvatarUseCase(db),
-		DeleteAvatarUseCase: usecase.NewDeleteAvatarUseCase(db),
+		GetAvatarUseCase:    *usecase.NewGetAvatarUseCase(db),
+		GetAvatarsUseCase:   *usecase.NewGetAvatarsUseCase(db),
+		CreateAvatarUseCase: *usecase.NewCreateAvatarUseCase(db),
+		UpdateAvatarUseCase: *usecase.NewUpdateAvatarUseCase(db),
+		DeleteAvatarUseCase: *usecase.NewDeleteAvatarUseCase(db),
 	}
 }
 

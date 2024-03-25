@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/marceloamoreno/goapi/config"
-	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -17,7 +16,7 @@ type DeleteUserOutputDTO struct {
 }
 
 type DeleteUserUseCase struct {
-	repo repositoryInterface.UserRepositoryInterface
+	repo repository.Userrepository
 }
 
 func NewDeleteUserUseCase(db config.SQLCInterface) *DeleteUserUseCase {

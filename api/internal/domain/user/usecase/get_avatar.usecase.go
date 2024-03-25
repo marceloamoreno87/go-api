@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/marceloamoreno/goapi/config"
-	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -21,7 +20,7 @@ type GetAvatarOutputDTO struct {
 }
 
 type GetAvatarUseCase struct {
-	repo repositoryInterface.AvatarRepositoryInterface
+	repo repository.Avatarrepository
 }
 
 func NewGetAvatarUseCase(db config.SQLCInterface) *GetAvatarUseCase {

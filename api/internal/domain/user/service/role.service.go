@@ -6,31 +6,30 @@ import (
 	"log/slog"
 
 	"github.com/marceloamoreno/goapi/config"
-	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/request"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type RoleService struct {
 	db                              config.SQLCInterface
-	NewGetRoleUseCase               usecaseInterface.GetRoleUseCaseInterface
-	NewGetRolesUseCase              usecaseInterface.GetRolesUseCaseInterface
-	NewCreateRoleUseCase            usecaseInterface.CreateRoleUseCaseInterface
-	NewUpdateRoleUseCase            usecaseInterface.UpdateRoleUseCaseInterface
-	NewDeleteRoleUseCase            usecaseInterface.DeleteRoleUseCaseInterface
-	NewGetRoleByInternalNameUseCase usecaseInterface.NewGetRoleByInternalNameUseCaseInterface
+	NewGetRoleUseCase               usecase.GetRoleUseCase
+	NewGetRolesUseCase              usecase.GetRolesUseCase
+	NewCreateRoleUseCase            usecase.CreateRoleUseCase
+	NewUpdateRoleUseCase            usecase.UpdateRoleUseCase
+	NewDeleteRoleUseCase            usecase.DeleteRoleUseCase
+	NewGetRoleByInternalNameUseCase usecase.GetRoleByInternalNameUseCase
 }
 
 func NewRoleService() *RoleService {
 	db := config.NewSqlc(config.DB)
 	return &RoleService{
 		db:                              db,
-		NewGetRoleUseCase:               usecase.NewGetRoleUseCase(db),
-		NewGetRolesUseCase:              usecase.NewGetRolesUseCase(db),
-		NewCreateRoleUseCase:            usecase.NewCreateRoleUseCase(db),
-		NewUpdateRoleUseCase:            usecase.NewUpdateRoleUseCase(db),
-		NewDeleteRoleUseCase:            usecase.NewDeleteRoleUseCase(db),
-		NewGetRoleByInternalNameUseCase: usecase.NewGetRoleByInternalNameUseCase(db),
+		NewGetRoleUseCase:               *usecase.NewGetRoleUseCase(db),
+		NewGetRolesUseCase:              *usecase.NewGetRolesUseCase(db),
+		NewCreateRoleUseCase:            *usecase.NewCreateRoleUseCase(db),
+		NewUpdateRoleUseCase:            *usecase.NewUpdateRoleUseCase(db),
+		NewDeleteRoleUseCase:            *usecase.NewDeleteRoleUseCase(db),
+		NewGetRoleByInternalNameUseCase: *usecase.NewGetRoleByInternalNameUseCase(db),
 	}
 }
 

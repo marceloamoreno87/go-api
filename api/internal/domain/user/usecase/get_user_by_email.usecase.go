@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/marceloamoreno/goapi/config"
-	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -26,7 +25,7 @@ type GetUserByEmailOutputDTO struct {
 }
 
 type GetUserByEmailUseCase struct {
-	repo repositoryInterface.UserRepositoryInterface
+	repo repository.Userrepository
 }
 
 func NewGetUserByEmailUseCase(db config.SQLCInterface) *GetUserByEmailUseCase {

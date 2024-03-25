@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"github.com/marceloamoreno/goapi/config"
-	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 	"golang.org/x/net/context"
 )
@@ -16,7 +15,7 @@ type DeleteRolePermissionByRoleIDOutputDTO struct {
 }
 
 type DeleteRolePermissionByRoleIDUseCase struct {
-	repo repositoryInterface.RolePermissionRepositoryInterface
+	repo repository.RolePermissionrepository
 }
 
 func NewDeleteRolePermissionByRoleIDUseCase(db config.SQLCInterface) *DeleteRolePermissionByRoleIDUseCase {

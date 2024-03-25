@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/marceloamoreno/goapi/config"
-	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -17,7 +16,7 @@ type UpdateAuthRevokeOutputDTO struct {
 }
 
 type UpdateAuthRevokeUseCase struct {
-	repo repositoryInterface.AuthRepositoryInterface
+	repo repository.Authrepository
 }
 
 func NewUpdateAuthRevokeUseCase(db config.SQLCInterface) *UpdateAuthRevokeUseCase {

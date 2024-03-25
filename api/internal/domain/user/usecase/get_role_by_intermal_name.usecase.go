@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/marceloamoreno/goapi/config"
-	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -23,7 +22,7 @@ type GetRoleByInternalNameOutputDTO struct {
 }
 
 type GetRoleByInternalNameUseCase struct {
-	repo repositoryInterface.RoleRepositoryInterface
+	repo repository.Rolerepository
 }
 
 func NewGetRoleByInternalNameUseCase(db config.SQLCInterface) *GetRoleByInternalNameUseCase {

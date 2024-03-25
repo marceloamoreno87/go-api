@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/marceloamoreno/goapi/config"
-	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -17,7 +16,7 @@ type DeletePermissionOutputDTO struct {
 }
 
 type DeletePermissionUseCase struct {
-	repo repositoryInterface.PermissionRepositoryInterface
+	repo repository.Permissionrepository
 }
 
 func NewDeletePermissionUseCase(db config.SQLCInterface) *DeletePermissionUseCase {

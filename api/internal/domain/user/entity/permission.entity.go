@@ -4,7 +4,6 @@ import (
 	"errors"
 	"time"
 
-	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
@@ -17,7 +16,7 @@ type Permission struct {
 	UpdatedAt    time.Time `json:"updated_at"`
 }
 
-func NewPermission(name string, internalName string, description string) (permission entityInterface.PermissionInterface, err error) {
+func NewPermission(name string, internalName string, description string) (permission *Permission, err error) {
 	permission = &Permission{
 		Name:         name,
 		InternalName: internalName,

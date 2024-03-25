@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/marceloamoreno/goapi/config"
-	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -17,7 +16,7 @@ type DeleteRoleOutputDTO struct {
 }
 
 type DeleteRoleUseCase struct {
-	repo repositoryInterface.RoleRepositoryInterface
+	repo repository.Rolerepository
 }
 
 func NewDeleteRoleUseCase(db config.SQLCInterface) *DeleteRoleUseCase {

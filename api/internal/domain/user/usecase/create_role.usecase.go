@@ -5,7 +5,6 @@ import (
 
 	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
-	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -22,7 +21,7 @@ type CreateRoleOutputDTO struct {
 }
 
 type CreateRoleUseCase struct {
-	repo repositoryInterface.RoleRepositoryInterface
+	repo repository.Rolerepository
 }
 
 func NewCreateRoleUseCase(db config.SQLCInterface) *CreateRoleUseCase {

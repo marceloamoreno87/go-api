@@ -5,7 +5,6 @@ import (
 	"log/slog"
 	"net/http"
 
-	serviceInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/service"
 	"github.com/marceloamoreno/goapi/internal/domain/user/request"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	"github.com/marceloamoreno/goapi/internal/shared/response"
@@ -14,12 +13,12 @@ import (
 
 type AuthHandler struct {
 	response.Responses
-	service serviceInterface.AuthServiceInterface
+	service service.AuthService
 }
 
 func NewAuthHandler() *AuthHandler {
 	return &AuthHandler{
-		service: service.NewAuthService(),
+		service: *service.NewAuthService(),
 	}
 }
 

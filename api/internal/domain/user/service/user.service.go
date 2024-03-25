@@ -6,41 +6,40 @@ import (
 
 	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/event"
-	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/request"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type UserService struct {
 	db                             config.SQLCInterface
-	GetUserByEmailUseCase          usecaseInterface.GetUserByEmailUseCaseInterface
-	CreateUserUseCase              usecaseInterface.CreateUserUseCaseInterface
-	GetUserUseCase                 usecaseInterface.GetUserUseCaseInterface
-	GetUsersUseCase                usecaseInterface.GetUsersUseCaseInterface
-	UpdateUserUseCase              usecaseInterface.UpdateUserUseCaseInterface
-	DeleteUserUseCase              usecaseInterface.DeleteUserUseCaseInterface
-	UpdateUserPasswordUseCase      usecaseInterface.UpdateUserPasswordUseCaseInterface
-	CreateUserValidationUseCase    usecaseInterface.CreateUserValidationUseCaseInterface
-	GetUserValidationByHashUseCase usecaseInterface.GetUserValidationByHashUseCaseInterface
-	UpdateUserValidationUsed       usecaseInterface.UpdateUserValidationUsedUseCaseInterface
-	UpdateUserActive               usecaseInterface.UpdateUserActiveUseCaseInterface
+	GetUserByEmailUseCase          usecase.GetUserByEmailUseCase
+	CreateUserUseCase              usecase.CreateUserUseCase
+	GetUserUseCase                 usecase.GetUserUseCase
+	GetUsersUseCase                usecase.GetUsersUseCase
+	UpdateUserUseCase              usecase.UpdateUserUseCase
+	DeleteUserUseCase              usecase.DeleteUserUseCase
+	UpdateUserPasswordUseCase      usecase.UpdateUserPasswordUseCase
+	CreateUserValidationUseCase    usecase.CreateUserValidationUseCase
+	GetUserValidationByHashUseCase usecase.GetUserValidationByHashUseCase
+	UpdateUserValidationUsed       usecase.UpdateUserValidationUsedUseCase
+	UpdateUserActive               usecase.UpdateUserActiveUseCase
 }
 
 func NewUserService() *UserService {
 	db := config.NewSqlc(config.DB)
 	return &UserService{
 		db:                             db,
-		GetUserByEmailUseCase:          usecase.NewGetUserByEmailUseCase(db),
-		CreateUserUseCase:              usecase.NewCreateUserUseCase(db),
-		GetUserUseCase:                 usecase.NewGetUserUseCase(db),
-		GetUsersUseCase:                usecase.NewGetUsersUseCase(db),
-		UpdateUserUseCase:              usecase.NewUpdateUserUseCase(db),
-		DeleteUserUseCase:              usecase.NewDeleteUserUseCase(db),
-		UpdateUserPasswordUseCase:      usecase.NewUpdateUserPasswordUseCase(db),
-		CreateUserValidationUseCase:    usecase.NewCreateUserValidationUseCase(db),
-		GetUserValidationByHashUseCase: usecase.NewGetUserValidationByHashUseCase(db),
-		UpdateUserValidationUsed:       usecase.NewUpdateUserValidationUsedUseCase(db),
-		UpdateUserActive:               usecase.NewUpdateUserActiveUseCase(db),
+		GetUserByEmailUseCase:          *usecase.NewGetUserByEmailUseCase(db),
+		CreateUserUseCase:              *usecase.NewCreateUserUseCase(db),
+		GetUserUseCase:                 *usecase.NewGetUserUseCase(db),
+		GetUsersUseCase:                *usecase.NewGetUsersUseCase(db),
+		UpdateUserUseCase:              *usecase.NewUpdateUserUseCase(db),
+		DeleteUserUseCase:              *usecase.NewDeleteUserUseCase(db),
+		UpdateUserPasswordUseCase:      *usecase.NewUpdateUserPasswordUseCase(db),
+		CreateUserValidationUseCase:    *usecase.NewCreateUserValidationUseCase(db),
+		GetUserValidationByHashUseCase: *usecase.NewGetUserValidationByHashUseCase(db),
+		UpdateUserValidationUsed:       *usecase.NewUpdateUserValidationUsedUseCase(db),
+		UpdateUserActive:               *usecase.NewUpdateUserActiveUseCase(db),
 	}
 }
 

@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/marceloamoreno/goapi/config"
-	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
@@ -21,7 +20,7 @@ type Auth struct {
 	UpdatedAt             time.Time `json:"updated_at"`
 }
 
-func NewAuth(userId int32) (auth entityInterface.AuthInterface, err error) {
+func NewAuth(userId int32) (auth *Auth, err error) {
 	auth = &Auth{
 		UserID:                userId,
 		Active:                true,

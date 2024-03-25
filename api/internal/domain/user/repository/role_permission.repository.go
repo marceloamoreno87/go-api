@@ -6,9 +6,14 @@ import (
 
 	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
-	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/db"
 )
+
+type RolePermissionrepository interface {
+	GetRolePermissionsByRole(ctx context.Context, id int32) (output []*entity.RolePermission, err error)
+	CreateRolePermission(ctx context.Context, rolePermission *entity.RolePermission) (err error)
+	DeleteRolePermissionByRoleID(ctx context.Context, id int32) (err error)
+}
 
 type RolePermissionRepository struct {
 	db config.SQLCInterface
@@ -20,7 +25,7 @@ func NewRolePermissionRepository(db config.SQLCInterface) *RolePermissionReposit
 	}
 }
 
-func (repo *RolePermissionRepository) GetRolePermissionsByRole(ctx context.Context, id int32) (output []entityInterface.RolePermissionInterface, err error) {
+func (repo *RolePermissionRepository) GetRolePermissionsByRole(ctx context.Context, id int32) (output []*entity.RolePermission, err error) {
 	rp, err := repo.db.GetDbQueries().GetRolePermissionsByRole(ctx, id)
 	if err != nil {
 		return
@@ -35,7 +40,7 @@ func (repo *RolePermissionRepository) GetRolePermissionsByRole(ctx context.Conte
 	return
 }
 
-func (repo *RolePermissionRepository) CreateRolePermission(ctx context.Context, rolePermission entityInterface.RolePermissionInterface) (err error) {
+func (repo *RolePermissionRepository) CreateRolePermission(ctx context.Context, rolePermission *entity.RolePermission) (err error) {
 	errCh := make(chan error, len(rolePermission.GetPermissionIDs()))
 	var wg sync.WaitGroup
 	wg.Add(len(rolePermission.GetPermissionIDs()))

@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/marceloamoreno/goapi/config"
-	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -25,7 +24,7 @@ type GetUserValidationByHashOutputDTO struct {
 }
 
 type GetUserValidationByHashUseCase struct {
-	repo repositoryInterface.UserValidationRepositoryInterface
+	repo repository.UserValidationrepository
 }
 
 func NewGetUserValidationByHashUseCase(db config.SQLCInterface) *GetUserValidationByHashUseCase {

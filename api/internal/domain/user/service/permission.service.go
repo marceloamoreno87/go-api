@@ -6,31 +6,30 @@ import (
 	"log/slog"
 
 	"github.com/marceloamoreno/goapi/config"
-	usecaseInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/usecase"
 	"github.com/marceloamoreno/goapi/internal/domain/user/request"
 	"github.com/marceloamoreno/goapi/internal/domain/user/usecase"
 )
 
 type PermissionService struct {
 	db                                    config.SQLCInterface
-	NewGetPermissionUseCase               usecaseInterface.GetPermissionUseCaseInterface
-	NewGetPermissionsUseCase              usecaseInterface.GetPermissionsUseCaseInterface
-	NewCreatePermissionUseCase            usecaseInterface.CreatePermissionUseCaseInterface
-	NewUpdatePermissionUseCase            usecaseInterface.UpdatePermissionUseCaseInterface
-	NewDeletePermissionUseCase            usecaseInterface.DeletePermissionUseCaseInterface
-	NewGetPermissionByInternalNameUseCase usecaseInterface.GetPermissionByInternalNameUseCaseInterface
+	NewGetPermissionUseCase               usecase.GetPermissionUseCase
+	NewGetPermissionsUseCase              usecase.GetPermissionsUseCase
+	NewCreatePermissionUseCase            usecase.CreatePermissionUseCase
+	NewUpdatePermissionUseCase            usecase.UpdatePermissionUseCase
+	NewDeletePermissionUseCase            usecase.DeletePermissionUseCase
+	NewGetPermissionByInternalNameUseCase usecase.GetPermissionByInternalNameUseCase
 }
 
 func NewPermissionService() *PermissionService {
 	db := config.NewSqlc(config.DB)
 	return &PermissionService{
 		db:                                    db,
-		NewGetPermissionUseCase:               usecase.NewGetPermissionUseCase(db),
-		NewGetPermissionsUseCase:              usecase.NewGetPermissionsUseCase(db),
-		NewCreatePermissionUseCase:            usecase.NewCreatePermissionUseCase(db),
-		NewUpdatePermissionUseCase:            usecase.NewUpdatePermissionUseCase(db),
-		NewDeletePermissionUseCase:            usecase.NewDeletePermissionUseCase(db),
-		NewGetPermissionByInternalNameUseCase: usecase.NewGetPermissionByInternalNameUseCase(db),
+		NewGetPermissionUseCase:               *usecase.NewGetPermissionUseCase(db),
+		NewGetPermissionsUseCase:              *usecase.NewGetPermissionsUseCase(db),
+		NewCreatePermissionUseCase:            *usecase.NewCreatePermissionUseCase(db),
+		NewUpdatePermissionUseCase:            *usecase.NewUpdatePermissionUseCase(db),
+		NewDeletePermissionUseCase:            *usecase.NewDeletePermissionUseCase(db),
+		NewGetPermissionByInternalNameUseCase: *usecase.NewGetPermissionByInternalNameUseCase(db),
 	}
 }
 

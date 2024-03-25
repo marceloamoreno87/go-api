@@ -5,7 +5,6 @@ import (
 	"log/slog"
 	"net/http"
 
-	serviceInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/service"
 	"github.com/marceloamoreno/goapi/internal/domain/user/request"
 	"github.com/marceloamoreno/goapi/internal/domain/user/service"
 	"github.com/marceloamoreno/goapi/internal/shared/helper"
@@ -14,12 +13,12 @@ import (
 
 type AvatarHandler struct {
 	response.Responses
-	service serviceInterface.AvatarServiceInterface
+	service service.AvatarService
 }
 
 func NewAvatarHandler() *AvatarHandler {
 	return &AvatarHandler{
-		service: service.NewAvatarService(),
+		service: *service.NewAvatarService(),
 	}
 }
 

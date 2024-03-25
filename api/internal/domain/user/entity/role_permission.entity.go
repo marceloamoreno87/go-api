@@ -3,19 +3,18 @@ package entity
 import (
 	"errors"
 
-	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
 
 type RolePermission struct {
 	ID            int32
 	RoleID        int32
-	Role          entityInterface.RoleInterface
+	Role          *Role
 	PermissionIDs []int32
-	Permissions   []entityInterface.PermissionInterface
+	Permissions   []*Permission
 }
 
-func NewRolePermission(roleId int32, permissionIds []int32) (rolePermission entityInterface.RolePermissionInterface, err error) {
+func NewRolePermission(roleId int32, permissionIds []int32) (rolePermission *RolePermission, err error) {
 	rolePermission = &RolePermission{
 		RoleID:        roleId,
 		PermissionIDs: permissionIds,
@@ -52,7 +51,7 @@ func (r *RolePermission) GetRoleID() (id int32) {
 	return r.RoleID
 }
 
-func (r *RolePermission) GetRole() entityInterface.RoleInterface {
+func (r *RolePermission) GetRole() *Role {
 	return r.Role
 }
 
@@ -60,7 +59,7 @@ func (r *RolePermission) GetRolePermissionID() (id int32) {
 	return r.ID
 }
 
-func (r *RolePermission) GetPermissions() []entityInterface.PermissionInterface {
+func (r *RolePermission) GetPermissions() []*Permission {
 	return r.Permissions
 }
 
@@ -76,11 +75,11 @@ func (r *RolePermission) SetRoleID(roleId int32) {
 	r.RoleID = roleId
 }
 
-func (r *RolePermission) SetRole(role entityInterface.RoleInterface) {
+func (r *RolePermission) SetRole(role *Role) {
 	r.Role = role
 }
 
-func (r *RolePermission) SetPermissions(permissions []entityInterface.PermissionInterface) {
+func (r *RolePermission) SetPermissions(permissions []*Permission) {
 	r.Permissions = permissions
 }
 

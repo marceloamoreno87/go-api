@@ -6,7 +6,6 @@ import (
 
 	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
-	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -25,7 +24,7 @@ type GetAuthByRefreshTokenOutputDTO struct {
 }
 
 type GetAuthByRefreshTokenUseCase struct {
-	repo repositoryInterface.AuthRepositoryInterface
+	repo repository.Authrepository
 }
 
 func NewGetAuthByRefreshTokenUseCase(db config.SQLCInterface) *GetAuthByRefreshTokenUseCase {

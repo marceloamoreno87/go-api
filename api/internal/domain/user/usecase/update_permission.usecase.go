@@ -5,7 +5,6 @@ import (
 
 	"github.com/marceloamoreno/goapi/config"
 	"github.com/marceloamoreno/goapi/internal/domain/user/entity"
-	repositoryInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/repository"
 	"github.com/marceloamoreno/goapi/internal/domain/user/repository"
 )
 
@@ -24,7 +23,7 @@ type UpdatePermissionOutputDTO struct {
 }
 
 type UpdatePermissionUseCase struct {
-	repo repositoryInterface.PermissionRepositoryInterface
+	repo repository.Permissionrepository
 }
 
 func NewUpdatePermissionUseCase(db config.SQLCInterface) *UpdatePermissionUseCase {

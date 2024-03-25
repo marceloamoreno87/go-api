@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/marceloamoreno/goapi/config"
-	entityInterface "github.com/marceloamoreno/goapi/internal/domain/user/interface/entity"
 	"github.com/marceloamoreno/goapi/internal/shared/helper"
 	"github.com/marceloamoreno/goapi/internal/shared/notification"
 )
@@ -23,7 +22,7 @@ type UserValidation struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func NewUserValidation(userId int32) (userValidation entityInterface.UserValidationInterface, err error) {
+func NewUserValidation(userId int32) (userValidation *UserValidation, err error) {
 	userValidation = &UserValidation{
 		UserID:    userId,
 		Used:      false,
