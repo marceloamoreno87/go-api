@@ -1,13 +1,13 @@
 basePath: /api/v1
 definitions:
-  request.RequestCreateAvatar:
+  request.CreateAvatarRequest:
     properties:
       svg:
         type: string
     required:
     - svg
     type: object
-  request.RequestCreatePermission:
+  request.CreatePermissionRequest:
     properties:
       description:
         type: string
@@ -20,20 +20,7 @@ definitions:
     - internal_name
     - name
     type: object
-  request.RequestCreateRole:
-    properties:
-      description:
-        type: string
-      internal_name:
-        type: string
-      name:
-        type: string
-    required:
-    - description
-    - internal_name
-    - name
-    type: object
-  request.RequestCreateRolePermission:
+  request.CreateRolePermissionRequest:
     properties:
       permission_ids:
         items:
@@ -45,7 +32,20 @@ definitions:
     - permission_ids
     - role_id
     type: object
-  request.RequestCreateUser:
+  request.CreateRoleRequest:
+    properties:
+      description:
+        type: string
+      internal_name:
+        type: string
+      name:
+        type: string
+    required:
+    - description
+    - internal_name
+    - name
+    type: object
+  request.CreateUserRequest:
     properties:
       email:
         type: string
@@ -58,19 +58,12 @@ definitions:
     - name
     - password
     type: object
-  request.RequestForgotPassword:
+  request.ForgotPasswordRequest:
     properties:
       email:
         type: string
     required:
     - email
-    type: object
-  request.RequestGetUser:
-    properties:
-      id:
-        type: integer
-    required:
-    - id
     type: object
   request.LoginRequest:
     properties:
@@ -92,7 +85,7 @@ definitions:
     - refresh_token
     - user_id
     type: object
-  request.RequestUpdateAvatar:
+  request.UpdateAvatarRequest:
     properties:
       id:
         type: integer
@@ -102,7 +95,7 @@ definitions:
     - id
     - svg
     type: object
-  request.RequestUpdatePermission:
+  request.UpdatePermissionRequest:
     properties:
       description:
         type: string
@@ -118,23 +111,7 @@ definitions:
     - internal_name
     - name
     type: object
-  request.RequestUpdateRole:
-    properties:
-      description:
-        type: string
-      id:
-        type: integer
-      internal_name:
-        type: string
-      name:
-        type: string
-    required:
-    - description
-    - id
-    - internal_name
-    - name
-    type: object
-  request.RequestUpdateRolePermission:
+  request.UpdateRolePermissionRequest:
     properties:
       permission_ids:
         items:
@@ -146,7 +123,33 @@ definitions:
     - permission_ids
     - role_id
     type: object
-  request.RequestUpdateUser:
+  request.UpdateRoleRequest:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+    required:
+    - description
+    - id
+    - internal_name
+    - name
+    type: object
+  request.UpdateUserPasswordRequest:
+    properties:
+      hash:
+        type: string
+      password:
+        type: string
+    required:
+    - hash
+    - password
+    type: object
+  request.UpdateUserRequest:
     properties:
       email:
         type: string
@@ -159,90 +162,22 @@ definitions:
     - id
     - name
     type: object
-  request.RequestUpdateUserPassword:
-    properties:
-      hash:
-        type: string
-      password:
-        type: string
-    required:
-    - hash
-    - password
-    type: object
-  request.RequestVerifyUser:
+  request.VerifyUserRequest:
     properties:
       hash:
         type: string
     required:
     - hash
     type: object
-  response.Response:
-    properties:
-      data: {}
-    type: object
-  response.ResponseCreateAvatar:
-    properties:
-      svg:
-        type: string
-    type: object
-  response.ResponseDeleteAvatar:
-    properties:
-      id:
-        type: integer
-    type: object
-  response.ResponseError:
-    properties:
-      err:
-        type: string
-    type: object
-  response.ResponseGetAvatar:
+  response.CreateAvatarResponse:
     properties:
       id:
         type: integer
       svg:
         type: string
     type: object
-  response.ResponseLogin:
+  response.CreatePermissionResponse:
     properties:
-      active:
-        type: boolean
-      refresh_token:
-        type: string
-      refresh_token_expires_in:
-        type: integer
-      token:
-        type: string
-      token_expires_in:
-        type: integer
-      user_id:
-        type: integer
-    type: object
-  response.ResponseRefreshToken:
-    properties:
-      active:
-        type: boolean
-      refresh_token:
-        type: string
-      refresh_token_expires_in:
-        type: integer
-      token:
-        type: string
-      token_expires_in:
-        type: integer
-      user_id:
-        type: integer
-    type: object
-  response.ResponseUpdateAvatar:
-    properties:
-      id:
-        type: integer
-      svg:
-        type: string
-    type: object
-  usecase.GetPermissionOutputDTO:
-    properties:
-      created_at:
-        type: string
       description:
         type: string
       id:
@@ -251,54 +186,18 @@ definitions:
         type: string
       name:
         type: string
-      updated_at:
-        type: string
     type: object
-  usecase.GetPermissionsOutputDTO:
+  response.CreateRolePermissionResponse:
     properties:
-      created_at:
-        type: string
-      description:
-        type: string
-      id:
-        type: integer
-      internal_name:
-        type: string
-      name:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  usecase.GetRoleOutputDTO:
-    properties:
-      created_at:
-        type: string
-      description:
-        type: string
-      id:
-        type: integer
-      internal_name:
-        type: string
-      name:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  usecase.GetRolePermissionsOutputDTO:
-    properties:
-      id:
-        type: integer
-      permission_ids:
+      permission_id:
         items:
           type: integer
         type: array
       role_id:
         type: integer
     type: object
-  usecase.GetRolesOutputDTO:
+  response.CreateRoleResponse:
     properties:
-      created_at:
-        type: string
       description:
         type: string
       id:
@@ -307,29 +206,239 @@ definitions:
         type: string
       name:
         type: string
-      updated_at:
-        type: string
     type: object
-  usecase.GetUsersOutputDTO:
+  response.CreateUserResponse:
     properties:
-      active:
-        type: boolean
       avatar_id:
         type: integer
-      created_at:
-        type: string
       email:
         type: string
       id:
         type: integer
       name:
         type: string
-      password:
+      role_id:
+        type: integer
+    type: object
+  response.DeleteAvatarResponse:
+    properties:
+      id:
+        type: integer
+    type: object
+  response.DeletePermissionResponse:
+    properties:
+      id:
+        type: integer
+    type: object
+  response.DeleteRolePermissionByRoleIDResponse:
+    properties:
+      permission_id:
+        items:
+          type: integer
+        type: array
+      role_id:
+        type: integer
+    type: object
+  response.DeleteRoleResponse:
+    properties:
+      id:
+        type: integer
+    type: object
+  response.DeleteUserResponse:
+    properties:
+      id:
+        type: integer
+    type: object
+  response.ForgotPasswordResponse:
+    properties:
+      id:
+        type: integer
+    type: object
+  response.GetAvatarResponse:
+    properties:
+      id:
+        type: integer
+      svg:
+        type: string
+    type: object
+  response.GetPermissionResponse:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+    type: object
+  response.GetPermissionsResponse:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+    type: object
+  response.GetRolePermissionsResponse:
+    properties:
+      permission_id:
+        items:
+          type: integer
+        type: array
+      role_id:
+        type: integer
+    type: object
+  response.GetRoleResponse:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+    type: object
+  response.GetRolesResponse:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+    type: object
+  response.GetUserResponse:
+    properties:
+      avatar_id:
+        type: integer
+      email:
+        type: string
+      id:
+        type: integer
+      name:
         type: string
       role_id:
         type: integer
-      updated_at:
+    type: object
+  response.GetUsersResponse:
+    properties:
+      avatar_id:
+        type: integer
+      email:
         type: string
+      id:
+        type: integer
+      name:
+        type: string
+      role_id:
+        type: integer
+    type: object
+  response.LoginResponse:
+    properties:
+      active:
+        type: boolean
+      refresh_token:
+        type: string
+      refresh_token_expires_in:
+        type: integer
+      token:
+        type: string
+      token_expires_in:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  response.RefreshTokenResponse:
+    properties:
+      active:
+        type: boolean
+      refresh_token:
+        type: string
+      refresh_token_expires_in:
+        type: integer
+      token:
+        type: string
+      token_expires_in:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  response.Response:
+    properties:
+      data: {}
+    type: object
+  response.ResponseError:
+    properties:
+      err:
+        type: string
+    type: object
+  response.UpdateAvatarResponse:
+    properties:
+      id:
+        type: integer
+      svg:
+        type: string
+    type: object
+  response.UpdatePermissionResponse:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+    type: object
+  response.UpdateRolePermissionResponse:
+    properties:
+      permission_id:
+        items:
+          type: integer
+        type: array
+      role_id:
+        type: integer
+    type: object
+  response.UpdateRoleResponse:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      internal_name:
+        type: string
+      name:
+        type: string
+    type: object
+  response.UpdateUserPasswordResponse:
+    properties:
+      id:
+        type: integer
+    type: object
+  response.UpdateUserResponse:
+    properties:
+      avatar_id:
+        type: integer
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      role_id:
+        type: integer
+    type: object
+  response.VerifyUserResponse:
+    properties:
+      id:
+        type: integer
     type: object
 host: localhost:3000
 info:
@@ -360,7 +469,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/response.ResponseLogin'
+                  $ref: '#/definitions/response.LoginResponse'
               type: object
         "400":
           description: Bad Request
@@ -391,7 +500,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/response.ResponseRefreshToken'
+                  $ref: '#/definitions/response.RefreshTokenResponse'
               type: object
         "400":
           description: Bad Request
@@ -411,7 +520,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/request.RequestCreateUser'
+          $ref: '#/definitions/request.CreateUserRequest'
       produces:
       - application/json
       responses:
@@ -422,7 +531,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.CreateUserResponse'
               type: object
         "400":
           description: Bad Request
@@ -458,7 +567,7 @@ paths:
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/response.ResponseGetAvatar'
+                    $ref: '#/definitions/response.GetAvatarResponse'
                   type: array
               type: object
         "400":
@@ -480,7 +589,7 @@ paths:
         name: avatar
         required: true
         schema:
-          $ref: '#/definitions/request.RequestCreateAvatar'
+          $ref: '#/definitions/request.CreateAvatarRequest'
       produces:
       - application/json
       responses:
@@ -491,7 +600,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/response.ResponseCreateAvatar'
+                  $ref: '#/definitions/response.CreateAvatarResponse'
               type: object
         "400":
           description: Bad Request
@@ -523,7 +632,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/response.ResponseDeleteAvatar'
+                  $ref: '#/definitions/response.DeleteAvatarResponse'
               type: object
         "400":
           description: Bad Request
@@ -554,7 +663,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/response.ResponseGetAvatar'
+                  $ref: '#/definitions/response.GetAvatarResponse'
               type: object
         "400":
           description: Bad Request
@@ -580,7 +689,7 @@ paths:
         name: avatar
         required: true
         schema:
-          $ref: '#/definitions/request.RequestUpdateAvatar'
+          $ref: '#/definitions/request.UpdateAvatarRequest'
       produces:
       - application/json
       responses:
@@ -591,7 +700,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/response.ResponseUpdateAvatar'
+                  $ref: '#/definitions/response.UpdateAvatarResponse'
               type: object
         "400":
           description: Bad Request
@@ -627,7 +736,7 @@ paths:
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/usecase.GetPermissionsOutputDTO'
+                    $ref: '#/definitions/response.GetPermissionsResponse'
                   type: array
               type: object
         "400":
@@ -649,7 +758,7 @@ paths:
         name: permission
         required: true
         schema:
-          $ref: '#/definitions/request.RequestCreatePermission'
+          $ref: '#/definitions/request.CreatePermissionRequest'
       produces:
       - application/json
       responses:
@@ -660,7 +769,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.CreatePermissionResponse'
               type: object
         "400":
           description: Bad Request
@@ -692,7 +801,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.DeletePermissionResponse'
               type: object
         "400":
           description: Bad Request
@@ -724,7 +833,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/usecase.GetPermissionOutputDTO'
+                  $ref: '#/definitions/response.GetPermissionResponse'
               type: object
         "400":
           description: Bad Request
@@ -750,7 +859,7 @@ paths:
         name: permission
         required: true
         schema:
-          $ref: '#/definitions/request.RequestUpdatePermission'
+          $ref: '#/definitions/request.UpdatePermissionRequest'
       produces:
       - application/json
       responses:
@@ -761,7 +870,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.UpdatePermissionResponse'
               type: object
         "400":
           description: Bad Request
@@ -797,7 +906,7 @@ paths:
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/usecase.GetRolesOutputDTO'
+                    $ref: '#/definitions/response.GetRolesResponse'
                   type: array
               type: object
         "400":
@@ -819,7 +928,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/request.RequestCreateRole'
+          $ref: '#/definitions/request.CreateRoleRequest'
       produces:
       - application/json
       responses:
@@ -830,7 +939,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.CreateRoleResponse'
               type: object
         "400":
           description: Bad Request
@@ -862,7 +971,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.DeleteRoleResponse'
               type: object
         "400":
           description: Bad Request
@@ -893,7 +1002,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/usecase.GetRoleOutputDTO'
+                  $ref: '#/definitions/response.GetRoleResponse'
               type: object
         "400":
           description: Bad Request
@@ -919,7 +1028,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/request.RequestUpdateRole'
+          $ref: '#/definitions/request.UpdateRoleRequest'
       produces:
       - application/json
       responses:
@@ -930,7 +1039,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.UpdateRoleResponse'
               type: object
         "400":
           description: Bad Request
@@ -962,7 +1071,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.DeleteRolePermissionByRoleIDResponse'
               type: object
         "400":
           description: Bad Request
@@ -993,7 +1102,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/usecase.GetRolePermissionsOutputDTO'
+                  $ref: '#/definitions/response.GetRolePermissionsResponse'
               type: object
         "400":
           description: Bad Request
@@ -1014,7 +1123,7 @@ paths:
         name: role_permission
         required: true
         schema:
-          $ref: '#/definitions/request.RequestCreateRolePermission'
+          $ref: '#/definitions/request.CreateRolePermissionRequest'
       produces:
       - application/json
       responses:
@@ -1025,7 +1134,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.CreateRolePermissionResponse'
               type: object
         "400":
           description: Bad Request
@@ -1051,7 +1160,7 @@ paths:
         name: role_permission
         required: true
         schema:
-          $ref: '#/definitions/request.RequestUpdateRolePermission'
+          $ref: '#/definitions/request.UpdateRolePermissionRequest'
       produces:
       - application/json
       responses:
@@ -1062,7 +1171,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.UpdateRolePermissionResponse'
               type: object
         "400":
           description: Bad Request
@@ -1098,7 +1207,7 @@ paths:
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/usecase.GetUsersOutputDTO'
+                    $ref: '#/definitions/response.GetUsersResponse'
                   type: array
               type: object
         "400":
@@ -1120,7 +1229,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/request.RequestCreateUser'
+          $ref: '#/definitions/request.CreateUserRequest'
       produces:
       - application/json
       responses:
@@ -1131,7 +1240,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.CreateUserResponse'
               type: object
         "400":
           description: Bad Request
@@ -1163,7 +1272,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.DeleteUserResponse'
               type: object
         "400":
           description: Bad Request
@@ -1194,7 +1303,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/request.RequestGetUser'
+                  $ref: '#/definitions/response.GetUserResponse'
               type: object
         "400":
           description: Bad Request
@@ -1220,7 +1329,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/request.RequestUpdateUser'
+          $ref: '#/definitions/request.UpdateUserRequest'
       produces:
       - application/json
       responses:
@@ -1231,7 +1340,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.UpdateUserResponse'
               type: object
         "400":
           description: Bad Request
@@ -1253,7 +1362,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/request.RequestForgotPassword'
+          $ref: '#/definitions/request.ForgotPasswordRequest'
       produces:
       - application/json
       responses:
@@ -1264,7 +1373,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.ForgotPasswordResponse'
               type: object
         "400":
           description: Bad Request
@@ -1284,7 +1393,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/request.RequestUpdateUserPassword'
+          $ref: '#/definitions/request.UpdateUserPasswordRequest'
       produces:
       - application/json
       responses:
@@ -1295,7 +1404,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.UpdateUserPasswordResponse'
               type: object
         "400":
           description: Bad Request
@@ -1315,7 +1424,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/request.RequestVerifyUser'
+          $ref: '#/definitions/request.VerifyUserRequest'
       produces:
       - application/json
       responses:
@@ -1326,7 +1435,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/response.VerifyUserResponse'
               type: object
         "400":
           description: Bad Request

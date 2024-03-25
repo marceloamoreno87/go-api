@@ -48,7 +48,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/response.ResponseLogin"
+                                            "$ref": "#/definitions/response.LoginResponse"
                                         }
                                     }
                                 }
@@ -100,7 +100,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/response.ResponseRefreshToken"
+                                            "$ref": "#/definitions/response.RefreshTokenResponse"
                                         }
                                     }
                                 }
@@ -141,7 +141,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestCreateUser"
+                            "$ref": "#/definitions/request.CreateUserRequest"
                         }
                     }
                 ],
@@ -157,7 +157,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.CreateUserResponse"
                                         }
                                     }
                                 }
@@ -219,7 +219,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/response.ResponseGetAvatar"
+                                                "$ref": "#/definitions/response.GetAvatarResponse"
                                             }
                                         }
                                     }
@@ -259,7 +259,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestCreateAvatar"
+                            "$ref": "#/definitions/request.CreateAvatarRequest"
                         }
                     }
                 ],
@@ -275,7 +275,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/response.ResponseCreateAvatar"
+                                            "$ref": "#/definitions/response.CreateAvatarResponse"
                                         }
                                     }
                                 }
@@ -330,7 +330,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/response.ResponseGetAvatar"
+                                            "$ref": "#/definitions/response.GetAvatarResponse"
                                         }
                                     }
                                 }
@@ -376,7 +376,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestUpdateAvatar"
+                            "$ref": "#/definitions/request.UpdateAvatarRequest"
                         }
                     }
                 ],
@@ -392,7 +392,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/response.ResponseUpdateAvatar"
+                                            "$ref": "#/definitions/response.UpdateAvatarResponse"
                                         }
                                     }
                                 }
@@ -445,7 +445,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/response.ResponseDeleteAvatar"
+                                            "$ref": "#/definitions/response.DeleteAvatarResponse"
                                         }
                                     }
                                 }
@@ -507,7 +507,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/usecase.GetPermissionsOutputDTO"
+                                                "$ref": "#/definitions/response.GetPermissionsResponse"
                                             }
                                         }
                                     }
@@ -547,7 +547,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestCreatePermission"
+                            "$ref": "#/definitions/request.CreatePermissionRequest"
                         }
                     }
                 ],
@@ -563,7 +563,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.CreatePermissionResponse"
                                         }
                                     }
                                 }
@@ -618,7 +618,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/usecase.GetPermissionOutputDTO"
+                                            "$ref": "#/definitions/response.GetPermissionResponse"
                                         }
                                     }
                                 }
@@ -664,7 +664,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestUpdatePermission"
+                            "$ref": "#/definitions/request.UpdatePermissionRequest"
                         }
                     }
                 ],
@@ -680,7 +680,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.UpdatePermissionResponse"
                                         }
                                     }
                                 }
@@ -736,7 +736,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.DeletePermissionResponse"
                                         }
                                     }
                                 }
@@ -798,7 +798,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/usecase.GetRolesOutputDTO"
+                                                "$ref": "#/definitions/response.GetRolesResponse"
                                             }
                                         }
                                     }
@@ -838,7 +838,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestCreateRole"
+                            "$ref": "#/definitions/request.CreateRoleRequest"
                         }
                     }
                 ],
@@ -854,7 +854,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.CreateRoleResponse"
                                         }
                                     }
                                 }
@@ -909,7 +909,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/usecase.GetRoleOutputDTO"
+                                            "$ref": "#/definitions/response.GetRoleResponse"
                                         }
                                     }
                                 }
@@ -955,7 +955,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestUpdateRole"
+                            "$ref": "#/definitions/request.UpdateRoleRequest"
                         }
                     }
                 ],
@@ -971,7 +971,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.UpdateRoleResponse"
                                         }
                                     }
                                 }
@@ -1024,7 +1024,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.DeleteRoleResponse"
                                         }
                                     }
                                 }
@@ -1079,7 +1079,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/usecase.GetRolePermissionsOutputDTO"
+                                            "$ref": "#/definitions/response.GetRolePermissionsResponse"
                                         }
                                     }
                                 }
@@ -1125,7 +1125,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestUpdateRolePermission"
+                            "$ref": "#/definitions/request.UpdateRolePermissionRequest"
                         }
                     }
                 ],
@@ -1141,7 +1141,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.UpdateRolePermissionResponse"
                                         }
                                     }
                                 }
@@ -1180,7 +1180,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestCreateRolePermission"
+                            "$ref": "#/definitions/request.CreateRolePermissionRequest"
                         }
                     }
                 ],
@@ -1196,7 +1196,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.CreateRolePermissionResponse"
                                         }
                                     }
                                 }
@@ -1249,7 +1249,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.DeleteRolePermissionByRoleIDResponse"
                                         }
                                     }
                                 }
@@ -1311,7 +1311,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/usecase.GetUsersOutputDTO"
+                                                "$ref": "#/definitions/response.GetUsersResponse"
                                             }
                                         }
                                     }
@@ -1351,7 +1351,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestCreateUser"
+                            "$ref": "#/definitions/request.CreateUserRequest"
                         }
                     }
                 ],
@@ -1367,7 +1367,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.CreateUserResponse"
                                         }
                                     }
                                 }
@@ -1403,7 +1403,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestForgotPassword"
+                            "$ref": "#/definitions/request.ForgotPasswordRequest"
                         }
                     }
                 ],
@@ -1419,7 +1419,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.ForgotPasswordResponse"
                                         }
                                     }
                                 }
@@ -1455,7 +1455,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestUpdateUserPassword"
+                            "$ref": "#/definitions/request.UpdateUserPasswordRequest"
                         }
                     }
                 ],
@@ -1471,7 +1471,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.UpdateUserPasswordResponse"
                                         }
                                     }
                                 }
@@ -1507,7 +1507,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestVerifyUser"
+                            "$ref": "#/definitions/request.VerifyUserRequest"
                         }
                     }
                 ],
@@ -1523,7 +1523,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.VerifyUserResponse"
                                         }
                                     }
                                 }
@@ -1578,7 +1578,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/request.RequestGetUser"
+                                            "$ref": "#/definitions/response.GetUserResponse"
                                         }
                                     }
                                 }
@@ -1624,7 +1624,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RequestUpdateUser"
+                            "$ref": "#/definitions/request.UpdateUserRequest"
                         }
                     }
                 ],
@@ -1640,7 +1640,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.UpdateUserResponse"
                                         }
                                     }
                                 }
@@ -1693,7 +1693,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/response.DeleteUserResponse"
                                         }
                                     }
                                 }
@@ -1711,7 +1711,7 @@
         }
     },
     "definitions": {
-        "request.RequestCreateAvatar": {
+        "request.CreateAvatarRequest": {
             "type": "object",
             "required": [
                 "svg"
@@ -1722,7 +1722,7 @@
                 }
             }
         },
-        "request.RequestCreatePermission": {
+        "request.CreatePermissionRequest": {
             "type": "object",
             "required": [
                 "description",
@@ -1741,26 +1741,7 @@
                 }
             }
         },
-        "request.RequestCreateRole": {
-            "type": "object",
-            "required": [
-                "description",
-                "internal_name",
-                "name"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "internal_name": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "request.RequestCreateRolePermission": {
+        "request.CreateRolePermissionRequest": {
             "type": "object",
             "required": [
                 "permission_ids",
@@ -1778,7 +1759,26 @@
                 }
             }
         },
-        "request.RequestCreateUser": {
+        "request.CreateRoleRequest": {
+            "type": "object",
+            "required": [
+                "description",
+                "internal_name",
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.CreateUserRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -1797,7 +1797,7 @@
                 }
             }
         },
-        "request.RequestForgotPassword": {
+        "request.ForgotPasswordRequest": {
             "type": "object",
             "required": [
                 "email"
@@ -1805,17 +1805,6 @@
             "properties": {
                 "email": {
                     "type": "string"
-                }
-            }
-        },
-        "request.RequestGetUser": {
-            "type": "object",
-            "required": [
-                "id"
-            ],
-            "properties": {
-                "id": {
-                    "type": "integer"
                 }
             }
         },
@@ -1849,7 +1838,7 @@
                 }
             }
         },
-        "request.RequestUpdateAvatar": {
+        "request.UpdateAvatarRequest": {
             "type": "object",
             "required": [
                 "id",
@@ -1864,7 +1853,7 @@
                 }
             }
         },
-        "request.RequestUpdatePermission": {
+        "request.UpdatePermissionRequest": {
             "type": "object",
             "required": [
                 "description",
@@ -1887,30 +1876,7 @@
                 }
             }
         },
-        "request.RequestUpdateRole": {
-            "type": "object",
-            "required": [
-                "description",
-                "id",
-                "internal_name",
-                "name"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "internal_name": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "request.RequestUpdateRolePermission": {
+        "request.UpdateRolePermissionRequest": {
             "type": "object",
             "required": [
                 "permission_ids",
@@ -1928,7 +1894,45 @@
                 }
             }
         },
-        "request.RequestUpdateUser": {
+        "request.UpdateRoleRequest": {
+            "type": "object",
+            "required": [
+                "description",
+                "id",
+                "internal_name",
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.UpdateUserPasswordRequest": {
+            "type": "object",
+            "required": [
+                "hash",
+                "password"
+            ],
+            "properties": {
+                "hash": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.UpdateUserRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -1947,22 +1951,7 @@
                 }
             }
         },
-        "request.RequestUpdateUserPassword": {
-            "type": "object",
-            "required": [
-                "hash",
-                "password"
-            ],
-            "properties": {
-                "hash": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "request.RequestVerifyUser": {
+        "request.VerifyUserRequest": {
             "type": "object",
             "required": [
                 "hash"
@@ -1973,37 +1962,7 @@
                 }
             }
         },
-        "response.Response": {
-            "type": "object",
-            "properties": {
-                "data": {}
-            }
-        },
-        "response.ResponseCreateAvatar": {
-            "type": "object",
-            "properties": {
-                "svg": {
-                    "type": "string"
-                }
-            }
-        },
-        "response.ResponseDeleteAvatar": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "response.ResponseError": {
-            "type": "object",
-            "properties": {
-                "err": {
-                    "type": "string"
-                }
-            }
-        },
-        "response.ResponseGetAvatar": {
+        "response.CreateAvatarResponse": {
             "type": "object",
             "properties": {
                 "id": {
@@ -2014,69 +1973,9 @@
                 }
             }
         },
-        "response.ResponseLogin": {
+        "response.CreatePermissionResponse": {
             "type": "object",
             "properties": {
-                "active": {
-                    "type": "boolean"
-                },
-                "refresh_token": {
-                    "type": "string"
-                },
-                "refresh_token_expires_in": {
-                    "type": "integer"
-                },
-                "token": {
-                    "type": "string"
-                },
-                "token_expires_in": {
-                    "type": "integer"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "response.ResponseRefreshToken": {
-            "type": "object",
-            "properties": {
-                "active": {
-                    "type": "boolean"
-                },
-                "refresh_token": {
-                    "type": "string"
-                },
-                "refresh_token_expires_in": {
-                    "type": "integer"
-                },
-                "token": {
-                    "type": "string"
-                },
-                "token_expires_in": {
-                    "type": "integer"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "response.ResponseUpdateAvatar": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "svg": {
-                    "type": "string"
-                }
-            }
-        },
-        "usecase.GetPermissionOutputDTO": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
                 "description": {
                     "type": "string"
                 },
@@ -2088,65 +1987,13 @@
                 },
                 "name": {
                     "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
                 }
             }
         },
-        "usecase.GetPermissionsOutputDTO": {
+        "response.CreateRolePermissionResponse": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "internal_name": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "usecase.GetRoleOutputDTO": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "internal_name": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "usecase.GetRolePermissionsOutputDTO": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "permission_ids": {
+                "permission_id": {
                     "type": "array",
                     "items": {
                         "type": "integer"
@@ -2157,12 +2004,9 @@
                 }
             }
         },
-        "usecase.GetRolesOutputDTO": {
+        "response.CreateRoleResponse": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
                 "description": {
                     "type": "string"
                 },
@@ -2174,23 +2018,14 @@
                 },
                 "name": {
                     "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
                 }
             }
         },
-        "usecase.GetUsersOutputDTO": {
+        "response.CreateUserResponse": {
             "type": "object",
             "properties": {
-                "active": {
-                    "type": "boolean"
-                },
                 "avatar_id": {
                     "type": "integer"
-                },
-                "created_at": {
-                    "type": "string"
                 },
                 "email": {
                     "type": "string"
@@ -2201,14 +2036,350 @@
                 "name": {
                     "type": "string"
                 },
-                "password": {
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.DeleteAvatarResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.DeletePermissionResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.DeleteRolePermissionByRoleIDResponse": {
+            "type": "object",
+            "properties": {
+                "permission_id": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.DeleteRoleResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.DeleteUserResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.ForgotPasswordResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.GetAvatarResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "svg": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.GetPermissionResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.GetPermissionsResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.GetRolePermissionsResponse": {
+            "type": "object",
+            "properties": {
+                "permission_id": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.GetRoleResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.GetRolesResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.GetUserResponse": {
+            "type": "object",
+            "properties": {
+                "avatar_id": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
                     "type": "string"
                 },
                 "role_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "response.GetUsersResponse": {
+            "type": "object",
+            "properties": {
+                "avatar_id": {
+                    "type": "integer"
                 },
-                "updated_at": {
+                "email": {
                     "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean"
+                },
+                "refresh_token": {
+                    "type": "string"
+                },
+                "refresh_token_expires_in": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "token_expires_in": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.RefreshTokenResponse": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean"
+                },
+                "refresh_token": {
+                    "type": "string"
+                },
+                "refresh_token_expires_in": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "token_expires_in": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.Response": {
+            "type": "object",
+            "properties": {
+                "data": {}
+            }
+        },
+        "response.ResponseError": {
+            "type": "object",
+            "properties": {
+                "err": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.UpdateAvatarResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "svg": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.UpdatePermissionResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.UpdateRolePermissionResponse": {
+            "type": "object",
+            "properties": {
+                "permission_id": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.UpdateRoleResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "internal_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.UpdateUserPasswordResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.UpdateUserResponse": {
+            "type": "object",
+            "properties": {
+                "avatar_id": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.VerifyUserResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
                 }
             }
         }
