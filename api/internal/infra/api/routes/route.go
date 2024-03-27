@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/marceloamoreno/goapi/api/docs"
 	"github.com/marceloamoreno/goapi/config"
 	// AuthMiddleware "github.com/marceloamoreno/goapi/internal/domain/user/middleware"
@@ -28,6 +29,8 @@ func NewRoutes(
 			route.getHealthRoutes(r)
 			route.getTestUpdatePassword(r)
 			route.getTestVerifyUser(r)
+			r.Mount("/debug", middleware.Profiler())
+
 		})
 		r.Group(func(r chi.Router) {
 			// AuthMiddleware.NewMiddleware(r).AuthMiddleware(jwt.GetJwtAuth())
